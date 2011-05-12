@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<xs:schema id="XMLSchema1"
-    targetNamespace="http://tempuri.org/XMLSchema1.xsd"
+<xs:schema id="EyeInTheSkyDataFileSchema"
+    targetNamespace="https://github.com/stwalkerster/eyeinthesky/raw/master/EyeInTheSky/DataFileSchema.xsd"
     elementFormDefault="qualified"
-    xmlns="http://tempuri.org/XMLSchema1.xsd"
-    xmlns:mstns="http://tempuri.org/XMLSchema1.xsd"
+    xmlns="https://github.com/stwalkerster/eyeinthesky/raw/master/EyeInTheSky/DataFileSchema.xsd"
+    xmlns:mstns="https://github.com/stwalkerster/eyeinthesky/raw/master/EyeInTheSky/DataFileSchema.xsd"
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
 >
   <xs:complexType name="stalklist">
