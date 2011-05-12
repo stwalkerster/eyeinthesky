@@ -1,0 +1,3 @@
+[submodule "helpmebot"]
+	path = helpmebot
+	url = git@github.com:stwalkerster/helpmebot.git
