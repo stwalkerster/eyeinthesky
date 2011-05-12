@@ -9,25 +9,30 @@ namespace EyeInTheSky
     public class EyeInTheSkyBot
     {
         public static IAL irc_freenode, irc_wikimedia;
-
+        public static Configuration config;
         public static void Main()
         {
-            // get password
+            config = new Configuration("EyeInTheSky.config");
 
-            if(!new FileInfo("freenode.password").Exists)
+            // get/set/update password
+            FileInfo pwfileinfo = new FileInfo("freenode.password");
+            if(pwfileinfo.Exists)
             {
-                new FileInfo("freenode.password").Create();
-                return;
+                StreamReader pwreader = new StreamReader("freenode.password");
+                config["nickserv password"] = pwreader.ReadLine();
+                pwreader.Close();
+                config.save();
+                pwfileinfo.Delete();
             }
 
-            string freenodepassword = new StreamReader("freenode.password").ReadLine();
+            string freenodepassword = config["nickserv password"];
 
             // set up freenode connection
 
             irc_freenode = new IAL("chat.freenode.net", 8001, "EyeInTheSkyBot", freenodepassword,
                                    "eyeinthesky", "Eye In The Sky", "NickServ");
            
-            irc_freenode.NickServRegistrationSucceededEvent+=new IAL.ConnectionRegistrationEventHandler(irc_freenode_connectionRegistrationSucceededEvent);
+            irc_freenode.NickServRegistrationSucceededEvent+=irc_freenode_connectionRegistrationSucceededEvent;
             irc_freenode.threadFatalError += irc_threadFatalError;
             irc_freenode.privmsgEvent += irc_freenode_privmsgEvent;
 
