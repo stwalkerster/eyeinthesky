@@ -74,7 +74,7 @@ namespace EyeInTheSky
         public string ircNickname
         {
             get { return _myNickname; }
-            set { throw new NotImplementedException();}
+            set { throw new NotImplementedException(); }
         }
 
         public string ircUsername
@@ -118,10 +118,13 @@ namespace EyeInTheSky
 
         public bool logEvents { get; private set; }
 
-        public string[] activeChannels { get
+        public string[] activeChannels
         {
-            return (string[])channelList.ToArray(Type.GetType("String"));
-        } }
+            get
+            {
+                return (string[])channelList.ToArray(Type.GetType("String"));
+            }
+        }
         #endregion
 
         #region constructor/destructor
@@ -161,7 +164,7 @@ namespace EyeInTheSky
         {
             try
             {
-                _tcpClient = new TcpClient(_ircServer, (int) _ircPort);
+                _tcpClient = new TcpClient(_ircServer, (int)_ircPort);
 
                 Stream ircStream = _tcpClient.GetStream();
                 _ircReader = new StreamReader(ircStream, Encoding.UTF8);
@@ -192,7 +195,7 @@ namespace EyeInTheSky
 
         private void _sendLine(string line)
         {
-            if ( !this.connected ) return;
+            if (!this.connected) return;
             line = line.Replace("\n", " ");
             line = line.Replace("\r", " ");
             lock (this._sendQ)
@@ -233,7 +236,7 @@ namespace EyeInTheSky
         private void assumeTakenNickname()
         {
             _sendNick(_myNickname + "_");
-            if ( this._nickserv == string.Empty ) return;
+            if (this._nickserv == string.Empty) return;
             this.ircPrivmsg(this._nickserv, "GHOST " + this._myNickname + " " + this._myPassword);
             this.ircPrivmsg(this._nickserv, "RELEASE " + this._myNickname + " " + this._myPassword);
             this._sendNick(this._myNickname);
@@ -358,7 +361,7 @@ namespace EyeInTheSky
         public void ctcpReply(string destination, string command, string parameters)
         {
             ASCIIEncoding asc = new ASCIIEncoding();
-            byte[] ctcp = {Convert.ToByte(1)};
+            byte[] ctcp = { Convert.ToByte(1) };
             this.ircNotice(destination, asc.GetString(ctcp) + command.ToUpper() + " " + parameters + asc.GetString(ctcp));
         }
 
@@ -376,7 +379,7 @@ namespace EyeInTheSky
         public static string wrapCTCP(string command, string parameters)
         {
             ASCIIEncoding asc = new ASCIIEncoding();
-            byte[] ctcp = {Convert.ToByte(1)};
+            byte[] ctcp = { Convert.ToByte(1) };
             return (asc.GetString(ctcp) + command.ToUpper() + (parameters == string.Empty ? "" : " " + parameters) +
                     asc.GetString(ctcp));
         }
@@ -487,7 +490,7 @@ namespace EyeInTheSky
         {
             if (this._namesList.ContainsKey(channel))
             {
-                return ((ArrayList) this._namesList[channel]).Contains(nickname) ? 1 : 0;
+                return ((ArrayList)this._namesList[channel]).Contains(nickname) ? 1 : 0;
             }
             this.ircNames(channel);
             return -1;
@@ -554,7 +557,7 @@ namespace EyeInTheSky
                     lock (_sendQ)
                     {
                         if (_sendQ.Count > 0)
-                            line = (string) _sendQ.Dequeue();
+                            line = (string)_sendQ.Dequeue();
                     }
 
                     if (line != null)
@@ -715,10 +718,10 @@ namespace EyeInTheSky
 
         private void ialNameReplyEvent(string channel, IEnumerable<string> names)
         {
-            if ( !this._namesList.ContainsKey( channel ) ) return;
+            if (!this._namesList.ContainsKey(channel)) return;
             foreach (string name in names)
             {
-                ArrayList channelNamesList = (ArrayList) this._namesList[channel];
+                ArrayList channelNamesList = (ArrayList)this._namesList[channel];
                 string newName = name.Trim('@', '+');
                 if (!channelNamesList.Contains(newName))
                     channelNamesList.Add(newName);
@@ -786,7 +789,7 @@ namespace EyeInTheSky
         private void ialJoinEvent(User source, string channel)
         {
             this.log("JOIN EVENT BY " + source + " INTO " + channel);
-            if(source.nickname == ircNickname) this.channelList.Add(channel);
+            if (source.nickname == ircNickname) this.channelList.Add(channel);
         }
 
         private void ialQuitEvent(User source, string message)
@@ -803,7 +806,7 @@ namespace EyeInTheSky
 
         private void ialDataRecievedEvent(string data)
         {
-            char[] colonSeparator = {':'};
+            char[] colonSeparator = { ':' };
 
             string command, parameters;
             string messagesource = command = parameters = "";
@@ -871,7 +874,7 @@ namespace EyeInTheSky
                 case "PRIVMSG":
                     string message = parameters.Split(colonSeparator, 2)[1];
                     ASCIIEncoding asc = new ASCIIEncoding();
-                    byte[] ctcp = {Convert.ToByte(1)};
+                    byte[] ctcp = { Convert.ToByte(1) };
 
                     string destination = parameters.Split(colonSeparator, 2)[0].Trim();
                     if (destination == this.ircNickname)
@@ -920,7 +923,7 @@ namespace EyeInTheSky
 
         public static void basicParser(string line, ref string source, ref string command, ref string parameters)
         {
-            char[] stringSplitter = {' '};
+            char[] stringSplitter = { ' ' };
             string[] parseBasic;
             if (line.Substring(0, 1) == ":")
             {
