@@ -9,10 +9,10 @@ namespace EyeInTheSky
     class RegexStalk : Stalk
     {
         private Regex r;
-        protected RegexStalk() : base()
+        public new void init()
         {
             this.regex = true;
-            r = new Regex(this.search);
+            r = new Regex(this.SearchTerm);
         }
     }
 }

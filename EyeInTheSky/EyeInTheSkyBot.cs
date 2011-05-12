@@ -42,10 +42,10 @@ namespace EyeInTheSky
             irc_wikimedia.connectionRegistrationSucceededEvent += irc_wikimedia_connectionRegistrationSucceededEvent;
             irc_wikimedia.threadFatalError += irc_threadFatalError;
 
-            if((!irc_freenode.connect()) /*|| (!irc_wikimedia.connect())*/)
+            if((!irc_freenode.connect()) || (!irc_wikimedia.connect()))
             {
                 irc_freenode.stop();
-                //irc_wikimedia.stop();
+                irc_wikimedia.stop();
             }
 
         }
@@ -60,7 +60,11 @@ namespace EyeInTheSky
 
             string[] tokens = message.Split(' ');
             string command = GlobalFunctions.popFromFront(ref tokens);
-            irc_freenode.ircPrivmsg("##eyeinthesky", "RECVD: " + command + " WITH PARAMS: " + string.Join(" ", tokens));
+            GenericCommand cmd = GenericCommand.create(command);
+            if (cmd != null)
+                cmd.run(source, destination, tokens);
+            else
+                irc_freenode.ircNotice(source.nickname, "Command not found.");
         }
 
         static void irc_threadFatalError(object sender, EventArgs e)

@@ -20,15 +20,44 @@ namespace EyeInTheSky
         /// the name of the stalkworkd
         /// </summary>
         protected string flag;
+        
+        /// <summary>
+        /// is the search term a regular expression?
+        /// </summary>
+        public bool IsRegularExpression
+        {
+            get { return regex; }
+        }
 
-        protected Stalk()
+        /// <summary>
+        /// what to search for
+        /// </summary>
+        public string SearchTerm
+        {
+            get { return search; }
+        }
+
+        /// <summary>
+        /// the name of the stalkworkd
+        /// </summary>
+        public string Flag
+        {
+            get { return flag; }
+        }
+
+        public void init()
         {
             this.regex = false;
         }
 
-        static Stalk create()
+        public static Stalk create(string flag, string search, bool isregex)
         {
-            throw new NotImplementedException();
+            Stalk s = isregex ? new RegexStalk() : new Stalk();
+            s.flag = flag;
+            s.search = search;
+            s.init();
+
+            return s;
         }
     }
 }
