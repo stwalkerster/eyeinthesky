@@ -665,6 +665,7 @@ namespace EyeInTheSky
         // TODO: invoke this event somewhere
         public event NameReplyEventHandler nameReplyEvent;
 
+        public event ConnectionRegistrationEventHandler NickServRegistrationSucceededEvent;
 
         #endregion
 
@@ -709,7 +710,6 @@ namespace EyeInTheSky
         {
             if (_nickserv != string.Empty)
                 assumeTakenNickname();
-
             else
                 throw new NotImplementedException();
         }
@@ -731,6 +731,19 @@ namespace EyeInTheSky
         private void ialNoticeEvent(User source, string destination, string message)
         {
             this.log("NOTICE EVENT FROM " + source + " TO " + destination + " MESSAGE " + message);
+
+
+
+            string searchstr = "You are now identified for";
+            if (source.nickname.ToLower() == _nickserv.ToLower() && message.Contains(searchstr))
+            {
+                ConnectionRegistrationEventHandler temp = NickServRegistrationSucceededEvent;
+                if (temp != null)
+                {
+                    temp();
+                }
+            }
+
         }
 
         private void ialCtcpEvent(User source, string destination, string message)
