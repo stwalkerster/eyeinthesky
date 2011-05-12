@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using helpmebot6;
 
 namespace EyeInTheSky
 {
@@ -36,6 +35,13 @@ namespace EyeInTheSky
             irc_wikimedia = new IAL("irc.wikimedia.org", 6667, "EyeInTheSky", "", "eyeinthesky", "Eye In The Sky");
             irc_wikimedia.connectionRegistrationSucceededEvent += irc_wikimedia_connectionRegistrationSucceededEvent;
             irc_wikimedia.threadFatalError += irc_threadFatalError;
+
+            if((!irc_freenode.connect()) || (!irc_wikimedia.connect()))
+            {
+                irc_freenode.stop();
+                irc_wikimedia.stop();
+            }
+
         }
 
         static void irc_freenode_privmsgEvent(User source, string destination, string message)
@@ -47,7 +53,8 @@ namespace EyeInTheSky
                 return;
 
             string[] tokens = message.Split(' ');
-            
+            string command = GlobalFunctions.popFromFront(ref tokens);
+            irc_freenode.ircPrivmsg("##eyeinthesky", "RECVD: " + command + " WITH PARAMS: " + string.Join(" ", tokens));
         }
 
         static void irc_threadFatalError(object sender, EventArgs e)
