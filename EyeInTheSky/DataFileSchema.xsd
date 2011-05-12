@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="XMLSchema1"
+    targetNamespace="http://tempuri.org/XMLSchema1.xsd"
+    elementFormDefault="qualified"
+    xmlns="http://tempuri.org/XMLSchema1.xsd"
+    xmlns:mstns="http://tempuri.org/XMLSchema1.xsd"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+  <xs:complexType name="document">
+    <xs:sequence>
+      <xs:element name="stalks" type="stalkstype" minOccurs="0"></xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="stalkstype">
+    <xs:sequence>
+      <xs:element name="user" type="stalklist"  minOccurs="0"/>
+      <xs:element name="page" type="stalklist" minOccurs="0"/>
+      <xs:element name="summary" type="stalklist" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="stalklist">
+    <xs:sequence>
+      <xs:element name="stalk" minOccurs="0" maxOccurs="unbounded" type="stalk"/>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="stalk">
+    <xs:attribute name="flag" type="xs:integer"/>
+  </xs:complexType>
+
+  <xs:element name="eyeinthesky" type="document" />
+</xs:schema>
