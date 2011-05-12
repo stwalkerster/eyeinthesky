@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<eyeinthesky xmlns="https://github.com/stwalkerster/eyeinthesky/raw/master/EyeInTheSky/DataFileSchema.xsd">
+  <config>
+    <option name="nickserv password" value="password"/>
+  </config>
+  <stalks>
+    <user>
+      
+    </user>
+    <page>
+      
+    </page>
+    <summary>
+      
+    </summary>
+  </stalks>
+</eyeinthesky>
