@@ -9,7 +9,7 @@ using System.Xml.XPath;
 
 namespace EyeInTheSky
 {
-    class Configuration
+    public class Configuration
     {
         private readonly string configurationFileName;
         private Dictionary<string, string> _configuration;
@@ -54,7 +54,10 @@ namespace EyeInTheSky
         private void initialise()
         {
             if (!new FileInfo(configurationFileName).Exists)
-                throw new FileNotFoundException();
+            {
+                File.Copy("DefaultConfiguration.xml", configurationFileName);
+            }
+
 
             XPathDocument xPathDocument = new XPathDocument(configurationFileName);
             XPathNavigator navigator = xPathDocument.CreateNavigator();
