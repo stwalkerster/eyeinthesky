@@ -43,11 +43,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration.cs" />
+    <Compile Include="RegexStalk.cs" />
     <Compile Include="EyeInTheSkyBot.cs" />
     <Compile Include="GlobalFunctions.cs" />
     <Compile Include="IAL.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Stalk.cs" />
+    <Compile Include="StalkList.cs" />
     <Compile Include="User.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -11,6 +11,8 @@
       <xs:element name="stalk" minOccurs="0" maxOccurs="unbounded">
         <xs:complexType>
           <xs:attribute name="flag" type="xs:integer"/>
+          <xs:attribute name="search" type="xs:string" />
+          <xs:attribute name="regex" type="xs:boolean" />
         </xs:complexType>
       </xs:element>
     </xs:sequence>
