@@ -27,7 +27,7 @@ namespace EyeInTheSky
             irc_freenode = new IAL("chat.freenode.net", 8001, "EyeInTheSkyBot", freenodepassword,
                                    "eyeinthesky", "Eye In The Sky", "NickServ");
            
-          //  irc_freenode.
+            irc_freenode.NickServRegistrationSucceededEvent+=new IAL.ConnectionRegistrationEventHandler(irc_freenode_connectionRegistrationSucceededEvent);
             irc_freenode.threadFatalError += irc_threadFatalError;
             irc_freenode.privmsgEvent += irc_freenode_privmsgEvent;
 
