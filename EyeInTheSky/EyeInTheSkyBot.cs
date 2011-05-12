@@ -25,21 +25,22 @@ namespace EyeInTheSky
             // set up freenode connection
 
             irc_freenode = new IAL("chat.freenode.net", 8001, "EyeInTheSkyBot", freenodepassword,
-                                   "eyeinthesky", "Eye In The Sky");
-            irc_freenode.connectionRegistrationSucceededEvent += irc_freenode_connectionRegistrationSucceededEvent;
+                                   "eyeinthesky", "Eye In The Sky", "NickServ");
+           
+          //  irc_freenode.
             irc_freenode.threadFatalError += irc_threadFatalError;
             irc_freenode.privmsgEvent += irc_freenode_privmsgEvent;
 
             // set up wikimedia connection
 
-            irc_wikimedia = new IAL("irc.wikimedia.org", 6667, "EyeInTheSky", "", "eyeinthesky", "Eye In The Sky");
+            irc_wikimedia = new IAL("irc.wikimedia.org", 6667, "EyeInTheSky", "", "eyeinthesky", "Eye In The Sky", "");
             irc_wikimedia.connectionRegistrationSucceededEvent += irc_wikimedia_connectionRegistrationSucceededEvent;
             irc_wikimedia.threadFatalError += irc_threadFatalError;
 
-            if((!irc_freenode.connect()) || (!irc_wikimedia.connect()))
+            if((!irc_freenode.connect()) /*|| (!irc_wikimedia.connect())*/)
             {
                 irc_freenode.stop();
-                irc_wikimedia.stop();
+                //irc_wikimedia.stop();
             }
 
         }
