@@ -42,7 +42,7 @@ namespace EyeInTheSky
             irc_wikimedia.connectionRegistrationSucceededEvent += irc_wikimedia_connectionRegistrationSucceededEvent;
             irc_wikimedia.threadFatalError += irc_threadFatalError;
 
-            if((!irc_freenode.connect()) || (!irc_wikimedia.connect()))
+            if((!irc_freenode.connect()) /*|| (!irc_wikimedia.connect())*/)
             {
                 irc_freenode.stop();
                 irc_wikimedia.stop();

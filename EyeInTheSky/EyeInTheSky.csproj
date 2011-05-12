@@ -42,7 +42,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\Init.cs" />
+    <Compile Include="Commands\Raw.cs" />
     <Compile Include="Configuration.cs" />
+    <Compile Include="GenericCommand.cs" />
     <Compile Include="RegexStalk.cs" />
     <Compile Include="EyeInTheSkyBot.cs" />
     <Compile Include="GlobalFunctions.cs" />

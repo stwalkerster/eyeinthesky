@@ -58,11 +58,17 @@ namespace EyeInTheSky
                 File.Copy("DefaultConfiguration.xml", configurationFileName);
             }
 
+            StreamReader sr = new StreamReader(configurationFileName);
 
-            XPathDocument xPathDocument = new XPathDocument(configurationFileName);
+            XPathDocument xPathDocument = new XPathDocument(sr);
             XPathNavigator navigator = xPathDocument.CreateNavigator();
 
-            XPathNodeIterator xpni = navigator.Select("//option");
+            XmlNameTable xnt = navigator.NameTable;
+            XmlNamespaceManager xnm = new XmlNamespaceManager(xnt);
+            xnm.AddNamespace("isky", "https://github.com/stwalkerster/eyeinthesky/raw/master/EyeInTheSky/DataFileSchema.xsd");
+
+            XPathNodeIterator xpni = navigator.Select("//isky:option", xnm);
+
             _configuration = new Dictionary<string, string>();
             while (xpni.MoveNext())
             {
