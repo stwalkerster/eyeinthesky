@@ -46,7 +46,7 @@ namespace EyeInTheSky
         private readonly string _ircServer;
         private readonly uint _ircPort;
 
-        private readonly string _nickserv;
+        private string _nickserv = "";
 
         private TcpClient _tcpClient;
         private StreamReader _ircReader;
@@ -126,7 +126,7 @@ namespace EyeInTheSky
 
         #region constructor/destructor
 
-        public IAL(string server, uint port, string nickname, string password, string username, string realname)
+        public IAL(string server, uint port, string nickname, string password, string username, string realname, string nickserv)
         {
             this.logEvents = true;
             this.floodProtectionWaitTime = 500;
@@ -139,6 +139,8 @@ namespace EyeInTheSky
             _myPassword = password;
             _myUsername = username;
             _myRealname = realname;
+
+            _nickserv = nickserv;
 
             initialiseEventHandlers();
         }
@@ -693,8 +695,11 @@ namespace EyeInTheSky
 
         void ialConnectionRegistrationSucceededEvent()
         {
-            this.ircPrivmsg(_nickserv, "IDENTIFY " + _myNickname + " " + _myPassword);
-            this.ircMode(_myNickname, "+Q");
+            if (_nickserv != "")
+            {
+                this.ircPrivmsg(_nickserv, "IDENTIFY " + _myNickname + " " + _myPassword);
+                this.ircMode(_myNickname, "+Q");
+            }
         }
 
         private void ialErrUnavailResource()
