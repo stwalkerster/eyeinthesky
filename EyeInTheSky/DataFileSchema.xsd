@@ -6,29 +6,41 @@
     xmlns:mstns="http://tempuri.org/XMLSchema1.xsd"
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
 >
-  <xs:complexType name="document">
-    <xs:sequence>
-      <xs:element name="stalks" type="stalkstype" minOccurs="0"></xs:element>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="stalkstype">
-    <xs:sequence>
-      <xs:element name="user" type="stalklist"  minOccurs="0"/>
-      <xs:element name="page" type="stalklist" minOccurs="0"/>
-      <xs:element name="summary" type="stalklist" minOccurs="0"/>
-    </xs:sequence>
-  </xs:complexType>
-
   <xs:complexType name="stalklist">
     <xs:sequence>
-      <xs:element name="stalk" minOccurs="0" maxOccurs="unbounded" type="stalk"/>
+      <xs:element name="stalk" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:attribute name="flag" type="xs:integer"/>
+        </xs:complexType>
+      </xs:element>
     </xs:sequence>
   </xs:complexType>
-  
-  <xs:complexType name="stalk">
-    <xs:attribute name="flag" type="xs:integer"/>
-  </xs:complexType>
 
-  <xs:element name="eyeinthesky" type="document" />
+  <xs:element name="eyeinthesky">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="config">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="option" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:attribute name="name" type="xs:string"/>
+                  <xs:attribute name="value" type="xs:string"/>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="stalks">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="user" type="stalklist"/>
+              <xs:element name="page" type="stalklist"/>
+              <xs:element name="summary" type="stalklist"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
 </xs:schema>
