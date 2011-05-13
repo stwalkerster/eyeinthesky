@@ -8,7 +8,7 @@ using System.Xml.XPath;
 
 namespace EyeInTheSky
 {
-    public class StalkList : List<Stalk>
+    public class StalkList : SortedList<string,Stalk>
     {
         public Stalk search(string value)
         {
@@ -49,7 +49,7 @@ namespace EyeInTheSky
                     s.setSummarySearch(it.Current.GetAttribute("value",""));
                 }
 
-                list.Add(s);
+                list.Add(s.Flag,s);
             }
 
             return list;

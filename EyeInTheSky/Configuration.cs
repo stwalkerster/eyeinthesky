@@ -128,9 +128,9 @@ namespace EyeInTheSky
                     xtw.WriteEndElement();
 
                     xtw.WriteStartElement("stalks");
-                    foreach (Stalk s in stalks)
+                    foreach (KeyValuePair<string, Stalk> kvp in stalks)
                     {
-                        s.ToXmlFragment(xtw);
+                        kvp.Value.ToXmlFragment(xtw);
                     }
                     xtw.WriteEndElement();
                 }
