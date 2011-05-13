@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <eyeinthesky xmlns="https://github.com/stwalkerster/eyeinthesky/raw/master/EyeInTheSky/DataFileSchema.xsd">
-  <config />
-  <stalks>
-    <stalk flag="my-tp-edits">
-      <user value="Stwalkerster"/>
-      <page value="[tT]alk:"/>
-    </stalk>
-  </stalks>
+  <config>
+    <option name="nickservpassword" value="CHANGEME" />
+  </config>
+  <stalks />
+  <users>
+    <user access="Developer" hostmask="CHANGEME" />
+  </users>
 </eyeinthesky>
