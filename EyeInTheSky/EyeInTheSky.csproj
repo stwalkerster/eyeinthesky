@@ -53,6 +53,7 @@
     <Compile Include="IAL.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RecentChange.cs" />
     <Compile Include="Stalk.cs" />
     <Compile Include="StalkList.cs" />
     <Compile Include="User.cs" />

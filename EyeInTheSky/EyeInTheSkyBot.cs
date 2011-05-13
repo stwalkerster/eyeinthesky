@@ -83,7 +83,8 @@ namespace EyeInTheSky
 
         static void irc_wikimedia_privmsgEvent(User source, string destination, string message)
         {
-            
+            RecentChange rcitem = RecentChange.parse(message);
+
         }
     }
 }
