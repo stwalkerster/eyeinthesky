@@ -76,9 +76,17 @@ namespace EyeInTheSky.Commands
             }
             if (mode == "rehash")
             {
-                EyeInTheSkyBot.config.rehash();
-                EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination,
-                                       "Configuration reloaded");
+                if (EyeInTheSkyBot.config.rehash())
+                {
+                    EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination,
+                                                           "Configuration reloaded");
+                }
+                else
+                {
+                    EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination,
+                                       "Configuration failed to reload.");
+
+                }
             }
         }
 
