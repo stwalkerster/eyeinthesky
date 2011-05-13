@@ -11,15 +11,22 @@ namespace EyeInTheSky.Commands
 
         protected override void execute(User source, string destination, string[] tokens)
         {
-            if (tokens.Length < 2)
+            if (tokens.Length < 1)
             {
                 EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "More params pls!");
+                return;
             }
 
             string mode = GlobalFunctions.popFromFront(ref tokens);
 
             if (mode == "get")
             {
+                if (tokens.Length < 1)
+                {
+                    EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "More params pls!");
+                    return;
+                }
+
                 try
                 {
                     EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination,
@@ -35,6 +42,12 @@ namespace EyeInTheSky.Commands
             }
             if (mode == "set")
             {
+                if (tokens.Length < 1)
+                {
+                    EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "More params pls!");
+                    return;
+                }
+
                 string setting = GlobalFunctions.popFromFront(ref tokens);
                 EyeInTheSkyBot.config[setting] = string.Join(" ", tokens);
                 EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination,
@@ -43,6 +56,12 @@ namespace EyeInTheSky.Commands
             }
             if (mode == "del")
             {
+                if (tokens.Length < 1)
+                {
+                    EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "More params pls!");
+                    return;
+                }
+
                 string setting = GlobalFunctions.popFromFront(ref tokens);
                 EyeInTheSkyBot.config.delete(setting);
                 EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination,
