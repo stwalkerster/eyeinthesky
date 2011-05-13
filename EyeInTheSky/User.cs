@@ -1,9 +1,4 @@
-﻿#region Usings
-
-using System;
-using System.Reflection;
-
-#endregion
+﻿using System;
 
 namespace EyeInTheSky
 {
@@ -12,9 +7,6 @@ namespace EyeInTheSky
     /// </summary>
     public class User
     {
-        private UserRights _accessLevel;
-        private bool _retrievedAccessLevel;
-
         /// <summary>
         /// Gets or sets the nickname.
         /// </summary>
@@ -97,7 +89,6 @@ namespace EyeInTheSky
         public static User newFromStringWithAccessLevel(string source, uint network, UserRights accessLevel)
         {
             User u = newFromString(source, network);
-            u._accessLevel = accessLevel;
             return u;
         }
 

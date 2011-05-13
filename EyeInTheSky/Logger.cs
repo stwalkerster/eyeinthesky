@@ -107,7 +107,6 @@ namespace EyeInTheSky
                         this._errorLogger.WriteLine(dateString + message);
                         Console.WriteLine("E " + message);
                         break;
-                        break;
                     default:
                         break;
                 }
