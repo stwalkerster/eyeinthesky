@@ -6,7 +6,7 @@ using System.Text;
 
 namespace EyeInTheSky
 {
-    class Stalk
+    public class Stalk
     {
         /// <summary>
         /// is the search term a regular expression?

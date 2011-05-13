@@ -13,7 +13,9 @@ namespace EyeInTheSky
     {
         private readonly string configurationFileName;
         private Dictionary<string, string> _configuration;
-
+        private StalkList userstalk;
+        private StalkList pagestalk;
+        private StalkList summarystalk;
 
         public Configuration(string fileName)
         {
@@ -30,7 +32,7 @@ namespace EyeInTheSky
                 {
                     return _configuration[configOption];
                 }
-                return string.Empty;
+                throw new ArgumentOutOfRangeException(configOption);
             }
             set
             {
@@ -42,9 +44,47 @@ namespace EyeInTheSky
                 {
                     _configuration.Add(configOption, value);
                 }
+                this.save();
             }
         }
 
+        public string this[string configOption, string defaultValue]
+        {
+            get
+            {
+                if (_configuration.ContainsKey(configOption))
+                {
+                    return _configuration[configOption];
+                }
+
+                this[configOption] = defaultValue;
+                return defaultValue;
+            }
+            set
+            {
+                this[configOption] = value;
+            }
+        }
+
+        public StalkList StalksUser
+        {
+            get { return userstalk; }
+        }
+
+        public StalkList StalksPage
+        {
+            get { return pagestalk; }
+        }
+
+        public StalkList StalksSummary
+        {
+            get { return summarystalk; }
+        }
+
+        public void delete(string configOption)
+        {
+            _configuration.Remove(configOption);
+        }
 
         public void rehash()
         {
@@ -74,6 +114,10 @@ namespace EyeInTheSky
             {
                 _configuration.Add(xpni.Current.GetAttribute("name", ""), xpni.Current.GetAttribute("value", ""));
             }
+
+            userstalk = StalkList.fetch(navigator.Select("//isky:stalks/isky:user/isky:stalk"));
+            pagestalk = StalkList.fetch(navigator.Select("//isky:stalks/isky:page/isky:stalk"));
+            summarystalk = StalkList.fetch(navigator.Select("//isky:stalks/isky:summary/isky:stalk"));
         }
 
         public void save()

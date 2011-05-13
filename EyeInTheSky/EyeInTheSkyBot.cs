@@ -19,13 +19,13 @@ namespace EyeInTheSky
             if(pwfileinfo.Exists)
             {
                 StreamReader pwreader = new StreamReader("freenode.password");
-                config["nickserv password"] = pwreader.ReadLine();
+                config["nickservpassword"] = pwreader.ReadLine();
                 pwreader.Close();
                 config.save();
                 pwfileinfo.Delete();
             }
 
-            string freenodepassword = config["nickserv password"];
+            string freenodepassword = config["nickservpassword"];
 
             // set up freenode connection
 
@@ -42,20 +42,17 @@ namespace EyeInTheSky
             irc_wikimedia.connectionRegistrationSucceededEvent += irc_wikimedia_connectionRegistrationSucceededEvent;
             irc_wikimedia.threadFatalError += irc_threadFatalError;
 
-            if((!irc_freenode.connect()) /*|| (!irc_wikimedia.connect())*/)
+            if ((!irc_freenode.connect()) || (!irc_wikimedia.connect()))
             {
                 irc_freenode.stop();
                 irc_wikimedia.stop();
+                return;
             }
-
         }
 
         static void irc_freenode_privmsgEvent(User source, string destination, string message)
         {
-            if (destination != "##eyeinthesky")
-                return;
-
-            if(message.ToCharArray()[0] != '=')
+           if(message.ToCharArray()[0].ToString() != config["commandtrigger", "="])
                 return;
 
             string[] tokens = message.Split(' ');
@@ -81,6 +78,12 @@ namespace EyeInTheSky
         static void irc_freenode_connectionRegistrationSucceededEvent()
         {
             irc_freenode.ircJoin("##eyeinthesky");
+            irc_wikimedia.privmsgEvent += irc_wikimedia_privmsgEvent;
+        }
+
+        static void irc_wikimedia_privmsgEvent(User source, string destination, string message)
+        {
+            
         }
     }
 }

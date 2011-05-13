@@ -6,7 +6,7 @@ using System.Xml.XPath;
 
 namespace EyeInTheSky
 {
-    class StalkList
+    public class StalkList
     {
         private SortedList<string, Stalk> nonregex;
         private List<Stalk> regex;
@@ -47,7 +47,37 @@ namespace EyeInTheSky
                 return s;
             }
 
+            if(EyeInTheSkyBot.config["ignoreregex", "false"] == "false")
+            {
+                throw new NotImplementedException();
+            }
+
             return null;
+        }
+   
+        public void add(Stalk s)
+        {
+            if(s.IsRegularExpression)
+            {
+                regex.Add(s);
+            }
+            else
+            {
+                nonregex.Add(s.SearchTerm, s);
+            }
+        }
+
+        public void remove(string flag)
+        {
+            nonregex.Remove(flag);
+            for (int i = 0; i < regex.Count; i++)
+            {
+                if(regex[i].Flag == flag)
+                {
+                    regex.RemoveAt(i);
+                    break;
+                }
+            }
         }
     }
 }

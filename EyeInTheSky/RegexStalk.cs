@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace EyeInTheSky
 {
-    class RegexStalk : Stalk
+    public class RegexStalk : Stalk
     {
         private Regex r;
         public new void init()

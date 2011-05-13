@@ -5,13 +5,14 @@ using System.Text;
 
 namespace EyeInTheSky.Commands
 {
-    class Init:GenericCommand
+    class Quit : GenericCommand
     {
         #region Overrides of GenericCommand
 
         protected override void execute(User source, string destination, string[] tokens)
         {
-            EyeInTheSkyBot.irc_wikimedia.connect();
+            EyeInTheSkyBot.irc_freenode.stop();
+            EyeInTheSkyBot.irc_wikimedia.stop();
         }
 
         #endregion
