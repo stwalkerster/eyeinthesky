@@ -84,7 +84,13 @@ namespace EyeInTheSky
         static void irc_wikimedia_privmsgEvent(User source, string destination, string message)
         {
             RecentChange rcitem = RecentChange.parse(message);
+            Stalk s = config.Stalks.search(rcitem);
+            if(s==null) return;
 
+            irc_freenode.ircPrivmsg("##eyeinthesky", string.Format(
+                "[{0}] Stalked edit {1} to page \"{2}\" by [[User:{3}]], summary: {4}",
+                s.Flag, rcitem.Url, rcitem.Page, rcitem.User, rcitem.EditSummary
+                                                         ));
         }
     }
 }

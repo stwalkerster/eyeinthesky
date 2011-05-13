@@ -52,7 +52,25 @@ namespace EyeInTheSky
 
         public bool match(RecentChange rc)
         {
-            throw new NotImplementedException();
+            if(!(hasusercheck || haspagecheck || hassummarycheck))
+                return false;
+
+            if(hasusercheck && ! user.Match(rc.User).Success)
+            {
+                return false;
+            }
+
+            if(haspagecheck && ! page.Match(rc.Page).Success)
+            {
+                return false;
+            }
+
+            if (hassummarycheck && !summary.Match(rc.EditSummary).Success)
+            {
+                return false;
+            }
+
+            return true;
         }
     
         public void ToXmlFragment(XmlTextWriter xtw)
