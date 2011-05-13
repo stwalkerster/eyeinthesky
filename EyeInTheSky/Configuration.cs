@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -92,6 +93,7 @@ namespace EyeInTheSky
             if (!new FileInfo(configurationFileName).Exists)
             {
                 new FileInfo(Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase).Substring(5) + "/DefaultConfiguration.xml").CopyTo(configurationFileName);
+                throw new Exception("Please open the configuration file and define required values");
             }
 
             try

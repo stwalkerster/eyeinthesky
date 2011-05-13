@@ -14,17 +14,6 @@ namespace EyeInTheSky
         {
             config = new Configuration("EyeInTheSky.config");
 
-            // get/set/update password
-            FileInfo pwfileinfo = new FileInfo("freenode.password");
-            if(pwfileinfo.Exists)
-            {
-                StreamReader pwreader = new StreamReader("freenode.password");
-                config["nickservpassword"] = pwreader.ReadLine();
-                pwreader.Close();
-                config.save();
-                pwfileinfo.Delete();
-            }
-
             string freenodepassword = config["nickservpassword"];
 
             // set up freenode connection
