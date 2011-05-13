@@ -91,7 +91,7 @@ namespace EyeInTheSky
         {
             if (!new FileInfo(configurationFileName).Exists)
             {
-                new FileInfo(Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase) + "/DefaultConfiguration.xml").CopyTo(configurationFileName);
+                new FileInfo(Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase).Substring(5) + "/DefaultConfiguration.xml").CopyTo(configurationFileName);
             }
 
             try
