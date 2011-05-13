@@ -11,8 +11,11 @@ namespace EyeInTheSky.Commands
 
         protected override void execute(User source, string destination, string[] tokens)
         {
-            EyeInTheSkyBot.irc_freenode.stop();
+            EyeInTheSkyBot.irc_wikimedia.ircQuit();
+            EyeInTheSkyBot.irc_freenode.ircQuit();
+
             EyeInTheSkyBot.irc_wikimedia.stop();
+            EyeInTheSkyBot.irc_freenode.stop();
         }
 
         #endregion
