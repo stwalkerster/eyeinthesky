@@ -31,9 +31,13 @@ namespace EyeInTheSky
 
         }
 
+        private static object singletonlock;
         public static Logger instance()
         {
-            return _instance ?? ( _instance = new Logger( ) );
+            lock (singletonlock)
+            {
+                return _instance ?? (_instance = new Logger());
+            }
         }
 
         private readonly StreamWriter _ialLogger;
