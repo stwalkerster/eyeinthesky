@@ -3,38 +3,23 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Xml;
 
 namespace EyeInTheSky
 {
     public class Stalk
     {
         /// <summary>
-        /// is the search term a regular expression?
-        /// </summary>
-        protected bool regex;
-        /// <summary>
-        /// what to search for
-        /// </summary>
-        protected string search;
-        /// <summary>
         /// the name of the stalkworkd
         /// </summary>
         protected string flag;
-        
-        /// <summary>
-        /// is the search term a regular expression?
-        /// </summary>
-        public bool IsRegularExpression
-        {
-            get { return regex; }
-        }
 
-        /// <summary>
-        /// what to search for
-        /// </summary>
-        public string SearchTerm
+        public Stalk(string flag)
         {
-            get { return search; }
+            if(flag == "")
+                throw new ArgumentOutOfRangeException();
+            this.flag = flag;
         }
 
         /// <summary>
@@ -45,19 +30,60 @@ namespace EyeInTheSky
             get { return flag; }
         }
 
-        public void init()
+        private bool hasusercheck, haspagecheck, hassummarycheck;
+
+        private Regex user, page, summary;
+
+        public void setUserSearch(string regex)
         {
-            this.regex = false;
+            hasusercheck = true;
+            user = new Regex(regex);
         }
-
-        public static Stalk create(string flag, string search, bool isregex)
+        public void setPageSearch(string regex)
         {
-            Stalk s = isregex ? new RegexStalk() : new Stalk();
-            s.flag = flag;
-            s.search = search;
-            s.init();
+            haspagecheck = true;
+            page = new Regex(regex);
+        }
+        public void setSummarySearch(string regex)
+        {
+            hassummarycheck = true;
+            summary = new Regex(regex);
+        }
+    
+        public void ToXmlFragment(XmlTextWriter xtw)
+        {
+            xtw.WriteStartElement("stalk");
+            {
+                xtw.WriteAttributeString("flag", flag);
 
-            return s;
+                if(hasusercheck)
+                {
+                    xtw.WriteStartElement("user");
+                    {
+                        xtw.WriteAttributeString("value", user.ToString());   
+                    }
+                    xtw.WriteEndElement();
+                }
+
+                if (haspagecheck)
+                {
+                    xtw.WriteStartElement("page");
+                    {
+                        xtw.WriteAttributeString("value", page.ToString());
+                    }
+                    xtw.WriteEndElement();
+                }
+
+                if (hassummarycheck)
+                {
+                    xtw.WriteStartElement("summary");
+                    {
+                        xtw.WriteAttributeString("value", summary.ToString());
+                    }
+                    xtw.WriteEndElement();
+                }
+            }
+            xtw.WriteEndElement();
         }
     }
 }

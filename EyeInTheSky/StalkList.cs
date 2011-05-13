@@ -1,83 +1,58 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml;
 using System.Xml.XPath;
 
 namespace EyeInTheSky
 {
-    public class StalkList
+    public class StalkList : List<Stalk>
     {
-        private SortedList<string, Stalk> nonregex;
-        private List<Stalk> regex;
-
-        private StalkList()
+        public Stalk search(string value)
         {
-            nonregex = new SortedList<string, Stalk>();
-            regex = new List<Stalk>();
+            throw new NotImplementedException();
         }
 
-        public static StalkList fetch(XPathNodeIterator xpni)
+        internal static StalkList fetch(XPathNodeIterator xpni)
         {
             StalkList list = new StalkList();
-            
-            while( xpni.MoveNext())
+
+            while(xpni.MoveNext())
             {
-                Stalk s = Stalk.create(xpni.Current.GetAttribute("flag", ""), xpni.Current.GetAttribute("search", ""),
-                             xpni.Current.GetAttribute("regex", "") == "true");
-                if(s.IsRegularExpression)
+                Stalk s = new Stalk(xpni.Current.GetAttribute("flag", ""));
+                XPathDocument xpd = new XPathDocument(xpni.Current.ReadSubtree());
+                var xpn = xpd.CreateNavigator();
+                XmlNameTable xnt = xpn.NameTable;
+                XmlNamespaceManager xnm = new XmlNamespaceManager(xnt);
+                xnm.AddNamespace("e",
+                                 "https://github.com/stwalkerster/eyeinthesky/raw/master/EyeInTheSky/DataFileSchema.xsd");
+                var it = xpn.Select("//e:user", xnm);
+                if(it.Count == 1)
                 {
-                    list.regex.Add(s);
+                    it.MoveNext();
+                    s.setUserSearch(it.Current.GetAttribute("value", ""));
                 }
-                else
+                
+                it = xpn.Select("//e:page", xnm);
+                if(it.Count == 1)
                 {
-                    list.nonregex.Add(s.SearchTerm, s);
+                    it.MoveNext();
+                    s.setPageSearch(it.Current.GetAttribute("value",""));
                 }
+
+                it = xpn.Select("//e:summary", xnm);
+                if(it.Count == 1)
+                {
+                    it.MoveNext();
+                    s.setSummarySearch(it.Current.GetAttribute("value",""));
+                }
+
+                list.Add(s);
             }
 
             return list;
-        }
- 
-        public Stalk search(string value)
-        {
-            // try to retrieve
-            Stalk s = nonregex[value];
-            if(s!= null)
-            {
-                return s;
-            }
-
-            if(EyeInTheSkyBot.config["ignoreregex", "false"] == "false")
-            {
-                throw new NotImplementedException();
-            }
-
-            return null;
-        }
-   
-        public void add(Stalk s)
-        {
-            if(s.IsRegularExpression)
-            {
-                regex.Add(s);
-            }
-            else
-            {
-                nonregex.Add(s.SearchTerm, s);
-            }
-        }
-
-        public void remove(string flag)
-        {
-            nonregex.Remove(flag);
-            for (int i = 0; i < regex.Count; i++)
-            {
-                if(regex[i].Flag == flag)
-                {
-                    regex.RemoveAt(i);
-                    break;
-                }
-            }
         }
     }
 }

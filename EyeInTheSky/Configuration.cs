@@ -13,9 +13,7 @@ namespace EyeInTheSky
     {
         private readonly string configurationFileName;
         private Dictionary<string, string> _configuration;
-        private StalkList userstalk;
-        private StalkList pagestalk;
-        private StalkList summarystalk;
+        private StalkList stalks;
 
         public Configuration(string fileName)
         {
@@ -66,19 +64,9 @@ namespace EyeInTheSky
             }
         }
 
-        public StalkList StalksUser
+        public StalkList Stalks
         {
-            get { return userstalk; }
-        }
-
-        public StalkList StalksPage
-        {
-            get { return pagestalk; }
-        }
-
-        public StalkList StalksSummary
-        {
-            get { return summarystalk; }
+            get { return stalks; }
         }
 
         public void delete(string configOption)
@@ -115,9 +103,7 @@ namespace EyeInTheSky
                 _configuration.Add(xpni.Current.GetAttribute("name", ""), xpni.Current.GetAttribute("value", ""));
             }
 
-            userstalk = StalkList.fetch(navigator.Select("//isky:stalks/isky:user/isky:stalk"));
-            pagestalk = StalkList.fetch(navigator.Select("//isky:stalks/isky:page/isky:stalk"));
-            summarystalk = StalkList.fetch(navigator.Select("//isky:stalks/isky:summary/isky:stalk"));
+            stalks = StalkList.fetch(navigator.Select("//isky:stalk", xnm));
         }
 
         public void save()
@@ -142,22 +128,9 @@ namespace EyeInTheSky
                     xtw.WriteEndElement();
 
                     xtw.WriteStartElement("stalks");
+                    foreach (Stalk s in stalks)
                     {
-                        xtw.WriteStartElement("user");
-                        {
-                            
-                        }
-                        xtw.WriteEndElement();
-                        xtw.WriteStartElement("page");
-                        {
-
-                        }
-                        xtw.WriteEndElement();
-                        xtw.WriteStartElement("summary");
-                        {
-
-                        }
-                        xtw.WriteEndElement();
+                        s.ToXmlFragment(xtw);
                     }
                     xtw.WriteEndElement();
                 }
