@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Xml;
 using System.Xml.XPath;
 
@@ -10,9 +6,17 @@ namespace EyeInTheSky
 {
     public class StalkList : SortedList<string,Stalk>
     {
-        public Stalk search(string value)
+        public Stalk search(RecentChange rc)
         {
-            throw new NotImplementedException();
+            foreach (KeyValuePair<string,Stalk> s in this)
+            {
+                if(s.Value.match(rc))
+                {
+                    return s.Value;
+                }
+            }
+
+            return null;
         }
 
         internal static StalkList fetch(XPathNodeIterator xpni)

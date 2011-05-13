@@ -49,6 +49,11 @@ namespace EyeInTheSky
             hassummarycheck = true;
             summary = new Regex(regex);
         }
+
+        public bool match(RecentChange rc)
+        {
+            throw new NotImplementedException();
+        }
     
         public void ToXmlFragment(XmlTextWriter xtw)
         {
