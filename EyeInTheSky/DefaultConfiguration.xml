@@ -1,16 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <eyeinthesky xmlns="https://github.com/stwalkerster/eyeinthesky/raw/master/EyeInTheSky/DataFileSchema.xsd">
-  <config>
-  </config>
+  <config />
   <stalks>
-    <user>
-      
-    </user>
-    <page>
-      
-    </page>
-    <summary>
-      
-    </summary>
+    <stalk flag="my-tp-edits">
+      <user value="Stwalkerster"/>
+      <page value="[tT]alk:"/>
+    </stalk>
   </stalks>
 </eyeinthesky>
