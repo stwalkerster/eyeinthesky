@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Xml;
 using System.Xml.Schema;
@@ -90,7 +91,7 @@ namespace EyeInTheSky
         {
             if (!new FileInfo(configurationFileName).Exists)
             {
-                new FileInfo("DefaultConfiguration.xml").CopyTo(configurationFileName);
+                new FileInfo(Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase) + "/DefaultConfiguration.xml").CopyTo(configurationFileName);
             }
 
             try
