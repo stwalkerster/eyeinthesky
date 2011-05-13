@@ -45,6 +45,7 @@
     <Compile Include="Commands\Config.cs" />
     <Compile Include="Commands\Quit.cs" />
     <Compile Include="Commands\Raw.cs" />
+    <Compile Include="Commands\Stalk.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="GenericCommand.cs" />
     <Compile Include="EyeInTheSkyBot.cs" />
