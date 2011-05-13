@@ -115,6 +115,8 @@ namespace EyeInTheSky
 
                 stalks = StalkList.fetch(navigator.Select("//isky:stalk", xnm));
 
+                sr.Close();
+
                 return true;
             }
             catch (XmlException ex)
