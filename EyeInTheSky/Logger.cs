@@ -31,7 +31,7 @@ namespace EyeInTheSky
 
         }
 
-        private static object singletonlock;
+        private static object singletonlock = new object();
         public static Logger instance()
         {
             lock (singletonlock)
