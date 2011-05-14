@@ -100,7 +100,7 @@ namespace EyeInTheSky
             get { return DateTime.Now.Subtract(this._lastMessage); }
         }
 
-        public bool logEvents { get; private set; }
+        public bool logEvents { get; set; }
 
         public string[] activeChannels
         {
