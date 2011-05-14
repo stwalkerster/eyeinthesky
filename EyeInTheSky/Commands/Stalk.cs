@@ -72,6 +72,19 @@ namespace EyeInTheSky.Commands
                                                        regex);
 
             }
+            if (mode == "list")
+            {
+                EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "Stalk list:");
+                foreach (KeyValuePair<string, EyeInTheSky.Stalk> kvp in EyeInTheSkyBot.config.Stalks)
+                {
+                     EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "Flag: " + kvp.Key + ", Type:"
+                         + (kvp.Value.HasUserSearch ? " USER" : "")
+                         + (kvp.Value.HasPageSearch ? " PAGE" : "")
+                         + (kvp.Value.HasSummarySearch ? " SUMMARY" : "")
+                         );
+                }
+                EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "End of stalk list.");
+            }
             EyeInTheSkyBot.config.save();
         }
 

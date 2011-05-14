@@ -30,7 +30,24 @@ namespace EyeInTheSky
             get { return flag; }
         }
 
-        private bool hasusercheck, haspagecheck, hassummarycheck;
+        public bool HasUserSearch
+        {
+            get { return hasusercheck; }
+        }
+
+        public bool HasPageSearch
+        {
+            get { return haspagecheck; }
+        }
+
+        public bool HasSummarySearch
+        {
+            get { return hassummarycheck; }
+        }
+
+        private bool hasusercheck;
+        private bool haspagecheck;
+        private bool hassummarycheck;
 
         private Regex user, page, summary;
 
@@ -52,15 +69,15 @@ namespace EyeInTheSky
 
         public bool match(RecentChange rc)
         {
-            if(!(hasusercheck || haspagecheck || hassummarycheck))
+            if (!(HasUserSearch || HasPageSearch || hassummarycheck))
                 return false;
 
-            if(hasusercheck && ! user.Match(rc.User).Success)
+            if(HasUserSearch && ! user.Match(rc.User).Success)
             {
                 return false;
             }
 
-            if(haspagecheck && ! page.Match(rc.Page).Success)
+            if(HasPageSearch && ! page.Match(rc.Page).Success)
             {
                 return false;
             }
@@ -79,7 +96,7 @@ namespace EyeInTheSky
             {
                 xtw.WriteAttributeString("flag", flag);
 
-                if(hasusercheck)
+                if(HasUserSearch)
                 {
                     xtw.WriteStartElement("user");
                     {
@@ -88,7 +105,7 @@ namespace EyeInTheSky
                     xtw.WriteEndElement();
                 }
 
-                if (haspagecheck)
+                if (HasPageSearch)
                 {
                     xtw.WriteStartElement("page");
                     {
