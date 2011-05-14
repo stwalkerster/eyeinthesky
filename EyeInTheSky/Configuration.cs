@@ -14,7 +14,7 @@ namespace EyeInTheSky
     public class Configuration
     {
         private readonly string configurationFileName;
-        private Dictionary<string, string> _configuration;
+        private SortedList<string, string> _configuration;
         private StalkList stalks;
         private SortedList<string,AccessListEntry> userlist;
 
@@ -116,7 +116,7 @@ namespace EyeInTheSky
 
                 XPathNodeIterator xpni = navigator.Select("//isky:option", xnm);
 
-                _configuration = new Dictionary<string, string>();
+                _configuration = new SortedList<string, string>();
                 while (xpni.MoveNext())
                 {
                     _configuration.Add(xpni.Current.GetAttribute("name", ""), xpni.Current.GetAttribute("value", ""));
