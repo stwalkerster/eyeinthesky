@@ -79,7 +79,11 @@ namespace EyeInTheSky
 
             irc_freenode.ircPrivmsg(config["defaultchannel", "##eyeinthesky"], string.Format(
                 "[{0}] Stalked edit {1} to page \"{2}\" by [[User:{3}]], summary: {4}",
-                s.Flag, rcitem.Url, rcitem.Page, rcitem.User, rcitem.EditSummary
+                IrcColours.boldText(s.Flag), 
+                rcitem.Url, 
+                IrcColours.colouredText(IrcColours.Colours.green, rcitem.Page), 
+                rcitem.User, 
+                rcitem.EditSummary
                                                          ));
         }
     }
