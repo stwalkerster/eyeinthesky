@@ -7,9 +7,9 @@ namespace EyeInTheSky
 {
     static class IrcColours
     {
-        private static string colorChar = "\x03";
+        public const string colorChar = "\x03";
 
-        private const string boldChar = "\x02";
+        public const string boldChar = "\x02";
 
         public enum Colours
         {
@@ -39,6 +39,11 @@ namespace EyeInTheSky
         public static string colouredText(Colours color, string text)
         {
             return colorChar + ((int) color) + text + colorChar;
+        }
+
+        public static string colouredText(Colours color, Colours background, string text)
+        {
+            return colorChar + ((int)color) + "," + ((int)background) + text + colorChar;
         }
     }
 }
