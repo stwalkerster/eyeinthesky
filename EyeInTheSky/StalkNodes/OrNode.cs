@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Xml;
 
 namespace EyeInTheSky.StalkNodes
 {
@@ -11,6 +12,13 @@ namespace EyeInTheSky.StalkNodes
             return (LeftChildNode.match(rc) || RightChildNode.match(rc));
         }
 
+        public static new StalkNode newFromXmlFragment(XmlNode xmlNode)
+        {
+            OrNode s = new OrNode();
+            s.LeftChildNode = StalkNode.newFromXmlFragment(xmlNode.ChildNodes[0]);
+            s.RightChildNode = StalkNode.newFromXmlFragment(xmlNode.ChildNodes[1]);
+            return s;
+        }
         #endregion
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Xml;
 
 namespace EyeInTheSky.StalkNodes
 {
@@ -8,9 +9,15 @@ namespace EyeInTheSky.StalkNodes
 
         public override bool match(RecentChange rc)
         {
-            throw new NotImplementedException();
+            return expression.Match(rc.EditSummary).Success;
         }
 
+        public static new StalkNode newFromXmlFragment(XmlNode xmlNode)
+        {
+            SummaryStalkNode s = new SummaryStalkNode();
+            s.setMatchExpression(xmlNode.Attributes["value"].Value);
+            return s;
+        }
         #endregion
     }
 }

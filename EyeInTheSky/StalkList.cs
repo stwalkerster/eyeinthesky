@@ -23,8 +23,19 @@ namespace EyeInTheSky
         {
             StalkList list = new StalkList();
 
+            XmlDocument xd = new XmlDocument(nav.NameTable);
+            xd.LoadXml(nav.OuterXml);
+            XmlNode node = xd.ChildNodes[0];
+            foreach (XmlNode childNode in node.ChildNodes)
+            {
+                if(childNode.NodeType != XmlNodeType.Element)
+                    continue;
 
+                XmlElement element = (XmlElement) childNode;
 
+                Stalk s = Stalk.newFromXmlElement(element);
+                list.Add(s.Flag, s);
+            }
 
             return list;
         }

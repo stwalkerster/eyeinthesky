@@ -33,5 +33,18 @@ namespace EyeInTheSky
 
 
         public abstract void ToXmlFragment(XmlTextWriter xtw);
+
+        public static Stalk newFromXmlElement(XmlElement element)
+        {
+            switch (element.Name)
+            {
+                case "stalk":
+                    return SimpleStalk.newFromXmlElement(element);
+                case "complexstalk":
+                    return ComplexStalk.newFromXmlElement(element);
+                default:
+                    throw new XmlException();
+            }
+        }
     }
 }

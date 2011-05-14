@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml;
 
 namespace EyeInTheSky.StalkNodes
 {
@@ -11,9 +12,15 @@ namespace EyeInTheSky.StalkNodes
 
         public override bool match(RecentChange rc)
         {
-            throw new NotImplementedException();
+            return expression.Match(rc.User).Success;
         }
 
+        public static new StalkNode newFromXmlFragment(XmlNode xmlNode)
+        {
+            UserStalkNode s = new UserStalkNode();
+            s.setMatchExpression(xmlNode.Attributes["value"].Value);
+            return s;
+        }
         #endregion
     }
 }

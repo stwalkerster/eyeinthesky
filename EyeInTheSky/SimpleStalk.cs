@@ -105,5 +105,30 @@ namespace EyeInTheSky
             }
             xtw.WriteEndElement();
         }
+    
+        public static new Stalk newFromXmlElement(XmlElement element)
+        {
+            SimpleStalk s = new SimpleStalk(element.Attributes["flag"].Value);
+            foreach (XmlNode childNode in element.ChildNodes)
+            {
+                if(! (childNode is XmlElement))
+                    continue;
+
+                switch (childNode.Name)
+                {
+                    case "user":
+                        s.setUserSearch(childNode.Attributes["value"].Value);
+                        break;
+                    case "page":
+                        s.setPageSearch(childNode.Attributes["value"].Value);
+                        break;
+                    case "summary":
+                        s.setSummarySearch(childNode.Attributes["value"].Value);
+                        break;
+                }
+            }
+
+            return s;
+        }
     }
 }
