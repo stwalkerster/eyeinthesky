@@ -10,6 +10,28 @@
     <xs:attribute name="value" use="required" />
   </xs:complexType>
 
+  <xs:complexType name="booleantreenode">
+    <xs:choice minOccurs="2" maxOccurs="2">
+      <xs:element name="and" type="booleantreenode" />
+      <xs:element name="or" type="booleantreenode" />
+      <xs:element name="not" type="treenode" />
+      <xs:element name="user" type="stalkmatch"/>
+      <xs:element name="page" type="stalkmatch"/>
+      <xs:element name="summary" type="stalkmatch" />
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="treenode">
+    <xs:choice minOccurs="1" maxOccurs="1">
+      <xs:element name="and" type="booleantreenode" />
+      <xs:element name="or" type="booleantreenode" />
+      <xs:element name="not" type="treenode" />
+      <xs:element name="user" type="stalkmatch"/>
+      <xs:element name="page" type="stalkmatch"/>
+      <xs:element name="summary" type="stalkmatch" />
+    </xs:choice>
+  </xs:complexType>
+  
   <xs:element name="eyeinthesky">
     <xs:complexType>
       <xs:sequence>
@@ -35,6 +57,19 @@
                     <xs:element name="page" type="stalkmatch" minOccurs="0"/>
                     <xs:element name="summary" type="stalkmatch" minOccurs="0"/>
                   </xs:sequence>
+                  <xs:attribute name="flag" type="xs:string" use="required" />
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="complexstalk" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:choice>
+                    <xs:element name="and" type="booleantreenode" />
+                    <xs:element name="or" type="booleantreenode" />
+                    <xs:element name="not" type="treenode" />
+                    <xs:element name="user" type="stalkmatch"/>
+                    <xs:element name="page" type="stalkmatch"/>
+                    <xs:element name="summary" type="stalkmatch" />
+                  </xs:choice>
                   <xs:attribute name="flag" type="xs:string" use="required" />
                 </xs:complexType>
               </xs:element>
