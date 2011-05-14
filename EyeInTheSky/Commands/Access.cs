@@ -7,6 +7,11 @@ namespace EyeInTheSky.Commands
 {
     class Access : GenericCommand
     {
+        public Access()
+        {
+            this.requiredAccessLevel = User.UserRights.Superuser;
+        }
+
         #region Overrides of GenericCommand
 
         protected override void execute(User source, string destination, string[] tokens)

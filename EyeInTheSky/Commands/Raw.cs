@@ -7,6 +7,11 @@ namespace EyeInTheSky.Commands
 {
     class Raw : GenericCommand
     {
+        public Raw()
+        {
+            this.requiredAccessLevel = User.UserRights.Developer;
+        }
+
         #region Overrides of GenericCommand
 
         protected override void execute(User source, string destination, string[] tokens)

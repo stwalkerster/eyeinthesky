@@ -7,6 +7,11 @@ namespace EyeInTheSky.Commands
 {
     class Stalk : GenericCommand
     {
+        public Stalk()
+        {
+            this.requiredAccessLevel = User.UserRights.Advanced;
+        }
+
         #region Overrides of GenericCommand
 
         protected override void execute(User source, string destination, string[] tokens)
