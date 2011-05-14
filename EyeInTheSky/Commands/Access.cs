@@ -34,6 +34,12 @@ namespace EyeInTheSky.Commands
                 string accesslevel = GlobalFunctions.popFromFront(ref tokens);
                 User.UserRights level = (User.UserRights)Enum.Parse(typeof(User.UserRights), accesslevel);
 
+                if(source.accessLevel != User.UserRights.Developer && level >= source.accessLevel)
+                {
+                    EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "Access denied.");
+                    return;
+                }
+
                 AccessListEntry ale = new AccessListEntry(hostmask, level);
                 EyeInTheSkyBot.config.accessList.Add(hostmask, ale);
                 EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination, "Done.");
