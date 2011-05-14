@@ -23,8 +23,24 @@ namespace EyeInTheSky
         {
             StalkList list = new StalkList();
 
+            XmlParserContext xpc = new XmlParserContext(nav.NameTable, nsManager, "en_GB", XmlSpace.Default);
+            XmlTextReader xr = new XmlTextReader(nav.OuterXml, XmlNodeType.Element, xpc);
+            if (!xr.Read())
+                throw new XmlException();
 
+            if (xr.Name != "stalks")
+                throw new XmlException();
 
+            while (xr.Read() && xr.Name != "stalks")
+            {
+                if (xr.NodeType == XmlNodeType.Whitespace)
+                    continue;
+                if (xr.Name == "stalk")
+                { // simple stalk
+
+                }
+
+            }
 
             return list;
         }
