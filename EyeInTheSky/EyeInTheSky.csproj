@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccessListEntry.cs" />
+    <Compile Include="StalkNodes\AndNode.cs" />
     <Compile Include="Commands\Access.cs" />
     <Compile Include="Commands\Config.cs" />
     <Compile Include="Commands\Quit.cs" />
@@ -59,6 +60,16 @@
     <Compile Include="RecentChange.cs" />
     <Compile Include="Stalk.cs" />
     <Compile Include="StalkList.cs" />
+    <Compile Include="StalkNodes\DoubleChildLogicalNode.cs" />
+    <Compile Include="StalkNodes\LeafNode.cs" />
+    <Compile Include="StalkNodes\LogicalNode.cs" />
+    <Compile Include="StalkNodes\NotNode.cs" />
+    <Compile Include="StalkNodes\OrNode.cs" />
+    <Compile Include="StalkNodes\PageStalkNode.cs" />
+    <Compile Include="StalkNodes\SingleChildLogicalNode.cs" />
+    <Compile Include="StalkNodes\StalkNode.cs" />
+    <Compile Include="StalkNodes\SummaryStalkNode.cs" />
+    <Compile Include="StalkNodes\UserStalkNode.cs" />
     <Compile Include="User.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -66,6 +77,7 @@
     <None Include="DataFileSchema.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="StalkNodes\NodesDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="DefaultConfiguration.xml">

@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="EyeInTheSky.StalkNodes.LeafNode" Collapsed="true">
+    <Position X="2.25" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>StalkNodes\LeafNode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EyeInTheSky.StalkNodes.LogicalNode" Collapsed="true">
+    <Position X="7.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>StalkNodes\LogicalNode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EyeInTheSky.StalkNodes.StalkNode" Collapsed="true">
+    <Position X="4.75" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>StalkNodes\StalkNode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EyeInTheSky.StalkNodes.UserStalkNode" Collapsed="true">
+    <Position X="2.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>StalkNodes\UserStalkNode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EyeInTheSky.StalkNodes.SummaryStalkNode" Collapsed="true">
+    <Position X="4" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>StalkNodes\SummaryStalkNode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EyeInTheSky.StalkNodes.PageStalkNode" Collapsed="true">
+    <Position X="0.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>StalkNodes\PageStalkNode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EyeInTheSky.StalkNodes.AndNode" Collapsed="true">
+    <Position X="5.75" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>StalkNodes\AndNode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EyeInTheSky.StalkNodes.OrNode" Collapsed="true">
+    <Position X="7.5" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>StalkNodes\OrNode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EyeInTheSky.StalkNodes.NotNode" Collapsed="true">
+    <Position X="9.25" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>StalkNodes\NotNode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EyeInTheSky.StalkNodes.DoubleChildLogicalNode" Collapsed="true">
+    <Position X="6.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>StalkNodes\DoubleChildLogicalNode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EyeInTheSky.StalkNodes.SingleChildLogicalNode" Collapsed="true">
+    <Position X="8.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>StalkNodes\SingleChildLogicalNode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
