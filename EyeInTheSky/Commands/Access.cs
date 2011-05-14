@@ -51,12 +51,14 @@ namespace EyeInTheSky.Commands
             }
             if (mode == "list")
             {
+                EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "Access list:");
                 foreach (KeyValuePair<string, AccessListEntry> accessListEntry in EyeInTheSkyBot.config.accessList)
                 {
                     EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname,
                                                           accessListEntry.Value.HostnameMask + " = " +
                                                           accessListEntry.Value.AccessLevel);
                 }
+                EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "End of access list.");
             }
             EyeInTheSkyBot.config.save();
         }
