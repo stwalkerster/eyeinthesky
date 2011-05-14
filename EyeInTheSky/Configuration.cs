@@ -16,6 +16,7 @@ namespace EyeInTheSky
         private readonly string configurationFileName;
         private SortedList<string, string> _configuration;
         private StalkList stalks;
+        private SortedList<string,AccessListEntry> userlist;
 
         public Configuration(string fileName)
         {
@@ -78,6 +79,11 @@ namespace EyeInTheSky
             get { return stalks; }
         }
 
+        public SortedList<string,AccessListEntry> accessList
+        {
+            get { return userlist; }
+        }
+
         public void delete(string configOption)
         {
             _configuration.Remove(configOption);
@@ -118,8 +124,17 @@ namespace EyeInTheSky
 
                 stalks = StalkList.fetch(navigator.Select("//isky:stalk", xnm));
 
-                sr.Close();
+                userlist = new SortedList<string,AccessListEntry>();
+                xpni = navigator.Select("//isky:users/isky:user", xnm);
+                while (xpni.MoveNext())
+                {
+                    string access = xpni.Current.GetAttribute("access", "");
+                    User.UserRights level = (User.UserRights) Enum.Parse(typeof (User.UserRights), access);
+                    AccessListEntry u = new AccessListEntry(xpni.Current.GetAttribute("hostmask", ""),level);
+                    accessList.Add(u.HostnameMask,u);
+                }
 
+                sr.Close();
                 return true;
             }
             catch (XmlException ex)
@@ -156,6 +171,21 @@ namespace EyeInTheSky
                     foreach (KeyValuePair<string, Stalk> kvp in stalks)
                     {
                         kvp.Value.ToXmlFragment(xtw);
+                    }
+                    xtw.WriteEndElement();
+
+                    xtw.WriteStartElement("users");
+                    {
+                        foreach (KeyValuePair<string,AccessListEntry> kvp in userlist)
+                        {
+                            AccessListEntry accessListEntry = kvp.Value;
+                            xtw.WriteStartElement("user");
+                            {
+                                xtw.WriteAttributeString("access", accessListEntry.AccessLevel.ToString());
+                                xtw.WriteAttributeString("hostmask", accessListEntry.HostnameMask);
+                            }
+                            xtw.WriteEndElement();
+                        }
                     }
                     xtw.WriteEndElement();
                 }

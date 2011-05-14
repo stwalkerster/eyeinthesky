@@ -7,6 +7,8 @@ namespace EyeInTheSky
 {
     abstract class GenericCommand
     {
+        protected User.UserRights requiredAccessLevel = User.UserRights.Developer;
+
         public static GenericCommand create(string command)
         {
             command = command.Substring(1);
@@ -20,7 +22,7 @@ namespace EyeInTheSky
 
         public void run(User source, string destination, string[] tokens)
         {
-            if (source.accessLevel != User.UserRights.Developer)
+            if (source.accessLevel < this.requiredAccessLevel)
                 EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "Access denied.");
             else
                 execute(source, destination, tokens);

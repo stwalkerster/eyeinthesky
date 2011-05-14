@@ -81,17 +81,6 @@ namespace EyeInTheSky
             return ret;
         }
 
-        public static User newFromStringWithAccessLevel(string source, UserRights accessLevel)
-        {
-            return newFromStringWithAccessLevel(source, 0, accessLevel);
-        }
-
-        public static User newFromStringWithAccessLevel(string source, uint network, UserRights accessLevel)
-        {
-            User u = newFromString(source, network);
-            return u;
-        }
-
         /// <summary>
         ///   Recompiles the source string
         /// </summary>
@@ -124,12 +113,12 @@ namespace EyeInTheSky
         {
             get
             {
-                if (this.hostname == "pdpc/supporter/student/stwalkerster")
-                    return UserRights.Developer;
-
+                if(EyeInTheSkyBot.config.accessList.ContainsKey(this.hostname))
+                {
+                    return EyeInTheSkyBot.config.accessList[this.hostname].AccessLevel;
+                }
                 return UserRights.Normal;
             }
-            set { throw new NotImplementedException(); }
         }
 
         public enum UserRights

@@ -42,6 +42,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccessListEntry.cs" />
+    <Compile Include="Commands\Access.cs" />
     <Compile Include="Commands\Config.cs" />
     <Compile Include="Commands\Quit.cs" />
     <Compile Include="Commands\Raw.cs" />
