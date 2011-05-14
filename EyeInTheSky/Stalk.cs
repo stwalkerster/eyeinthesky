@@ -8,16 +8,16 @@ using System.Xml;
 
 namespace EyeInTheSky
 {
-    public class Stalk
+    public abstract class Stalk
     {
         /// <summary>
         /// the name of the stalkworkd
         /// </summary>
         protected string flag;
 
-        public Stalk(string flag)
+        protected Stalk(string flag)
         {
-            if(flag == "")
+            if (flag == "")
                 throw new ArgumentOutOfRangeException();
             this.flag = flag;
         }
@@ -28,6 +28,19 @@ namespace EyeInTheSky
         public string Flag
         {
             get { return flag; }
+        }
+
+        public abstract bool match(RecentChange rc);
+
+
+        public abstract void ToXmlFragment(XmlTextWriter xtw);
+    }
+
+    public class SimpleStalk : Stalk
+    {
+        public SimpleStalk(string flag) : base(flag)
+        {
+
         }
 
         public bool HasUserSearch
@@ -67,7 +80,7 @@ namespace EyeInTheSky
             summary = new Regex(regex);
         }
 
-        public bool match(RecentChange rc)
+        public override bool match(RecentChange rc)
         {
             if (!(HasUserSearch || HasPageSearch || hassummarycheck))
                 return false;
@@ -90,7 +103,7 @@ namespace EyeInTheSky
             return true;
         }
     
-        public void ToXmlFragment(XmlTextWriter xtw)
+        public override void ToXmlFragment(XmlTextWriter xtw)
         {
             xtw.WriteStartElement("stalk");
             {
@@ -125,5 +138,26 @@ namespace EyeInTheSky
             }
             xtw.WriteEndElement();
         }
+    }
+
+    public class ComplexStalk:Stalk
+    {
+        public ComplexStalk(string flag) : base(flag)
+        {
+        }
+
+        #region Overrides of Stalk
+
+        public override bool match(RecentChange rc)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void ToXmlFragment(XmlTextWriter xtw)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }

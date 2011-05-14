@@ -25,7 +25,7 @@ namespace EyeInTheSky
 
             while(xpni.MoveNext())
             {
-                Stalk s = new Stalk(xpni.Current.GetAttribute("flag", ""));
+                SimpleStalk s = new SimpleStalk(xpni.Current.GetAttribute("flag", ""));
                 XPathDocument xpd = new XPathDocument(xpni.Current.ReadSubtree());
                 var xpn = xpd.CreateNavigator();
                 XmlNameTable xnt = xpn.NameTable;
