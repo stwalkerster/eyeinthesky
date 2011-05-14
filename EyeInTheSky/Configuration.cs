@@ -122,7 +122,8 @@ namespace EyeInTheSky
                     _configuration.Add(xpni.Current.GetAttribute("name", ""), xpni.Current.GetAttribute("value", ""));
                 }
 
-                stalks = StalkList.fetch(navigator.Select("//isky:stalk", xnm));
+                XPathNavigator stalknav = navigator.SelectSingleNode("//isky:stalks", xnm);
+                stalks = StalkList.fetch(stalknav, xnm);
 
                 userlist = new SortedList<string,AccessListEntry>();
                 xpni = navigator.Select("//isky:users/isky:user", xnm);

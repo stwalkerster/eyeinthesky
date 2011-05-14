@@ -19,7 +19,7 @@ namespace EyeInTheSky
             return null;
         }
 
-        internal static StalkList fetch(XPathNodeIterator xpni)
+        internal static StalkList fetch(XPathNavigator nav, XmlNamespaceManager nsManager)
         {
             StalkList list = new StalkList();
 
