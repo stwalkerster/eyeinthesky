@@ -62,12 +62,12 @@ namespace EyeInTheSky
 
         static void irc_wikimedia_connectionRegistrationSucceededEvent()
         {
-            irc_wikimedia.ircJoin("#en.wikipedia");
+            irc_wikimedia.ircJoin(config["rcchannel", "#en.wikipedia"]);
         }
 
         static void irc_freenode_connectionRegistrationSucceededEvent()
         {
-            irc_freenode.ircJoin("##eyeinthesky");
+            irc_freenode.ircJoin(config["defaultchannel","##eyeinthesky"]);
             irc_wikimedia.privmsgEvent += irc_wikimedia_privmsgEvent;
         }
 
@@ -77,7 +77,7 @@ namespace EyeInTheSky
             Stalk s = config.Stalks.search(rcitem);
             if(s==null) return;
 
-            irc_freenode.ircPrivmsg("##eyeinthesky", string.Format(
+            irc_freenode.ircPrivmsg(config["defaultchannel", "##eyeinthesky"], string.Format(
                 "[{0}] Stalked edit {1} to page \"{2}\" by [[User:{3}]], summary: {4}",
                 s.Flag, rcitem.Url, rcitem.Page, rcitem.User, rcitem.EditSummary
                                                          ));
