@@ -2,6 +2,7 @@
 <eyeinthesky xmlns="https://github.com/stwalkerster/eyeinthesky/raw/master/EyeInTheSky/DataFileSchema.xsd">
   <config>
     <option name="nickservpassword" value="CHANGEME" />
+    <option name="defaultchannel" value="##eyeinthesky"/>
   </config>
   <stalks />
   <users>

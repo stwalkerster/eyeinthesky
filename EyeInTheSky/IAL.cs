@@ -719,7 +719,7 @@ namespace EyeInTheSky
 
 
             string searchstr = "You are now identified for";
-            if (source.nickname.ToLower() == _nickserv.ToLower() && message.Contains(searchstr))
+            if (message.Contains(searchstr) && source.nickname.ToLower() == _nickserv.ToLower())
             {
                 ConnectionRegistrationEventHandler temp = NickServRegistrationSucceededEvent;
                 if (temp != null)
