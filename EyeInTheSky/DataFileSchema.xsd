@@ -15,6 +15,8 @@
       <xs:element name="and" type="booleantreenode" />
       <xs:element name="or" type="booleantreenode" />
       <xs:element name="not" type="treenode" />
+      <xs:element name="true" />
+      <xs:element name="false" />
       <xs:element name="user" type="stalkmatch"/>
       <xs:element name="page" type="stalkmatch"/>
       <xs:element name="summary" type="stalkmatch" />
@@ -26,6 +28,8 @@
       <xs:element name="and" type="booleantreenode" />
       <xs:element name="or" type="booleantreenode" />
       <xs:element name="not" type="treenode" />
+      <xs:element name="true" />
+      <xs:element name="false" />
       <xs:element name="user" type="stalkmatch"/>
       <xs:element name="page" type="stalkmatch"/>
       <xs:element name="summary" type="stalkmatch" />
@@ -66,6 +70,8 @@
                     <xs:element name="and" type="booleantreenode" />
                     <xs:element name="or" type="booleantreenode" />
                     <xs:element name="not" type="treenode" />
+                    <xs:element name="true" />
+                    <xs:element name="false" />
                     <xs:element name="user" type="stalkmatch"/>
                     <xs:element name="page" type="stalkmatch"/>
                     <xs:element name="summary" type="stalkmatch" />
