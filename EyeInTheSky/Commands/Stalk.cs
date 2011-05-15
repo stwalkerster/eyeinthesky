@@ -100,7 +100,7 @@ namespace EyeInTheSky.Commands
                     else
                     {
                         EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname,
-                                      "Flag: " + kvp.Key + ", Type: Complex");
+                                                              kvp.Value.ToString());
 
                     }
                 }

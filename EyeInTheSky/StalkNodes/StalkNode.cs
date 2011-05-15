@@ -30,5 +30,7 @@ namespace EyeInTheSky.StalkNodes
                     throw new XmlException();
             }
         }
+
+        public abstract XmlElement toXmlFragment(XmlDocument doc, string xmlns);
     }
 }

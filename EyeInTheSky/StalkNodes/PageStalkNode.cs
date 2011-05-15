@@ -18,6 +18,18 @@ namespace EyeInTheSky.StalkNodes
             s.setMatchExpression(xmlNode.Attributes["value"].Value);
             return s;
         }
+        public override XmlElement toXmlFragment(XmlDocument doc, string xmlns)
+        {
+            XmlElement e = doc.CreateElement("page", xmlns);
+            e.SetAttribute("value", expression.ToString());
+            return e;
+        }
+
+        public override string ToString()
+        {
+            return "( page: \" " + expression + "\")";
+        }
+
         #endregion
     }
 }

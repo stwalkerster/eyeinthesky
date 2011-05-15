@@ -32,7 +32,7 @@ namespace EyeInTheSky
         public abstract bool match(RecentChange rc);
 
 
-        public abstract void ToXmlFragment(XmlTextWriter xtw);
+        public abstract XmlElement ToXmlFragment(XmlDocument doc, string xmlns);
 
         public static Stalk newFromXmlElement(XmlElement element)
         {

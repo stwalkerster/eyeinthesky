@@ -18,6 +18,18 @@ namespace EyeInTheSky.StalkNodes
             s.ChildNode = StalkNode.newFromXmlFragment(xmlNode.ChildNodes[0]);
             return s;
         }
+
+        public override XmlElement toXmlFragment(XmlDocument doc, string xmlns)
+        {
+            XmlElement e = doc.CreateElement("not", xmlns);
+            e.AppendChild(ChildNode.toXmlFragment(doc, xmlns));
+            return e;
+        }
+
+        public override string ToString()
+        {
+            return "( ! " + ChildNode +  ")";
+        }
         #endregion
     }
 }

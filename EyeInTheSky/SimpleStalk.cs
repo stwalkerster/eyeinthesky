@@ -69,43 +69,36 @@ namespace EyeInTheSky
 
             return true;
         }
-    
-        public override void ToXmlFragment(XmlTextWriter xtw)
+
+        public override XmlElement ToXmlFragment(XmlDocument doc, string xmlns)
         {
-            xtw.WriteStartElement("stalk");
+            XmlElement e = doc.CreateElement("stalk", xmlns);
+            e.SetAttribute("flag", flag);
+
+            if (HasUserSearch)
             {
-                xtw.WriteAttributeString("flag", flag);
-
-                if(HasUserSearch)
-                {
-                    xtw.WriteStartElement("user");
-                    {
-                        xtw.WriteAttributeString("value", user.ToString());   
-                    }
-                    xtw.WriteEndElement();
-                }
-
-                if (HasPageSearch)
-                {
-                    xtw.WriteStartElement("page");
-                    {
-                        xtw.WriteAttributeString("value", page.ToString());
-                    }
-                    xtw.WriteEndElement();
-                }
-
-                if (hassummarycheck)
-                {
-                    xtw.WriteStartElement("summary");
-                    {
-                        xtw.WriteAttributeString("value", summary.ToString());
-                    }
-                    xtw.WriteEndElement();
-                }
+                XmlElement sub = doc.CreateElement("user", xmlns);
+                sub.SetAttribute("value", user.ToString());
+                e.AppendChild(sub);
             }
-            xtw.WriteEndElement();
+
+            if (HasPageSearch)
+            {
+                XmlElement sub = doc.CreateElement("page", xmlns);
+                sub.SetAttribute("value", page.ToString());
+                e.AppendChild(sub);
+            }
+
+            if (hassummarycheck)
+            {
+                XmlElement sub = doc.CreateElement("summary", xmlns);
+                sub.SetAttribute("value", summary.ToString());
+                e.AppendChild(sub);
+            }
+
+            return e;
         }
-    
+
         public static new Stalk newFromXmlElement(XmlElement element)
         {
             SimpleStalk s = new SimpleStalk(element.Attributes["flag"].Value);

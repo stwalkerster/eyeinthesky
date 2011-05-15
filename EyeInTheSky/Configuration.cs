@@ -149,53 +149,44 @@ namespace EyeInTheSky
 
         public void save()
         {
-// ReSharper disable UseObjectOrCollectionInitializer
-            XmlTextWriter xtw = new XmlTextWriter(configurationFileName, null);
-// ReSharper restore UseObjectOrCollectionInitializer
-            xtw.Formatting = Formatting.Indented;
-            xtw.WriteStartDocument();
+            XmlDocument doc = new XmlDocument();
+            doc.AppendChild(doc.CreateXmlDeclaration("1.0", null, null));
+            string xmlns = "https://github.com/stwalkerster/eyeinthesky/raw/master/EyeInTheSky/DataFileSchema.xsd";
+            XmlElement root = doc.CreateElement("eyeinthesky", xmlns);
+
+            XmlElement config = doc.CreateElement("config", xmlns);
+            foreach (KeyValuePair<string, string> keyValuePair in _configuration)
             {
-                xtw.WriteStartElement("eyeinthesky",
-                                      "https://github.com/stwalkerster/eyeinthesky/raw/master/EyeInTheSky/DataFileSchema.xsd");
-                {
-                    xtw.WriteStartElement("config");
-                    foreach (KeyValuePair<string, string> keyValuePair in _configuration)
-                    {
-                        xtw.WriteStartElement("option");
-                        xtw.WriteAttributeString("name", keyValuePair.Key);
-                        xtw.WriteAttributeString("value", keyValuePair.Value);
-                        xtw.WriteEndElement();
-                    }
-                    xtw.WriteEndElement();
-
-                    xtw.WriteStartElement("stalks");
-                    foreach (KeyValuePair<string, Stalk> kvp in stalks)
-                    {
-                        kvp.Value.ToXmlFragment(xtw);
-                    }
-                    xtw.WriteEndElement();
-
-                    xtw.WriteStartElement("users");
-                    {
-                        foreach (KeyValuePair<string,AccessListEntry> kvp in userlist)
-                        {
-                            AccessListEntry accessListEntry = kvp.Value;
-                            xtw.WriteStartElement("user");
-                            {
-                                xtw.WriteAttributeString("access", accessListEntry.AccessLevel.ToString());
-                                xtw.WriteAttributeString("hostmask", accessListEntry.HostnameMask);
-                            }
-                            xtw.WriteEndElement();
-                        }
-                    }
-                    xtw.WriteEndElement();
-                }
-                xtw.WriteEndElement();
+                XmlElement opt = doc.CreateElement("option", xmlns);
+                opt.SetAttribute("name", keyValuePair.Key);
+                opt.SetAttribute("value", keyValuePair.Value);
+                config.AppendChild(opt);
             }
-            xtw.WriteEndDocument();
+            root.AppendChild(config);
 
-            xtw.Flush();
-            xtw.Close();
+            XmlElement stalkselem = doc.CreateElement("stalks", xmlns);
+            foreach (KeyValuePair<string, Stalk> kvp in stalks)
+            {
+                stalkselem.AppendChild(kvp.Value.ToXmlFragment(doc, xmlns));
+            }
+            root.AppendChild(stalkselem);
+
+            XmlElement userelement = doc.CreateElement("users", xmlns);
+
+            foreach (KeyValuePair<string,AccessListEntry> kvp in userlist)
+            {
+                AccessListEntry accessListEntry = kvp.Value;
+                XmlElement u = doc.CreateElement("user", xmlns);
+                u.SetAttribute("access", accessListEntry.AccessLevel.ToString());
+                u.SetAttribute("hostmask", accessListEntry.HostnameMask);
+                userelement.AppendChild(u);
+       
+            }
+            root.AppendChild(userelement);
+
+            doc.AppendChild(root);
+
+            doc.Save(configurationFileName);
         }
     }
 }

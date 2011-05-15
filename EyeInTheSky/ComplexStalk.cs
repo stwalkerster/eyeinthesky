@@ -12,17 +12,24 @@ namespace EyeInTheSky
         }
 
         private StalkNode baseNode;
-
-        #region Overrides of Stalk
-
+        
         public override bool match(RecentChange rc)
         {
             return baseNode != null && baseNode.match(rc);
         }
 
-        public override void ToXmlFragment(XmlTextWriter xtw)
+        public override XmlElement ToXmlFragment(XmlDocument doc, string xmlns)
         {
-            throw new NotImplementedException();
+            XmlElement e = doc.CreateElement("complexstalk", xmlns);
+            e.SetAttribute("flag", this.flag);
+
+            e.AppendChild(baseNode.toXmlFragment(doc, xmlns));
+            return e;
+        }
+
+        public override string ToString()
+        {
+            return "Flag: " + flag + ", Type: Complex " + baseNode.ToString();
         }
 
         public static new Stalk newFromXmlElement(XmlElement element)
@@ -37,8 +44,6 @@ namespace EyeInTheSky
 
             return s;
         }
-
-        #endregion
 
         public void setSearchTree(StalkNode node)
         {

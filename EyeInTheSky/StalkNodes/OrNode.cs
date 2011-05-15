@@ -19,6 +19,18 @@ namespace EyeInTheSky.StalkNodes
             s.RightChildNode = StalkNode.newFromXmlFragment(xmlNode.ChildNodes[1]);
             return s;
         }
+        public override XmlElement toXmlFragment(XmlDocument doc, string xmlns)
+        {
+            XmlElement e = doc.CreateElement("or", xmlns);
+            e.AppendChild(LeftChildNode.toXmlFragment(doc, xmlns));
+            e.AppendChild(RightChildNode.toXmlFragment(doc, xmlns));
+            return e;
+        }
+
+        public override string ToString()
+        {
+            return "(" + LeftChildNode + " || " + RightChildNode + ")";
+        }
         #endregion
     }
 }
