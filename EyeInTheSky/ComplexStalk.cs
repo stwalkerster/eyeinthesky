@@ -9,13 +9,14 @@ namespace EyeInTheSky
         public ComplexStalk(string flag)
             : base(flag)
         {
+            baseNode = new FalseNode();
         }
 
         private StalkNode baseNode;
         
         public override bool match(RecentChange rc)
         {
-            return baseNode != null && baseNode.match(rc);
+            baseNode.match(rc);
         }
 
         public override XmlElement ToXmlFragment(XmlDocument doc, string xmlns)
