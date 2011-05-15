@@ -28,7 +28,7 @@ namespace EyeInTheSky.StalkNodes
 
         public override string ToString()
         {
-            return "( ! " + ChildNode +  ")";
+            return "(!" + ChildNode +  ")";
         }
         #endregion
     }
