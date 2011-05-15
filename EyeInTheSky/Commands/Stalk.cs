@@ -30,7 +30,28 @@ namespace EyeInTheSky.Commands
                     EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "More params pls!");
                     return;
                 }
-                EyeInTheSkyBot.config.Stalks.Add(tokens[0],new SimpleStalk(tokens[0]));
+
+                EyeInTheSky.Stalk s;
+                if (tokens.Length < 2)
+                {
+                    s = new SimpleStalk(tokens[0]);
+                }
+                else
+                {
+                    switch (tokens[1])
+                    {
+                        case "simple":
+                             s = new SimpleStalk(tokens[0]);
+                            break;
+                        case "complex":
+                             s = new ComplexStalk(tokens[0]);
+                            break;
+                        default:
+                             s = new SimpleStalk(tokens[0]);
+                    }
+                }
+
+                EyeInTheSkyBot.config.Stalks.Add(tokens[0],s);
                 EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination, "Added stalk " + tokens[0]);
             }
             if (mode == "del")
