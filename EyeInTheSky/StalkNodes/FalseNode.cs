@@ -15,7 +15,7 @@ namespace EyeInTheSky.StalkNodes
 
         public override XmlElement toXmlFragment(XmlDocument doc, string xmlns)
         {
-            return doc.CreateElement("false");
+            return doc.CreateElement("false",xmlns);
         }
 
         public static new StalkNode newFromXmlFragment(XmlNode xmlNode)
