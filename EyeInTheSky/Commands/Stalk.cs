@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml;
 using EyeInTheSky.StalkNodes;
 
 namespace EyeInTheSky.Commands
@@ -109,6 +110,14 @@ namespace EyeInTheSky.Commands
                 }
                 else
                 {
+                    string xmlfragment = string.Join(" ", tokens);
+                    XmlDocument xd = new XmlDocument();
+                    xd.LoadXml(xmlfragment);
+
+
+                    StalkNode node = StalkNode.newFromXmlFragment(xd.FirstChild);
+                    ComplexStalk cs = (ComplexStalk)s;
+                    cs.setSearchTree(node);
                 }
             }
             if (mode == "list")
