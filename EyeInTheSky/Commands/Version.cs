@@ -16,6 +16,12 @@ namespace EyeInTheSky.Commands
 
         protected override void execute(User source, string destination, string[] tokens)
         {
+            // look at .git/HEAD
+            // get commit id from it
+            // look in .git/info/refs
+            // find first line which has the commit id
+            // split line at whitespace - second part has the ref name ("refs/tags/release-1.2")
+
             if (tokens.Length < 1)
             {
                 // print current tag
