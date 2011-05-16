@@ -16,7 +16,7 @@ namespace EyeInTheSky
         
         public override bool match(RecentChange rc)
         {
-            baseNode.match(rc);
+            return baseNode.match(rc);
         }
 
         public override XmlElement ToXmlFragment(XmlDocument doc, string xmlns)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using EyeInTheSky.StalkNodes;
 
 namespace EyeInTheSky.Commands
 {
@@ -48,6 +49,7 @@ namespace EyeInTheSky.Commands
                             break;
                         default:
                              s = new SimpleStalk(tokens[0]);
+                            break;
                     }
                 }
 
@@ -66,19 +68,26 @@ namespace EyeInTheSky.Commands
             }
             if (mode == "set")
             {
-                if (tokens.Length < 2)
+                if (tokens.Length < 1)
                 {
                     EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "More params pls!");
                     return;
                 }
                 string stalk = GlobalFunctions.popFromFront(ref tokens);
-                string type = GlobalFunctions.popFromFront(ref tokens);
-                string regex = string.Join(" ", tokens);
+
 
                 EyeInTheSky.Stalk s = EyeInTheSkyBot.config.Stalks[stalk];
 
                 if (s is SimpleStalk)
                 {
+                    if (tokens.Length < 1)
+                    {
+                        EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "More params pls!");
+                        return;
+                    }
+                    string type = GlobalFunctions.popFromFront(ref tokens);
+                    string regex = string.Join(" ", tokens);
+
                     SimpleStalk ss = (SimpleStalk) s;
 
                     switch (type)
@@ -100,8 +109,6 @@ namespace EyeInTheSky.Commands
                 }
                 else
                 {
-                    EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname,
-                                       "The specified stalk is not a simple stalk.");
                 }
             }
             if (mode == "list")
