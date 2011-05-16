@@ -185,7 +185,7 @@ namespace EyeInTheSky
             root.AppendChild(userelement);
 
 
-            XmlElement stalklog = doc.CreateElement("stalklog");
+            XmlElement stalklog = doc.CreateElement("stalklog", xmlns);
 
             root.AppendChild(stalklog);
 
