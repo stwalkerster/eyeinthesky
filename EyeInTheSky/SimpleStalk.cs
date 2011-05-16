@@ -84,6 +84,7 @@ namespace EyeInTheSky
                 return false;
             }
 
+            this.LastTriggerTime = DateTime.Now;
             return true;
         }
 
