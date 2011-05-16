@@ -62,6 +62,7 @@
                     <xs:element name="summary" type="stalkmatch" minOccurs="0"/>
                   </xs:sequence>
                   <xs:attribute name="flag" type="xs:string" use="required" />
+                  <xs:attribute name="lastupdate" type="xs:dateTime" use="optional" />
                 </xs:complexType>
               </xs:element>
               <xs:element name="complexstalk" minOccurs="0" maxOccurs="unbounded">
@@ -77,6 +78,7 @@
                     <xs:element name="summary" type="stalkmatch" />
                   </xs:choice>
                   <xs:attribute name="flag" type="xs:string" use="required" />
+                  <xs:attribute name="lastupdate" type="xs:dateTime" use="optional" />
                 </xs:complexType>
               </xs:element>
             </xs:choice>

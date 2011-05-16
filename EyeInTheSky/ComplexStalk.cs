@@ -12,6 +12,13 @@ namespace EyeInTheSky
             baseNode = new FalseNode();
         }
 
+        public ComplexStalk(string flag, string time)
+            : base(flag, time)
+        {
+            baseNode = new FalseNode();
+
+        }
+
         private StalkNode baseNode;
         
         public override bool match(RecentChange rc)
@@ -23,6 +30,7 @@ namespace EyeInTheSky
         {
             XmlElement e = doc.CreateElement("complexstalk", xmlns);
             e.SetAttribute("flag", this.flag);
+            e.SetAttribute("lastupdate", LastUpdateTime.ToString());
 
             e.AppendChild(baseNode.toXmlFragment(doc, xmlns));
             return e;
@@ -30,12 +38,14 @@ namespace EyeInTheSky
 
         public override string ToString()
         {
-            return "Flag: " + flag + ", Type: Complex " + baseNode.ToString();
+            return "Flag: " + flag + ", Last modified: "+this.LastUpdateTime+", Type: Complex " + baseNode.ToString();
         }
 
         public static new Stalk newFromXmlElement(XmlElement element)
         {
-            ComplexStalk s = new ComplexStalk(element.Attributes["flag"].Value);
+            XmlAttribute time = element.Attributes["lastupdate"];
+            string timeval = time == null ? DateTime.Now.ToString() : time.Value;
+            ComplexStalk s = new ComplexStalk(element.Attributes["flag"].Value, timeval);
             
             if(element.HasChildNodes)
             {
@@ -46,8 +56,11 @@ namespace EyeInTheSky
             return s;
         }
 
-        public void setSearchTree(StalkNode node)
+        public void setSearchTree(StalkNode node, bool isupdate)
         {
+            if (isupdate)
+                this.LastUpdateTime = DateTime.Now;
+
             baseNode = node;
         }
     }

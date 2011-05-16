@@ -68,6 +68,7 @@ namespace EyeInTheSky.Commands
                 EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination, "Deleted stalk " + tokens[0]);
             }
             if (mode == "set")
+            #region set
             {
                 if (tokens.Length < 1)
                 {
@@ -94,13 +95,13 @@ namespace EyeInTheSky.Commands
                     switch (type)
                     {
                         case "user":
-                            ss.setUserSearch(regex);
+                            ss.setUserSearch(regex, true);
                             break;
                         case "page":
-                            ss.setPageSearch(regex);
+                            ss.setPageSearch(regex,true);
                             break;
                         case "summary":
-                            ss.setSummarySearch(regex);
+                            ss.setSummarySearch(regex,true);
                             break;
                     }
 
@@ -128,7 +129,7 @@ namespace EyeInTheSky.Commands
 
                             StalkNode node = StalkNode.newFromXmlFragment(xd.FirstChild);
                             ComplexStalk cs = (ComplexStalk) s;
-                            cs.setSearchTree(node);
+                            cs.setSearchTree(node,true);
                             EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination,
                "Set " + type + " for stalk " + stalk + " with CSL value: " +
                node);
@@ -143,6 +144,7 @@ namespace EyeInTheSky.Commands
 
                 }
             }
+            #endregion
             if (mode == "list")
             {
                 EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "Stalk list:");
@@ -152,7 +154,7 @@ namespace EyeInTheSky.Commands
                     {
                         SimpleStalk ss = (SimpleStalk) kvp.Value;
                         EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname,
-                                                              "Flag: " + kvp.Key + ", Type:" +
+                                                              "Flag: " + kvp.Key + ", Last modified: " + kvp.Value.LastUpdateTime + ", Type:" +
                                                               (ss.HasUserSearch ? " USER" : "") +
                                                               (ss.HasPageSearch ? " PAGE" : "") +
                                                               (ss.HasSummarySearch ? " SUMMARY" : ""));
