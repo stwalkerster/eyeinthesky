@@ -184,6 +184,11 @@ namespace EyeInTheSky
             }
             root.AppendChild(userelement);
 
+
+            XmlElement stalklog = doc.CreateElement("stalklog");
+
+            root.AppendChild(stalklog);
+
             doc.AppendChild(root);
 
             doc.Save(configurationFileName);
