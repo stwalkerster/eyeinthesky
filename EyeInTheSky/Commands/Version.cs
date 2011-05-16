@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace EyeInTheSky.Commands
@@ -16,15 +18,35 @@ namespace EyeInTheSky.Commands
 
         protected override void execute(User source, string destination, string[] tokens)
         {
-            // look at .git/HEAD
-            // get commit id from it
-            // look in .git/info/refs
-            // find first line which has the commit id
-            // split line at whitespace - second part has the ref name ("refs/tags/release-1.2")
+            string bindir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase).Substring(6);
+            DirectoryInfo di = new DirectoryInfo(bindir);
+            di = di.Parent; //bin
+            di = di.Parent; //eyeinthesky
+            di = di.Parent; //eyeinthesky
+            di = di.GetDirectories(".git")[0]; // .git
 
-            if (tokens.Length < 1)
+
+            if (GlobalFunctions.realArrayLength(tokens) < 1)
             {
-                // print current tag
+                // look at .git/HEAD
+                StreamReader sr = new StreamReader(di.FullName + "/HEAD");
+                // get commit id from it
+                string head = sr.ReadLine();
+                sr.Close();
+                if (head.StartsWith("ref:"))
+                {
+                    EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination, "Current " + head);
+                }
+                else
+                {
+                    // look in .git/info/refs
+                    sr = new StreamReader(di.FullName + "/info/refs");
+
+                    // find first line which has the commit id
+                    // split line at whitespace - second part has the ref name ("refs/tags/release-1.2")
+                    sr.Close();
+                }
+
                 return;
             }
 
