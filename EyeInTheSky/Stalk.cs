@@ -21,6 +21,24 @@ namespace EyeInTheSky
             this.flag = flag;
         }
 
+        protected Stalk(string flag, string lastUpdateTime)
+        {
+            if (flag == "")
+                throw new ArgumentOutOfRangeException();
+            this.flag = flag;
+
+            this.LastUpdateTime = DateTime.Parse(lastUpdateTime);
+
+        }
+
+        private DateTime lastUpdateTime = DateTime.Now;
+
+        public DateTime LastUpdateTime
+        {
+            get { return lastUpdateTime; }
+            protected set { lastUpdateTime = value;}
+        }
+
         /// <summary>
         /// the name of the stalkworkd
         /// </summary>
@@ -30,7 +48,6 @@ namespace EyeInTheSky
         }
 
         public abstract bool match(RecentChange rc);
-
 
         public abstract XmlElement ToXmlFragment(XmlDocument doc, string xmlns);
 

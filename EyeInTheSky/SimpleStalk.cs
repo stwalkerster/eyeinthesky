@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Text.RegularExpressions;
 using System.Xml;
 
 namespace EyeInTheSky
@@ -9,6 +10,12 @@ namespace EyeInTheSky
         {
 
         }
+
+        private SimpleStalk(string flag, string time)
+            : base(flag, time)
+        {
+        }
+
 
         public bool HasUserSearch
         {
@@ -31,20 +38,30 @@ namespace EyeInTheSky
 
         private Regex user, page, summary;
 
-        public void setUserSearch(string regex)
+
+        public void setUserSearch(string regex, bool isupdate)
         {
             hasusercheck = true;
             user = new Regex(regex);
+
+            if (isupdate)
+                this.LastUpdateTime = DateTime.Now;
         }
-        public void setPageSearch(string regex)
+        public void setPageSearch(string regex, bool isupdate)
         {
             haspagecheck = true;
             page = new Regex(regex);
+
+            if (isupdate)
+                this.LastUpdateTime = DateTime.Now;
         }
-        public void setSummarySearch(string regex)
+        public void setSummarySearch(string regex, bool isupdate)
         {
             hassummarycheck = true;
             summary = new Regex(regex);
+
+            if (isupdate)
+                this.LastUpdateTime = DateTime.Now;
         }
 
         public override bool match(RecentChange rc)
@@ -74,6 +91,7 @@ namespace EyeInTheSky
         {
             XmlElement e = doc.CreateElement("stalk", xmlns);
             e.SetAttribute("flag", flag);
+            e.SetAttribute("lastupdate", LastUpdateTime.ToString());
 
             if (HasUserSearch)
             {
@@ -101,7 +119,10 @@ namespace EyeInTheSky
 
         public static new Stalk newFromXmlElement(XmlElement element)
         {
-            SimpleStalk s = new SimpleStalk(element.Attributes["flag"].Value);
+            XmlAttribute time = element.Attributes["lastupdate"];
+            string timeval = time == null ? DateTime.Now.ToString() : time.Value;
+
+            SimpleStalk s = new SimpleStalk(element.Attributes["flag"].Value, timeval);
             foreach (XmlNode childNode in element.ChildNodes)
             {
                 if(! (childNode is XmlElement))
@@ -110,13 +131,13 @@ namespace EyeInTheSky
                 switch (childNode.Name)
                 {
                     case "user":
-                        s.setUserSearch(childNode.Attributes["value"].Value);
+                        s.setUserSearch(childNode.Attributes["value"].Value, false);
                         break;
                     case "page":
-                        s.setPageSearch(childNode.Attributes["value"].Value);
+                        s.setPageSearch(childNode.Attributes["value"].Value, false);
                         break;
                     case "summary":
-                        s.setSummarySearch(childNode.Attributes["value"].Value);
+                        s.setSummarySearch(childNode.Attributes["value"].Value, false);
                         break;
                 }
             }
