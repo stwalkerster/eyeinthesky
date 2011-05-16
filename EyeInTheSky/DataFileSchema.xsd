@@ -35,7 +35,7 @@
       <xs:element name="summary" type="stalkmatch" />
     </xs:choice>
   </xs:complexType>
-  
+
   <xs:element name="eyeinthesky">
     <xs:complexType>
       <xs:sequence>
@@ -102,6 +102,25 @@
                       </xs:restriction>
                     </xs:simpleType>
                   </xs:attribute>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="stalklog">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="log" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="user" type="stalkmatch" />
+                    <xs:element name="page" type="stalkmatch" />
+                    <xs:element name="url" type="stalkmatch" />
+                    <xs:element name="summary" type="stalkmatch" />
+                    <xs:element name="flags" type="stalkmatch" />
+                    <xs:element name="sizediff" type="stalkmatch" />
+                  </xs:sequence>
+                  <xs:attribute name="stalkflag" type="xs:string" />
                 </xs:complexType>
               </xs:element>
             </xs:sequence>
