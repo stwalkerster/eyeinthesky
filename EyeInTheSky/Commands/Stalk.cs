@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml;
 using EyeInTheSky.StalkNodes;
 
 namespace EyeInTheSky.Commands
@@ -109,6 +110,37 @@ namespace EyeInTheSky.Commands
                 }
                 else
                 {
+                    if (tokens.Length < 1)
+                    {
+                        EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "More params pls!");
+                        return;
+                    }
+
+                    string type = GlobalFunctions.popFromFront(ref tokens);
+                    if (type == "xml")
+                    {
+                        string xmlfragment = string.Join(" ", tokens);
+                        try
+                        {
+                            XmlDocument xd = new XmlDocument();
+                            xd.LoadXml(xmlfragment);
+
+
+                            StalkNode node = StalkNode.newFromXmlFragment(xd.FirstChild);
+                            ComplexStalk cs = (ComplexStalk) s;
+                            cs.setSearchTree(node);
+                            EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination,
+               "Set " + type + " for stalk " + stalk + " with CSL value: " +
+               node);
+
+                        }
+                        catch (XmlException ex)
+                        {
+                            EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "XML Error.");
+                        }
+
+                    }
+
                 }
             }
             if (mode == "list")
