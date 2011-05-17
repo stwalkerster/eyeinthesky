@@ -84,6 +84,7 @@ namespace EyeInTheSky
                 return false;
             }
 
+            EyeInTheSkyBot.config.LogStalkTrigger(flag, rc);
             this.LastTriggerTime = DateTime.Now;
             return true;
         }
