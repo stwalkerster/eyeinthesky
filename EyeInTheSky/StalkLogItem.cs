@@ -10,11 +10,13 @@ namespace EyeInTheSky
     {
         private string stalk;
         private RecentChange rc;
+        private DateTime ts;
 
         public StalkLogItem(string flag, RecentChange rcitem)
         {
             stalk = flag;
             rc = rcitem;
+            ts = DateTime.Now;
         }
 
         public string Stalk
@@ -58,7 +60,13 @@ namespace EyeInTheSky
 
         public override string ToString()
         {
-            throw new NotImplementedException();
+            return string.Format(
+                "[{0}] Stalked edit {1} to page \"{2}\" at {5} by [[User:{3}]], summary: {4}",
+                stalk, rc.Url,
+                rc.Page,
+                rc.User,
+                rc.EditSummary, ts.ToString()
+                );
         }
 
         internal static StalkLogItem newFromXmlElement(XmlElement element)
