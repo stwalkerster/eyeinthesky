@@ -8,16 +8,16 @@ namespace EyeInTheSky
 {
     class StalkLogItem
     {
-        private Stalk stalk;
+        private string stalk;
         private RecentChange rc;
 
-        public StalkLogItem(Stalk s, RecentChange rcitem)
+        public StalkLogItem(string flag, RecentChange rcitem)
         {
-            stalk = s;
+            stalk = flag;
             rc = rcitem;
         }
 
-        public Stalk Stalk
+        public string Stalk
         {
             get { return stalk; }
         }
@@ -29,12 +29,18 @@ namespace EyeInTheSky
     
         public XmlElement toXmlFragment(XmlDocument doc, string xmlns)
         {
-            
+            XmlElement esli = doc.CreateElement("log", xmlns);
+            throw new NotImplementedException();
         }
 
         public override string ToString()
         {
-            
+            throw new NotImplementedException();
+        }
+
+        internal static StalkLogItem newFromXmlElement(XmlElement element)
+        {
+            throw new NotImplementedException();
         }
     }
 }
