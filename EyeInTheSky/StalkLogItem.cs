@@ -19,6 +19,10 @@ namespace EyeInTheSky
             ts = DateTime.Now;
         }
 
+        private StalkLogItem()
+        {
+        }
+
         public string Stalk
         {
             get { return stalk; }
@@ -76,7 +80,37 @@ namespace EyeInTheSky
 
         internal static StalkLogItem newFromXmlElement(XmlElement element)
         {
-            throw new NotImplementedException();
+            StalkLogItem sli = new StalkLogItem
+                                   {
+                                       stalk = element.GetAttribute("stalkflag"),
+                                       ts = DateTime.Parse(element.GetAttribute("timestamp"))
+                                   };
+
+
+            string user, page, url, summary, flags, sizediff;
+            user = page = url = summary = flags = "";
+            sizediff = "0";
+            foreach (XmlNode childNode in element.ChildNodes)
+            {
+                XmlElement ce = (XmlElement) childNode;
+                if (ce.Name == "user")
+                    user = ce.GetAttribute("value");
+                if (ce.Name == "page")
+                    page = ce.GetAttribute("value");
+                if (ce.Name == "url")
+                    url = ce.GetAttribute("value");
+                if (ce.Name == "summary")
+                    summary = ce.GetAttribute("value");
+                if (ce.Name == "flags")
+                    flags = ce.GetAttribute("value");
+                if (ce.Name == "sizediff")
+                    sizediff = ce.GetAttribute("value");
+ 
+            }
+
+            RecentChange rc = new RecentChange(page, user, url, summary, flags, int.Parse(sizediff));
+            sli.rc = rc;
+            return sli;
         }
     }
 }

@@ -7,6 +7,20 @@ namespace EyeInTheSky
     {
         const string fullstringregex = @"14\[\[07(?<title>.*)14\]\]4 (?<flag>.*)10 02(?<url>[^ ]*) 5\* 03(?<user>.*) 5\* (?:\((?<szdiff>.*)\))? 10(?<comment>.*)";
 
+        private RecentChange()
+        {
+        }
+
+        public RecentChange(string page, string user, string url, string editsummary, string flags, int sizediff)
+        {
+            title = page;
+            this.user = user;
+            this.url = url;
+            comment = editsummary;
+            flag = flags;
+            szdiff = sizediff;
+        }
+
         private static Regex dataregex;
 
         public string Page
