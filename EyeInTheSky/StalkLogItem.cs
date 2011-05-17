@@ -28,12 +28,17 @@ namespace EyeInTheSky
         {
             get { return rc; }
         }
-    
+
+        public DateTime Timestamp
+        {
+            get { return ts; }
+        }
+
         public XmlElement toXmlFragment(XmlDocument doc, string xmlns)
         {
             XmlElement esli = doc.CreateElement("log", xmlns);
             esli.SetAttribute("stalkflag", this.stalk);
-            esli.SetAttribute("timestamp", ts.ToString());
+            esli.SetAttribute("timestamp", Timestamp.ToString());
 
             XmlElement u = doc.CreateElement("user", xmlns);
             u.SetAttribute("value", rc.User);
@@ -65,7 +70,7 @@ namespace EyeInTheSky
                 stalk, rc.Url,
                 rc.Page,
                 rc.User,
-                rc.EditSummary, ts.ToString()
+                rc.EditSummary, Timestamp.ToString()
                 );
         }
 
