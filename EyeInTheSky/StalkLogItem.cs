@@ -6,7 +6,7 @@ using System.Xml;
 
 namespace EyeInTheSky
 {
-    class StalkLogItem
+    public class StalkLogItem
     {
         private string stalk;
         private RecentChange rc;
