@@ -12,8 +12,8 @@ namespace EyeInTheSky
             baseNode = new FalseNode();
         }
 
-        public ComplexStalk(string flag, string time, string time2)
-            : base(flag, time, time2)
+        public ComplexStalk(string flag, string timeupd, string timetrig)
+            : base(flag, timeupd, timetrig)
         {
             baseNode = new FalseNode();
 
