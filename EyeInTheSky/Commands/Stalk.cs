@@ -173,9 +173,12 @@ namespace EyeInTheSky.Commands
                 }
                 EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "End of stalk list.");
             }
+            #endregion
+            
+            
             EyeInTheSkyBot.config.save();
         }
-        #endregion
+        
 
         #endregion
     }
