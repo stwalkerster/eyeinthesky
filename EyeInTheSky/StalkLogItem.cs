@@ -30,6 +30,9 @@ namespace EyeInTheSky
         public XmlElement toXmlFragment(XmlDocument doc, string xmlns)
         {
             XmlElement esli = doc.CreateElement("log", xmlns);
+            esli.SetAttribute("stalkflag", this.stalk);
+            esli.SetAttribute("timestamp", DateTime.Now.ToString());
+
             throw new NotImplementedException();
         }
 
