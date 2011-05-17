@@ -33,7 +33,27 @@ namespace EyeInTheSky
             esli.SetAttribute("stalkflag", this.stalk);
             esli.SetAttribute("timestamp", DateTime.Now.ToString());
 
-            throw new NotImplementedException();
+            XmlElement u = doc.CreateElement("user", xmlns);
+            u.SetAttribute("value", rc.User);
+            XmlElement p = doc.CreateElement("page", xmlns);
+            p.SetAttribute("value", rc.Page);
+            XmlElement url = doc.CreateElement("url", xmlns);
+            url.SetAttribute("value",rc.Url );
+            XmlElement s = doc.CreateElement("summary", xmlns);
+            s.SetAttribute("value", rc.EditSummary);
+            XmlElement f = doc.CreateElement("flags", xmlns);
+            f.SetAttribute("value", rc.EditFlags );
+            XmlElement sd = doc.CreateElement("sizediff", xmlns);
+            sd.SetAttribute("value", rc.SizeDifference.ToString());
+
+            esli.AppendChild(u);
+            esli.AppendChild(p);
+            esli.AppendChild(url);
+            esli.AppendChild(s);
+            esli.AppendChild(f);
+            esli.AppendChild(sd);
+
+            return esli;
         }
 
         public override string ToString()
