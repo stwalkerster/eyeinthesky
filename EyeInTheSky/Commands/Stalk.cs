@@ -174,8 +174,38 @@ namespace EyeInTheSky.Commands
                 EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "End of stalk list.");
             }
             #endregion
-            
-            
+            if(mode == "convert")
+            #region convert
+            {
+                if (tokens.Length < 1)
+                {
+                    EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "More params pls!");
+                    return;
+                }
+
+                if(EyeInTheSkyBot.config.Stalks[tokens[0]] is SimpleStalk)
+                {
+                    SimpleStalk s = (SimpleStalk) EyeInTheSkyBot.config.Stalks[tokens[0]];
+                    StalkNode n = s.getEquivalentStalkTree();
+
+                    ComplexStalk c = new ComplexStalk(tokens[0], s.LastUpdateTime.ToString(),
+                                                      s.LastTriggerTime.ToString());
+                    c.setSearchTree(n, false);
+
+                    EyeInTheSkyBot.config.Stalks.Remove(tokens[0]);
+                    EyeInTheSkyBot.config.Stalks.Add(tokens[0], c);
+
+                    EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination, "Converted stalk " + tokens[0]);
+                }
+                else
+                {
+                    EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, tokens[0] + " is already a complex stalk.");
+                }
+
+
+            }
+            #endregion
+
             EyeInTheSkyBot.config.save();
         }
         
