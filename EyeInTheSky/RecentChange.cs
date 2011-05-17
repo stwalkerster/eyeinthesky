@@ -5,7 +5,7 @@ namespace EyeInTheSky
 {
     public class RecentChange
     {
-        const string fullstringregex = @"14\[\[07(?<title>.*)14\]\]4 (?<flag>.*)10 02(?<url>[^ ]*) 5\* 03(?<user>.*) 5\* (?:\((?<szdiff>.*)\))? 10(?<comment>.*)";
+        const string fullstringregex = @"14\[\[07(?<title>.*)14\]\]4 (?<flag>.*)10 02(?<url>[^ ]*) 5\* 03(?<user>.*) 5\* (?:\((?<szdiff>.*)\))? 10(?<comment>.*)";
 
         private RecentChange()
         {
