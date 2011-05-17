@@ -221,5 +221,12 @@ namespace EyeInTheSky
 
             doc.Save(configurationFileName);
         }
+   
+        public StalkLogItem[] RetrieveStalkLog()
+        {
+            StalkLogItem[] l = stalklog.ToArray();
+            stalklog.Clear();
+            return l;
+        }
     }
 }
