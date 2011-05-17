@@ -33,7 +33,7 @@ namespace EyeInTheSky
         {
             XmlElement esli = doc.CreateElement("log", xmlns);
             esli.SetAttribute("stalkflag", this.stalk);
-            esli.SetAttribute("timestamp", DateTime.Now.ToString());
+            esli.SetAttribute("timestamp", ts.ToString());
 
             XmlElement u = doc.CreateElement("user", xmlns);
             u.SetAttribute("value", rc.User);
