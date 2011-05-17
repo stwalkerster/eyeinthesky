@@ -26,6 +26,7 @@ namespace EyeInTheSky.Commands
 
             string mode = GlobalFunctions.popFromFront(ref tokens);
             if(mode == "add")
+            #region add
             {
                 if (tokens.Length < 1)
                 {
@@ -57,7 +58,9 @@ namespace EyeInTheSky.Commands
                 EyeInTheSkyBot.config.Stalks.Add(tokens[0],s);
                 EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination, "Added stalk " + tokens[0]);
             }
+            #endregion
             if (mode == "del")
+            #region del
             {
                 if (tokens.Length < 1)
                 {
@@ -67,6 +70,7 @@ namespace EyeInTheSky.Commands
                 EyeInTheSkyBot.config.Stalks.Remove(tokens[0]);
                 EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination, "Deleted stalk " + tokens[0]);
             }
+            #endregion
             if (mode == "set")
             #region set
             {
@@ -146,6 +150,7 @@ namespace EyeInTheSky.Commands
             }
             #endregion
             if (mode == "list")
+            #region list
             {
                 EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "Stalk list:");
                 foreach (KeyValuePair<string, EyeInTheSky.Stalk> kvp in EyeInTheSkyBot.config.Stalks)
@@ -170,6 +175,7 @@ namespace EyeInTheSky.Commands
             }
             EyeInTheSkyBot.config.save();
         }
+        #endregion
 
         #endregion
     }
