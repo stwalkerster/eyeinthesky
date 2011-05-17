@@ -184,6 +184,7 @@ namespace EyeInTheSky
             foreach (KeyValuePair<string, string> keyValuePair in _configuration)
             {
                 XmlElement opt = doc.CreateElement("option", xmlns);
+                opt.SetAttribute("name", keyValuePair.Key);
                 opt.SetAttribute("value", keyValuePair.Value);
                 config.AppendChild(opt);
             }
