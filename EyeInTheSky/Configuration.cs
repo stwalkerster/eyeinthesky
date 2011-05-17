@@ -17,6 +17,14 @@ namespace EyeInTheSky
         private SortedList<string, string> _configuration;
         private StalkList stalks;
         private SortedList<string,AccessListEntry> userlist;
+        private List<StalkLogItem> stalklog;
+
+        public void LogStalkTrigger(string s, RecentChange rc)
+        {
+            StalkLogItem sli = new StalkLogItem(s,rc);
+            stalklog.Add(sli);
+            this.save();
+        }
 
         public Configuration(string fileName)
         {
@@ -135,6 +143,24 @@ namespace EyeInTheSky
                     accessList.Add(u.HostnameMask,u);
                 }
 
+                stalklog = new List<StalkLogItem>();
+                XPathNavigator nav = navigator.SelectSingleNode("//isky:stalklog", xnm);
+
+                XmlDocument xd = new XmlDocument(nav.NameTable);
+                xd.LoadXml(nav.OuterXml);
+                XmlNode node = xd.ChildNodes[0];
+                foreach (XmlNode childNode in node.ChildNodes)
+                {
+                    if (childNode.NodeType != XmlNodeType.Element)
+                        continue;
+
+                    XmlElement element = (XmlElement)childNode;
+
+                    StalkLogItem sli = StalkLogItem.newFromXmlElement(element);
+                    stalklog.Add(sli);
+                }
+                
+
                 sr.Close();
                 return true;
             }
@@ -158,7 +184,6 @@ namespace EyeInTheSky
             foreach (KeyValuePair<string, string> keyValuePair in _configuration)
             {
                 XmlElement opt = doc.CreateElement("option", xmlns);
-                opt.SetAttribute("name", keyValuePair.Key);
                 opt.SetAttribute("value", keyValuePair.Value);
                 config.AppendChild(opt);
             }
@@ -183,11 +208,14 @@ namespace EyeInTheSky
        
             }
             root.AppendChild(userelement);
+            
+            XmlElement estalklog = doc.CreateElement("stalklog", xmlns);
+            foreach (StalkLogItem stalkLogItem in stalklog)
+            {
+                estalklog.AppendChild(stalkLogItem.toXmlFragment(doc, xmlns));
+            }
 
-
-            XmlElement stalklog = doc.CreateElement("stalklog", xmlns);
-
-            root.AppendChild(stalklog);
+            root.AppendChild(estalklog);
 
             doc.AppendChild(root);
 
