@@ -159,7 +159,6 @@ namespace EyeInTheSky
                     StalkLogItem sli = StalkLogItem.newFromXmlElement(element);
                     stalklog.Add(sli);
                 }
-                
 
                 sr.Close();
                 return true;
@@ -227,6 +226,7 @@ namespace EyeInTheSky
         {
             StalkLogItem[] l = stalklog.ToArray();
             stalklog.Clear();
+            this.save();
             return l;
         }
     }
