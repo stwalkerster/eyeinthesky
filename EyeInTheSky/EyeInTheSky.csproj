@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="AccessListEntry.cs" />
     <Compile Include="Commands\Mail.cs" />
+    <Compile Include="Commands\Clear.cs" />
     <Compile Include="ComplexStalk.cs" />
     <Compile Include="SimpleStalk.cs" />
     <Compile Include="StalkLogItem.cs" />
