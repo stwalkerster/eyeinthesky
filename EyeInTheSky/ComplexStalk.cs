@@ -12,8 +12,8 @@ namespace EyeInTheSky
             baseNode = new FalseNode();
         }
 
-        public ComplexStalk(string flag, string timeupd, string timetrig)
-            : base(flag, timeupd, timetrig)
+        public ComplexStalk(string flag, string timeupd, string timetrig, string mailflag)
+            : base(flag, timeupd, timetrig, mailflag)
         {
             baseNode = new FalseNode();
 
@@ -28,7 +28,10 @@ namespace EyeInTheSky
             if(success)
             {
                 this.LastTriggerTime = DateTime.Now;
-                EyeInTheSkyBot.config.LogStalkTrigger(flag, rc);
+
+                if (this.mail)
+                    EyeInTheSkyBot.config.LogStalkTrigger(flag, rc);
+
                 return true;
             }
             return false;
@@ -40,6 +43,7 @@ namespace EyeInTheSky
             e.SetAttribute("flag", this.flag);
             e.SetAttribute("lastupdate", LastUpdateTime.ToString());
             e.SetAttribute("lasttrigger", LastTriggerTime.ToString());
+            e.SetAttribute("mail", this.mail.ToString());
 
             e.AppendChild(baseNode.toXmlFragment(doc, xmlns));
             return e;
@@ -53,12 +57,13 @@ namespace EyeInTheSky
         public static new Stalk newFromXmlElement(XmlElement element)
         {
             XmlAttribute time = element.Attributes["lastupdate"];
-            string timeval = time == null ? DateTime.Now.ToString() : time.Value;
+            string lastupdtime = time == null ? DateTime.Now.ToString() : time.Value;
             time = element.Attributes["lasttrigger"];
-            string timeval2 = time == null ? DateTime.Parse("1/1/1970 00:00:00").ToString() : time.Value;
+            string lastriggertime = time == null ? DateTime.Parse("1/1/1970 00:00:00").ToString() : time.Value;
 
+            string mailflag = element.GetAttribute("mail");
 
-            ComplexStalk s = new ComplexStalk(element.Attributes["flag"].Value, timeval, timeval2);
+            ComplexStalk s = new ComplexStalk(element.Attributes["flag"].Value, lastupdtime, lastriggertime, mailflag);
             
             if(element.HasChildNodes)
             {

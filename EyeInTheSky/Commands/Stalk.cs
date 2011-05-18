@@ -192,7 +192,7 @@ namespace EyeInTheSky.Commands
                     StalkNode n = s.getEquivalentStalkTree();
 
                     ComplexStalk c = new ComplexStalk(tokens[0], s.LastUpdateTime.ToString(),
-                                                      s.LastTriggerTime.ToString());
+                                                      s.LastTriggerTime.ToString(), s.mail.ToString());
                     c.setSearchTree(n, false);
 
                     EyeInTheSkyBot.config.Stalks.Remove(tokens[0]);

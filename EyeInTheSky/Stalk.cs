@@ -21,11 +21,13 @@ namespace EyeInTheSky
             this.flag = flag;
         }
 
-        protected Stalk(string flag, string lastUpdateTime, string lastTriggerTime)
+        protected Stalk(string flag, string lastUpdateTime, string lastTriggerTime, string mailflag)
         {
             if (flag == "")
                 throw new ArgumentOutOfRangeException();
             this.flag = flag;
+
+            this._mail = bool.Parse(mailflag);
 
             this.lastUpdateTime = DateTime.Parse(lastUpdateTime);
 
@@ -35,6 +37,7 @@ namespace EyeInTheSky
 
         private DateTime lastUpdateTime = DateTime.Now;
         private DateTime lastTriggerTime = DateTime.Parse("1/1/1970 00:00:00");
+        private bool _mail = true;
 
         public DateTime LastUpdateTime
         {
@@ -54,6 +57,12 @@ namespace EyeInTheSky
         public string Flag
         {
             get { return flag; }
+        }
+
+        public bool mail
+        {
+            get { return _mail; }
+            set { _mail = value; }
         }
 
         public abstract bool match(RecentChange rc);

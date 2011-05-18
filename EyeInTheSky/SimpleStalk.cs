@@ -12,8 +12,8 @@ namespace EyeInTheSky
 
         }
 
-        private SimpleStalk(string flag, string time, string time2)
-            : base(flag, time, time2)
+        private SimpleStalk(string flag, string time, string time2, string mailflag)
+            : base(flag, time, time2, mailflag)
         {
         }
 
@@ -168,7 +168,9 @@ namespace EyeInTheSky
                 return false;
             }
 
-            EyeInTheSkyBot.config.LogStalkTrigger(flag, rc);
+            if (this.mail)
+                EyeInTheSkyBot.config.LogStalkTrigger(flag, rc);
+
             this.LastTriggerTime = DateTime.Now;
             return true;
         }
@@ -179,6 +181,7 @@ namespace EyeInTheSky
             e.SetAttribute("flag", flag);
             e.SetAttribute("lastupdate", LastUpdateTime.ToString());
             e.SetAttribute("lasttrigger", LastTriggerTime.ToString());
+            e.SetAttribute("mail", this.mail.ToString());
 
             if (HasUserSearch)
             {
@@ -207,12 +210,14 @@ namespace EyeInTheSky
         public static new Stalk newFromXmlElement(XmlElement element)
         {
             XmlAttribute time = element.Attributes["lastupdate"];
-            string timeval = time == null ? DateTime.Now.ToString() : time.Value;
+            string lastupdtime = time == null ? DateTime.Now.ToString() : time.Value;
 
             time = element.Attributes["lasttrigger"];
-            string timeval2 = time == null ? DateTime.Parse("1/1/1970 00:00:00").ToString() : time.Value;
+            string lasttrigtime = time == null ? DateTime.Parse("1/1/1970 00:00:00").ToString() : time.Value;
 
-            SimpleStalk s = new SimpleStalk(element.Attributes["flag"].Value, timeval, timeval2);
+            string mailflag = element.GetAttribute("mail");
+
+            SimpleStalk s = new SimpleStalk(element.Attributes["flag"].Value, lastupdtime, lasttrigtime, mailflag);
             foreach (XmlNode childNode in element.ChildNodes)
             {
                 if(! (childNode is XmlElement))
