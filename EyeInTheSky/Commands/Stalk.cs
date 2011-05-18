@@ -208,6 +208,18 @@ namespace EyeInTheSky.Commands
 
             }
             #endregion
+            if(mode == "mail")
+            {
+                if (tokens.Length < 2)
+                {
+                    EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "More params pls!");
+                    return;
+                }
+                bool mail = bool.Parse(tokens[1]);
+                EyeInTheSkyBot.config.Stalks[tokens[0]].mail = mail;
+                EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination,
+                                                       "Set mail attribute on stalk " + tokens[0] + " to " + mail);
+            }
 
             EyeInTheSkyBot.config.save();
         }
