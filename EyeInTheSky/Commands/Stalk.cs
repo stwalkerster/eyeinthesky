@@ -107,6 +107,9 @@ namespace EyeInTheSky.Commands
                         case "summary":
                             ss.setSummarySearch(regex,true);
                             break;
+                        default:
+                            EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "Unknown stalk type!");
+                            return;
                     }
 
                     EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination,
