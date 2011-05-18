@@ -43,8 +43,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccessListEntry.cs" />
+    <Compile Include="Commands\Mail.cs" />
     <Compile Include="ComplexStalk.cs" />
     <Compile Include="SimpleStalk.cs" />
+    <Compile Include="StalkLogItem.cs" />
     <Compile Include="StalkNodes\AndNode.cs" />
     <Compile Include="Commands\Access.cs" />
     <Compile Include="Commands\Config.cs" />

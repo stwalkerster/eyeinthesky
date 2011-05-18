@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 using System.Xml;
+using EyeInTheSky.StalkNodes;
 
 namespace EyeInTheSky
 {
@@ -38,6 +39,49 @@ namespace EyeInTheSky
 
         private Regex user, page, summary;
 
+        public StalkNode getEquivalentStalkTree()
+        {
+            StalkNode euser, epage, esummary;
+            if(hasusercheck)
+            {
+               UserStalkNode u = new UserStalkNode();
+                u.setMatchExpression(this.user.ToString());
+                euser = u;
+            }
+            else
+            {
+                euser = new TrueNode();
+            }
+            if(haspagecheck)
+            {
+               PageStalkNode u = new PageStalkNode();
+                u.setMatchExpression(this.page.ToString());
+                epage = u;
+            }
+            else
+            {
+                epage = new TrueNode();
+            }
+            if(hassummarycheck)
+            {
+               SummaryStalkNode u = new SummaryStalkNode();
+                u.setMatchExpression(this.summary.ToString());
+                esummary = u;
+            }
+            else
+            {
+                esummary = new TrueNode();
+            }
+
+            AndNode a1 = new AndNode();
+            AndNode a2 = new AndNode();
+            a1.RightChildNode = a2;
+            a1.LeftChildNode = euser;
+            a2.LeftChildNode = epage;
+            a2.RightChildNode = esummary;
+
+            return a1;
+        }
 
         public void setUserSearch(string regex, bool isupdate)
         {
@@ -84,6 +128,7 @@ namespace EyeInTheSky
                 return false;
             }
 
+            EyeInTheSkyBot.config.LogStalkTrigger(flag, rc);
             this.LastTriggerTime = DateTime.Now;
             return true;
         }
