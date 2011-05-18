@@ -67,6 +67,7 @@
                   <xs:attribute name="lastupdate" type="xs:dateTime" use="optional" />
                   <xs:attribute name="lasttrigger" type="xs:dateTime" use="optional" />
                   <xs:attribute name="mail" type="xs:boolean" use="optional" default="true" />
+                  <xs:attribute name="expiry" type="xs:dateTime" use="optional" />
                 </xs:complexType>
               </xs:element>
               <xs:element name="complexstalk" minOccurs="0" maxOccurs="unbounded">
@@ -86,6 +87,7 @@
                   <xs:attribute name="lastupdate" type="xs:dateTime" use="optional" />
                   <xs:attribute name="lasttrigger" type="xs:dateTime" use="optional" />
                   <xs:attribute name="mail" type="xs:boolean" use="optional" default="true" />
+                  <xs:attribute name="expiry" type="xs:dateTime" use="optional" />
                 </xs:complexType>
               </xs:element>
             </xs:choice>
