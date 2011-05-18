@@ -33,7 +33,8 @@ namespace EyeInTheSky.Commands
             mail.Subject = "EyeInTheSky stalk log";
             mail.Body = sb.ToString();
 
-            SmtpClient client = new SmtpClient();
+            SmtpClient client = new SmtpClient("mail.helpmebot.org.uk");
+            
             client.Send(mail);
             EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination,
                                                    "Sent stalk log via email to stwalkerster@helpmebot.org.uk.");
