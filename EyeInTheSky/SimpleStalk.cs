@@ -41,46 +41,86 @@ namespace EyeInTheSky
 
         public StalkNode getEquivalentStalkTree()
         {
-            StalkNode euser, epage, esummary;
-            if(hasusercheck)
+            // all three
+            if((hasusercheck)&&(haspagecheck)&&(hassummarycheck))
             {
-               UserStalkNode u = new UserStalkNode();
-                u.setMatchExpression(this.user.ToString());
-                euser = u;
-            }
-            else
-            {
-                euser = new TrueNode();
-            }
-            if(haspagecheck)
-            {
-               PageStalkNode u = new PageStalkNode();
-                u.setMatchExpression(this.page.ToString());
-                epage = u;
-            }
-            else
-            {
-                epage = new TrueNode();
-            }
-            if(hassummarycheck)
-            {
-               SummaryStalkNode u = new SummaryStalkNode();
-                u.setMatchExpression(this.summary.ToString());
-                esummary = u;
-            }
-            else
-            {
-                esummary = new TrueNode();
+                AndNode a1 = new AndNode();
+                AndNode a2 = new AndNode();
+                LeafNode n1 = new UserStalkNode();
+                LeafNode n2 = new PageStalkNode();
+                LeafNode n3 = new SummaryStalkNode();
+                n1.setMatchExpression(user.ToString());
+                n2.setMatchExpression(page.ToString());
+                n3.setMatchExpression(summary.ToString());
+                a1.LeftChildNode = n2;
+                a2.LeftChildNode = n1;
+                a2.RightChildNode = n3;
+                a1.RightChildNode = a2;
+                return a1;
             }
 
-            AndNode a1 = new AndNode();
-            AndNode a2 = new AndNode();
-            a1.RightChildNode = a2;
-            a1.LeftChildNode = euser;
-            a2.LeftChildNode = epage;
-            a2.RightChildNode = esummary;
+            // missing one
+            if ((hasusercheck) && (haspagecheck) && (!hassummarycheck))
+            {
+                AndNode a = new AndNode();
+                LeafNode n1 = new UserStalkNode();
+                LeafNode n2 = new PageStalkNode();
+                n1.setMatchExpression(user.ToString());
+                n2.setMatchExpression(page.ToString());
+                a.LeftChildNode = n1;
+                a.RightChildNode = n2;
+                return a;
+            }
+            if ((hasusercheck) && (!haspagecheck) && (hassummarycheck))
+            {
+                AndNode a = new AndNode();
+                LeafNode n1 = new UserStalkNode();
+                LeafNode n2 = new SummaryStalkNode();
+                n1.setMatchExpression(user.ToString());
+                n2.setMatchExpression(summary.ToString());
+                a.LeftChildNode = n1;
+                a.RightChildNode = n2;
+                return a;
+            }
+            if ((!hasusercheck) && (haspagecheck) && (hassummarycheck))
+            {
+                AndNode a = new AndNode();
+                LeafNode n1 = new SummaryStalkNode();
+                LeafNode n2 = new PageStalkNode();
+                n1.setMatchExpression(summary.ToString());
+                n2.setMatchExpression(page.ToString());
+                a.LeftChildNode = n1;
+                a.RightChildNode = n2;
+                return a;
+            }
 
-            return a1;
+            // missing two
+            if ((hasusercheck) && (!haspagecheck) && (!hassummarycheck))
+            {
+                LeafNode n = new UserStalkNode();
+                n.setMatchExpression(user.ToString());
+                return n;
+            }
+            if ((!hasusercheck) && (haspagecheck) && (!hassummarycheck))
+            {
+                LeafNode n = new PageStalkNode();
+                n.setMatchExpression(page.ToString());
+                return n;
+            }
+            if ((!hasusercheck) && (!haspagecheck) && (hassummarycheck))
+            {
+                LeafNode n = new SummaryStalkNode();
+                n.setMatchExpression(summary.ToString());
+                return n;
+            }
+
+            // missing all
+            if ((!hasusercheck) && (!haspagecheck) && (!hassummarycheck))
+            {
+                return new FalseNode();
+            }
+
+            throw new Exception();
         }
 
         public void setUserSearch(string regex, bool isupdate)
