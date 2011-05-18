@@ -27,7 +27,8 @@ namespace EyeInTheSky
                 throw new ArgumentOutOfRangeException();
             this.flag = flag;
 
-            this._mail = bool.Parse(mailflag);
+            if (!bool.TryParse(mailflag, out this._mail))
+                this._mail = true;
 
             this.lastUpdateTime = DateTime.Parse(lastUpdateTime);
 
