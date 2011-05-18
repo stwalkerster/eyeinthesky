@@ -14,8 +14,6 @@ namespace EyeInTheSky.Commands
             this.requiredAccessLevel = User.UserRights.Advanced;
         }
 
-        #region Overrides of GenericCommand
-
         protected override void execute(User source, string destination, string[] tokens)
         {
             if (tokens.Length < 1)
@@ -224,7 +222,5 @@ namespace EyeInTheSky.Commands
             EyeInTheSkyBot.config.save();
         }
         
-
-        #endregion
     }
 }
