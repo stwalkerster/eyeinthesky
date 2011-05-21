@@ -21,7 +21,7 @@ namespace EyeInTheSky
             this.flag = flag;
         }
 
-        protected Stalk(string flag, string lastUpdateTime, string lastTriggerTime, string mailflag, string description)
+        protected Stalk(string flag, string lastUpdateTime, string lastTriggerTime, string mailflag, string description, string expiryTime)
         {
             if (flag == "")
                 throw new ArgumentOutOfRangeException();
@@ -35,12 +35,16 @@ namespace EyeInTheSky
             this.lastTriggerTime = DateTime.Parse(lastTriggerTime);
 
             this.description = description;
+
+            this.expiryTime = DateTime.Parse(expiryTime);
         }
 
         private DateTime lastUpdateTime = DateTime.Now;
         private DateTime lastTriggerTime = DateTime.Parse("1/1/1970 00:00:00");
         private bool _mail = true;
         private string description = "";
+        private DateTime _expiryTime = DateTime.MaxValue;
+
 
         public DateTime LastUpdateTime
         {
@@ -71,7 +75,15 @@ namespace EyeInTheSky
         public string Description
         {
             get { return description; }
-            set { description = value; }
+            set { description = value;
+                lastUpdateTime = DateTime.Now; }
+        }
+
+        public DateTime expiryTime
+        {
+            get { return _expiryTime; }
+            set { _expiryTime = value;
+                lastUpdateTime = DateTime.Now; }
         }
 
         public abstract bool match(RecentChange rc);
