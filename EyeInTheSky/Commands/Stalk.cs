@@ -222,6 +222,7 @@ namespace EyeInTheSky.Commands
             }
             #endregion
             if(mode == "description")
+            #region description
             {
                 if (tokens.Length < 1)
                 {
@@ -237,6 +238,27 @@ namespace EyeInTheSky.Commands
                                        "Set description attribute on stalk " + stalk + " to " + descr);
 
             }
+            #endregion
+            if(mode == "expiry")
+            #region expiry
+            {
+                if (tokens.Length < 2)
+                {
+                    EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "More params pls!");
+                    return;
+                }
+                string stalk = GlobalFunctions.popFromFront(ref tokens);
+                string date = string.Join(" ", tokens);
+
+                DateTime expiryTime = DateTime.Parse(date);
+                EyeInTheSkyBot.config.Stalks[stalk].expiryTime = expiryTime;
+                EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination,
+                                                       "Set expiry attribute on stalk " + stalk + " to " + expiryTime);
+
+
+            }
+            #endregion
+
 
             EyeInTheSkyBot.config.save();
         }
