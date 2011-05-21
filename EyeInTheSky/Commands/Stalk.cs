@@ -140,7 +140,7 @@ namespace EyeInTheSky.Commands
                node);
 
                         }
-                        catch (XmlException ex)
+                        catch (XmlException)
                         {
                             EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "XML Error.");
                         }

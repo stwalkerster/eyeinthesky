@@ -17,7 +17,7 @@ namespace EyeInTheSky.Commands
 
         protected override void execute(User source, string destination, string[] tokens)
         {
-            StalkLogItem[] sliList = EyeInTheSkyBot.config.RetrieveStalkLog();
+            EyeInTheSkyBot.config.RetrieveStalkLog();
 
             EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination,
                                        "Stalk log has been cleared.");
