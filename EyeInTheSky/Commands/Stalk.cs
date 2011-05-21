@@ -190,7 +190,7 @@ namespace EyeInTheSky.Commands
                     StalkNode n = s.getEquivalentStalkTree();
 
                     ComplexStalk c = new ComplexStalk(tokens[0], s.LastUpdateTime.ToString(),
-                                                      s.LastTriggerTime.ToString(), s.mail.ToString());
+                                                      s.LastTriggerTime.ToString(), s.mail.ToString(), s.Description);
                     c.setSearchTree(n, false);
 
                     EyeInTheSkyBot.config.Stalks.Remove(tokens[0]);
@@ -207,6 +207,7 @@ namespace EyeInTheSky.Commands
             }
             #endregion
             if(mode == "mail")
+            #region mail
             {
                 if (tokens.Length < 2)
                 {
@@ -217,6 +218,23 @@ namespace EyeInTheSky.Commands
                 EyeInTheSkyBot.config.Stalks[tokens[0]].mail = mail;
                 EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination,
                                                        "Set mail attribute on stalk " + tokens[0] + " to " + mail);
+            }
+            #endregion
+            if(mode == "description")
+            {
+                if (tokens.Length < 1)
+                {
+                    EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "More params pls!");
+                    return;
+                }
+
+                string stalk = GlobalFunctions.popFromFront(ref tokens);
+                string descr = string.Join(" ", tokens);
+
+                EyeInTheSkyBot.config.Stalks[stalk].Description = descr;
+                EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination,
+                                       "Set description attribute on stalk " + stalk + " to " + descr);
+
             }
 
             EyeInTheSkyBot.config.save();
