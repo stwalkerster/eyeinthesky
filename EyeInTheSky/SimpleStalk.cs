@@ -215,10 +215,10 @@ namespace EyeInTheSky
             string lastupdtime = time == null ? DateTime.Now.ToString() : time.Value;
 
             time = element.Attributes["lasttrigger"];
-            string lasttrigtime = time == null ? DateTime.Parse("1/1/1970 00:00:00").ToString() : time.Value;
+            string lasttrigtime = time == null ? DateTime.MinValue.ToString() : time.Value;
 
             time = element.Attributes["expiry"];
-            string exptime = time == null ? DateTime.Parse("1/1/1970 00:00:00").ToString() : time.Value;
+            string exptime = time == null ? DateTime.MaxValue.ToString() : time.Value;
 
             string mailflag = element.GetAttribute("mail");
             string descr = element.GetAttribute("description");
