@@ -150,6 +150,9 @@ namespace EyeInTheSky
 
         public override bool match(RecentChange rc)
         {
+            if (!isActive())
+                return false;
+
             if (!(HasUserSearch || HasPageSearch || hassummarycheck))
                 return false;
 

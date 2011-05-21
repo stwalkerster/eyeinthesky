@@ -24,6 +24,9 @@ namespace EyeInTheSky
 
         public override bool match(RecentChange rc)
         {
+            if (!isActive())
+                return false;
+
             bool success = baseNode.match(rc);
             if(success)
             {

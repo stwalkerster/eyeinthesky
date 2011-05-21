@@ -102,5 +102,12 @@ namespace EyeInTheSky
                     throw new XmlException();
             }
         }
+
+        public bool isActive()
+        {
+            if (DateTime.Now > this.expiryTime) 
+                return false;
+            return true;
+        }
     }
 }
