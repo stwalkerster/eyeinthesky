@@ -21,20 +21,30 @@ namespace EyeInTheSky
             this.flag = flag;
         }
 
-        protected Stalk(string flag, string lastUpdateTime, string lastTriggerTime)
+        protected Stalk(string flag, string lastUpdateTime, string lastTriggerTime, string mailflag, string description, string expiryTime)
         {
             if (flag == "")
                 throw new ArgumentOutOfRangeException();
             this.flag = flag;
 
+            if (!bool.TryParse(mailflag, out this._mail))
+                this._mail = true;
+
             this.lastUpdateTime = DateTime.Parse(lastUpdateTime);
 
             this.lastTriggerTime = DateTime.Parse(lastTriggerTime);
 
+            this.description = description;
+
+            this.expiryTime = DateTime.Parse(expiryTime);
         }
 
         private DateTime lastUpdateTime = DateTime.Now;
         private DateTime lastTriggerTime = DateTime.Parse("1/1/1970 00:00:00");
+        private bool _mail = true;
+        private string description = "";
+        private DateTime _expiryTime = DateTime.MaxValue;
+
 
         public DateTime LastUpdateTime
         {
@@ -56,6 +66,26 @@ namespace EyeInTheSky
             get { return flag; }
         }
 
+        public bool mail
+        {
+            get { return _mail; }
+            set { _mail = value; }
+        }
+
+        public string Description
+        {
+            get { return description; }
+            set { description = value;
+                lastUpdateTime = DateTime.Now; }
+        }
+
+        public DateTime expiryTime
+        {
+            get { return _expiryTime; }
+            set { _expiryTime = value;
+                lastUpdateTime = DateTime.Now; }
+        }
+
         public abstract bool match(RecentChange rc);
 
         public abstract XmlElement ToXmlFragment(XmlDocument doc, string xmlns);
@@ -71,6 +101,13 @@ namespace EyeInTheSky
                 default:
                     throw new XmlException();
             }
+        }
+
+        public bool isActive()
+        {
+            if (DateTime.Now > this.expiryTime) 
+                return false;
+            return true;
         }
     }
 }

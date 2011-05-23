@@ -15,6 +15,7 @@
       <xs:element name="and" type="booleantreenode" />
       <xs:element name="or" type="booleantreenode" />
       <xs:element name="not" type="treenode" />
+      <xs:element name="xor" type="booleantreenode" />
       <xs:element name="true" />
       <xs:element name="false" />
       <xs:element name="user" type="stalkmatch"/>
@@ -28,6 +29,7 @@
       <xs:element name="and" type="booleantreenode" />
       <xs:element name="or" type="booleantreenode" />
       <xs:element name="not" type="treenode" />
+      <xs:element name="xor" type="booleantreenode" />
       <xs:element name="true" />
       <xs:element name="false" />
       <xs:element name="user" type="stalkmatch"/>
@@ -64,6 +66,9 @@
                   <xs:attribute name="flag" type="xs:string" use="required" />
                   <xs:attribute name="lastupdate" type="xs:dateTime" use="optional" />
                   <xs:attribute name="lasttrigger" type="xs:dateTime" use="optional" />
+                  <xs:attribute name="mail" type="xs:boolean" use="optional" default="true" />
+                  <xs:attribute name="expiry" type="xs:dateTime" use="optional" />
+                  <xs:attribute name="description" type="xs:string" />
                 </xs:complexType>
               </xs:element>
               <xs:element name="complexstalk" minOccurs="0" maxOccurs="unbounded">
@@ -72,6 +77,7 @@
                     <xs:element name="and" type="booleantreenode" />
                     <xs:element name="or" type="booleantreenode" />
                     <xs:element name="not" type="treenode" />
+                    <xs:element name="xor" type="booleantreenode" />
                     <xs:element name="true" />
                     <xs:element name="false" />
                     <xs:element name="user" type="stalkmatch"/>
@@ -81,6 +87,9 @@
                   <xs:attribute name="flag" type="xs:string" use="required" />
                   <xs:attribute name="lastupdate" type="xs:dateTime" use="optional" />
                   <xs:attribute name="lasttrigger" type="xs:dateTime" use="optional" />
+                  <xs:attribute name="mail" type="xs:boolean" use="optional" default="true" />
+                  <xs:attribute name="expiry" type="xs:dateTime" use="optional" />
+                  <xs:attribute name="description" type="xs:string" />
                 </xs:complexType>
               </xs:element>
             </xs:choice>

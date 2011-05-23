@@ -20,6 +20,8 @@ namespace EyeInTheSky.StalkNodes
                     return OrNode.newFromXmlFragment(xmlNode);
                 case "not":
                     return NotNode.newFromXmlFragment(xmlNode);
+                case "xor":
+                    return XorNode.newFromXmlFragment(xmlNode);
                 case "true":
                     return TrueNode.newFromXmlFragment(xmlNode);
                 case "false":

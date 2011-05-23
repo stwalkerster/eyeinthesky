@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="AccessListEntry.cs" />
     <Compile Include="Commands\Mail.cs" />
+    <Compile Include="Commands\Clear.cs" />
     <Compile Include="ComplexStalk.cs" />
     <Compile Include="SimpleStalk.cs" />
     <Compile Include="StalkLogItem.cs" />
@@ -65,6 +66,7 @@
     <Compile Include="RecentChange.cs" />
     <Compile Include="Stalk.cs" />
     <Compile Include="StalkList.cs" />
+    <Compile Include="StalkNodes\XorNode.cs" />
     <Compile Include="StalkNodes\DoubleChildLogicalNode.cs" />
     <Compile Include="StalkNodes\FalseNode.cs" />
     <Compile Include="StalkNodes\LeafNode.cs" />

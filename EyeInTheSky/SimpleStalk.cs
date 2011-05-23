@@ -12,8 +12,8 @@ namespace EyeInTheSky
 
         }
 
-        private SimpleStalk(string flag, string time, string time2)
-            : base(flag, time, time2)
+        private SimpleStalk(string flag, string time, string time2, string mailflag, string descr, string expiryTime)
+            : base(flag, time, time2, mailflag, descr, expiryTime)
         {
         }
 
@@ -41,46 +41,86 @@ namespace EyeInTheSky
 
         public StalkNode getEquivalentStalkTree()
         {
-            StalkNode euser, epage, esummary;
-            if(hasusercheck)
+            // all three
+            if((hasusercheck)&&(haspagecheck)&&(hassummarycheck))
             {
-               UserStalkNode u = new UserStalkNode();
-                u.setMatchExpression(this.user.ToString());
-                euser = u;
-            }
-            else
-            {
-                euser = new TrueNode();
-            }
-            if(haspagecheck)
-            {
-               PageStalkNode u = new PageStalkNode();
-                u.setMatchExpression(this.page.ToString());
-                epage = u;
-            }
-            else
-            {
-                epage = new TrueNode();
-            }
-            if(hassummarycheck)
-            {
-               SummaryStalkNode u = new SummaryStalkNode();
-                u.setMatchExpression(this.summary.ToString());
-                esummary = u;
-            }
-            else
-            {
-                esummary = new TrueNode();
+                AndNode a1 = new AndNode();
+                AndNode a2 = new AndNode();
+                LeafNode n1 = new UserStalkNode();
+                LeafNode n2 = new PageStalkNode();
+                LeafNode n3 = new SummaryStalkNode();
+                n1.setMatchExpression(user.ToString());
+                n2.setMatchExpression(page.ToString());
+                n3.setMatchExpression(summary.ToString());
+                a1.LeftChildNode = n2;
+                a2.LeftChildNode = n1;
+                a2.RightChildNode = n3;
+                a1.RightChildNode = a2;
+                return a1;
             }
 
-            AndNode a1 = new AndNode();
-            AndNode a2 = new AndNode();
-            a1.RightChildNode = a2;
-            a1.LeftChildNode = euser;
-            a2.LeftChildNode = epage;
-            a2.RightChildNode = esummary;
+            // missing one
+            if ((hasusercheck) && (haspagecheck) && (!hassummarycheck))
+            {
+                AndNode a = new AndNode();
+                LeafNode n1 = new UserStalkNode();
+                LeafNode n2 = new PageStalkNode();
+                n1.setMatchExpression(user.ToString());
+                n2.setMatchExpression(page.ToString());
+                a.LeftChildNode = n1;
+                a.RightChildNode = n2;
+                return a;
+            }
+            if ((hasusercheck) && (!haspagecheck) && (hassummarycheck))
+            {
+                AndNode a = new AndNode();
+                LeafNode n1 = new UserStalkNode();
+                LeafNode n2 = new SummaryStalkNode();
+                n1.setMatchExpression(user.ToString());
+                n2.setMatchExpression(summary.ToString());
+                a.LeftChildNode = n1;
+                a.RightChildNode = n2;
+                return a;
+            }
+            if ((!hasusercheck) && (haspagecheck) && (hassummarycheck))
+            {
+                AndNode a = new AndNode();
+                LeafNode n1 = new SummaryStalkNode();
+                LeafNode n2 = new PageStalkNode();
+                n1.setMatchExpression(summary.ToString());
+                n2.setMatchExpression(page.ToString());
+                a.LeftChildNode = n1;
+                a.RightChildNode = n2;
+                return a;
+            }
 
-            return a1;
+            // missing two
+            if ((hasusercheck) && (!haspagecheck) && (!hassummarycheck))
+            {
+                LeafNode n = new UserStalkNode();
+                n.setMatchExpression(user.ToString());
+                return n;
+            }
+            if ((!hasusercheck) && (haspagecheck) && (!hassummarycheck))
+            {
+                LeafNode n = new PageStalkNode();
+                n.setMatchExpression(page.ToString());
+                return n;
+            }
+            if ((!hasusercheck) && (!haspagecheck) && (hassummarycheck))
+            {
+                LeafNode n = new SummaryStalkNode();
+                n.setMatchExpression(summary.ToString());
+                return n;
+            }
+
+            // missing all
+            if ((!hasusercheck) && (!haspagecheck) && (!hassummarycheck))
+            {
+                return new FalseNode();
+            }
+
+            throw new Exception();
         }
 
         public void setUserSearch(string regex, bool isupdate)
@@ -110,6 +150,9 @@ namespace EyeInTheSky
 
         public override bool match(RecentChange rc)
         {
+            if (!isActive())
+                return false;
+
             if (!(HasUserSearch || HasPageSearch || hassummarycheck))
                 return false;
 
@@ -128,7 +171,9 @@ namespace EyeInTheSky
                 return false;
             }
 
-            EyeInTheSkyBot.config.LogStalkTrigger(flag, rc);
+            if (this.mail)
+                EyeInTheSkyBot.config.LogStalkTrigger(flag, rc);
+
             this.LastTriggerTime = DateTime.Now;
             return true;
         }
@@ -139,6 +184,9 @@ namespace EyeInTheSky
             e.SetAttribute("flag", flag);
             e.SetAttribute("lastupdate", LastUpdateTime.ToString());
             e.SetAttribute("lasttrigger", LastTriggerTime.ToString());
+            e.SetAttribute("mail", this.mail.ToString());
+            e.SetAttribute("description", this.Description);
+            e.SetAttribute("expiry", this.expiryTime.ToString());
 
             if (HasUserSearch)
             {
@@ -167,12 +215,19 @@ namespace EyeInTheSky
         public static new Stalk newFromXmlElement(XmlElement element)
         {
             XmlAttribute time = element.Attributes["lastupdate"];
-            string timeval = time == null ? DateTime.Now.ToString() : time.Value;
+            string lastupdtime = time == null ? DateTime.Now.ToString() : time.Value;
 
             time = element.Attributes["lasttrigger"];
-            string timeval2 = time == null ? DateTime.Parse("1/1/1970 00:00:00").ToString() : time.Value;
+            string lasttrigtime = time == null ? DateTime.MinValue.ToString() : time.Value;
 
-            SimpleStalk s = new SimpleStalk(element.Attributes["flag"].Value, timeval, timeval2);
+            time = element.Attributes["expiry"];
+            string exptime = time == null ? DateTime.MaxValue.ToString() : time.Value;
+
+            string mailflag = element.GetAttribute("mail");
+            string descr = element.GetAttribute("description");
+
+            SimpleStalk s = new SimpleStalk(element.Attributes["flag"].Value, lastupdtime, lasttrigtime, mailflag, descr,
+                                            exptime);
             foreach (XmlNode childNode in element.ChildNodes)
             {
                 if(! (childNode is XmlElement))

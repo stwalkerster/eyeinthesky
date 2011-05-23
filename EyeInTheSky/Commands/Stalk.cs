@@ -14,8 +14,6 @@ namespace EyeInTheSky.Commands
             this.requiredAccessLevel = User.UserRights.Advanced;
         }
 
-        #region Overrides of GenericCommand
-
         protected override void execute(User source, string destination, string[] tokens)
         {
             if (tokens.Length < 1)
@@ -107,6 +105,9 @@ namespace EyeInTheSky.Commands
                         case "summary":
                             ss.setSummarySearch(regex,true);
                             break;
+                        default:
+                            EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "Unknown stalk type!");
+                            return;
                     }
 
                     EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination,
@@ -139,7 +140,7 @@ namespace EyeInTheSky.Commands
                node);
 
                         }
-                        catch (XmlException ex)
+                        catch (XmlException)
                         {
                             EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "XML Error.");
                         }
@@ -189,7 +190,8 @@ namespace EyeInTheSky.Commands
                     StalkNode n = s.getEquivalentStalkTree();
 
                     ComplexStalk c = new ComplexStalk(tokens[0], s.LastUpdateTime.ToString(),
-                                                      s.LastTriggerTime.ToString());
+                                                      s.LastTriggerTime.ToString(), s.mail.ToString(), s.Description,
+                                                      s.expiryTime.ToString());
                     c.setSearchTree(n, false);
 
                     EyeInTheSkyBot.config.Stalks.Remove(tokens[0]);
@@ -205,11 +207,61 @@ namespace EyeInTheSky.Commands
 
             }
             #endregion
+            if(mode == "mail")
+            #region mail
+            {
+                if (tokens.Length < 2)
+                {
+                    EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "More params pls!");
+                    return;
+                }
+                bool mail = bool.Parse(tokens[1]);
+                EyeInTheSkyBot.config.Stalks[tokens[0]].mail = mail;
+                EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination,
+                                                       "Set mail attribute on stalk " + tokens[0] + " to " + mail);
+            }
+            #endregion
+            if(mode == "description")
+            #region description
+            {
+                if (tokens.Length < 1)
+                {
+                    EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "More params pls!");
+                    return;
+                }
+
+                string stalk = GlobalFunctions.popFromFront(ref tokens);
+                string descr = string.Join(" ", tokens);
+
+                EyeInTheSkyBot.config.Stalks[stalk].Description = descr;
+                EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination,
+                                       "Set description attribute on stalk " + stalk + " to " + descr);
+
+            }
+            #endregion
+            if(mode == "expiry")
+            #region expiry
+            {
+                if (tokens.Length < 2)
+                {
+                    EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "More params pls!");
+                    return;
+                }
+                string stalk = GlobalFunctions.popFromFront(ref tokens);
+                string date = string.Join(" ", tokens);
+
+                DateTime expiryTime = DateTime.Parse(date);
+                EyeInTheSkyBot.config.Stalks[stalk].expiryTime = expiryTime;
+                EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination,
+                                                       "Set expiry attribute on stalk " + stalk + " to " + expiryTime);
+
+
+            }
+            #endregion
+
 
             EyeInTheSkyBot.config.save();
         }
         
-
-        #endregion
     }
 }
