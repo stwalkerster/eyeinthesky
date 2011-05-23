@@ -46,7 +46,6 @@
     <Compile Include="Commands\Mail.cs" />
     <Compile Include="Commands\Clear.cs" />
     <Compile Include="ComplexStalk.cs" />
-    <Compile Include="SimpleStalk.cs" />
     <Compile Include="StalkLogItem.cs" />
     <Compile Include="StalkNodes\AndNode.cs" />
     <Compile Include="Commands\Access.cs" />

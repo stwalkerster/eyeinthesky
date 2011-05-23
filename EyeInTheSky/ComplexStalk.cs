@@ -12,15 +12,81 @@ namespace EyeInTheSky
             baseNode = new FalseNode();
         }
 
-        public ComplexStalk(string flag, string timeupd, string timetrig, string mailflag, string descr, string expiryTime)
-            : base(flag, timeupd, timetrig, mailflag, descr, expiryTime)
+        public ComplexStalk(string flag, string timeupd, string timetrig, string mailflag, string descr, string expiryTime) : base(flag)
         {
-            baseNode = new FalseNode();
+            
+            if (flag == "")
+                throw new ArgumentOutOfRangeException();
+            this.flag = flag;
 
+            if (!bool.TryParse(mailflag, out this._mail))
+                this._mail = true;
+
+            this.lastUpdateTime = DateTime.Parse(timeupd);
+
+            this.lastTriggerTime = DateTime.Parse(timetrig);
+
+            this.description = descr;
+
+            this.expiryTime = DateTime.Parse(expiryTime);
+
+            baseNode = new FalseNode();
         }
 
         private StalkNode baseNode;
+        private DateTime lastUpdateTime = DateTime.Now;
+        private DateTime lastTriggerTime = DateTime.Parse("1/1/1970 00:00:00");
+        private bool _mail = true;
+        private string description = "";
+        private DateTime _expiryTime = DateTime.MaxValue;
 
+
+        public DateTime LastUpdateTime
+        {
+            get { return lastUpdateTime; }
+            protected set { lastUpdateTime = value; }
+        }
+
+        public DateTime LastTriggerTime
+        {
+            get { return lastTriggerTime; }
+            protected set { lastTriggerTime = value; }
+        }
+
+
+
+        public bool mail
+        {
+            get { return _mail; }
+            set { _mail = value; }
+        }
+
+        public string Description
+        {
+            get { return description; }
+            set
+            {
+                description = value;
+                lastUpdateTime = DateTime.Now;
+            }
+        }
+
+        public DateTime expiryTime
+        {
+            get { return _expiryTime; }
+            set
+            {
+                _expiryTime = value;
+                lastUpdateTime = DateTime.Now;
+            }
+        }
+
+        public bool isActive()
+        {
+            if (DateTime.Now > this.expiryTime)
+                return false;
+            return true;
+        }
 
         public override bool match(RecentChange rc)
         {

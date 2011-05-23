@@ -4,11 +4,11 @@ using System.Xml.XPath;
 
 namespace EyeInTheSky
 {
-    public class StalkList : SortedList<string,Stalk>
+    public class StalkList : SortedList<string,ComplexStalk>
     {
         public Stalk search(RecentChange rc)
         {
-            foreach (KeyValuePair<string,Stalk> s in this)
+            foreach (KeyValuePair<string,ComplexStalk> s in this)
             {
                 if(s.Value.match(rc))
                 {
@@ -33,7 +33,7 @@ namespace EyeInTheSky
 
                 XmlElement element = (XmlElement) childNode;
 
-                Stalk s = Stalk.newFromXmlElement(element);
+                ComplexStalk s = (ComplexStalk)Stalk.newFromXmlElement(element);
                 list.Add(s.Flag, s);
             }
 

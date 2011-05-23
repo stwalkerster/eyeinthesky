@@ -191,7 +191,7 @@ namespace EyeInTheSky
             root.AppendChild(config);
 
             XmlElement stalkselem = doc.CreateElement("stalks", xmlns);
-            foreach (KeyValuePair<string, Stalk> kvp in stalks)
+            foreach (KeyValuePair<string, ComplexStalk> kvp in stalks)
             {
                 stalkselem.AppendChild(kvp.Value.ToXmlFragment(doc, xmlns));
             }
