@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Xml;
 using EyeInTheSky.StalkNodes;
 
@@ -32,27 +30,8 @@ namespace EyeInTheSky.Commands
                     return;
                 }
 
-                ComplexStalk s;
-                if (tokens.Length < 2)
-                {
-                    s = new ComplexStalk(tokens[0]);
-                }
-                else
-                {
-                    switch (tokens[1])
-                    {
-                        case "simple":
-                             s = new ComplexStalk(tokens[0]);
-                            break;
-                        case "complex":
-                             s = new ComplexStalk(tokens[0]);
-                            break;
-                        default:
-                             s = new ComplexStalk(tokens[0]);
-                            break;
-                    }
-                }
-
+                ComplexStalk s = new ComplexStalk(tokens[0]);
+                
                 EyeInTheSkyBot.config.Stalks.Add(tokens[0],s);
                 EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination, "Added stalk " + tokens[0]);
             }
@@ -97,16 +76,25 @@ namespace EyeInTheSky.Commands
                             UserStalkNode usn = new UserStalkNode();
                             usn.setMatchExpression(regex);
                             s.setSearchTree(usn, true);
+                            EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination,
+                                       "Set " + type + " for stalk " + stalk +
+                                       " with CSL value: " + usn);
                             break;
                         case "page":
                             PageStalkNode psn = new PageStalkNode();
                             psn.setMatchExpression(regex);
                             s.setSearchTree(psn, true);
+                            EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination,
+                                       "Set " + type + " for stalk " + stalk +
+                                       " with CSL value: " + psn);
                             break;
                         case "summary":
                             SummaryStalkNode ssn = new SummaryStalkNode();
                             ssn.setMatchExpression(regex);
                             s.setSearchTree(ssn, true);
+                            EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination,
+                                       "Set " + type + " for stalk " + stalk +
+                                       " with CSL value: " + ssn);
                             break;
                         case "xml":
                             string xmlfragment = string.Join(" ", tokens);
@@ -117,11 +105,11 @@ namespace EyeInTheSky.Commands
 
 
                                 StalkNode node = StalkNode.newFromXmlFragment(xd.FirstChild);
-                                ComplexStalk cs = (ComplexStalk) s;
-                                cs.setSearchTree(node, true);
+                                s.setSearchTree(node, true);
                                 EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination,
-                                                                       "Set " + type + " for stalk " + stalk +
-                                                                       " with CSL value: " + node);
+                                       "Set " + type + " for stalk " + stalk +
+                                       " with CSL value: " + node);
+
 
                             }
                             catch (XmlException)
@@ -139,7 +127,7 @@ namespace EyeInTheSky.Commands
             #region list
             {
                 EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "Stalk list:");
-                foreach (KeyValuePair<string, EyeInTheSky.ComplexStalk> kvp in EyeInTheSkyBot.config.Stalks)
+                foreach (KeyValuePair<string, ComplexStalk> kvp in EyeInTheSkyBot.config.Stalks)
                 {
                         EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname,
                                                               kvp.Value.ToString());
