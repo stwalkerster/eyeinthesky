@@ -28,7 +28,7 @@ namespace EyeInTheSky
             // set up wikimedia connection
 
             irc_wikimedia = new IAL("irc.wikimedia.org", 6667, config["nickname", "EyeInTheSkyBot"], "", "eyeinthesky", "Eye In The Sky", "");
-            irc_wikimedia.logEvents = false;
+            irc_wikimedia.logEvents = bool.Parse(config["wikimediaIrcLog", "false"]);
             irc_wikimedia.connectionRegistrationSucceededEvent += irc_wikimedia_connectionRegistrationSucceededEvent;
             irc_wikimedia.threadFatalError += irc_threadFatalError;
 
