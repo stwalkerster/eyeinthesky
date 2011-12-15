@@ -98,7 +98,7 @@ namespace EyeInTheSky
             {
                 this.LastTriggerTime = DateTime.Now;
 
-                if (this.mail)
+                if (this.mail && bool.Parse(EyeInTheSkyBot.config["logstalks"]))
                     EyeInTheSkyBot.config.LogStalkTrigger(flag, rc);
 
                 return true;
