@@ -202,7 +202,21 @@ namespace EyeInTheSky.Commands
 
             }
             #endregion
+            if (mode == "enabled")
+            #region enabled
+            {
+                if (tokens.Length < 2)
+                {
+                    EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "More params pls!");
+                    return;
+                }
 
+                bool enabled = bool.Parse(tokens[1]);
+                EyeInTheSkyBot.config.Stalks[tokens[0]].enabled = enabled;
+                EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination,
+                                                       "Set enabled attribute on stalk " + tokens[0] + " to " + enabled);
+            }
+            #endregion
 
             EyeInTheSkyBot.config.save();
         }
