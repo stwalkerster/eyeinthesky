@@ -42,24 +42,6 @@ namespace EyeInTheSky.Commands
                 EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination, output);
                 return;
             }
-
-            string mode = GlobalFunctions.popFromFront(ref tokens);
-            if (mode == "update")
-            {
-            }
-            if (mode == "switch")
-            {
-                if (tokens.Length < 1)
-                {
-                    EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "More params pls!");
-                    return;
-                }
-                string tag = GlobalFunctions.popFromFront(ref tokens);
-
-            }
-            if (mode == "list")
-            {
-            }
         }
 
         #endregion
