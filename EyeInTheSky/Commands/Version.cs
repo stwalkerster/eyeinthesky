@@ -30,7 +30,9 @@ namespace EyeInTheSky.Commands
                                             UseShellExecute = false,
                                             RedirectStandardOutput = true,
                                             FileName = "git",
-                                            Arguments = "describe"
+                                            Arguments = "describe",
+                                            WorkingDirectory = bindir
+                                            
                                         }
                                 };
                 p.Start();
