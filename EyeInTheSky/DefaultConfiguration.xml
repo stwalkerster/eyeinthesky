@@ -4,6 +4,10 @@
     <option name="nickservpassword" value="CHANGEME" />
     <option name="defaultchannel" value="##eyeinthesky"/>
     <option name="nickname" value="EyeInTheSkyBot" />
+    <option name="commandtrigger" value="="/>
+    <option name="rcchannel" value="#en.wikipedia"/>
+    <option name="logstalks" value="false"/>
+    <option name="wikimediaIrcLog" value="true"/>
   </config>
   <stalks />
   <users>
