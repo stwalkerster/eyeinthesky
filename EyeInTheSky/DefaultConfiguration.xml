@@ -3,9 +3,11 @@
   <config>
     <option name="nickservpassword" value="CHANGEME" />
     <option name="defaultchannel" value="##eyeinthesky"/>
+    <option name="nickname" value="EyeInTheSkyBot" />
   </config>
   <stalks />
   <users>
     <user access="Developer" hostmask="CHANGEME" />
   </users>
+  <stalklog />
 </eyeinthesky>

@@ -88,8 +88,10 @@
                   <xs:attribute name="lastupdate" type="xs:dateTime" use="optional" />
                   <xs:attribute name="lasttrigger" type="xs:dateTime" use="optional" />
                   <xs:attribute name="mail" type="xs:boolean" use="optional" default="true" />
+                  <xs:attribute name="immediatemail" type="xs:boolean" use="optional" default="false" />
                   <xs:attribute name="expiry" type="xs:dateTime" use="optional" />
                   <xs:attribute name="description" type="xs:string" />
+                  <xs:attribute name="enabled" type="xs:boolean" use="optional" default="true" />
                 </xs:complexType>
               </xs:element>
             </xs:choice>
