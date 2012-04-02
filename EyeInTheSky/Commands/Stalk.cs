@@ -144,6 +144,21 @@ namespace EyeInTheSky.Commands
                     EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "More params pls!");
                     return;
                 }
+
+                if(tokens[1] == "immediate")
+                {
+                    if (tokens.Length < 3 )
+                    {
+                        EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "More params pls!");
+                        return;
+                    }
+
+                    bool imail = bool.Parse(tokens[1]);
+                    EyeInTheSkyBot.config.Stalks[tokens[0]].immediatemail = imail;
+                    EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination,
+                                                           "Set immediatemail attribute on stalk " + tokens[0] + " to " + imail);
+                }
+
                 bool mail = bool.Parse(tokens[1]);
                 EyeInTheSkyBot.config.Stalks[tokens[0]].mail = mail;
                 EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination,

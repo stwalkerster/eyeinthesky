@@ -12,7 +12,7 @@ namespace EyeInTheSky
             baseNode = new FalseNode();
         }
 
-        public ComplexStalk(string flag, string timeupd, string timetrig, string mailflag, string descr, string expiryTime) : base(flag)
+        public ComplexStalk(string flag, string timeupd, string timetrig, string mailflag, string descr, string expiryTime, string immediatemail) : base(flag)
         {
             
             if (flag == "")
@@ -20,7 +20,10 @@ namespace EyeInTheSky
             this.flag = flag;
 
             if (!bool.TryParse(mailflag, out this._mail))
-                this._mail = true;
+                this._mail = true; 
+            
+            if (!bool.TryParse(immediatemail, out this._immediatemail))
+                this._immediatemail = false;
 
             this.lastUpdateTime = DateTime.Parse(timeupd);
 
@@ -39,6 +42,7 @@ namespace EyeInTheSky
         private bool _mail = true;
         private string description = "";
         private DateTime _expiryTime = DateTime.MaxValue;
+        private bool _immediatemail;
 
 
         public DateTime LastUpdateTime
@@ -53,7 +57,7 @@ namespace EyeInTheSky
             protected set { lastTriggerTime = value; }
         }
 
-
+        public bool immediatemail { get { return _immediatemail; } set { _immediatemail = value; } }
 
         public bool mail
         {
@@ -113,6 +117,7 @@ namespace EyeInTheSky
             e.SetAttribute("lastupdate", LastUpdateTime.ToString());
             e.SetAttribute("lasttrigger", LastTriggerTime.ToString());
             e.SetAttribute("mail", this.mail.ToString());
+            e.SetAttribute("immediatemail", this.immediatemail.ToString());
             e.SetAttribute("description", this.Description);
             e.SetAttribute("expiry", this.expiryTime.ToString());
 
@@ -135,9 +140,10 @@ namespace EyeInTheSky
             string exptime = time == null ? DateTime.MaxValue.ToString() : time.Value;
 
             string mailflag = element.GetAttribute("mail");
+            string immMail = element.GetAttribute("immediatemail");
             string descr = element.GetAttribute("description");
 
-            ComplexStalk s = new ComplexStalk(element.Attributes["flag"].Value, lastupdtime, lastriggertime, mailflag,descr,exptime);
+            ComplexStalk s = new ComplexStalk(element.Attributes["flag"].Value, lastupdtime, lastriggertime, mailflag, descr, exptime, immMail);
             
             if(element.HasChildNodes)
             {
