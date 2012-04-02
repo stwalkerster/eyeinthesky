@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -19,34 +20,26 @@ namespace EyeInTheSky.Commands
         protected override void execute(User source, string destination, string[] tokens)
         {
             string bindir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase).Substring(6);
-            DirectoryInfo di = new DirectoryInfo(bindir);
-            di = di.Parent; //bin
-            di = di.Parent; //eyeinthesky
-            di = di.Parent; //eyeinthesky
-            di = di.GetDirectories(".git")[0]; // .git
-
-
+            
             if (GlobalFunctions.realArrayLength(tokens) < 1)
             {
-                // look at .git/HEAD
-                StreamReader sr = new StreamReader(di.FullName + "/HEAD");
-                // get commit id from it
-                string head = sr.ReadLine();
-                sr.Close();
-                if (head.StartsWith("ref:"))
-                {
-                    EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination, "Current " + head);
-                }
-                else
-                {
-                    // look in .git/info/refs
-                    sr = new StreamReader(di.FullName + "/info/refs");
+                Process p = new Process
+                                {
+                                    StartInfo =
+                                        {
+                                            UseShellExecute = false,
+                                            RedirectStandardOutput = true,
+                                            FileName = "git",
+                                            Arguments = "describe"
+                                        }
+                                };
+                p.Start();
 
-                    // find first line which has the commit id
-                    // split line at whitespace - second part has the ref name ("refs/tags/release-1.2")
-                    sr.Close();
-                }
+                string output = p.StandardOutput.ReadToEnd();
+                
+                p.WaitForExit();
 
+                EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination, output);
                 return;
             }
 
