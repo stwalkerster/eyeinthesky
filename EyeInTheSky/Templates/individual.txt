@@ -1,0 +1,22 @@
+﻿Hi!
+
+The stalk $1 has been triggered and you requested immediate notification by email of this trigger.
+
+Title: $2
+User: $3
+Summary: $4
+Flags: $9
+Link: $5
+
+Stalk: $1
+Trigger time: $6
+Description: $7
+CSL: $8
+
+To disable notification of this stalk, run 
+   =stalk mail $1 immediate false
+in my IRC channel, and I will stop notifying you.
+
+Regards,
+
+The Eye In The Sky
