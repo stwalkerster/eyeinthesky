@@ -205,7 +205,7 @@ namespace EyeInTheSky
                                    {
                                        From = new MailAddress("eyeinthesky@helpmebot.org.uk"),
                                        Subject = "EyeInTheSky notification",
-                                       Body = template;
+                                       Body = template
                                    };
 
             mailMessage.To.Add("stwalkerster@helpmebot.org.uk");
