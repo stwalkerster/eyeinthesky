@@ -29,6 +29,7 @@ namespace EyeInTheSky.Commands
                                         {
                                             UseShellExecute = false,
                                             RedirectStandardOutput = true,
+                                            RedirectStandardError = true,
                                             FileName = "git",
                                             Arguments = "describe",
                                             WorkingDirectory = bindir
@@ -38,10 +39,14 @@ namespace EyeInTheSky.Commands
                 p.Start();
 
                 string output = p.StandardOutput.ReadToEnd();
+                string error = p.StandardError.ReadToEnd();
                 
                 p.WaitForExit();
 
-                EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination, output);
+
+                EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination, error);
+                EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination, "Version: " + output);
+                
                 return;
             }
         }
