@@ -153,7 +153,7 @@ namespace EyeInTheSky.Commands
                         return;
                     }
 
-                    bool imail = bool.Parse(tokens[1]);
+                    bool imail = bool.Parse(tokens[2]);
                     EyeInTheSkyBot.config.Stalks[tokens[0]].immediatemail = imail;
                     EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination,
                                                            "Set immediatemail attribute on stalk " + tokens[0] + " to " + imail);
