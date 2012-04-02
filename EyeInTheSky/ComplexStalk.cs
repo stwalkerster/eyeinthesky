@@ -185,7 +185,7 @@ namespace EyeInTheSky
             string arg5 = rc.Url;
             string arg6 = DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToLongTimeString();
             string arg7 = this.Description;
-            string arg8 = this.ToString();
+            string arg8 = this.baseNode.ToString();
             string arg9 = rc.EditFlags;
 
             string template = new StreamReader("individual.txt").ReadToEnd();
