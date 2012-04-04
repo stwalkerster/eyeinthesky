@@ -32,6 +32,8 @@ namespace EyeInTheSky.StalkNodes
                     return PageStalkNode.newFromXmlFragment(xmlNode);
                 case "summary":
                     return SummaryStalkNode.newFromXmlFragment(xmlNode);
+                case "flag":
+                    return FlagStalkNode.newFromXmlFragment(xmlNode);
                 default:
                     throw new XmlException();
             }

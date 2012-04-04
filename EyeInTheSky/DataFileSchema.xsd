@@ -21,6 +21,7 @@
       <xs:element name="user" type="stalkmatch"/>
       <xs:element name="page" type="stalkmatch"/>
       <xs:element name="summary" type="stalkmatch" />
+      <xs:element name="flag" type="stalkmatch" />
     </xs:choice>
   </xs:complexType>
 
@@ -35,6 +36,7 @@
       <xs:element name="user" type="stalkmatch"/>
       <xs:element name="page" type="stalkmatch"/>
       <xs:element name="summary" type="stalkmatch" />
+      <xs:element name="flag" type="stalkmatch" />
     </xs:choice>
   </xs:complexType>
 
@@ -83,6 +85,7 @@
                     <xs:element name="user" type="stalkmatch"/>
                     <xs:element name="page" type="stalkmatch"/>
                     <xs:element name="summary" type="stalkmatch" />
+                    <xs:element name="flag" type="stalkmatch" />
                   </xs:choice>
                   <xs:attribute name="flag" type="xs:string" use="required" />
                   <xs:attribute name="lastupdate" type="xs:dateTime" use="optional" />
