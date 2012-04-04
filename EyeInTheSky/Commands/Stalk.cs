@@ -321,7 +321,7 @@ namespace EyeInTheSky.Commands
 
                 string regex = string.Join(" ", tokens);
 
-                OrNode newroot = new OrNode() { LeftChildNode = s.getSearchTree() };
+                OrNode newroot = new OrNode { LeftChildNode = s.getSearchTree() };
 
                 switch (type)
                 {
