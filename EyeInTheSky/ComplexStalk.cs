@@ -175,6 +175,11 @@ namespace EyeInTheSky
 
             baseNode = node;
         }
+
+        public StalkNode getSearchTree()
+        {
+            return this.baseNode;
+        }
     
         public void immediateMail(RecentChange rc)
         {
