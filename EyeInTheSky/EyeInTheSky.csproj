@@ -45,6 +45,7 @@
     <Compile Include="AccessListEntry.cs" />
     <Compile Include="Commands\Mail.cs" />
     <Compile Include="Commands\Clear.cs" />
+    <Compile Include="Commands\Quick.cs" />
     <Compile Include="ComplexStalk.cs" />
     <Compile Include="StalkLogItem.cs" />
     <Compile Include="StalkNodes\AndNode.cs" />
