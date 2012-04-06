@@ -209,7 +209,7 @@ namespace EyeInTheSky
             MailMessage mailMessage = new MailMessage
                                    {
                                        From = new MailAddress("eyeinthesky@helpmebot.org.uk"),
-                                       Subject = "EyeInTheSky notification",
+                                       Subject = "[EyeInTheSky] '" + this.Flag + "' notification",
                                        Body = template
                                    };
 
