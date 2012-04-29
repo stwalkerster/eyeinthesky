@@ -29,7 +29,7 @@ namespace EyeInTheSky.StalkNodes
 
         public override string ToString()
         {
-            return "(" + LeftChildNode + "^" + RightChildNode + ")";
+            return "(^:" + LeftChildNode + RightChildNode + ")";
         }
         #endregion
     }
