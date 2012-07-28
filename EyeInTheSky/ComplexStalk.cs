@@ -193,7 +193,7 @@ namespace EyeInTheSky
             string arg8 = this.baseNode.ToString();
             string arg9 = rc.EditFlags;
 
-            string template = new StreamReader("individual.txt").ReadToEnd();
+            string template = new StreamReader("Templates/individual.txt").ReadToEnd();
             template = template
                 .Replace("$1", arg1)
                 .Replace("$2", arg2)
