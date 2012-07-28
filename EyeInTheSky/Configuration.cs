@@ -106,9 +106,7 @@ namespace EyeInTheSky
         {
             if (!new FileInfo(configurationFileName).Exists)
             {
-                string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase).Substring(6) + "/DefaultConfiguration.xml";
-                new FileInfo(path).CopyTo(configurationFileName);
-                throw new Exception("Please open the configuration file and define required values");
+                   throw new Exception("Please copy DefaultSettings.xml to " + configurationFileName + ", open the configuration file and define the required values");
             }
 
             try
