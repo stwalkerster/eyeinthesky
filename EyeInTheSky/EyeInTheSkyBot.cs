@@ -10,6 +10,7 @@ namespace EyeInTheSky
     {
         public static IAL irc_freenode, irc_wikimedia;
         public static Configuration config;
+        private static Nagios _nag;
         public static void Main()
         {
             config = new Configuration("EyeInTheSky.config");
@@ -32,10 +33,14 @@ namespace EyeInTheSky
             irc_wikimedia.connectionRegistrationSucceededEvent += irc_wikimedia_connectionRegistrationSucceededEvent;
             irc_wikimedia.threadFatalError += irc_threadFatalError;
 
+            _nag = new Nagios();
+            
+
             if ((!irc_freenode.connect()) || (!irc_wikimedia.connect()))
             {
                 irc_freenode.stop();
                 irc_wikimedia.stop();
+                _nag.stop();
                 return;
             }
         }
