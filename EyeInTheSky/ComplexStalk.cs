@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Net.Mail;
 using System.Xml;
@@ -11,7 +12,7 @@ namespace EyeInTheSky
         public ComplexStalk(string flag)
             : base(flag)
         {
-            baseNode = new FalseNode();
+            _baseNode = new FalseNode();
         }
 
         public ComplexStalk(string flag, string timeupd, string timetrig, string mailflag, string descr, string expiryTime, string immediatemail, string enabled) : base(flag)
@@ -21,32 +22,32 @@ namespace EyeInTheSky
                 throw new ArgumentOutOfRangeException();
             this.flag = flag;
 
-            if (!bool.TryParse(mailflag, out this._mail))
-                this._mail = true; 
+            if (!bool.TryParse(mailflag, out _mail))
+                _mail = true; 
             
-            if (!bool.TryParse(immediatemail, out this._immediatemail))
-                this._immediatemail = false;
+            if (!bool.TryParse(immediatemail, out _immediatemail))
+                _immediatemail = false;
 
-            if (!bool.TryParse(enabled, out this._enabled))
-                this._enabled = true;
+            if (!bool.TryParse(enabled, out _enabled))
+                _enabled = true;
 
 
-            this.lastUpdateTime = DateTime.Parse(timeupd);
+            _lastUpdateTime = DateTime.Parse(timeupd);
 
-            this.lastTriggerTime = DateTime.Parse(timetrig);
+            _lastTriggerTime = DateTime.Parse(timetrig);
 
-            this.description = descr;
+            _description = descr;
 
             this.expiryTime = DateTime.Parse(expiryTime);
 
-            baseNode = new FalseNode();
+            _baseNode = new FalseNode();
         }
 
-        private StalkNode baseNode;
-        private DateTime lastUpdateTime = DateTime.Now;
-        private DateTime lastTriggerTime = DateTime.Parse("1/1/1970 00:00:00");
+        private StalkNode _baseNode;
+        private DateTime _lastUpdateTime = DateTime.Now;
+        private DateTime _lastTriggerTime = DateTime.Parse("1/1/1970 00:00:00");
         private bool _mail = true;
-        private string description = "";
+        private string _description = "";
         private DateTime _expiryTime = DateTime.MaxValue;
         private bool _immediatemail;
         private bool _enabled;
@@ -54,14 +55,14 @@ namespace EyeInTheSky
 
         public DateTime LastUpdateTime
         {
-            get { return lastUpdateTime; }
-            protected set { lastUpdateTime = value; }
+            get { return _lastUpdateTime; }
+            protected set { _lastUpdateTime = value; }
         }
 
         public DateTime LastTriggerTime
         {
-            get { return lastTriggerTime; }
-            protected set { lastTriggerTime = value; }
+            get { return _lastTriggerTime; }
+            protected set { _lastTriggerTime = value; }
         }
 
         public bool enabled { get { return _enabled; } set { _enabled = value; } }
@@ -76,11 +77,11 @@ namespace EyeInTheSky
 
         public string Description
         {
-            get { return description; }
+            get { return _description; }
             set
             {
-                description = value;
-                lastUpdateTime = DateTime.Now;
+                _description = value;
+                _lastUpdateTime = DateTime.Now;
             }
         }
 
@@ -90,15 +91,15 @@ namespace EyeInTheSky
             set
             {
                 _expiryTime = value;
-                lastUpdateTime = DateTime.Now;
+                _lastUpdateTime = DateTime.Now;
             }
         }
 
         public bool isActive()
         {
-            if (DateTime.Now > this.expiryTime)
+            if (DateTime.Now > expiryTime)
                 return false;
-            return this.enabled;
+            return enabled;
         }
 
         public override bool match(RecentChange rc)
@@ -106,16 +107,16 @@ namespace EyeInTheSky
             if (!isActive())
                 return false;
 
-            bool success = baseNode.match(rc);
+            bool success = _baseNode.match(rc);
             if(success)
             {
-                this.LastTriggerTime = DateTime.Now;
+                LastTriggerTime = DateTime.Now;
 
-                if (this.mail && bool.Parse(EyeInTheSkyBot.config["logstalks"]))
-                    EyeInTheSkyBot.config.LogStalkTrigger(flag, rc);
+                if (mail && bool.Parse(EyeInTheSkyBot.Config["logstalks"]))
+                    EyeInTheSkyBot.Config.LogStalkTrigger(flag, rc);
 
-                if (this.immediatemail)
-                    this.immediateMail(rc);
+                if (immediatemail)
+                    immediateMail(rc);
 
                 return true;
             }
@@ -125,44 +126,44 @@ namespace EyeInTheSky
         public override XmlElement ToXmlFragment(XmlDocument doc, string xmlns)
         {
             XmlElement e = doc.CreateElement("complexstalk", xmlns);
-            e.SetAttribute("flag", this.flag);
-            e.SetAttribute("lastupdate", LastUpdateTime.ToString());
-            e.SetAttribute("lasttrigger", LastTriggerTime.ToString());
-            e.SetAttribute("mail", this.mail.ToString());
-            e.SetAttribute("immediatemail", this.immediatemail.ToString());
-            e.SetAttribute("description", this.Description);
-            e.SetAttribute("expiry", this.expiryTime.ToString());
-            e.SetAttribute("enabled", this.enabled.ToString());
+            e.SetAttribute("flag", flag);
+            e.SetAttribute("lastupdate", LastUpdateTime.ToString(CultureInfo.InvariantCulture));
+            e.SetAttribute("lasttrigger", LastTriggerTime.ToString(CultureInfo.InvariantCulture));
+            e.SetAttribute("mail", mail.ToString());
+            e.SetAttribute("immediatemail", immediatemail.ToString());
+            e.SetAttribute("description", Description);
+            e.SetAttribute("expiry", expiryTime.ToString(CultureInfo.InvariantCulture));
+            e.SetAttribute("enabled", enabled.ToString());
 
-            e.AppendChild(baseNode.toXmlFragment(doc, xmlns));
+            e.AppendChild(_baseNode.toXmlFragment(doc, xmlns));
             return e;
         }
 
         public override string ToString()
         {
-            return "Flag: " + flag + ", Last modified: "+this.LastUpdateTime+", Type: Complex " + baseNode.ToString();
+            return "Flag: " + flag + ", Last modified: "+LastUpdateTime+", Type: Complex " + _baseNode;
         }
 
         public static new Stalk newFromXmlElement(XmlElement element)
         {
             XmlAttribute time = element.Attributes["lastupdate"];
-            string lastupdtime = time == null ? DateTime.Now.ToString() : time.Value;
+            string lastupdtime = time == null ? DateTime.Now.ToString(CultureInfo.InvariantCulture) : time.Value;
             time = element.Attributes["lasttrigger"];
-            string lastriggertime = time == null ? DateTime.MinValue.ToString() : time.Value;
+            string lastriggertime = time == null ? DateTime.MinValue.ToString(CultureInfo.InvariantCulture) : time.Value;
             time = element.Attributes["expiry"];
-            string exptime = time == null ? DateTime.MaxValue.ToString() : time.Value;
+            string exptime = time == null ? DateTime.MaxValue.ToString(CultureInfo.InvariantCulture) : time.Value;
 
             string mailflag = element.GetAttribute("mail");
             string immMail = element.GetAttribute("immediatemail");
             string enbld = element.GetAttribute("enabled");
             string descr = element.GetAttribute("description");
 
-            ComplexStalk s = new ComplexStalk(element.Attributes["flag"].Value, lastupdtime, lastriggertime, mailflag, descr, exptime, immMail,enbld);
+            var s = new ComplexStalk(element.Attributes["flag"].Value, lastupdtime, lastriggertime, mailflag, descr, exptime, immMail,enbld);
             
             if(element.HasChildNodes)
             {
                 StalkNode n = StalkNode.newFromXmlFragment(element.FirstChild);
-                s.baseNode = n;
+                s._baseNode = n;
             }
 
             return s;
@@ -171,26 +172,26 @@ namespace EyeInTheSky
         public void setSearchTree(StalkNode node, bool isupdate)
         {
             if (isupdate)
-                this.LastUpdateTime = DateTime.Now;
+                LastUpdateTime = DateTime.Now;
 
-            baseNode = node;
+            _baseNode = node;
         }
 
         public StalkNode getSearchTree()
         {
-            return this.baseNode;
+            return _baseNode;
         }
     
         public void immediateMail(RecentChange rc)
         {
-            string arg1 = this.Flag;
+            string arg1 = Flag;
             string arg2 = rc.Page;
             string arg3 = rc.User;
             string arg4 = rc.EditSummary;
             string arg5 = rc.Url;
             string arg6 = DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToLongTimeString();
-            string arg7 = this.Description;
-            string arg8 = this.baseNode.ToString();
+            string arg7 = Description;
+            string arg8 = _baseNode.ToString();
             string arg9 = rc.EditFlags;
 
             string template = new StreamReader("Templates/individual.txt").ReadToEnd();
@@ -206,16 +207,16 @@ namespace EyeInTheSky
                 .Replace("$9", arg9)
                 ;
 
-            MailMessage mailMessage = new MailMessage
+            var mailMessage = new MailMessage
                                    {
                                        From = new MailAddress("eyeinthesky@helpmebot.org.uk"),
-                                       Subject = "[EyeInTheSky] '" + this.Flag + "' notification",
+                                       Subject = "[EyeInTheSky] '" + Flag + "' notification",
                                        Body = template
                                    };
 
             mailMessage.To.Add("stwalkerster@helpmebot.org.uk");
 
-            SmtpClient client = new SmtpClient("mail.helpmebot.org.uk");
+            var client = new SmtpClient("mail.helpmebot.org.uk");
 
             client.Send(mailMessage);
         }

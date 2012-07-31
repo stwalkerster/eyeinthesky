@@ -72,7 +72,7 @@ namespace EyeInTheSky
                 GlobalFunctions.errorLog(ex);
             }
 
-            User ret = new User
+            var ret = new User
                            {
                                hostname = host,
                                nickname = nick,
@@ -90,16 +90,16 @@ namespace EyeInTheSky
 
             string endResult = string.Empty;
 
-            if (this.nickname != null)
-                endResult = this.nickname;
+            if (nickname != null)
+                endResult = nickname;
 
-            if (this.username != null)
+            if (username != null)
             {
-                endResult += "!" + this.username;
+                endResult += "!" + username;
             }
-            if (this.hostname != null)
+            if (hostname != null)
             {
-                endResult += "@" + this.hostname;
+                endResult += "@" + hostname;
             }
 
             return endResult;
@@ -113,11 +113,7 @@ namespace EyeInTheSky
         {
             get
             {
-                if(EyeInTheSkyBot.config.accessList.ContainsKey(this.hostname))
-                {
-                    return EyeInTheSkyBot.config.accessList[this.hostname].AccessLevel;
-                }
-                return UserRights.Normal;
+                return EyeInTheSkyBot.Config.accessList.ContainsKey(hostname) ? EyeInTheSkyBot.Config.accessList[hostname].AccessLevel : UserRights.Normal;
             }
         }
 

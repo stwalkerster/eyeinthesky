@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace EyeInTheSky
 {
     abstract class GenericCommand
     {
-        protected User.UserRights requiredAccessLevel = User.UserRights.Developer;
+        protected User.UserRights RequiredAccessLevel = User.UserRights.Developer;
 
         public static GenericCommand create(string command)
         {
@@ -22,8 +19,8 @@ namespace EyeInTheSky
 
         public void run(User source, string destination, string[] tokens)
         {
-            if (source.accessLevel < this.requiredAccessLevel)
-                EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "Access denied.");
+            if (source.accessLevel < RequiredAccessLevel)
+                EyeInTheSkyBot.IrcFreenode.ircNotice(source.nickname, "Access denied.");
             else
                 execute(source, destination, tokens);
         }

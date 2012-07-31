@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace EyeInTheSky.Commands
 {
@@ -9,7 +7,7 @@ namespace EyeInTheSky.Commands
     {
         public Access()
         {
-            this.requiredAccessLevel = User.UserRights.Superuser;
+            RequiredAccessLevel = User.UserRights.Superuser;
         }
 
         #region Overrides of GenericCommand
@@ -18,7 +16,7 @@ namespace EyeInTheSky.Commands
         {
             if (tokens.Length < 1)
             {
-                EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "More params pls!");
+                EyeInTheSkyBot.IrcFreenode.ircNotice(source.nickname, "More params pls!");
                 return;
             }
 
@@ -27,46 +25,46 @@ namespace EyeInTheSky.Commands
             {
                 if (tokens.Length < 2)
                 {
-                    EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "More params pls!");
+                    EyeInTheSkyBot.IrcFreenode.ircNotice(source.nickname, "More params pls!");
                     return;
                 }
                 string hostmask = GlobalFunctions.popFromFront(ref tokens);
                 string accesslevel = GlobalFunctions.popFromFront(ref tokens);
-                User.UserRights level = (User.UserRights)Enum.Parse(typeof(User.UserRights), accesslevel);
+                var level = (User.UserRights)Enum.Parse(typeof(User.UserRights), accesslevel);
 
                 if(source.accessLevel != User.UserRights.Developer && level >= source.accessLevel)
                 {
-                    EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "Access denied.");
+                    EyeInTheSkyBot.IrcFreenode.ircNotice(source.nickname, "Access denied.");
                     return;
                 }
 
-                AccessListEntry ale = new AccessListEntry(hostmask, level);
-                EyeInTheSkyBot.config.accessList.Add(hostmask, ale);
-                EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination, "Done.");
+                var ale = new AccessListEntry(hostmask, level);
+                EyeInTheSkyBot.Config.accessList.Add(hostmask, ale);
+                EyeInTheSkyBot.IrcFreenode.ircPrivmsg(destination, "Done.");
             }
             if (mode == "del")
             {
                 if (tokens.Length < 1)
                 {
-                    EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "More params pls!");
+                    EyeInTheSkyBot.IrcFreenode.ircNotice(source.nickname, "More params pls!");
                     return;
                 }
                 string hostmask = GlobalFunctions.popFromFront(ref tokens);
-                EyeInTheSkyBot.config.accessList.Remove(hostmask);
-                EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination, "Done.");
+                EyeInTheSkyBot.Config.accessList.Remove(hostmask);
+                EyeInTheSkyBot.IrcFreenode.ircPrivmsg(destination, "Done.");
             }
             if (mode == "list")
             {
-                EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "Access list:");
-                foreach (KeyValuePair<string, AccessListEntry> accessListEntry in EyeInTheSkyBot.config.accessList)
+                EyeInTheSkyBot.IrcFreenode.ircNotice(source.nickname, "Access list:");
+                foreach (KeyValuePair<string, AccessListEntry> accessListEntry in EyeInTheSkyBot.Config.accessList)
                 {
-                    EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname,
+                    EyeInTheSkyBot.IrcFreenode.ircNotice(source.nickname,
                                                           accessListEntry.Value.HostnameMask + " = " +
                                                           accessListEntry.Value.AccessLevel);
                 }
-                EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "End of access list.");
+                EyeInTheSkyBot.IrcFreenode.ircNotice(source.nickname, "End of access list.");
             }
-            EyeInTheSkyBot.config.save();
+            EyeInTheSkyBot.Config.save();
         }
 
         #endregion

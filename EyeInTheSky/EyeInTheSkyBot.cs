@@ -1,53 +1,49 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
+using System.Globalization;
 
 namespace EyeInTheSky
 {
     public class EyeInTheSkyBot
     {
-        public static IAL irc_freenode, irc_wikimedia;
-        public static Configuration config;
+        public static IAL IrcFreenode, IrcWikimedia;
+        public static Configuration Config;
         private static Nagios _nag;
         public static void Main()
         {
-            config = new Configuration("EyeInTheSky.config");
+            Config = new Configuration("EyeInTheSky.config");
 
-            string freenodepassword = config["nickservpassword"];
+            string freenodepassword = Config["nickservpassword"];
 
             // set up freenode connection
 
-            irc_freenode = new IAL("chat.freenode.net", 8001, config["nickname", "EyeInTheSkyBot"], freenodepassword,
+            IrcFreenode = new IAL("chat.freenode.net", 8001, Config["nickname", "EyeInTheSkyBot"], freenodepassword,
                                    "eyeinthesky", "Eye In The Sky", "NickServ");
            
-            irc_freenode.NickServRegistrationSucceededEvent+=irc_freenode_connectionRegistrationSucceededEvent;
-            irc_freenode.threadFatalError += irc_threadFatalError;
-            irc_freenode.privmsgEvent += irc_freenode_privmsgEvent;
+            IrcFreenode.NickServRegistrationSucceededEvent+=irc_freenode_connectionRegistrationSucceededEvent;
+            IrcFreenode.threadFatalError += irc_threadFatalError;
+            IrcFreenode.privmsgEvent += irc_freenode_privmsgEvent;
 
             // set up wikimedia connection
 
-            irc_wikimedia = new IAL("irc.wikimedia.org", 6667, config["nickname", "EyeInTheSkyBot"], "", "eyeinthesky", "Eye In The Sky", "");
-            irc_wikimedia.logEvents = bool.Parse(config["wikimediaIrcLog", "false"]);
-            irc_wikimedia.connectionRegistrationSucceededEvent += irc_wikimedia_connectionRegistrationSucceededEvent;
-            irc_wikimedia.threadFatalError += irc_threadFatalError;
+            IrcWikimedia = new IAL("irc.wikimedia.org", 6667, Config["nickname", "EyeInTheSkyBot"], "", "eyeinthesky", "Eye In The Sky", "");
+            IrcWikimedia.logEvents = bool.Parse(Config["wikimediaIrcLog", "false"]);
+            IrcWikimedia.connectionRegistrationSucceededEvent += irc_wikimedia_connectionRegistrationSucceededEvent;
+            IrcWikimedia.threadFatalError += irc_threadFatalError;
 
             _nag = new Nagios();
             
 
-            if ((!irc_freenode.connect()) || (!irc_wikimedia.connect()))
+            if ((!IrcFreenode.connect()) || (!IrcWikimedia.connect()))
             {
-                irc_freenode.stop();
-                irc_wikimedia.stop();
+                IrcFreenode.stop();
+                IrcWikimedia.stop();
                 _nag.stop();
-                return;
             }
         }
 
         static void irc_freenode_privmsgEvent(User source, string destination, string message)
         {
-           if(message.ToCharArray()[0].ToString() != config["commandtrigger", "="])
+           if(message.ToCharArray()[0].ToString(CultureInfo.InvariantCulture) != Config["commandtrigger", "="])
                 return;
 
             string[] tokens = message.Split(' ');
@@ -56,33 +52,33 @@ namespace EyeInTheSky
             if (cmd != null)
                 cmd.run(source, destination, tokens);
             else
-                irc_freenode.ircNotice(source.nickname, "Command not found.");
+                IrcFreenode.ircNotice(source.nickname, "Command not found.");
         }
 
         static void irc_threadFatalError(object sender, EventArgs e)
         {
-            irc_freenode.stop();
-            irc_wikimedia.stop();
+            IrcFreenode.stop();
+            IrcWikimedia.stop();
         }
 
         static void irc_wikimedia_connectionRegistrationSucceededEvent()
         {
-            irc_wikimedia.ircJoin(config["rcchannel", "#en.wikipedia"]);
+            IrcWikimedia.ircJoin(Config["rcchannel", "#en.wikipedia"]);
         }
 
         static void irc_freenode_connectionRegistrationSucceededEvent()
         {
-            irc_freenode.ircJoin(config["defaultchannel","##eyeinthesky"]);
-            irc_wikimedia.privmsgEvent += irc_wikimedia_privmsgEvent;
+            IrcFreenode.ircJoin(Config["defaultchannel","##eyeinthesky"]);
+            IrcWikimedia.privmsgEvent += irc_wikimedia_privmsgEvent;
         }
 
         static void irc_wikimedia_privmsgEvent(User source, string destination, string message)
         {
             RecentChange rcitem = RecentChange.parse(message);
-            Stalk s = config.Stalks.search(rcitem);
+            Stalk s = Config.Stalks.search(rcitem);
             if(s==null) return;
 
-            irc_freenode.ircPrivmsg(config["defaultchannel", "##eyeinthesky"], string.Format(
+            IrcFreenode.ircPrivmsg(Config["defaultchannel", "##eyeinthesky"], string.Format(
                IrcColours.colorChar + "[{0}] Stalked edit {1} to page \"{2}\" by [[User:{3}]], summary: {4}",
                 IrcColours.colouredText(IrcColours.Colours.red,IrcColours.boldText(s.Flag)),
                 rcitem.Url, 

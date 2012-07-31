@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace EyeInTheSky.Commands
 {
@@ -9,7 +6,7 @@ namespace EyeInTheSky.Commands
     {
         public Config()
         {
-            this.requiredAccessLevel = User.UserRights.Developer;
+            RequiredAccessLevel = User.UserRights.Developer;
         }
 
         #region Overrides of GenericCommand
@@ -18,7 +15,7 @@ namespace EyeInTheSky.Commands
         {
             if (tokens.Length < 1)
             {
-                EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "More params pls!");
+                EyeInTheSkyBot.IrcFreenode.ircNotice(source.nickname, "More params pls!");
                 return;
             }
 
@@ -28,19 +25,19 @@ namespace EyeInTheSky.Commands
             {
                 if (tokens.Length < 1)
                 {
-                    EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "More params pls!");
+                    EyeInTheSkyBot.IrcFreenode.ircNotice(source.nickname, "More params pls!");
                     return;
                 }
 
                 try
                 {
-                    EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination,
-                                                           tokens[0] + " == " + EyeInTheSkyBot.config[tokens[0]]);
+                    EyeInTheSkyBot.IrcFreenode.ircPrivmsg(destination,
+                                                           tokens[0] + " == " + EyeInTheSkyBot.Config[tokens[0]]);
 
                 }
                 catch (ArgumentOutOfRangeException)
                 {
-                    EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination,
+                    EyeInTheSkyBot.IrcFreenode.ircPrivmsg(destination,
                                                            tokens[0] + " is non-existant");
 
                 }
@@ -49,13 +46,13 @@ namespace EyeInTheSky.Commands
             {
                 if (tokens.Length < 1)
                 {
-                    EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "More params pls!");
+                    EyeInTheSkyBot.IrcFreenode.ircNotice(source.nickname, "More params pls!");
                     return;
                 }
 
                 string setting = GlobalFunctions.popFromFront(ref tokens);
-                EyeInTheSkyBot.config[setting] = string.Join(" ", tokens);
-                EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination,
+                EyeInTheSkyBot.Config[setting] = string.Join(" ", tokens);
+                EyeInTheSkyBot.IrcFreenode.ircPrivmsg(destination,
                                                        setting + " = " + string.Join(" ", tokens));
 
             }
@@ -63,35 +60,28 @@ namespace EyeInTheSky.Commands
             {
                 if (tokens.Length < 1)
                 {
-                    EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "More params pls!");
+                    EyeInTheSkyBot.IrcFreenode.ircNotice(source.nickname, "More params pls!");
                     return;
                 }
 
                 string setting = GlobalFunctions.popFromFront(ref tokens);
-                EyeInTheSkyBot.config.delete(setting);
-                EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination,
+                EyeInTheSkyBot.Config.delete(setting);
+                EyeInTheSkyBot.IrcFreenode.ircPrivmsg(destination,
                                                        setting + " deleted");
 
             }
             if(mode == "save")
             {
-                EyeInTheSkyBot.config.save();
-                EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination,
+                EyeInTheSkyBot.Config.save();
+                EyeInTheSkyBot.IrcFreenode.ircPrivmsg(destination,
                                        "Configuration saved");
             }
             if (mode == "rehash")
             {
-                if (EyeInTheSkyBot.config.rehash())
-                {
-                    EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination,
-                                                           "Configuration reloaded");
-                }
-                else
-                {
-                    EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination,
-                                       "Configuration failed to reload.");
-
-                }
+                EyeInTheSkyBot.IrcFreenode.ircPrivmsg(destination,
+                                                      EyeInTheSkyBot.Config.rehash()
+                                                          ? "Configuration reloaded"
+                                                          : "Configuration failed to reload.");
             }
         }
 

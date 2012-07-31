@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Xml;
+﻿using System.Xml;
 using EyeInTheSky.StalkNodes;
 
 namespace EyeInTheSky.Commands
@@ -12,7 +8,7 @@ namespace EyeInTheSky.Commands
 
         public Quick()
         {
-            this.requiredAccessLevel = User.UserRights.Advanced;
+            RequiredAccessLevel = User.UserRights.Advanced;
         }
 
         #region Overrides of GenericCommand
@@ -24,7 +20,7 @@ namespace EyeInTheSky.Commands
 
             if (tokens.Length < 3)
             {
-                EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "More params pls!");
+                EyeInTheSkyBot.IrcFreenode.ircNotice(source.nickname, "More params pls!");
                 return;
             }
 
@@ -32,9 +28,9 @@ namespace EyeInTheSky.Commands
             string type = GlobalFunctions.popFromFront(ref tokens);
             string regex = string.Join(" ", tokens);
 
-            ComplexStalk s = new ComplexStalk(name);
+            var s = new ComplexStalk(name);
 
-            EyeInTheSkyBot.config.Stalks.Add(name, s);
+            EyeInTheSkyBot.Config.Stalks.Add(name, s);
 
             switch (type)
             {
@@ -42,7 +38,7 @@ namespace EyeInTheSky.Commands
                     UserStalkNode usn = new UserStalkNode();
                     usn.setMatchExpression(regex);
                     s.setSearchTree(usn, true);
-                    EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination,
+                    EyeInTheSkyBot.IrcFreenode.ircPrivmsg(destination,
                                "Set " + type + " for new stalk " + name +
                                " with CSL value: " + usn);
                     break;
@@ -50,7 +46,7 @@ namespace EyeInTheSky.Commands
                     PageStalkNode psn = new PageStalkNode();
                     psn.setMatchExpression(regex);
                     s.setSearchTree(psn, true);
-                    EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination,
+                    EyeInTheSkyBot.IrcFreenode.ircPrivmsg(destination,
                                "Set " + type + " for new stalk " + name +
                                " with CSL value: " + psn);
                     break;
@@ -58,7 +54,7 @@ namespace EyeInTheSky.Commands
                     SummaryStalkNode ssn = new SummaryStalkNode();
                     ssn.setMatchExpression(regex);
                     s.setSearchTree(ssn, true);
-                    EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination,
+                    EyeInTheSkyBot.IrcFreenode.ircPrivmsg(destination,
                                "Set " + type + " for new stalk " + name +
                                " with CSL value: " + ssn);
                     break;
@@ -72,7 +68,7 @@ namespace EyeInTheSky.Commands
 
                         StalkNode node = StalkNode.newFromXmlFragment(xd.FirstChild);
                         s.setSearchTree(node, true);
-                        EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination,
+                        EyeInTheSkyBot.IrcFreenode.ircPrivmsg(destination,
                                "Set " + type + " for new stalk " + name +
                                " with CSL value: " + node);
 
@@ -80,17 +76,17 @@ namespace EyeInTheSky.Commands
                     }
                     catch (XmlException)
                     {
-                        EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "XML Error.");
+                        EyeInTheSkyBot.IrcFreenode.ircNotice(source.nickname, "XML Error.");
                     }
                     break;
                 default:
-                    EyeInTheSkyBot.irc_freenode.ircNotice(source.nickname, "Unknown stalk type!");
+                    EyeInTheSkyBot.IrcFreenode.ircNotice(source.nickname, "Unknown stalk type!");
                     return;
             }
 
             s.enabled = true;
            
-            EyeInTheSkyBot.config.save();
+            EyeInTheSkyBot.Config.save();
         }
 
         #endregion

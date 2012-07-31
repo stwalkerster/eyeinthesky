@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace EyeInTheSky.Commands
 {
@@ -12,42 +8,45 @@ namespace EyeInTheSky.Commands
     {
         public Version()
         {
-            this.requiredAccessLevel = User.UserRights.Developer;
+            RequiredAccessLevel = User.UserRights.Developer;
         }
 
         #region Overrides of GenericCommand
 
         protected override void execute(User source, string destination, string[] tokens)
         {
-            string bindir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase).Substring(6);
-            
-            if (GlobalFunctions.realArrayLength(tokens) < 1)
+            var directoryName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
+            if (directoryName != null)
             {
-                Process p = new Process
+                string bindir = directoryName.Substring(6);
+            
+                if (GlobalFunctions.realArrayLength(tokens) < 1)
+                {
+                    var p = new Process
+                        {
+                            StartInfo =
                                 {
-                                    StartInfo =
-                                        {
-                                            UseShellExecute = false,
-                                            RedirectStandardOutput = true,
-                                            RedirectStandardError = true,
-                                            FileName = "git",
-                                            Arguments = "describe",
-                                            WorkingDirectory = bindir
+                                    UseShellExecute = false,
+                                    RedirectStandardOutput = true,
+                                    RedirectStandardError = true,
+                                    FileName = "git",
+                                    Arguments = "describe",
+                                    WorkingDirectory = bindir
                                             
-                                        }
-                                };
-                p.Start();
+                                }
+                        };
+                    p.Start();
 
-                string output = p.StandardOutput.ReadToEnd();
-                string error = p.StandardError.ReadToEnd();
+                    string output = p.StandardOutput.ReadToEnd();
+                    string error = p.StandardError.ReadToEnd();
                 
-                p.WaitForExit();
+                    p.WaitForExit();
 
 
-                EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination, error);
-                EyeInTheSkyBot.irc_freenode.ircPrivmsg(destination, "Version: " + output);
+                    EyeInTheSkyBot.IrcFreenode.ircPrivmsg(destination, error);
+                    EyeInTheSkyBot.IrcFreenode.ircPrivmsg(destination, "Version: " + output);
                 
-                return;
+                }
             }
         }
 
