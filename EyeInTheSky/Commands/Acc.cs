@@ -32,14 +32,30 @@ namespace EyeInTheSky.Commands
 
             OrNode or = new OrNode();
 
+            OrNode uor = new OrNode();
             UserStalkNode usn = new UserStalkNode();
             usn.setMatchExpression(user);
 
             PageStalkNode psn = new PageStalkNode();
             psn.setMatchExpression(user);
 
-            or.LeftChildNode = usn;
-            or.RightChildNode = psn;
+            uor.LeftChildNode = usn;
+            uor.RightChildNode = psn;
+
+            OrNode upor = new OrNode();
+
+            PageStalkNode upsn = new PageStalkNode();
+            upsn.setMatchExpression("User:" + user);
+
+            PageStalkNode utpsn = new PageStalkNode();
+            utpsn.setMatchExpression("User talk:" + user);
+
+            upor.LeftChildNode = upsn;
+            upor.RightChildNode = utpsn;
+
+
+            or.LeftChildNode = uor;
+            or.RightChildNode = upor;
             s.immediatemail = true;
             s.Description = "ACC " + id + ": " + user;
             s.mail = false;
@@ -48,6 +64,10 @@ namespace EyeInTheSky.Commands
 
             EyeInTheSkyBot.Config.Stalks.Add("acc" + id, s);
             EyeInTheSkyBot.Config.save();
+
+            EyeInTheSkyBot.IrcFreenode.ircPrivmsg(destination,
+                "Set new stalk " + s.Flag +
+                " with CSL value: " + or);
         }
     }
 }
