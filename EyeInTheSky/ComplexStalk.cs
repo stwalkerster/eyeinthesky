@@ -209,14 +209,14 @@ namespace EyeInTheSky
 
             var mailMessage = new MailMessage
                                    {
-                                       From = new MailAddress("eyeinthesky@helpmebot.org.uk"),
+                                       From = new MailAddress("eyeinthesky@eyeinthesky.im"),
                                        Subject = "[EyeInTheSky] '" + Flag + "' notification",
                                        Body = template
                                    };
 
-            mailMessage.To.Add("stwalkerster@helpmebot.org.uk");
+            mailMessage.To.Add("simon@stwalkerster.co.uk");
 
-            var client = new SmtpClient("mail.helpmebot.org.uk");
+            var client = new SmtpClient("mail.srv.stwalkerster.net");
 
             client.Send(mailMessage);
         }

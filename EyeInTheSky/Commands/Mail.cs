@@ -27,17 +27,17 @@ namespace EyeInTheSky.Commands
 
             var mail = new MailMessage
                 {
-                    From = new MailAddress("eyeinthesky@helpmebot.org.uk"),
+                    From = new MailAddress("eyeinthesky@eyeinthesky.im"),
                     Subject = "EyeInTheSky stalk log",
                     Body = sb.ToString()
                 };
-            mail.To.Add("stwalkerster@helpmebot.org.uk");
+            mail.To.Add("simon@stwalkerster.co.uk");
 
-            var client = new SmtpClient("mail.helpmebot.org.uk");
+            var client = new SmtpClient("mail.srv.stwalkerster.net");
             
             client.Send(mail);
             EyeInTheSkyBot.IrcFreenode.ircPrivmsg(destination,
-                                                   "Sent stalk log via email to stwalkerster@helpmebot.org.uk.");
+                                                   "Sent stalk log via email to simon@stwalkerster.co.uk.");
             EyeInTheSkyBot.IrcFreenode.ircPrivmsg(destination,
                                        "Stalk log has been cleared.");
 
