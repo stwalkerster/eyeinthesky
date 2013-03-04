@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccessListEntry.cs" />
+    <Compile Include="Commands\Acc.cs" />
     <Compile Include="Commands\Mail.cs" />
     <Compile Include="Commands\Clear.cs" />
     <Compile Include="Commands\Quick.cs" />
