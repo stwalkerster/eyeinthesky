@@ -53,9 +53,15 @@ namespace EyeInTheSky.Commands
             upor.LeftChildNode = upsn;
             upor.RightChildNode = utpsn;
 
-
-            or.LeftChildNode = uor;
-            or.RightChildNode = upor;
+            SummaryStalkNode ssn = new SummaryStalkNode();
+            ssn.setMatchExpression(user);
+            
+            OrNode or2 = new OrNode();
+            or2.LeftChildNode = uor;
+            or2.RightChildNode = upor;
+            
+            or.LeftChildNode = or2;
+            or.RightChildNode = ssn;
             s.immediatemail = true;
             s.Description = "ACC " + id + ": " + user;
             s.mail = false;
