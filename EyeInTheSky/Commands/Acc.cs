@@ -68,6 +68,8 @@ namespace EyeInTheSky.Commands
             s.setSearchTree(or, true);
             s.enabled = true;
 
+            s.expiryTime = DateTime.Now.AddMonths(3);
+            
             EyeInTheSkyBot.Config.Stalks.Add("acc" + id, s);
             EyeInTheSkyBot.Config.save();
 
