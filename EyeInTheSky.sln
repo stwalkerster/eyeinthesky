@@ -1,4 +1,4 @@
-﻿
+﻿import CheckUser;
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EyeInTheSky", "EyeInTheSky\EyeInTheSky.csproj", "{382387BB-CF3E-4164-AC29-04F1A42C7EAF}"
