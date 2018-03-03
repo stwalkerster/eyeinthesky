@@ -10,9 +10,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>EyeInTheSky</RootNamespace>
     <AssemblyName>EyeInTheSky</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
+    <LangVersion>5</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -42,6 +43,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\GlobalAssemblyInfo.cs">
+      <Link>Properties/GlobalAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="AccessListEntry.cs" />
     <Compile Include="Commands\Acc.cs" />
     <Compile Include="Commands\Mail.cs" />
@@ -89,7 +93,6 @@
     <None Include="DataFileSchema.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="StalkNodes\NodesDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="DefaultConfiguration.xml">

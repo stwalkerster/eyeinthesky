@@ -6,7 +6,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B6FBBE63-50B8-433A-B2B1-4109689C629D}"
 	ProjectSection(SolutionItems) = preProject
 		README.mediawiki = README.mediawiki
+		GlobalAssemblyInfo.cs = GlobalAssemblyInfo.cs
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EyeInTheSky.Tests", "EyeInTheSky.Tests\EyeInTheSky.Tests.csproj", "{3053D2E4-5518-416C-A76E-8176B000EA79}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,6 +26,14 @@ Global
 		{382387BB-CF3E-4164-AC29-04F1A42C7EAF}.Release|Any CPU.ActiveCfg = Release|x86
 		{382387BB-CF3E-4164-AC29-04F1A42C7EAF}.Release|x86.ActiveCfg = Release|x86
 		{382387BB-CF3E-4164-AC29-04F1A42C7EAF}.Release|x86.Build.0 = Release|x86
+		{3053D2E4-5518-416C-A76E-8176B000EA79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3053D2E4-5518-416C-A76E-8176B000EA79}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3053D2E4-5518-416C-A76E-8176B000EA79}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3053D2E4-5518-416C-A76E-8176B000EA79}.Debug|x86.Build.0 = Debug|Any CPU
+		{3053D2E4-5518-416C-A76E-8176B000EA79}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3053D2E4-5518-416C-A76E-8176B000EA79}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3053D2E4-5518-416C-A76E-8176B000EA79}.Release|x86.ActiveCfg = Release|Any CPU
+		{3053D2E4-5518-416C-A76E-8176B000EA79}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

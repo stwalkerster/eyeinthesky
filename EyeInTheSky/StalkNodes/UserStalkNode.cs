@@ -15,7 +15,7 @@ namespace EyeInTheSky.StalkNodes
             return expression.Match(rc.User).Success;
         }
 
-        public static new StalkNode newFromXmlFragment(XmlNode xmlNode)
+        public new static StalkNode newFromXmlFragment(XmlNode xmlNode)
         {
             UserStalkNode s = new UserStalkNode();
             s.setMatchExpression(xmlNode.Attributes["value"].Value);

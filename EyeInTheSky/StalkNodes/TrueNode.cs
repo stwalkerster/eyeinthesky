@@ -18,7 +18,7 @@ namespace EyeInTheSky.StalkNodes
             return doc.CreateElement("true", xmlns);
         }
 
-        public static new StalkNode newFromXmlFragment(XmlNode xmlNode)
+        public new static StalkNode newFromXmlFragment(XmlNode xmlNode)
         {
             return new TrueNode();
         }
