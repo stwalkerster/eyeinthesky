@@ -44,7 +44,7 @@ namespace EyeInTheSky
         private DateTime _lastTriggerTime = DateTime.Parse("1/1/1970 00:00:00");
         private string _description = "";
         private DateTime _expiryTime = DateTime.MaxValue;
-        private bool _immediatemail;
+        private bool _immediatemail = true;
         private bool _enabled;
 
 
