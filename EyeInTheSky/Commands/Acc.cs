@@ -1,25 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using EyeInTheSky.StalkNodes;
 
 namespace EyeInTheSky.Commands
 {
+    using Stwalkerster.IrcClient.Extensions;
     using Stwalkerster.IrcClient.Model.Interfaces;
 
     class Acc : GenericCommand
     {
-        protected override void Execute(IUser source, string destination, string[] tokens)
+        protected override void Execute(IUser source, string destination, IEnumerable<string> tokens)
         {
-            if (tokens.Length < 2)
+            var tokenList = tokens.ToList();
+            
+            if (tokenList.Count < 2)
             {
                 this.Client.SendNotice(source.Nickname, "More params pls!");
                 return;
             }
 
-            string id = GlobalFunctions.popFromFront(ref tokens);
-            string user = string.Join(" ", tokens);
+            string id = tokenList.PopFromFront();
+            string user = tokenList.Implode();
 
             var s = new ComplexStalk( "acc" + id );
 
@@ -57,7 +59,6 @@ namespace EyeInTheSky.Commands
             or.RightChildNode = ssn;
             s.immediatemail = true;
             s.Description = "ACC " + id + ": " + user;
-            s.mail = false;
             s.setSearchTree(or, true);
             s.enabled = true;
 

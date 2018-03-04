@@ -5,67 +5,75 @@ using EyeInTheSky.StalkNodes;
 
 namespace EyeInTheSky.Commands
 {
+    using System.Linq;
+    using Stwalkerster.IrcClient.Extensions;
     using Stwalkerster.IrcClient.Model.Interfaces;
 
     class Stalk : GenericCommand
     {
-        protected override void Execute(IUser source, string destination, string[] tokens)
+        protected override void Execute(IUser source, string destination, IEnumerable<string> tokens)
         {
-            if (tokens.Length < 1)
+            var tokenList = tokens.ToList();
+            
+            if (tokenList.Count < 1)
             {
                 this.Client.SendNotice(source.Nickname, "More params pls!");
                 return;
             }
 
-            string mode = GlobalFunctions.popFromFront(ref tokens);
+            string mode =tokenList.PopFromFront();
             if(mode == "add")
             #region add
             {
-                if (tokens.Length < 1)
+                if (tokenList.Count < 1)
                 {
                     this.Client.SendNotice(source.Nickname, "More params pls!");
                     return;
                 }
 
-                var s = new ComplexStalk(tokens[0]);
+                var stalkName = tokenList.First();
+                var s = new ComplexStalk(stalkName);
                 
-                this.StalkConfig.Stalks.Add(tokens[0],s);
-                this.Client.SendMessage(destination, "Added stalk " + tokens[0]);
+                this.StalkConfig.Stalks.Add(stalkName,s);
+                this.Client.SendMessage(destination, "Added stalk " + stalkName);
             }
             #endregion
             if (mode == "del")
             #region del
             {
-                if (tokens.Length < 1)
+                if (tokenList.Count < 1)
                 {
                     this.Client.SendNotice(source.Nickname, "More params pls!");
                     return;
                 }
-                this.StalkConfig.Stalks.Remove(tokens[0]);
-                this.Client.SendMessage(destination, "Deleted stalk " + tokens[0]);
+                
+                var stalkName = tokenList.First();
+                
+                this.StalkConfig.Stalks.Remove(stalkName);
+                this.Client.SendMessage(destination, "Deleted stalk " + stalkName);
             }
             #endregion
             if (mode == "set")
             #region set
             {
-                if (tokens.Length < 1)
+                if (tokenList.Count < 1)
                 {
                     this.Client.SendNotice(source.Nickname, "More params pls!");
                     return;
                 }
-                string stalk = GlobalFunctions.popFromFront(ref tokens);
+                string stalk = tokenList.PopFromFront();
 
 
                 ComplexStalk s = this.StalkConfig.Stalks[stalk];
 
-                if (tokens.Length < 1)
+                if (tokenList.Count < 1)
                 {
                     this.Client.SendNotice(source.Nickname, "More params pls!");
                     return;
                 }
-                string type = GlobalFunctions.popFromFront(ref tokens);
+                string type = tokenList.PopFromFront();
 
-                    string regex = string.Join(" ", tokens);
+                    string regex = tokenList.Implode();
 
                     switch (type)
                     {
@@ -94,7 +102,7 @@ namespace EyeInTheSky.Commands
                                        " with CSL value: " + ssn);
                             break;
                         case "xml":
-                            string xmlfragment = string.Join(" ", tokens);
+                            string xmlfragment = tokenList.Implode();
                             try
                             {
                                 var xd = new XmlDocument();
@@ -136,43 +144,30 @@ namespace EyeInTheSky.Commands
             if(mode == "mail")
             #region mail
             {
-                if (tokens.Length < 2)
+                if (tokenList.Count < 2)
                 {
                     this.Client.SendNotice(source.Nickname, "More params pls!");
                     return;
                 }
 
-                if(tokens[1] == "immediate")
-                {
-                    if (tokens.Length < 3 )
-                    {
-                        this.Client.SendNotice(source.Nickname, "More params pls!");
-                        return;
-                    }
-
-                    bool imail = bool.Parse(tokens[2]);
-                    this.StalkConfig.Stalks[tokens[0]].immediatemail = imail;
-                    this.Client.SendMessage(destination,
-                                                           "Set immediatemail attribute on stalk " + tokens[0] + " to " + imail);
-                }
-
-                bool mail = bool.Parse(tokens[1]);
-                this.StalkConfig.Stalks[tokens[0]].mail = mail;
-                this.Client.SendMessage(destination,
-                                                       "Set mail attribute on stalk " + tokens[0] + " to " + mail);
+                var stalkName = tokenList.PopFromFront();
+                
+                bool mail = bool.Parse(tokenList.PopFromFront());
+                this.StalkConfig.Stalks[stalkName].immediatemail = mail;
+                this.Client.SendMessage(destination, "Set immediatemail attribute on stalk " + stalkName + " to " + mail);
             }
             #endregion
             if(mode == "description")
             #region description
             {
-                if (tokens.Length < 1)
+                if (tokenList.Count < 1)
                 {
                     this.Client.SendNotice(source.Nickname, "More params pls!");
                     return;
                 }
 
-                string stalk = GlobalFunctions.popFromFront(ref tokens);
-                string descr = string.Join(" ", tokens);
+                string stalk = tokenList.PopFromFront();
+                string descr = tokenList.Implode();
 
                 this.StalkConfig.Stalks[stalk].Description = descr;
                 this.Client.SendMessage(destination,
@@ -183,13 +178,13 @@ namespace EyeInTheSky.Commands
             if(mode == "expiry")
             #region expiry
             {
-                if (tokens.Length < 2)
+                if (tokenList.Count < 2)
                 {
                     this.Client.SendNotice(source.Nickname, "More params pls!");
                     return;
                 }
-                string stalk = GlobalFunctions.popFromFront(ref tokens);
-                string date = string.Join(" ", tokens);
+                string stalk = tokenList.PopFromFront();
+                string date = tokenList.Implode();
 
                 DateTime expiryTime = DateTime.Parse(date);
                 this.StalkConfig.Stalks[stalk].expiryTime = expiryTime;
@@ -202,39 +197,39 @@ namespace EyeInTheSky.Commands
             if (mode == "enabled")
             #region enabled
             {
-                if (tokens.Length < 2)
+                if (tokenList.Count < 2)
                 {
                     this.Client.SendNotice(source.Nickname, "More params pls!");
                     return;
                 }
 
-                bool enabled = bool.Parse(tokens[1]);
-                this.StalkConfig.Stalks[tokens[0]].enabled = enabled;
-                this.Client.SendMessage(destination,
-                                                       "Set enabled attribute on stalk " + tokens[0] + " to " + enabled);
+                var stalkName = tokenList.PopFromFront();
+                bool enabled = bool.Parse(tokenList.PopFromFront());
+                this.StalkConfig.Stalks[stalkName].enabled = enabled;
+                this.Client.SendMessage(destination, "Set enabled attribute on stalk " + stalkName + " to " + enabled);
             }
             #endregion
             if (mode == "and")
             #region and
             {
-                if (tokens.Length < 1)
+                if (tokenList.Count < 1)
                 {
                     this.Client.SendNotice(source.Nickname, "More params pls!");
                     return;
                 }
-                string stalk = GlobalFunctions.popFromFront(ref tokens);
+                string stalk = tokenList.PopFromFront();
 
 
                 ComplexStalk s = this.StalkConfig.Stalks[stalk];
 
-                if (tokens.Length < 1)
+                if (tokenList.Count < 1)
                 {
                     this.Client.SendNotice(source.Nickname, "More params pls!");
                     return;
                 }
-                string type = GlobalFunctions.popFromFront(ref tokens);
+                string type = tokenList.PopFromFront();
 
-                string regex = string.Join(" ", tokens);
+                string stalkTarget = tokenList.Implode();
 
                 var newroot = new AndNode {LeftChildNode = s.getSearchTree()};
 
@@ -242,7 +237,7 @@ namespace EyeInTheSky.Commands
                 {
                     case "user":
                         var usn = new UserStalkNode();
-                        usn.setMatchExpression(regex);
+                        usn.setMatchExpression(stalkTarget);
                         newroot.RightChildNode = usn;
                         s.setSearchTree(newroot, true);
                         this.Client.SendMessage(destination,
@@ -251,7 +246,7 @@ namespace EyeInTheSky.Commands
                         break;
                     case "page":
                         var psn = new PageStalkNode();
-                        psn.setMatchExpression(regex);
+                        psn.setMatchExpression(stalkTarget);
                         newroot.RightChildNode = psn;
                         s.setSearchTree(newroot, true);
                         this.Client.SendMessage(destination,
@@ -260,7 +255,7 @@ namespace EyeInTheSky.Commands
                         break;
                     case "summary":
                         var ssn = new SummaryStalkNode();
-                        ssn.setMatchExpression(regex);
+                        ssn.setMatchExpression(stalkTarget);
                         newroot.RightChildNode = ssn;
                         s.setSearchTree(newroot, true);
                         this.Client.SendMessage(destination,
@@ -268,7 +263,7 @@ namespace EyeInTheSky.Commands
                                    " with CSL value: " + newroot);
                         break;
                     case "xml":
-                        string xmlfragment = string.Join(" ", tokens);
+                        string xmlfragment = stalkTarget;
                         try
                         {
                             var xd = new XmlDocument();
@@ -299,24 +294,25 @@ namespace EyeInTheSky.Commands
             if (mode == "or")
             #region or
             {
-                if (tokens.Length < 1)
+                if (tokenList.Count < 1)
                 {
                     this.Client.SendNotice(source.Nickname, "More params pls!");
                     return;
                 }
-                string stalk = GlobalFunctions.popFromFront(ref tokens);
+                string stalk = tokenList.PopFromFront();
 
 
                 ComplexStalk s = this.StalkConfig.Stalks[stalk];
 
-                if (tokens.Length < 1)
+                if (tokenList.Count < 1)
                 {
                     this.Client.SendNotice(source.Nickname, "More params pls!");
                     return;
                 }
-                string type = GlobalFunctions.popFromFront(ref tokens);
+                
+                string type = tokenList.PopFromFront();
 
-                string regex = string.Join(" ", tokens);
+                string stalkTarget = tokenList.Implode();
 
                 var newroot = new OrNode { LeftChildNode = s.getSearchTree() };
 
@@ -324,7 +320,7 @@ namespace EyeInTheSky.Commands
                 {
                     case "user":
                         var usn = new UserStalkNode();
-                        usn.setMatchExpression(regex);
+                        usn.setMatchExpression(stalkTarget);
                         newroot.RightChildNode = usn;
                         s.setSearchTree(newroot, true);
                         this.Client.SendMessage(destination,
@@ -333,7 +329,7 @@ namespace EyeInTheSky.Commands
                         break;
                     case "page":
                         var psn = new PageStalkNode();
-                        psn.setMatchExpression(regex);
+                        psn.setMatchExpression(stalkTarget);
                         newroot.RightChildNode = psn;
                         s.setSearchTree(newroot, true);
                         this.Client.SendMessage(destination,
@@ -342,7 +338,7 @@ namespace EyeInTheSky.Commands
                         break;
                     case "summary":
                         var ssn = new SummaryStalkNode();
-                        ssn.setMatchExpression(regex);
+                        ssn.setMatchExpression(stalkTarget);
                         newroot.RightChildNode = ssn;
                         s.setSearchTree(newroot, true);
                         this.Client.SendMessage(destination,
@@ -350,7 +346,7 @@ namespace EyeInTheSky.Commands
                                    " with CSL value: " + newroot);
                         break;
                     case "xml":
-                        string xmlfragment = string.Join(" ", tokens);
+                        string xmlfragment = stalkTarget;
                         try
                         {
                             var xd = new XmlDocument();

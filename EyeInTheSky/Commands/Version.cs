@@ -4,6 +4,7 @@ using System.Reflection;
 
 namespace EyeInTheSky.Commands
 {
+    using System.Collections.Generic;
     using System.Linq;
     using Stwalkerster.IrcClient.Model.Interfaces;
 
@@ -11,7 +12,7 @@ namespace EyeInTheSky.Commands
     {
         #region Overrides of GenericCommand
 
-        protected override void Execute(IUser source, string destination, string[] tokens)
+        protected override void Execute(IUser source, string destination, IEnumerable<string> tokens)
         {
             var directoryName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
             if (directoryName != null)

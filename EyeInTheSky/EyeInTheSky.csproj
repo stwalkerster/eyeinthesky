@@ -75,13 +75,11 @@
     <Compile Include="Nagios.cs" />
     <Compile Include="Services\CommandHandler.cs" />
     <Compile Include="Services\RecentChangeHandler.cs" />
-    <Compile Include="StalkLogItem.cs" />
     <Compile Include="StalkNodes\AndNode.cs" />
     <Compile Include="Commands\Stalk.cs" />
     <Compile Include="Commands\Version.cs" />
     <Compile Include="StalkConfiguration.cs" />
     <Compile Include="GenericCommand.cs" />
-    <Compile Include="GlobalFunctions.cs" />
     <Compile Include="IrcColours.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

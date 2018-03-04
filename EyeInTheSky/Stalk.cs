@@ -30,8 +30,6 @@ namespace EyeInTheSky
             get { return flag; }
         }
 
-
-
         public abstract bool match(RecentChange rc);
 
         public abstract XmlElement ToXmlFragment(XmlDocument doc, string xmlns);

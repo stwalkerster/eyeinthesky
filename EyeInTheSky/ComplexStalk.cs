@@ -15,15 +15,11 @@ namespace EyeInTheSky
             _baseNode = new FalseNode();
         }
 
-        public ComplexStalk(string flag, string timeupd, string timetrig, string mailflag, string descr, string expiryTime, string immediatemail, string enabled) : base(flag)
+        public ComplexStalk(string flag, string timeupd, string timetrig, string descr, string expiryTime, string immediatemail, string enabled) : base(flag)
         {
-            
             if (flag == "")
                 throw new ArgumentOutOfRangeException();
             this.flag = flag;
-
-            if (!bool.TryParse(mailflag, out _mail))
-                _mail = true; 
             
             if (!bool.TryParse(immediatemail, out _immediatemail))
                 _immediatemail = false;
@@ -46,7 +42,6 @@ namespace EyeInTheSky
         private StalkNode _baseNode;
         private DateTime _lastUpdateTime = DateTime.Now;
         private DateTime _lastTriggerTime = DateTime.Parse("1/1/1970 00:00:00");
-        private bool _mail = true;
         private string _description = "";
         private DateTime _expiryTime = DateTime.MaxValue;
         private bool _immediatemail;
@@ -68,12 +63,6 @@ namespace EyeInTheSky
         public bool enabled { get { return _enabled; } set { _enabled = value; } }
 
         public bool immediatemail { get { return _immediatemail; } set { _immediatemail = value; } }
-
-        public bool mail
-        {
-            get { return _mail; }
-            set { _mail = value; }
-        }
 
         public string Description
         {
@@ -126,7 +115,6 @@ namespace EyeInTheSky
             e.SetAttribute("flag", flag);
             e.SetAttribute("lastupdate", LastUpdateTime.ToString(CultureInfo.InvariantCulture));
             e.SetAttribute("lasttrigger", LastTriggerTime.ToString(CultureInfo.InvariantCulture));
-            e.SetAttribute("mail", mail.ToString());
             e.SetAttribute("immediatemail", immediatemail.ToString());
             e.SetAttribute("description", Description);
             e.SetAttribute("expiry", expiryTime.ToString(CultureInfo.InvariantCulture));
@@ -150,12 +138,11 @@ namespace EyeInTheSky
             time = element.Attributes["expiry"];
             string exptime = time == null ? DateTime.MaxValue.ToString(CultureInfo.InvariantCulture) : time.Value;
 
-            string mailflag = element.GetAttribute("mail");
             string immMail = element.GetAttribute("immediatemail");
             string enbld = element.GetAttribute("enabled");
             string descr = element.GetAttribute("description");
 
-            var s = new ComplexStalk(element.Attributes["flag"].Value, lastupdtime, lastriggertime, mailflag, descr, exptime, immMail,enbld);
+            var s = new ComplexStalk(element.Attributes["flag"].Value, lastupdtime, lastriggertime, descr, exptime, immMail,enbld);
             
             if(element.HasChildNodes)
             {

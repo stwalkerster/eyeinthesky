@@ -3,26 +3,28 @@ using EyeInTheSky.StalkNodes;
 
 namespace EyeInTheSky.Commands
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using Stwalkerster.IrcClient.Extensions;
     using Stwalkerster.IrcClient.Model.Interfaces;
 
     class Quick : GenericCommand
     {
         #region Overrides of GenericCommand
 
-        protected override void Execute(IUser source, string destination, string[] tokens)
+        protected override void Execute(IUser source, string destination, IEnumerable<string> tokens)
         {
+            var tokenList = tokens.ToList();
 
-        // =quick token type value
-
-            if (tokens.Length < 3)
+            if (tokenList.Count < 3)
             {
                 this.Client.SendNotice(source.Nickname, "More params pls!");
                 return;
             }
 
-            string name = GlobalFunctions.popFromFront(ref tokens);
-            string type = GlobalFunctions.popFromFront(ref tokens);
-            string regex = string.Join(" ", tokens);
+            string name = tokenList.PopFromFront();
+            string type = tokenList.PopFromFront();
+            string stalkTarget = tokenList.Implode();
 
             var s = new ComplexStalk(name);
 
@@ -32,7 +34,7 @@ namespace EyeInTheSky.Commands
             {
                 case "user":
                     UserStalkNode usn = new UserStalkNode();
-                    usn.setMatchExpression(regex);
+                    usn.setMatchExpression(stalkTarget);
                     s.setSearchTree(usn, true);
                     this.Client.SendMessage(destination,
                                "Set " + type + " for new stalk " + name +
@@ -40,7 +42,7 @@ namespace EyeInTheSky.Commands
                     break;
                 case "page":
                     PageStalkNode psn = new PageStalkNode();
-                    psn.setMatchExpression(regex);
+                    psn.setMatchExpression(stalkTarget);
                     s.setSearchTree(psn, true);
                     this.Client.SendMessage(destination,
                                "Set " + type + " for new stalk " + name +
@@ -48,14 +50,14 @@ namespace EyeInTheSky.Commands
                     break;
                 case "summary":
                     SummaryStalkNode ssn = new SummaryStalkNode();
-                    ssn.setMatchExpression(regex);
+                    ssn.setMatchExpression(stalkTarget);
                     s.setSearchTree(ssn, true);
                     this.Client.SendMessage(destination,
                                "Set " + type + " for new stalk " + name +
                                " with CSL value: " + ssn);
                     break;
                 case "xml":
-                    string xmlfragment = string.Join(" ", tokens);
+                    string xmlfragment = stalkTarget;
                     try
                     {
                         XmlDocument xd = new XmlDocument();

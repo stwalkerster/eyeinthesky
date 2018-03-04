@@ -2,6 +2,7 @@
 
 namespace EyeInTheSky
 {
+    using System.Collections.Generic;
     using Castle.Core.Logging;
     using Microsoft.Practices.ServiceLocation;
     using Stwalkerster.IrcClient.Interfaces;
@@ -33,7 +34,7 @@ namespace EyeInTheSky
             return commandInstance;
         }
 
-        public void Run(IUser source, string destination, string[] tokens)
+        public void Run(IUser source, string destination, IEnumerable<string> tokens)
         {
             var configuration = ServiceLocator.Current.GetInstance<AppConfiguration>();
             if (destination != configuration.FreenodeChannel)
@@ -45,6 +46,6 @@ namespace EyeInTheSky
             this.Execute(source, destination, tokens);
         }
 
-        protected abstract void Execute(IUser source, string destination, string[] tokens);
+        protected abstract void Execute(IUser source, string destination, IEnumerable<string> tokens);
     }
 }
