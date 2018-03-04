@@ -4,23 +4,21 @@ using System.Reflection;
 
 namespace EyeInTheSky.Commands
 {
+    using System.Linq;
+    using Stwalkerster.IrcClient.Model.Interfaces;
+
     class Version : GenericCommand
     {
-        public Version()
-        {
-            RequiredAccessLevel = User.UserRights.Developer;
-        }
-
         #region Overrides of GenericCommand
 
-        protected override void execute(User source, string destination, string[] tokens)
+        protected override void Execute(IUser source, string destination, string[] tokens)
         {
             var directoryName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
             if (directoryName != null)
             {
                 string bindir = directoryName.Substring(6);
             
-                if (GlobalFunctions.realArrayLength(tokens) < 1)
+                if (tokens.Count(x => !string.IsNullOrEmpty(x)) < 1)
                 {
                     var p = new Process
                         {
@@ -43,8 +41,8 @@ namespace EyeInTheSky.Commands
                     p.WaitForExit();
 
 
-                    EyeInTheSkyBot.IrcFreenode.ircPrivmsg(destination, error);
-                    EyeInTheSkyBot.IrcFreenode.ircPrivmsg(destination, "Version: " + output);
+                    this.Client.SendMessage(destination, error);
+                    this.Client.SendMessage(destination, "Version: " + output);
                 
                 }
             }

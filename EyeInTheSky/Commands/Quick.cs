@@ -3,24 +3,20 @@ using EyeInTheSky.StalkNodes;
 
 namespace EyeInTheSky.Commands
 {
+    using Stwalkerster.IrcClient.Model.Interfaces;
+
     class Quick : GenericCommand
     {
-
-        public Quick()
-        {
-            RequiredAccessLevel = User.UserRights.Advanced;
-        }
-
         #region Overrides of GenericCommand
 
-        protected override void execute(User source, string destination, string[] tokens)
+        protected override void Execute(IUser source, string destination, string[] tokens)
         {
 
         // =quick token type value
 
             if (tokens.Length < 3)
             {
-                EyeInTheSkyBot.IrcFreenode.ircNotice(source.nickname, "More params pls!");
+                this.Client.SendNotice(source.Nickname, "More params pls!");
                 return;
             }
 
@@ -30,7 +26,7 @@ namespace EyeInTheSky.Commands
 
             var s = new ComplexStalk(name);
 
-            EyeInTheSkyBot.Config.Stalks.Add(name, s);
+            this.StalkConfig.Stalks.Add(name, s);
 
             switch (type)
             {
@@ -38,7 +34,7 @@ namespace EyeInTheSky.Commands
                     UserStalkNode usn = new UserStalkNode();
                     usn.setMatchExpression(regex);
                     s.setSearchTree(usn, true);
-                    EyeInTheSkyBot.IrcFreenode.ircPrivmsg(destination,
+                    this.Client.SendMessage(destination,
                                "Set " + type + " for new stalk " + name +
                                " with CSL value: " + usn);
                     break;
@@ -46,7 +42,7 @@ namespace EyeInTheSky.Commands
                     PageStalkNode psn = new PageStalkNode();
                     psn.setMatchExpression(regex);
                     s.setSearchTree(psn, true);
-                    EyeInTheSkyBot.IrcFreenode.ircPrivmsg(destination,
+                    this.Client.SendMessage(destination,
                                "Set " + type + " for new stalk " + name +
                                " with CSL value: " + psn);
                     break;
@@ -54,7 +50,7 @@ namespace EyeInTheSky.Commands
                     SummaryStalkNode ssn = new SummaryStalkNode();
                     ssn.setMatchExpression(regex);
                     s.setSearchTree(ssn, true);
-                    EyeInTheSkyBot.IrcFreenode.ircPrivmsg(destination,
+                    this.Client.SendMessage(destination,
                                "Set " + type + " for new stalk " + name +
                                " with CSL value: " + ssn);
                     break;
@@ -68,7 +64,7 @@ namespace EyeInTheSky.Commands
 
                         StalkNode node = StalkNode.newFromXmlFragment(xd.FirstChild);
                         s.setSearchTree(node, true);
-                        EyeInTheSkyBot.IrcFreenode.ircPrivmsg(destination,
+                        this.Client.SendMessage(destination,
                                "Set " + type + " for new stalk " + name +
                                " with CSL value: " + node);
 
@@ -76,17 +72,17 @@ namespace EyeInTheSky.Commands
                     }
                     catch (XmlException)
                     {
-                        EyeInTheSkyBot.IrcFreenode.ircNotice(source.nickname, "XML Error.");
+                        this.Client.SendNotice(source.Nickname, "XML Error.");
                     }
                     break;
                 default:
-                    EyeInTheSkyBot.IrcFreenode.ircNotice(source.nickname, "Unknown stalk type!");
+                    this.Client.SendNotice(source.Nickname, "Unknown stalk type!");
                     return;
             }
 
             s.enabled = true;
            
-            EyeInTheSkyBot.Config.save();
+            this.StalkConfig.Save();
         }
 
         #endregion

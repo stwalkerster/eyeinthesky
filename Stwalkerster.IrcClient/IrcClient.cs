@@ -58,7 +58,7 @@
         /// <summary>
         /// The network client.
         /// </summary>
-        private readonly INetworkClient networkClient;
+        private INetworkClient networkClient;
 
         /// <summary>
         /// The password.
@@ -129,69 +129,66 @@
 
         #region Constructors and Destructors
 
-        public IrcClient(ILogger logger, IIrcConfiguration configuration) : this(
-            configuration.Ssl
-                ? new SslNetworkClient(
-                    configuration.Hostname,
-                    configuration.Port,
-                    logger.CreateChildLogger("NetworkClient"))
-                : new NetworkClient(
-                    configuration.Hostname,
-                    configuration.Port,
-                    logger.CreateChildLogger("NetworkClient")),
-            logger,
-            configuration,
-            configuration.Password)
+        private void Setup(INetworkClient client)
         {
-        }
-
-        /// <summary>
-        /// Initialises a new instance of the <see cref="IrcClient" /> class.
-        /// </summary>
-        /// <param name="client">
-        /// The client.
-        /// </param>
-        /// <param name="logger">
-        /// The logger.
-        /// </param>
-        /// <param name="configuration">
-        /// The configuration Helper.
-        /// </param>
-        /// <param name="password">
-        /// The password.
-        /// </param>
-        public IrcClient(INetworkClient client, ILogger logger, IIrcConfiguration configuration, string password)
-        {
-            this.nickname = configuration.Nickname;
             this.networkClient = client;
-            this.logger = logger;
-            this.syncLogger = logger.CreateChildLogger("Sync");
-            this.username = configuration.Username;
-            this.realName = configuration.RealName;
-            this.password = password;
             this.networkClient.DataReceived += this.NetworkClientOnDataReceived;
-            this.ReceivedMessage += this.OnMessageReceivedEvent;
-
-            this.clientCapabilities = new List<string> {"sasl", "account-notify", "extended-join", "multi-prefix"};
-
-            this.authToServices = configuration.AuthToServices;
 
             if (!this.authToServices)
             {
                 this.logger.Warn("Services authentication is disabled!");
 
                 this.clientCapabilities.Remove("sasl");
-                this.clientCapabilities.Remove("account-notify");
-                this.clientCapabilities.Remove("extended-join");
             }
 
+            this.RegisterConnection(null);
+        }
+
+        public IrcClient(ILogger logger, IIrcConfiguration configuration)
+        : this(null, logger, configuration)
+        {   
+        }
+
+        public IrcClient(INetworkClient client, ILogger logger, IIrcConfiguration configuration)
+        {
+            this.nickname = configuration.Nickname;
+            this.username = configuration.Username;
+            this.realName = configuration.RealName;
+            this.password = configuration.Password;
+            this.authToServices = configuration.AuthToServices;
+            
+            this.logger = logger.CreateChildLogger(configuration.ClientName);
+            
+            this.syncLogger = this.logger.CreateChildLogger("Sync");
+            this.ReceivedMessage += this.OnMessageReceivedEvent;
+
+            this.clientCapabilities = new List<string> {"sasl", "account-notify", "extended-join", "multi-prefix"};
+            
             this.userCache = new Dictionary<string, IrcUser>();
             this.channels = new Dictionary<string, IrcChannel>();
 
             this.connectionRegistrationSemaphore = new Semaphore(0, 1);
             this.syncLogger.Debug("ctor() acquired connectionRegistration semaphore.");
 
-            this.RegisterConnection(null);
+            if (client == null)
+            {
+                if (configuration.Ssl)
+                {
+                    client = new SslNetworkClient(
+                        configuration.Hostname,
+                        configuration.Port,
+                        this.logger.CreateChildLogger("NetworkClient"));
+                }
+                else
+                {
+                    client = new NetworkClient(
+                        configuration.Hostname,
+                        configuration.Port,
+                        this.logger.CreateChildLogger("NetworkClient"));
+                }
+            }
+
+            this.Setup(client);
         }
 
         #endregion

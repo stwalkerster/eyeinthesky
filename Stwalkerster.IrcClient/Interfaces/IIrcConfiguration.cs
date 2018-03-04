@@ -47,7 +47,9 @@
         ///     Gets a value indicating whether to connect with SSL.
         /// </summary>
         bool Ssl { get; }
-
+        
+        string ClientName { get; }
+        
         #endregion
     }
 }

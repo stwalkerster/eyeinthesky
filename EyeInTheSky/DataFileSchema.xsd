@@ -43,18 +43,6 @@
   <xs:element name="eyeinthesky">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="config">
-          <xs:complexType>
-            <xs:sequence>
-              <xs:element name="option" minOccurs="0" maxOccurs="unbounded">
-                <xs:complexType>
-                  <xs:attribute name="name" type="xs:string" use="required"/>
-                  <xs:attribute name="value" type="xs:string" use="required"/>
-                </xs:complexType>
-              </xs:element>
-            </xs:sequence>
-          </xs:complexType>
-        </xs:element>
         <xs:element name="stalks">
           <xs:complexType>
             <xs:choice minOccurs="0" maxOccurs="unbounded">
@@ -98,49 +86,6 @@
                 </xs:complexType>
               </xs:element>
             </xs:choice>
-          </xs:complexType>
-        </xs:element>
-        <xs:element name="users">
-          <xs:complexType>
-            <xs:sequence>
-              <xs:element name="user" minOccurs="0" maxOccurs="unbounded">
-                <xs:complexType>
-                  <xs:attribute name="hostmask" use="required" type="xs:string"/>
-                  <xs:attribute name="access" use="required">
-                    <xs:simpleType>
-                      <xs:restriction base="xs:string">
-                        <xs:enumeration value="Developer" />
-                        <xs:enumeration value="Superuser" />
-                        <xs:enumeration value="Advanced" />
-                        <xs:enumeration value="Normal" />
-                        <xs:enumeration value="Semiignored" />
-                        <xs:enumeration value="Ignored" />
-                      </xs:restriction>
-                    </xs:simpleType>
-                  </xs:attribute>
-                </xs:complexType>
-              </xs:element>
-            </xs:sequence>
-          </xs:complexType>
-        </xs:element>
-        <xs:element name="stalklog">
-          <xs:complexType>
-            <xs:sequence>
-              <xs:element name="log" minOccurs="0" maxOccurs="unbounded">
-                <xs:complexType>
-                  <xs:sequence>
-                    <xs:element name="user" type="stalkmatch" />
-                    <xs:element name="page" type="stalkmatch" />
-                    <xs:element name="url" type="stalkmatch" />
-                    <xs:element name="summary" type="stalkmatch" />
-                    <xs:element name="flags" type="stalkmatch" />
-                    <xs:element name="sizediff" type="stalkmatch" />
-                  </xs:sequence>
-                  <xs:attribute name="stalkflag" type="xs:string" use="required"/>
-                  <xs:attribute name="timestamp" type="xs:dateTime" use="required" />
-                </xs:complexType>
-              </xs:element>
-            </xs:sequence>
           </xs:complexType>
         </xs:element>
       </xs:sequence>

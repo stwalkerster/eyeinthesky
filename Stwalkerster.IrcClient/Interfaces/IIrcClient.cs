@@ -107,5 +107,10 @@
         void Send(IMessage message);
 
         void Mode(string target, string changes);
+
+        /// <summary>
+        /// Raised when the client disconnects from IRC.
+        /// </summary>
+        event EventHandler DisconnectedEvent;
     }
 }

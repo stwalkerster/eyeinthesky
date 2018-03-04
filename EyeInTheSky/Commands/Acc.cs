@@ -6,24 +6,17 @@ using EyeInTheSky.StalkNodes;
 
 namespace EyeInTheSky.Commands
 {
+    using Stwalkerster.IrcClient.Model.Interfaces;
+
     class Acc : GenericCommand
     {
-        public Acc()
+        protected override void Execute(IUser source, string destination, string[] tokens)
         {
-            RequiredAccessLevel = User.UserRights.Advanced;
-        }
-
-        protected override void execute(User source, string destination, string[] tokens)
-        {
-
-        // =acc id user
-
             if (tokens.Length < 2)
             {
-                EyeInTheSkyBot.IrcFreenode.ircNotice(source.nickname, "More params pls!");
+                this.Client.SendNotice(source.Nickname, "More params pls!");
                 return;
             }
-
 
             string id = GlobalFunctions.popFromFront(ref tokens);
             string user = string.Join(" ", tokens);
@@ -70,10 +63,10 @@ namespace EyeInTheSky.Commands
 
             s.expiryTime = DateTime.Now.AddMonths(3);
             
-            EyeInTheSkyBot.Config.Stalks.Add("acc" + id, s);
-            EyeInTheSkyBot.Config.save();
+            this.StalkConfig.Stalks.Add("acc" + id, s);
+            this.StalkConfig.Save();
 
-            EyeInTheSkyBot.IrcFreenode.ircPrivmsg(destination,
+            this.Client.SendMessage(destination,
                 "Set new stalk " + s.Flag +
                 " with CSL value: " + or);
         }

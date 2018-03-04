@@ -56,6 +56,7 @@
     <Compile Include="Interfaces\IIrcConfiguration.cs" />
     <Compile Include="Interfaces\INetworkClient.cs" />
     <Compile Include="IrcClient.cs" />
+    <Compile Include="IrcConfiguration.cs" />
     <Compile Include="Messages\IMessage.cs" />
     <Compile Include="Messages\Message.cs" />
     <Compile Include="Messages\Numerics.cs" />

@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+    <properties>
+        <botNickname>EITSDebug</botNickname>
+        <botGecos>EyeInTheSky - https://stwalkerster.co.uk/eits/</botGecos>
+        <botUsername>eyeinthesky</botUsername>
+    </properties>
+
+    <components>
+        <component type="EyeInTheSky.AppConfiguration">
+            <parameters>
+                <freenodeChannel>##stwalkerster-development</freenodeChannel>
+                <wikimediaChannel>#en.wikipedia</wikimediaChannel>
+                <commandPrefix>=</commandPrefix>
+                <stalkConfigFile>EyeInTheSky.config</stalkConfigFile>
+            </parameters>
+        </component>
+        <component id="wikimediaIrcConfig"
+                   service="Stwalkerster.IrcClient.Interfaces.IIrcConfiguration"
+                   type="Stwalkerster.IrcClient.IrcConfiguration">
+            <parameters>
+                <authToServices>false</authToServices>
+                <ssl>false</ssl>
+                <hostname>irc.wikimedia.org</hostname>
+                <port>6667</port>
+                <nickname>#{botNickname}</nickname>
+                <realName>#{botGecos}</realName>
+                <username>#{botUsername}</username>
+                <password/>
+                <clientName>Wikimedia</clientName>
+            </parameters>
+        </component>
+
+        <component id="freenodeIrcConfig"
+                   service="Stwalkerster.IrcClient.Interfaces.IIrcConfiguration"
+                   type="Stwalkerster.IrcClient.IrcConfiguration">
+            <parameters>
+                <authToServices>true</authToServices>
+                <ssl>true</ssl>
+                <hostname>chat.freenode.net</hostname>
+                <port>7000</port>
+                <nickname>#{botNickname}</nickname>
+                <realName>#{botGecos}</realName>
+                <username>#{botUsername}</username>
+                <password>#{botPassword}</password>
+                <clientName>Freenode</clientName>
+            </parameters>
+        </component>
+    </components>
+</configuration>

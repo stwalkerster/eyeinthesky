@@ -112,9 +112,6 @@ namespace EyeInTheSky
             {
                 LastTriggerTime = DateTime.Now;
 
-                if (mail && bool.Parse(EyeInTheSkyBot.Config["logstalks"]))
-                    EyeInTheSkyBot.Config.LogStalkTrigger(flag, rc);
-
                 if (immediatemail)
                     immediateMail(rc);
 
