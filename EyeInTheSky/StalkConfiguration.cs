@@ -61,7 +61,7 @@ namespace EyeInTheSky
                     "https://github.com/stwalkerster/eyeinthesky/raw/master/EyeInTheSky/DataFileSchema.xsd");
 
                 XPathNavigator stalknav = navigator.SelectSingleNode("//isky:stalks", xnm);
-                this.stalks = StalkList.fetch(stalknav, xnm);
+                this.stalks = stalknav != null ? StalkList.LoadFromXmlFragment(stalknav.OuterXml, xnt) : new StalkList();
 
                 sr.Close();
 

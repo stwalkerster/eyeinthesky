@@ -4,10 +4,12 @@ using System.Xml.XPath;
 
 namespace EyeInTheSky
 {
+    using System;
     using EyeInTheSky.Model;
 
     public class StalkList : SortedList<string,ComplexStalk>
     {
+        [Obsolete]
         public Stalk search(RecentChange rc)
         {
             foreach (KeyValuePair<string,ComplexStalk> s in this)
@@ -21,12 +23,23 @@ namespace EyeInTheSky
             return null;
         }
 
-        internal static StalkList fetch(XPathNavigator nav, XmlNamespaceManager nsManager)
+        public IEnumerable<Stalk> Search(RecentChange rc)
+        {
+            foreach (KeyValuePair<string,ComplexStalk> s in this)
+            {
+                if(s.Value.match(rc))
+                {
+                    yield return s.Value;
+                }
+            }
+        }
+        
+        internal static StalkList LoadFromXmlFragment(string fragment, XmlNameTable nameTable)
         {
             StalkList list = new StalkList();
 
-            XmlDocument xd = new XmlDocument(nav.NameTable);
-            xd.LoadXml(nav.OuterXml);
+            XmlDocument xd = new XmlDocument(nameTable);
+            xd.LoadXml(fragment);
             XmlNode node = xd.ChildNodes[0];
             foreach (XmlNode childNode in node.ChildNodes)
             {
