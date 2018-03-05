@@ -8,6 +8,7 @@ using EyeInTheSky.StalkNodes;
 namespace EyeInTheSky
 {
     using Castle.Core.Logging;
+    using EyeInTheSky.Model;
     using Microsoft.Practices.ServiceLocation;
 
     public class ComplexStalk : Stalk

@@ -4,6 +4,8 @@ using System.Xml.XPath;
 
 namespace EyeInTheSky
 {
+    using EyeInTheSky.Model;
+
     public class StalkList : SortedList<string,ComplexStalk>
     {
         public Stalk search(RecentChange rc)

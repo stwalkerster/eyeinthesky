@@ -6,6 +6,8 @@ using System.Xml;
 
 namespace EyeInTheSky.StalkNodes
 {
+    using EyeInTheSky.Model;
+
     public abstract class StalkNode
     {
         abstract public bool match(RecentChange rc);

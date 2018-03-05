@@ -6,6 +6,8 @@ using System.Xml;
 
 namespace EyeInTheSky.StalkNodes
 {
+    using EyeInTheSky.Model;
+
     class FlagStalkNode : LeafNode
     {
         #region Overrides of StalkNode

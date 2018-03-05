@@ -8,6 +8,7 @@
     using Castle.Services.Logging.Log4netIntegration;
     using Castle.Windsor;
     using EyeInTheSky.Services;
+    using EyeInTheSky.Services.Interfaces;
     using Stwalkerster.IrcClient;
     using Stwalkerster.IrcClient.Interfaces;
 
@@ -28,6 +29,7 @@
                         Dependency.OnComponent("wikimediaClient", "wikimediaClient")
                     ),
                 Component.For<CommandHandler>().Named("commandHandler"),
+                Component.For<IRecentChangeParser>().ImplementedBy<RecentChangeParser>(),
                 Component.For<RecentChangeHandler>().Named("rcHandler")
                     .DependsOn(
                         Dependency.OnComponent("freenodeClient", "freenodeClient")

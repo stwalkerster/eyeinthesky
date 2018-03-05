@@ -6,6 +6,8 @@ using System.Xml;
 
 namespace EyeInTheSky.StalkNodes
 {
+    using EyeInTheSky.Model;
+
     class AndNode : DoubleChildLogicalNode
     {
         #region Overrides of StalkNode

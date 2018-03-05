@@ -3,6 +3,9 @@
     using System;
     using System.Linq;
     using Castle.Core.Logging;
+    using EyeInTheSky.Model;
+    using EyeInTheSky.Services.Interfaces;
+    using Stwalkerster.IrcClient;
     using Stwalkerster.IrcClient.Events;
     using Stwalkerster.IrcClient.Interfaces;
     using Stwalkerster.IrcClient.Model;
@@ -13,13 +16,15 @@
         private readonly ILogger logger;
         private readonly StalkConfiguration stalkConfig;
         private readonly IIrcClient freenodeClient;
+        private readonly IRecentChangeParser rcParser;
 
-        public RecentChangeHandler(AppConfiguration configuration, ILogger logger, StalkConfiguration stalkConfig, IIrcClient freenodeClient)
+        public RecentChangeHandler(AppConfiguration configuration, ILogger logger, StalkConfiguration stalkConfig, IIrcClient freenodeClient, IRecentChangeParser rcParser)
         {
             this.configuration = configuration;
             this.logger = logger;
             this.stalkConfig = stalkConfig;
             this.freenodeClient = freenodeClient;
+            this.rcParser = rcParser;
         }
 
         public void OnReceivedMessage(object sender, MessageReceivedEventArgs e)
@@ -45,7 +50,7 @@
                 var parameters = e.Message.Parameters.ToList();
                 string message = parameters[1];
 
-                RecentChange rcitem = RecentChange.parse(message);
+                RecentChange rcitem = this.rcParser.Parse(message);
 
                 Stalk s = this.stalkConfig.Stalks.search(rcitem);
 
@@ -59,12 +64,12 @@
                 this.freenodeClient.SendMessage(
                     this.configuration.FreenodeChannel,
                     string.Format(
-                        IrcColours.colorChar + "[{0}] Stalked edit {1} to page \"{2}\" by [[User:{3}]], summary: {4}",
-                        IrcColours.colouredText(IrcColours.Colours.red, IrcColours.boldText(s.Flag)),
+                        IrcColours.ColorChar + "[{0}] Stalked edit {1} to page \"{2}\" by [[User:{3}]], summary: {4}",
+                        IrcColours.ColouredText(IrcColours.Colours.Red, IrcColours.BoldText(s.Flag)),
                         rcitem.Url,
-                        IrcColours.colouredText(IrcColours.Colours.green, rcitem.Page),
+                        IrcColours.ColouredText(IrcColours.Colours.Green, rcitem.Page),
                         rcitem.User,
-                        IrcColours.colouredText(IrcColours.Colours.orange, rcitem.EditSummary)
+                        IrcColours.ColouredText(IrcColours.Colours.Orange, rcitem.EditSummary)
                     ));
             }
             catch (Exception ex)

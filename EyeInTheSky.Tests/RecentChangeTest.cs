@@ -2,6 +2,8 @@
 
 namespace EyeInTheSky.Tests
 {
+    using EyeInTheSky.Model;
+
     [TestFixture]
     public class RecentChangeTest
     {

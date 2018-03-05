@@ -3,6 +3,8 @@ using System.Xml;
 
 namespace EyeInTheSky.StalkNodes
 {
+    using EyeInTheSky.Model;
+
     class OrNode : DoubleChildLogicalNode
     {
         #region Overrides of StalkNode

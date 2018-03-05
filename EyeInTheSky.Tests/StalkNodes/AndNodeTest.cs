@@ -3,6 +3,7 @@
 namespace EyeInTheSky.Tests.StalkNodes
 {
     using System.Collections;
+    using EyeInTheSky.Model;
     using EyeInTheSky.StalkNodes;
 
     [TestFixture]

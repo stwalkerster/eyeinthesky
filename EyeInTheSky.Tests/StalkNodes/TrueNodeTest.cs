@@ -2,6 +2,7 @@
 {
     using System;
     using System.Xml;
+    using EyeInTheSky.Model;
     using EyeInTheSky.StalkNodes;
     using NUnit.Framework;
 

@@ -7,6 +7,8 @@ using System.Xml;
 
 namespace EyeInTheSky
 {
+    using EyeInTheSky.Model;
+
     public abstract class Stalk
     {
         /// <summary>

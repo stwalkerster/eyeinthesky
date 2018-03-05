@@ -6,6 +6,8 @@ using System.Xml;
 
 namespace EyeInTheSky.StalkNodes
 {
+    using EyeInTheSky.Model;
+
     class FalseNode : LogicalNode
     {
         public override bool match(RecentChange rc)
