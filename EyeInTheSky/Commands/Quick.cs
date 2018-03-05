@@ -28,6 +28,12 @@ namespace EyeInTheSky.Commands
 
             var s = new ComplexStalk(name);
 
+            if (this.StalkConfig.Stalks.ContainsKey(name))
+            {
+                this.Client.SendNotice(source.Nickname, "This stalk already exists!");
+                return;
+            }
+
             this.StalkConfig.Stalks.Add(name, s);
 
             switch (type)

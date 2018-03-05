@@ -30,7 +30,7 @@ namespace EyeInTheSky.StalkNodes
 
         public override string ToString()
         {
-            return "(flag:\" " + expression + "\")";
+            return "(flag:\"" + expression + "\")";
         }
         #endregion
     }

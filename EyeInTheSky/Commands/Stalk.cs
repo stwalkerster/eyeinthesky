@@ -63,7 +63,12 @@ namespace EyeInTheSky.Commands
                 }
                 string stalk = tokenList.PopFromFront();
 
-
+                if (!this.StalkConfig.Stalks.ContainsKey(stalk))
+                {
+                    this.Client.SendNotice(source.Nickname, "Can't find the stalk '" + stalk + "'!");
+                    return;
+                }
+                
                 ComplexStalk s = this.StalkConfig.Stalks[stalk];
 
                 if (tokenList.Count < 1)
@@ -151,8 +156,15 @@ namespace EyeInTheSky.Commands
                 }
 
                 var stalkName = tokenList.PopFromFront();
-                
-                bool mail = bool.Parse(tokenList.PopFromFront());
+
+                bool mail;
+                var possibleBoolean = tokenList.PopFromFront();
+                if (!bool.TryParse(possibleBoolean, out mail))
+                {
+                    this.Client.SendNotice(source.Nickname, possibleBoolean + " is not a value of boolean I recognise. Try 'true', 'false' or ERR_FILE_NOT_FOUND.");
+                    return;
+                }
+
                 this.StalkConfig.Stalks[stalkName].immediatemail = mail;
                 this.Client.SendMessage(destination, "Set immediatemail attribute on stalk " + stalkName + " to " + mail);
             }
