@@ -7,6 +7,9 @@ using EyeInTheSky.StalkNodes;
 
 namespace EyeInTheSky
 {
+    using Castle.Core.Logging;
+    using Microsoft.Practices.ServiceLocation;
+
     public class ComplexStalk : Stalk
     {
         public ComplexStalk(string flag)
@@ -17,6 +20,8 @@ namespace EyeInTheSky
 
         public ComplexStalk(string flag, string timeupd, string timetrig, string descr, string expiryTime, string immediatemail, string enabled) : base(flag)
         {
+            var logger = ServiceLocator.Current.GetInstance<ILogger>().CreateChildLogger("ComplexStalk").CreateChildLogger(flag);
+
             if (flag == "")
                 throw new ArgumentOutOfRangeException();
             this.flag = flag;
@@ -28,20 +33,40 @@ namespace EyeInTheSky
                 _enabled = true;
 
 
-            _lastUpdateTime = DateTime.Parse(timeupd);
+            this.ParseDate(flag, timeupd, logger, out this._lastUpdateTime, "last update time");            
+            this.ParseDate(flag, timetrig, logger, out this._lastTriggerTime, "last trigger time");            
+            
+            this._description = descr;
 
-            _lastTriggerTime = DateTime.Parse(timetrig);
+            this.ParseDate(flag, expiryTime, logger, out this._expiryTime, "expiry time");
+            
+            this._baseNode = new FalseNode();
+        }
 
-            _description = descr;
+        private void ParseDate(string flagName, string input, ILogger logger, out DateTime result, string propName)
+        {
+            if (!DateTime.TryParseExact(
+                input,
+                "O",
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.AssumeUniversal,
+                out result))
+            {
+                logger.WarnFormat("Unknown date format in stalk '{0}' {2}: {1}", flagName, input, propName);
 
-            this.expiryTime = DateTime.Parse(expiryTime);
+                if (!DateTime.TryParse(input, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out result))
+                {
+                    var err = string.Format("Failed date parse for stalk '{0}' {2}: {1}", flagName, input, propName);
 
-            _baseNode = new FalseNode();
+                    logger.Error(err);
+                    throw new FormatException(err);
+                }
+            }
         }
 
         private StalkNode _baseNode;
         private DateTime _lastUpdateTime = DateTime.Now;
-        private DateTime _lastTriggerTime = DateTime.Parse("1/1/1970 00:00:00");
+        private DateTime _lastTriggerTime = DateTime.MinValue;
         private string _description = "";
         private DateTime _expiryTime = DateTime.MaxValue;
         private bool _immediatemail = true;
@@ -112,24 +137,24 @@ namespace EyeInTheSky
         public override XmlElement ToXmlFragment(XmlDocument doc, string xmlns)
         {
             XmlElement e = doc.CreateElement("complexstalk", xmlns);
-            e.SetAttribute("flag", flag);
-            e.SetAttribute("lastupdate", LastUpdateTime.ToString(CultureInfo.InvariantCulture));
-            e.SetAttribute("lasttrigger", LastTriggerTime.ToString(CultureInfo.InvariantCulture));
-            e.SetAttribute("immediatemail", immediatemail.ToString());
-            e.SetAttribute("description", Description);
-            e.SetAttribute("expiry", expiryTime.ToString(CultureInfo.InvariantCulture));
-            e.SetAttribute("enabled", enabled.ToString());
+            e.SetAttribute("flag", this.flag);
+            e.SetAttribute("lastupdate", this.LastUpdateTime.ToString("O"));
+            e.SetAttribute("lasttrigger", this.LastTriggerTime.ToString("O"));
+            e.SetAttribute("immediatemail", this.immediatemail.ToString());
+            e.SetAttribute("description", this.Description);
+            e.SetAttribute("expiry", this.expiryTime.ToString("O"));
+            e.SetAttribute("enabled", this.enabled.ToString());
 
-            e.AppendChild(_baseNode.toXmlFragment(doc, xmlns));
+            e.AppendChild(this._baseNode.toXmlFragment(doc, xmlns));
             return e;
         }
 
         public override string ToString()
         {
-            return "Flag: " + flag + ", Last modified: "+LastUpdateTime+", Type: Complex " + _baseNode;
+            return "Flag: " + this.flag + ", Last modified: "+ this.LastUpdateTime+", Type: Complex " + _baseNode;
         }
 
-        public static new Stalk newFromXmlElement(XmlElement element)
+        public static new Stalk NewFromXmlElement(XmlElement element)
         {
             XmlAttribute time = element.Attributes["lastupdate"];
             string lastupdtime = time == null ? DateTime.Now.ToString(CultureInfo.InvariantCulture) : time.Value;

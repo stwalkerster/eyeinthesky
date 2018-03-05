@@ -13,6 +13,7 @@
                 <wikimediaChannel>#en.wikipedia</wikimediaChannel>
                 <commandPrefix>=</commandPrefix>
                 <stalkConfigFile>EyeInTheSky.config</stalkConfigFile>
+                <rcUser>rc-pmtpa!~rc-pmtpa@special.user</rcUser>
             </parameters>
         </component>
         <component id="wikimediaIrcConfig"

@@ -29,8 +29,6 @@ namespace EyeInTheSky
                 this.stalks = new StalkList();
                 this.DoSave();
             }
-
-            this.Initialise();
         }
 
         public StalkList Stalks
@@ -46,7 +44,7 @@ namespace EyeInTheSky
             }
         }
 
-        private void Initialise()
+        public void Initialise()
         {
             this.logger.Info("Loading stalks from configuration...");
             try

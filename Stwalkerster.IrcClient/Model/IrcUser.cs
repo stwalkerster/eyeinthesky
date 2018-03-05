@@ -163,7 +163,7 @@
         /// </returns>
         protected bool Equals(IrcUser other)
         {
-            return string.Equals(this.Nickname, other.Nickname);
+            return string.Equals(this.ToString(), other.ToString());
         }
     }
 }

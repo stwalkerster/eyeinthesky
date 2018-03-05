@@ -11,6 +11,7 @@
         private readonly IIrcClient freenodeClient;
         private readonly IIrcClient wikimediaClient;
         private readonly AppConfiguration appConfig;
+        private bool alive = true;
 
         public Application(ILogger logger, IIrcClient freenodeClient, IIrcClient wikimediaClient, AppConfiguration appConfig)
         {
@@ -26,10 +27,9 @@
         public void Run()
         {
             this.freenodeClient.JoinChannel(this.appConfig.FreenodeChannel);
+            this.wikimediaClient.JoinChannel(this.appConfig.WikimediaChannel);
             
-            bool alive = true;
-            
-            while (alive)
+            while (this.alive)
             {
                 Thread.Sleep(1000);    
             }

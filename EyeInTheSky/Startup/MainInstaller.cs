@@ -21,10 +21,19 @@
             container.AddFacility<StartableFacility>(f => f.DeferredStart());
 
             container.Register(
-                Component.For<Application>().Named("bot"),
+                Component.For<Application>()
+                    .Named("bot")
+                    .DependsOn(
+                        Dependency.OnComponent("freenodeClient", "freenodeClient"),
+                        Dependency.OnComponent("wikimediaClient", "wikimediaClient")
+                    ),
                 Component.For<CommandHandler>().Named("commandHandler"),
-                Component.For<RecentChangeHandler>().Named("rcHandler"),
-                Component.For<StalkConfiguration>(),
+                Component.For<RecentChangeHandler>().Named("rcHandler")
+                    .DependsOn(
+                        Dependency.OnComponent("freenodeClient", "freenodeClient")
+                    ),
+                Component.For<StalkConfiguration>()
+                    .OnCreate((kernel, instance) => instance.Initialise()),
                 Component.For<IIrcClient>()
                     .ImplementedBy<IrcClient>()
                     .Named("freenodeClient")

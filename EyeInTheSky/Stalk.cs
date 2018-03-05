@@ -39,9 +39,9 @@ namespace EyeInTheSky
             switch (element.Name)
             {
                 case "stalk":
-                    return ComplexStalk.newFromXmlElement(element);
+                    return ComplexStalk.NewFromXmlElement(element);
                 case "complexstalk":
-                    return ComplexStalk.newFromXmlElement(element);
+                    return ComplexStalk.NewFromXmlElement(element);
                 default:
                     throw new XmlException();
             }

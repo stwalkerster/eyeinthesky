@@ -11,12 +11,13 @@
         public static void Main()
         {
             container = new WindsorContainer();
+
+            ServiceLocator.SetLocatorProvider(() => new WindsorServiceLocator(container));
+
             container.Install(
                 FromAssembly.This(),
                 Configuration.FromXmlFile("configuration.xml"));
 
-            ServiceLocator.SetLocatorProvider(() => new WindsorServiceLocator(container));
-            
             var app = container.Resolve<Application>();
             app.Run();
             container.Release(app);

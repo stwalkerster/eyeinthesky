@@ -35,5 +35,9 @@
         <appender-ref ref="ConsoleAppender" />
         <appender-ref ref="DebugLogFile" />
     </root>
+    
+    <logger name="Stwalkerster.IrcClient.IrcClient.Wikimedia.NetworkClient">
+        <level value="OFF" />
+    </logger>
 
 </log4net>
