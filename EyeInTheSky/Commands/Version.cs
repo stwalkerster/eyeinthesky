@@ -1,11 +1,8 @@
-﻿using System.Diagnostics;
-using System.IO;
-using System.Reflection;
-
-namespace EyeInTheSky.Commands
+﻿namespace EyeInTheSky.Commands
 {
     using System.Collections.Generic;
-    using System.Linq;
+    using System.Reflection;
+    using Stwalkerster.IrcClient;
     using Stwalkerster.IrcClient.Model.Interfaces;
 
     class Version : GenericCommand
@@ -14,39 +11,12 @@ namespace EyeInTheSky.Commands
 
         protected override void Execute(IUser source, string destination, IEnumerable<string> tokens)
         {
-            var directoryName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
-            if (directoryName != null)
-            {
-                string bindir = directoryName.Substring(6);
-            
-                if (tokens.Count(x => !string.IsNullOrEmpty(x)) < 1)
-                {
-                    var p = new Process
-                        {
-                            StartInfo =
-                                {
-                                    UseShellExecute = false,
-                                    RedirectStandardOutput = true,
-                                    RedirectStandardError = true,
-                                    FileName = "git",
-                                    Arguments = "describe",
-                                    WorkingDirectory = bindir
-                                            
-                                }
-                        };
-                    p.Start();
+            var assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version;
+            var ircVersion = Assembly.GetAssembly(typeof(IrcClient)).GetName().Version;
 
-                    string output = p.StandardOutput.ReadToEnd();
-                    string error = p.StandardError.ReadToEnd();
-                
-                    p.WaitForExit();
-
-
-                    this.Client.SendMessage(destination, error);
-                    this.Client.SendMessage(destination, "Version: " + output);
-                
-                }
-            }
+            this.Client.SendMessage(
+                destination,
+                "EyeInTheSky v" + assemblyVersion + ", using Stwalkerster.IrcClient v" + ircVersion);
         }
 
         #endregion
