@@ -119,37 +119,59 @@
         public static IMessage Parse(string data)
         {
             var separator = new[] {' '};
-            string prefix = null, command;
+            
+            // Define the parts of the message
+            // It's always going to be an optional prefix (prefixed with a :), a command word, and 0 or more parameters to the command
+            
+            string prefix = null;
+            string command;
             List<string> messageParameters = null;
 
+            // Look for a prefix
             if (data.StartsWith(":"))
             {
+                // Split the incoming data into a prefix and remainder
                 var prefixstrings = data.Split(separator, 2, StringSplitOptions.RemoveEmptyEntries);
+                
+                // overwrite the original data, so we don't have to think about the prefix later.
+                // This is now a command word, and 0 or more parameters to the command.
                 data = prefixstrings[1];
-                prefix = prefixstrings[0].Substring(1); // strip the leading : too
+                
+                // Extract the prefix itself, stripping the leading : too.
+                prefix = prefixstrings[0].Substring(1);
             }
 
+            // Split out the command word
             var strings = data.Split(separator, 2, StringSplitOptions.RemoveEmptyEntries);
             command = strings[0];
 
+            // strings is an array of {command, parameters}, unless there are no parameters to the command
             if (strings.Length == 2)
             {
+                // This contains the entire string of parameters.
                 var parameters = strings[1];
 
-                if (parameters.Contains(" :") || parameters.StartsWith(":"))
+                string lastParam = null;
+                
+                if (parameters.StartsWith(":"))
                 {
-                    var paramend = parameters.Substring(parameters.IndexOf(":", StringComparison.Ordinal) + 1);
-                    var parameterList =
-                        parameters.Substring(0, parameters.IndexOf(":", StringComparison.Ordinal))
-                            .Split(separator, StringSplitOptions.RemoveEmptyEntries)
-                            .ToList();
-
-                    parameterList.Add(paramend);
-                    messageParameters = parameterList;
+                    // The entire parameter string is a single parameter.
+                    lastParam = parameters.Substring(1);
+                    parameters = string.Empty;
                 }
-                else
+                
+                if (parameters.Contains(" :"))
                 {
-                    messageParameters = parameters.Split(separator, StringSplitOptions.RemoveEmptyEntries).ToList();
+                    // everything after this is a parameter. The +2 magic value == length of separator to exclude it
+                    lastParam = parameters.Substring(parameters.IndexOf(" :", StringComparison.InvariantCulture) + 2);
+                    parameters = parameters.Substring(0, parameters.IndexOf(" :", StringComparison.InvariantCulture));
+                }
+                
+                messageParameters = parameters.Split(separator, StringSplitOptions.RemoveEmptyEntries).ToList();
+
+                if (lastParam != null)
+                {
+                    messageParameters.Add(lastParam);
                 }
             }
 
