@@ -32,6 +32,7 @@
                     ),
                 Component.For<CommandHandler>().Named("commandHandler"),
                 Component.For<StalkFactory>(),
+                Component.For<ISupportHelper>().ImplementedBy<SupportHelper>(),
                 Component.For<IRecentChangeParser>().ImplementedBy<RecentChangeParser>(),
                 Component.For<RecentChangeHandler>().Named("rcHandler")
                     .DependsOn(
