@@ -1,4 +1,4 @@
-﻿namespace Stwalkerster.Bot.CommandLib.Services
+﻿namespace Stwalkerster.Bot.CommandLib.Services.Interfaces
 {
     using System;
     using System.Collections.Generic;

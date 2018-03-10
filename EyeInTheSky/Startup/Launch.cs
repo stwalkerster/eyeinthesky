@@ -2,23 +2,18 @@
 {
     using Castle.Windsor;
     using Castle.Windsor.Installer;
-    using Microsoft.Practices.ServiceLocation;
+    using Stwalkerster.Bot.CommandLib.Services.Interfaces;
 
     public class Launch
     {
         private static WindsorContainer container;
-
         public static void Main()
         {
-            container = new WindsorContainer();
+            container = new WindsorContainer("configuration.xml");
+            container.Install(FromAssembly.This());
 
-            ServiceLocator.SetLocatorProvider(() => new WindsorServiceLocator(container));
+            var app = container.Resolve<IApplication>();
 
-            container.Install(
-                FromAssembly.This(),
-                Configuration.FromXmlFile("configuration.xml"));
-
-            var app = container.Resolve<Application>();
             app.Run();
             container.Release(app);
         }

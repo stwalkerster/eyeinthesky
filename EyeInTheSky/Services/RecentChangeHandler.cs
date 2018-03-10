@@ -6,7 +6,7 @@
     using System.Linq;
     using System.Text;
     using Castle.Core.Logging;
-    using EyeInTheSky.Helpers;
+    using EyeInTheSky.Helpers.Interfaces;
     using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Services.Interfaces;
@@ -22,14 +22,21 @@
         private readonly StalkConfiguration stalkConfig;
         private readonly IIrcClient freenodeClient;
         private readonly IRecentChangeParser rcParser;
+        private readonly IEmailHelper emailHelper;
 
-        public RecentChangeHandler(IAppConfiguration appConfig, ILogger logger, StalkConfiguration stalkConfig, IIrcClient freenodeClient, IRecentChangeParser rcParser)
+        public RecentChangeHandler(IAppConfiguration appConfig,
+            ILogger logger,
+            StalkConfiguration stalkConfig,
+            IIrcClient freenodeClient,
+            IRecentChangeParser rcParser,
+            IEmailHelper emailHelper)
         {
             this.appConfig = appConfig;
             this.logger = logger;
             this.stalkConfig = stalkConfig;
             this.freenodeClient = freenodeClient;
             this.rcParser = rcParser;
+            this.emailHelper = emailHelper;
         }
 
         public void OnReceivedMessage(object sender, MessageReceivedEventArgs e)
@@ -99,7 +106,7 @@
 
             try
             {
-                EmailHelper.ActuallySendEmail(
+                this.emailHelper.SendEmail(
                     mailConfig.Sender,
                     mailConfig.To,
                     string.Format(mailConfig.Subject, stalkList),

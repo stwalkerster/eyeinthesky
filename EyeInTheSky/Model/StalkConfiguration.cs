@@ -6,7 +6,7 @@
     using System.Xml;
     using System.Xml.XPath;
     using Castle.Core.Logging;
-    using EyeInTheSky.Helpers;
+    using EyeInTheSky.Helpers.Interfaces;
     using EyeInTheSky.Model.Interfaces;
 
     public class StalkConfiguration
@@ -15,12 +15,12 @@
         
         private readonly string configurationFileName;
         private readonly ILogger logger;
-        private readonly StalkFactory stalkFactory;
+        private readonly IStalkFactory stalkFactory;
         private SortedList<string, IStalk> stalks;
 
         private bool initialised;
 
-        public StalkConfiguration(IAppConfiguration configuration, ILogger logger, StalkFactory stalkFactory)
+        public StalkConfiguration(IAppConfiguration configuration, ILogger logger, IStalkFactory stalkFactory)
         {
             this.configurationFileName = configuration.StalkConfigFile;
             this.logger = logger;

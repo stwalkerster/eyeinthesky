@@ -15,5 +15,6 @@
         string EmailStalkTemplate { get; }
         string DateFormat { get; }
         EmailConfiguration EmailConfiguration { get; }
+        IrcUser Owner { get; }
     }
 }

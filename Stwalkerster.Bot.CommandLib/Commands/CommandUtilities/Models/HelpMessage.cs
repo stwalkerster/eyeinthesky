@@ -4,7 +4,6 @@
     using System.Linq;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities.Response;
     using Stwalkerster.Extensions;
-    using Stwalkerster.IrcClient.Extensions;
 
     /// <summary>
     /// The help message.
@@ -126,7 +125,8 @@
                         {
                             Message =
                                 string.Format("{2}{0} {1}", this.CommandName, syntax, commandTrigger), 
-                            Destination = CommandResponseDestination.PrivateMessage
+                            Destination = CommandResponseDestination.PrivateMessage,
+                            Type = CommandResponseType.Notice
                         }));
 
             messages.AddRange(
@@ -135,7 +135,8 @@
                     new CommandResponse
                         {
                             Message = string.Format("   {0}", helpText), 
-                            Destination = CommandResponseDestination.PrivateMessage
+                            Destination = CommandResponseDestination.PrivateMessage,
+                            Type = CommandResponseType.Notice
                         }));
 
             return messages;

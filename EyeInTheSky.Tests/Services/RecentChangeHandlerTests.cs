@@ -45,7 +45,7 @@
             this.AppConfigMock.Setup(s => s.IrcStalkTagSeparator).Returns("|");
             this.AppConfigMock.Setup(s => s.IrcAlertFormat).Returns("[{0}] url {1} page {2} by {3} summ {4} end");
 
-            var rcHander = new RecentChangeHandler(this.AppConfigMock.Object, this.LoggerMock.Object, null, null, null);
+            var rcHander = new RecentChangeHandler(this.AppConfigMock.Object, this.LoggerMock.Object, null, null, null, null);
 
             // act
             var result = rcHander.FormatMessageForIrc(new[] {this.stalkMock.Object, s2.Object}, this.rcMock.Object);
@@ -64,7 +64,7 @@
             this.AppConfigMock.Setup(s => s.IrcStalkTagSeparator).Returns("<><>");
             this.AppConfigMock.Setup(s => s.IrcAlertFormat).Returns("[{0}] url {1} page {2} by {3} summ {4} end");
 
-            var rcHander = new RecentChangeHandler(this.AppConfigMock.Object, this.LoggerMock.Object, null, null, null);
+            var rcHander = new RecentChangeHandler(this.AppConfigMock.Object, this.LoggerMock.Object, null, null, null, null);
 
             // act
             var result = rcHander.FormatMessageForIrc(new[] {this.stalkMock.Object, s2.Object}, this.rcMock.Object);
@@ -81,7 +81,7 @@
             this.AppConfigMock.Setup(s => s.IrcAlertFormat)
                 .Returns("[{0}] url {1} page {2} by {3} summ {4} size {5} flags {6} end");
 
-            var rcHander = new RecentChangeHandler(this.AppConfigMock.Object, this.LoggerMock.Object, null, null, null);
+            var rcHander = new RecentChangeHandler(this.AppConfigMock.Object, this.LoggerMock.Object, null, null, null, null);
 
             // act
             var result = rcHander.FormatMessageForIrc(new[] {this.stalkMock.Object}, this.rcMock.Object);
@@ -97,7 +97,7 @@
             this.AppConfigMock.Setup(s => s.IrcStalkTagSeparator).Returns("|");
             this.AppConfigMock.Setup(s => s.IrcAlertFormat).Returns("[{0}] url {1} page {2} by {3} summ {4} end");
 
-            var rcHander = new RecentChangeHandler(this.AppConfigMock.Object, this.LoggerMock.Object, null, null, null);
+            var rcHander = new RecentChangeHandler(this.AppConfigMock.Object, this.LoggerMock.Object, null, null, null, null);
 
             // act
             var result = rcHander.FormatMessageForIrc(new[] {this.stalkMock.Object}, this.rcMock.Object);
@@ -113,7 +113,7 @@
             this.AppConfigMock.Setup(s => s.EmailRcTemplate).Returns("{1} {2} {3} {4} {5} {6} | {0}");
             this.AppConfigMock.Setup(s => s.EmailStalkTemplate).Returns("> {0} {1} {2} {3} {4}");
 
-            var rcHander = new RecentChangeHandler(this.AppConfigMock.Object, this.LoggerMock.Object, null, null, null);
+            var rcHander = new RecentChangeHandler(this.AppConfigMock.Object, this.LoggerMock.Object, null, null, null, null);
 
             // act
             var result = rcHander.FormatMessageForEmail(new[] {this.stalkMock.Object}, this.rcMock.Object);
@@ -129,7 +129,7 @@
             this.AppConfigMock.Setup(s => s.EmailRcTemplate).Returns("{1} {2} {3} {4} {5} {6} | {0}");
             this.AppConfigMock.Setup(s => s.EmailStalkTemplate).Returns("> {0} {1} {2} {3} {4}");
 
-            var rcHander = new RecentChangeHandler(this.AppConfigMock.Object, this.LoggerMock.Object, null, null, null);
+            var rcHander = new RecentChangeHandler(this.AppConfigMock.Object, this.LoggerMock.Object, null, null, null, null);
             
             var s2 = new Mock<IStalk>();
             s2.Setup(s => s.Flag).Returns("s2");

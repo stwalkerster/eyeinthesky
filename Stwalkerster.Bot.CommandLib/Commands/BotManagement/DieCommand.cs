@@ -1,6 +1,5 @@
 ﻿namespace Stwalkerster.Bot.CommandLib.Commands.BotManagement
 {
-    using System;
     using System.Collections.Generic;
     
     using Castle.Core.Logging;
@@ -9,6 +8,7 @@
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities.Models;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities.Response;
     using Stwalkerster.Bot.CommandLib.Services;
+    using Stwalkerster.Bot.CommandLib.Services.Interfaces;
     using Stwalkerster.IrcClient.Interfaces;
     using Stwalkerster.IrcClient.Model.Interfaces;
 
@@ -19,6 +19,8 @@
     [CommandFlag(Model.Flag.Owner)]
     public class DieCommand : CommandBase
     {
+        private readonly IApplication application;
+
         #region Constructors and Destructors
 
         /// <summary>
@@ -39,6 +41,7 @@
         /// <param name="client"></param>
         /// <param name="flagService"></param>
         /// <param name="configurationProvider"></param>
+        /// <param name="application"></param>
         public DieCommand(
             string commandSource, 
             IUser user, 
@@ -46,9 +49,11 @@
             ILogger logger, 
             IFlagService flagService,
             IConfigurationProvider configurationProvider,
-            IIrcClient client)
+            IIrcClient client,
+            IApplication application)
             : base(commandSource, user, arguments, logger, flagService, configurationProvider, client)
         {
+            this.application = application;
         }
 
         #endregion
@@ -63,7 +68,7 @@
         /// </returns>
         protected override IEnumerable<CommandResponse> Execute()
         {
-            Environment.Exit(0);
+            this.application.Stop();
             
             return new CommandResponse[0];
         }

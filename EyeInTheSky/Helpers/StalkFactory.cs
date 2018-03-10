@@ -4,11 +4,12 @@
     using System.Globalization;
     using System.Xml;
     using Castle.Core.Logging;
+    using EyeInTheSky.Helpers.Interfaces;
     using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.StalkNodes;
 
-    public class StalkFactory
+    public class StalkFactory : IStalkFactory
     {
         private readonly ILogger logger;
 

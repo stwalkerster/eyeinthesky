@@ -3,11 +3,12 @@
     using System;
     using System.Threading;
     using Castle.Core.Logging;
-    using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
+    using Stwalkerster.Bot.CommandLib.Services;
+    using Stwalkerster.Bot.CommandLib.Services.Interfaces;
     using Stwalkerster.IrcClient.Interfaces;
 
-    public class Application
+    public class Application : IApplication
     {
         private readonly ILogger logger;
         private readonly IIrcClient freenodeClient;
@@ -40,6 +41,11 @@
         public void OnDisconnect(object sender, EventArgs e)
         {
             this.logger.Error("Disconnected from IRC!");
+        }
+
+        public void Stop()
+        {
+            this.alive = false;
         }
     }
 }

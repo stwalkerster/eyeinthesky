@@ -13,6 +13,7 @@
     using Stwalkerster.Bot.CommandLib.Commands.Interfaces;
     using Stwalkerster.Bot.CommandLib.ExtensionMethods;
     using Stwalkerster.Bot.CommandLib.Model;
+    using Stwalkerster.Bot.CommandLib.Services.Interfaces;
     using Stwalkerster.Bot.CommandLib.TypedFactories;
     using Stwalkerster.IrcClient.Interfaces;
     using Stwalkerster.IrcClient.Model.Interfaces;
@@ -23,6 +24,8 @@
     public class CommandParser : ICommandParser
     {
         #region Fields
+
+        private readonly IConfigurationProvider configProvider;
 
         /// <summary>
         /// The command factory.
@@ -51,33 +54,22 @@
         /// <summary>
         /// Initialises a new instance of the <see cref="CommandParser"/> class.
         /// </summary>
-        /// <param name="commandTrigger">
-        /// The command trigger.
+        /// <param name="configProvider">
+        /// The configuration provider.
         /// </param>
         /// <param name="commandFactory">
         /// The command Factory.
         /// </param>
-        /// <param name="keywordService">
-        /// The keyword Service.
-        /// </param>
-        /// <param name="keywordFactory">
-        /// The keyword Factory.
-        /// </param>
         /// <param name="logger">
         /// The logger.
         /// </param>
-        /// <param name="databaseSession">
-        /// Database session for loading the aliases only
-        /// </param>
-        /// <param name="remoteSendRepository">
-        /// 
-        /// </param>
         public CommandParser(
-            string commandTrigger,
+            IConfigurationProvider configProvider,
             ICommandTypedFactory commandFactory,
             ILogger logger)
         {
-            this.commandTrigger = commandTrigger;
+            this.commandTrigger = configProvider.CommandPrefix;
+            this.configProvider = configProvider;
             this.commandFactory = commandFactory;
             this.logger = logger;
             var types = Assembly.GetExecutingAssembly().GetTypes();
@@ -169,7 +161,7 @@
                 catch (TargetInvocationException e)
                 {
                     this.logger.Error("Unable to create instance of command.", e.InnerException);
-                    client.SendMessage("##helpmebot", e.InnerException.Message.Replace("\r\n", " "));
+                    client.SendMessage(this.configProvider.DebugChannel, e.InnerException.Message.Replace("\r\n", " "));
                 }
             }
 

@@ -11,9 +11,8 @@
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities.Response;
     using Stwalkerster.Bot.CommandLib.Commands.Interfaces;
     using Stwalkerster.Bot.CommandLib.Exceptions;
-    using Stwalkerster.Bot.CommandLib.Services;
+    using Stwalkerster.Bot.CommandLib.Services.Interfaces;
     using Stwalkerster.Extensions;
-    using Stwalkerster.IrcClient.Extensions;
     using Stwalkerster.IrcClient.Interfaces;
     using Stwalkerster.IrcClient.Model.Interfaces;
 
@@ -85,8 +84,8 @@
         /// Gets the arguments to the command.
         /// </summary>
         public IEnumerable<string> Arguments { get; private set; }
-        
-        public IFlagService FlagService { get; private set; }
+
+        protected IFlagService FlagService { get; private set; }
 
         /// <summary>
         /// Gets the command name.
@@ -175,7 +174,7 @@
         {
             var helpMessages = this.Help();
 
-            var commandTrigger = this.configurationProvider.CommandTrigger;
+            var commandTrigger = this.configurationProvider.CommandPrefix;
 
             if (helpMessages == null)
             {

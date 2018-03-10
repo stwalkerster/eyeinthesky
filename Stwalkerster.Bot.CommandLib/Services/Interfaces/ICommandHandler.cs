@@ -1,4 +1,4 @@
-﻿namespace Stwalkerster.Bot.CommandLib.Commands.Interfaces
+﻿namespace Stwalkerster.Bot.CommandLib.Services.Interfaces
 {
     using Stwalkerster.IrcClient.Events;
 

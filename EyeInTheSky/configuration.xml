@@ -15,6 +15,7 @@
                 <commandPrefix>=</commandPrefix>
                 <stalkConfigFile>EyeInTheSky.config</stalkConfigFile>
                 <rcUser>rc-pmtpa!~rc-pmtpa@special.user</rcUser>
+                <owner>stwalkerster!stwalkerst@wikimedia/stwalkerster</owner>
                 <ircAlertFormat>[&#03;4&#02;{0}&#02;&#03;] Stalked edit {1} to page "&#03;3{2}&#03;" by [[User:{3}]], summary: &#03;7{4}</ircAlertFormat>
                 <ircStalkTagSeparator>&#02;&#03;|&#03;4&#02;</ircStalkTagSeparator>
                 <emailRcTemplate><![CDATA[Hi there!

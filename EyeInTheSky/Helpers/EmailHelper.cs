@@ -1,13 +1,19 @@
 ﻿namespace EyeInTheSky.Helpers
 {
     using System.Security.Cryptography.X509Certificates;
+    using EyeInTheSky.Helpers.Interfaces;
     using MailKit.Net.Smtp;
     using MailKit.Security;
     using MimeKit;
 
-    public class EmailHelper
+    public class EmailHelper : IEmailHelper
     {
-        internal static void ActuallySendEmail(string sender,
+        public EmailHelper()
+        {
+            
+        }
+
+        public void SendEmail(string sender,
             string to,
             string subject,
             string body,

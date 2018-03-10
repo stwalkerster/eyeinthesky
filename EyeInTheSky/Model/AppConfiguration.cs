@@ -16,7 +16,8 @@ namespace EyeInTheSky.Model
             string emailRcTemplate,
             string emailStalkTemplate,
             string dateFormat,
-            EmailConfiguration emailConfiguration)
+            EmailConfiguration emailConfiguration,
+            string owner)
         {
             if (freenodeChannel == null)
             {
@@ -73,6 +74,7 @@ namespace EyeInTheSky.Model
             this.CommandPrefix = commandPrefix;
             this.StalkConfigFile = stalkConfigFile;
             this.RcUser = IrcUser.FromPrefix(rcUser);
+            this.Owner = IrcUser.FromPrefix(owner);
             this.IrcAlertFormat = ircAlertFormat;
             this.IrcStalkTagSeparator = ircStalkTagSeparator;
             this.EmailRcTemplate = emailRcTemplate;
@@ -86,6 +88,7 @@ namespace EyeInTheSky.Model
         public string CommandPrefix { get; private set; }
         public string StalkConfigFile { get; private set; }
         public IrcUser RcUser { get; private set; }
+        public IrcUser Owner { get; private set; }
         public string IrcAlertFormat { get; private set; }
         public string IrcStalkTagSeparator { get; private set; }
         public string EmailRcTemplate { get; private set; }
