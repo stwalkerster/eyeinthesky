@@ -1,12 +1,9 @@
 ﻿namespace EyeInTheSky.Model
 {
     using System;
-    using System.Globalization;
     using System.Xml;
-    using Castle.Core.Logging;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.StalkNodes;
-    using Microsoft.Practices.ServiceLocation;
 
     public class ComplexStalk : IStalk
     {
@@ -16,64 +13,24 @@
             this.baseNode = new FalseNode();
         }
 
-        public ComplexStalk(string flag,
-            string timeupd,
-            string timetrig,
-            string descr,
-            string expiryTime,
-            string immediatemail,
-            string enabled)
+        internal ComplexStalk(
+            string flag,
+            DateTime lastUpdateTime,
+            DateTime lastTriggerTime,
+            string description,
+            DateTime expiryTime,
+            bool mailEnabled,
+            bool isEnabled,
+            StalkNode baseNode)
         {
-            var logger = ServiceLocator.Current.GetInstance<ILogger>()
-                .CreateChildLogger("ComplexStalk")
-                .CreateChildLogger(flag);
-
-            if (flag == "")
-            {
-                throw new ArgumentOutOfRangeException();
-            }
-
             this.Flag = flag;
-
-            if (!bool.TryParse(immediatemail, out this.mailEnabled))
-            {
-                this.mailEnabled = false;
-            }
-
-            if (!bool.TryParse(enabled, out this.isEnabled))
-            {
-                this.isEnabled = true;
-            }
-
-            this.ParseDate(flag, timeupd, logger, out this.lastUpdateTime, "last update time");
-            this.ParseDate(flag, timetrig, logger, out this.lastTriggerTime, "last trigger time");
-
-            this.description = descr;
-
-            this.ParseDate(flag, expiryTime, logger, out this.expiryTime, "expiry time");
-
-            this.baseNode = new FalseNode();
-        }
-
-        private void ParseDate(string flagName, string input, ILogger logger, out DateTime result, string propName)
-        {
-            if (!DateTime.TryParseExact(
-                input,
-                "O",
-                CultureInfo.InvariantCulture,
-                DateTimeStyles.AssumeUniversal,
-                out result))
-            {
-                logger.WarnFormat("Unknown date format in stalk '{0}' {2}: {1}", flagName, input, propName);
-
-                if (!DateTime.TryParse(input, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out result))
-                {
-                    var err = string.Format("Failed date parse for stalk '{0}' {2}: {1}", flagName, input, propName);
-
-                    logger.Error(err);
-                    throw new FormatException(err);
-                }
-            }
+            this.lastUpdateTime = lastUpdateTime;
+            this.lastTriggerTime = lastTriggerTime;
+            this.description = description;
+            this.expiryTime = expiryTime;
+            this.mailEnabled = mailEnabled;
+            this.isEnabled = isEnabled;
+            this.baseNode = baseNode;
         }
 
         private StalkNode baseNode;
@@ -84,7 +41,6 @@
         private bool mailEnabled = true;
         private bool isEnabled;
 
-        /// <inheritdoc />
         public string Flag { get; private set; }
 
         public DateTime LastUpdateTime
@@ -181,38 +137,6 @@
         {
             return "Flag: " + this.Flag + ", Last modified: " + this.LastUpdateTime + ", Type: Complex "
                    + this.baseNode;
-        }
-
-        public static IStalk NewFromXmlElement(XmlElement element)
-        {
-            XmlAttribute time = element.Attributes["lastupdate"];
-            string lastupdtime = time == null ? DateTime.Now.ToString(CultureInfo.InvariantCulture) : time.Value;
-            time = element.Attributes["lasttrigger"];
-            string lastriggertime =
-                time == null ? DateTime.MinValue.ToString(CultureInfo.InvariantCulture) : time.Value;
-            time = element.Attributes["expiry"];
-            string exptime = time == null ? DateTime.MaxValue.ToString(CultureInfo.InvariantCulture) : time.Value;
-
-            string immMail = element.GetAttribute("immediatemail");
-            string enbld = element.GetAttribute("enabled");
-            string descr = element.GetAttribute("description");
-
-            var s = new ComplexStalk(
-                element.Attributes["flag"].Value,
-                lastupdtime,
-                lastriggertime,
-                descr,
-                exptime,
-                immMail,
-                enbld);
-
-            if (element.HasChildNodes)
-            {
-                StalkNode n = StalkNode.NewFromXmlFragment(element.FirstChild);
-                s.baseNode = n;
-            }
-
-            return s;
         }
     }
 }

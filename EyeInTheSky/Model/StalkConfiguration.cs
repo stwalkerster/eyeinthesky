@@ -1,10 +1,12 @@
 ﻿namespace EyeInTheSky.Model
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Xml;
     using System.Xml.XPath;
     using Castle.Core.Logging;
+    using EyeInTheSky.Helpers;
     using EyeInTheSky.Model.Interfaces;
 
     public class StalkConfiguration
@@ -13,26 +15,28 @@
         
         private readonly string configurationFileName;
         private readonly ILogger logger;
-        private StalkList stalks;
+        private readonly StalkFactory stalkFactory;
+        private SortedList<string, IStalk> stalks;
 
         private bool initialised;
 
-        public StalkConfiguration(IAppConfiguration configuration, ILogger logger)
+        public StalkConfiguration(IAppConfiguration configuration, ILogger logger, StalkFactory stalkFactory)
         {
             this.configurationFileName = configuration.StalkConfigFile;
             this.logger = logger;
+            this.stalkFactory = stalkFactory;
 
             if (!new FileInfo(this.configurationFileName).Exists)
             {
                 this.logger.Warn(
                     "Can't find stalk configuration file at " + this.configurationFileName
                                                           + ", using defaults");
-                this.stalks = new StalkList();
+                this.stalks = new SortedList<string, IStalk>();
                 this.DoSave();
             }
         }
 
-        public StalkList Stalks
+        public SortedList<string, IStalk> Stalks
         {
             get
             {
@@ -59,7 +63,7 @@
                 xnm.AddNamespace("isky", XmlNamespace);
 
                 var stalknav = navigator.SelectSingleNode("//isky:stalks", xnm);
-                this.stalks = stalknav != null ? StalkList.LoadFromXmlFragment(stalknav.OuterXml, xnt) : new StalkList();
+                this.stalks = stalknav != null ? this.LoadFromXmlFragment(stalknav.OuterXml, xnt) : new SortedList<string, IStalk>();
 
                 sr.Close();
 
@@ -71,6 +75,29 @@
                 this.logger.Error("Configuration file is invalid", ex);
                 throw;
             }
+        }
+
+        private SortedList<string, IStalk> LoadFromXmlFragment(string fragment, XmlNameTable nameTable)
+        {
+            var list = new SortedList<string, IStalk>();
+
+            var xd = new XmlDocument(nameTable);
+            xd.LoadXml(fragment);
+            var node = xd.ChildNodes[0];
+            foreach (XmlNode childNode in node.ChildNodes)
+            {
+                if (childNode.NodeType != XmlNodeType.Element)
+                {
+                    continue;
+                }
+
+                var element = (XmlElement) childNode;
+
+                var stalk = (ComplexStalk) this.stalkFactory.NewFromXmlElement(element);
+                list.Add(stalk.Flag, stalk);
+            }
+
+            return list;
         }
 
         public void Save()
@@ -100,6 +127,17 @@
             doc.AppendChild(root);
 
             doc.Save(this.configurationFileName);
+        }
+
+        public IEnumerable<IStalk> MatchStalks(IRecentChange rc)
+        {
+            foreach (var s in this.stalks)
+            {
+                if(s.Value.Match(rc))
+                {
+                    yield return s.Value;
+                }
+            }
         }
     }
 }

@@ -55,7 +55,7 @@
                 var rcMessage = e.Message.Parameters.Skip(1).FirstOrDefault();
                 var rc = this.rcParser.Parse(rcMessage);
 
-                var stalks = this.stalkConfig.Stalks.Search(rc).ToList();
+                var stalks = this.stalkConfig.MatchStalks(rc).ToList();
 
                 if (stalks.Count == 0)
                 {

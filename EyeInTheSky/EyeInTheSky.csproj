@@ -79,6 +79,7 @@
     <Compile Include="Application.cs" />
     <Compile Include="Commands\Acc.cs" />
     <Compile Include="Commands\Quick.cs" />
+    <Compile Include="Helpers\StalkFactory.cs" />
     <Compile Include="Helpers\EmailHelper.cs" />
     <Compile Include="Model\AppConfiguration.cs" />
     <Compile Include="Model\ComplexStalk.cs" />
@@ -88,7 +89,6 @@
     <Compile Include="Model\Interfaces\IStalk.cs" />
     <Compile Include="Model\RecentChange.cs" />
     <Compile Include="Model\StalkConfiguration.cs" />
-    <Compile Include="Model\StalkList.cs" />
     <Compile Include="Nagios.cs" />
     <Compile Include="Services\CommandHandler.cs" />
     <Compile Include="Services\Interfaces\IRecentChangeParser.cs" />

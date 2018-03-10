@@ -7,6 +7,7 @@
     using Castle.MicroKernel.SubSystems.Configuration;
     using Castle.Services.Logging.Log4netIntegration;
     using Castle.Windsor;
+    using EyeInTheSky.Helpers;
     using EyeInTheSky.Model;
     using EyeInTheSky.Services;
     using EyeInTheSky.Services.Interfaces;
@@ -30,6 +31,7 @@
                         Dependency.OnComponent("wikimediaClient", "wikimediaClient")
                     ),
                 Component.For<CommandHandler>().Named("commandHandler"),
+                Component.For<StalkFactory>(),
                 Component.For<IRecentChangeParser>().ImplementedBy<RecentChangeParser>(),
                 Component.For<RecentChangeHandler>().Named("rcHandler")
                     .DependsOn(
