@@ -11,10 +11,31 @@
     /// </summary>
     public interface IIrcClient
     {
+        #region Public Events
+
         /// <summary>
-        /// Gets or sets the nickname.
+        /// The invite received event.
         /// </summary>
-        string Nickname { get; set; }
+        event EventHandler<InviteEventArgs> InviteReceivedEvent;
+
+        /// <summary>
+        /// The join received event.
+        /// </summary>
+        event EventHandler<JoinEventArgs> JoinReceivedEvent;
+
+        /// <summary>
+        /// The received message.
+        /// </summary>
+        event EventHandler<MessageReceivedEventArgs> ReceivedMessage;
+        
+        /// <summary>
+        /// Raised when the client disconnects from IRC.
+        /// </summary>
+        event EventHandler DisconnectedEvent;
+
+        #endregion
+
+        #region Public Properties
 
         /// <summary>
         /// Gets the channels.
@@ -27,35 +48,23 @@
         bool NickTrackingValid { get; }
 
         /// <summary>
-        /// Gets the user cache.
+        /// Gets or sets the nickname.
         /// </summary>
-        Dictionary<string, IrcUser> UserCache { get; }
+        string Nickname { get; set; }
 
         /// <summary>
         /// Gets a value indicating whether the client logged in to a nickserv account
         /// </summary>
         bool ServicesLoggedIn { get; }
 
-        bool NetworkConnected { get; }
-
         /// <summary>
-        /// The received message.
+        /// Gets the user cache.
         /// </summary>
-        event EventHandler<MessageReceivedEventArgs> ReceivedMessage;
+        Dictionary<string, IrcUser> UserCache { get; }
 
-        /// <summary>
-        /// The join received event.
-        /// </summary>
-        event EventHandler<JoinEventArgs> JoinReceivedEvent;
+        #endregion
 
-        event EventHandler<JoinEventArgs> PartReceivedEvent;
-
-        /// <summary>
-        /// The invite received event.
-        /// </summary>
-        event EventHandler<InviteEventArgs> InviteReceivedEvent;
-
-        event EventHandler<ModeEventArgs> ModeReceivedEvent;
+        #region Public Methods and Operators
 
         /// <summary>
         /// The join.
@@ -64,6 +73,17 @@
         /// The channel.
         /// </param>
         void JoinChannel(string channel);
+
+        /// <summary>
+        /// The lookup user.
+        /// </summary>
+        /// <param name="prefix">
+        /// The prefix.
+        /// </param>
+        /// <returns>
+        /// The <see cref="IrcUser"/>.
+        /// </returns>
+        IrcUser LookupUser(string prefix);
 
         /// <summary>
         /// The part channel.
@@ -77,6 +97,14 @@
         void PartChannel(string channel, string message);
 
         /// <summary>
+        /// The send.
+        /// </summary>
+        /// <param name="message">
+        /// The message.
+        /// </param>
+        void Send(IMessage message);
+
+        /// <summary>
         /// The send message.
         /// </summary>
         /// <param name="destination">
@@ -85,6 +113,10 @@
         /// <param name="message">
         /// The message.
         /// </param>
+        /// <param name="destinationFlag">
+        /// The destination flags.
+        /// </param>
+        void SendMessage(string destination, string message, DestinationFlags destinationFlag);
         void SendMessage(string destination, string message);
 
         /// <summary>
@@ -96,21 +128,24 @@
         /// <param name="message">
         /// The message.
         /// </param>
+        /// <param name="destinationFlag">
+        /// The destination flags.
+        /// </param>
+        void SendNotice(string destination, string message, DestinationFlags destinationFlag);
         void SendNotice(string destination, string message);
 
         /// <summary>
-        /// The send.
+        /// Blocks until the connection is registered.
         /// </summary>
-        /// <param name="message">
-        /// The message.
-        /// </param>
-        void Send(IMessage message);
-
+        void WaitOnRegistration();
+        
+        /// <summary>
+        /// Changes the mode of the target
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="changes"></param>
         void Mode(string target, string changes);
 
-        /// <summary>
-        /// Raised when the client disconnects from IRC.
-        /// </summary>
-        event EventHandler DisconnectedEvent;
+        #endregion
     }
 }

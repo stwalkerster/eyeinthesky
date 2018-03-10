@@ -34,11 +34,6 @@
         private readonly TcpClient client;
 
         /// <summary>
-        ///     The hostname.
-        /// </summary>
-        private readonly string hostname;
-
-        /// <summary>
         ///     The network logger.
         /// </summary>
         private readonly ILogger inboundLogger;
@@ -52,11 +47,6 @@
         ///     The outbound logger.
         /// </summary>
         private readonly ILogger outboundLogger;
-
-        /// <summary>
-        ///     The port.
-        /// </summary>
-        private readonly int port;
 
         /// <summary>
         ///     The send queue.
@@ -111,15 +101,15 @@
         /// </param>
         protected NetworkClient(string hostname, int port, ILogger logger, bool startThreads)
         {
-            this.hostname = hostname;
-            this.port = port;
+            this.Hostname = hostname;
+            this.Port = port;
             this.logger = logger;
             this.inboundLogger = logger.CreateChildLogger("Inbound");
             this.outboundLogger = logger.CreateChildLogger("Outbound");
 
             this.logger.InfoFormat("Connecting to socket tcp://{0}:{1}/ ...", hostname, port);
 
-            this.client = new TcpClient(this.hostname, this.port);
+            this.client = new TcpClient(this.Hostname, this.Port);
 
             this.Reader = new StreamReader(this.client.GetStream());
             this.Writer = new StreamWriter(this.client.GetStream());
@@ -149,6 +139,16 @@
         {
             get { return this.client.Connected; }
         }
+
+        /// <summary>
+        ///     The hostname.
+        /// </summary>
+        public string Hostname { get; private set; }
+
+        /// <summary>
+        ///     The port.
+        /// </summary>
+        public int Port { get; private set; }
 
         #endregion
 

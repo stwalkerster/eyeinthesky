@@ -5,8 +5,10 @@
     using System.Linq;
     using System.Security;
     using System.Threading;
+
     using Castle.Core.Logging;
     using Stwalkerster.IrcClient.Events;
+    using Stwalkerster.IrcClient.Exceptions;
     using Stwalkerster.IrcClient.Extensions;
     using Stwalkerster.IrcClient.Interfaces;
     using Stwalkerster.IrcClient.Messages;
@@ -19,6 +21,16 @@
     /// </summary>
     public class IrcClient : IIrcClient, IDisposable
     {
+        /// <summary>
+        /// The mode mapping.
+        /// </summary>
+        private readonly Dictionary<string, Action<IrcChannelUser, bool>> modeMapping =
+            new Dictionary<string, Action<IrcChannelUser, bool>>
+                {
+                    { "v", (x, flag) => x.Voice = flag },
+                    { "o", (x, flag) => x.Operator = flag },
+                };
+
         #region Fields
 
         /// <summary>
@@ -57,6 +69,11 @@
         private readonly string password;
 
         /// <summary>
+        /// The support helper.
+        /// </summary>
+        private readonly ISupportHelper supportHelper;
+
+        /// <summary>
         /// The real name.
         /// </summary>
         private readonly string realName;
@@ -80,6 +97,16 @@
         /// The username.
         /// </summary>
         private readonly string username;
+
+        /// <summary>
+        /// The prefixes.
+        /// </summary>
+        private readonly IDictionary<string, string> prefixes = new Dictionary<string, string>();
+
+        /// <summary>
+        /// The destination flags.
+        /// </summary>
+        private readonly IList<string> destinationFlags = new List<string>();
 
         /// <summary>
         /// The cap extended join.
@@ -130,26 +157,29 @@
                 this.logger.Warn("Services authentication is disabled!");
 
                 this.clientCapabilities.Remove("sasl");
+                this.clientCapabilities.Remove("account-notify");
+                this.clientCapabilities.Remove("extended-join");
             }
 
             this.RegisterConnection(null);
         }
 
-        public IrcClient(ILogger logger, IIrcConfiguration configuration)
-        : this(null, logger, configuration)
-        {   
+        public IrcClient(ILogger logger, IIrcConfiguration configuration, ISupportHelper supportHelper)
+        : this(null, logger, configuration, supportHelper)
+        {
         }
 
-        public IrcClient(INetworkClient client, ILogger logger, IIrcConfiguration configuration)
+        public IrcClient(INetworkClient client, ILogger logger, IIrcConfiguration configuration, ISupportHelper supportHelper)
         {
             this.nickname = configuration.Nickname;
             this.username = configuration.Username;
             this.realName = configuration.RealName;
             this.password = configuration.Password;
             this.authToServices = configuration.AuthToServices;
-            
+
+            this.supportHelper = supportHelper;
             this.logger = logger.CreateChildLogger(configuration.ClientName);
-            
+
             this.syncLogger = this.logger.CreateChildLogger("Sync");
             this.ReceivedMessage += this.OnMessageReceivedEvent;
 
@@ -294,6 +324,15 @@
         }
 
         /// <summary>
+        /// Blocks until the connection is registered.
+        /// </summary>
+        public void WaitOnRegistration()
+        {
+            this.connectionRegistrationSemaphore.WaitOne();
+            this.connectionRegistrationSemaphore.Release();
+        }
+
+        /// <summary>
         /// The join.
         /// </summary>
         /// <param name="channel">
@@ -314,6 +353,31 @@
 
             // request to join
             this.Send(new Message("JOIN", channel));
+        }
+
+        /// <summary>
+        /// The lookup user.
+        /// </summary>
+        /// <param name="prefix">
+        /// The prefix.
+        /// </param>
+        /// <returns>
+        /// The <see cref="IrcUser"/>.
+        /// </returns>
+        public IrcUser LookupUser(string prefix)
+        {
+            var parsedUser = IrcUser.FromPrefix(prefix);
+
+            lock (this.userOperationLock)
+            {
+                // attempt to load from cache
+                if (this.nickTrackingValid && this.userCache.ContainsKey(parsedUser.Nickname))
+                {
+                    parsedUser = this.userCache[parsedUser.Nickname];
+                }
+            }
+
+            return parsedUser;
         }
 
         /// <summary>
@@ -351,9 +415,31 @@
         /// <param name="message">
         /// The message.
         /// </param>
+        /// <param name="destinationFlag">
+        /// The destination flag.
+        /// </param>
+        public void SendMessage(string destination, string message, DestinationFlags destinationFlag)
+        {
+            if (destinationFlag != null && !this.destinationFlags.Contains(destinationFlag.Flag))
+            {
+                throw new OperationNotSupportedException("Message send requested with destination flag, but destination flag is not supported by this server.");
+            }
+
+            this.Send(new Message("PRIVMSG", new[] { destination, message }));
+        }
+
+        /// <summary>
+        /// The send message.
+        /// </summary>
+        /// <param name="destination">
+        /// The destination.
+        /// </param>
+        /// <param name="message">
+        /// The message.
+        /// </param>
         public void SendMessage(string destination, string message)
         {
-            this.Send(new Message("PRIVMSG", new[] {destination, message}));
+            this.SendMessage(destination, message, null);
         }
 
         /// <summary>
@@ -365,11 +451,24 @@
         /// <param name="message">
         /// The message.
         /// </param>
-        public void SendNotice(string destination, string message)
+        /// <param name="destinationFlag">
+        /// The destination Flag.
+        /// </param>
+        public void SendNotice(string destination, string message, DestinationFlags destinationFlag)
         {
-            this.Send(new Message("NOTICE", new[] {destination, message}));
+            if (destinationFlag != null && !this.destinationFlags.Contains(destinationFlag.Flag))
+            {
+                throw new OperationNotSupportedException("Message send requested with destination flag, but destination flag is not supported by this server.");
+            }
+
+            this.Send(new Message("NOTICE", new[] { destination, message }));
         }
 
+        public void SendNotice(string destination, string message)
+        {
+            this.SendNotice(destination, message, null);
+        }
+        
         public void Mode(string target, string changes)
         {
             this.networkClient.Send(string.Format("MODE {0} {1}", target, changes));
@@ -452,15 +551,15 @@
                     if (this.channels[channel].Users.ContainsKey(ircUser.Nickname))
                     {
                         var channelUser = this.channels[channel].Users[ircUser.Nickname];
-                        channelUser.Operator = modes.Contains("@");
-                        channelUser.Voice = modes.Contains("+");
+                        channelUser.Operator = modes.Contains("@") && this.prefixes.Values.Contains("@");
+                        channelUser.Voice = modes.Contains("+") && this.prefixes.Values.Contains("+");
                     }
                     else
                     {
                         var channelUser = new IrcChannelUser(ircUser, channel)
                         {
-                            Operator = modes.Contains("@"),
-                            Voice = modes.Contains("+")
+                            Operator = modes.Contains("@") && this.prefixes.Values.Contains("@"),
+                            Voice = modes.Contains("+") && this.prefixes.Values.Contains("+")
                         };
 
                         this.channels[channel].Users.Add(ircUser.Nickname, channelUser);
@@ -526,7 +625,6 @@
             }
         }
 
-
         /// <summary>
         /// The on account message received.
         /// </summary>
@@ -591,7 +689,7 @@
                     addMode = true;
                 }
 
-                if (c == 'o')
+                if (this.prefixes.ContainsKey(c.ToString()))
                 {
                     var nick = parameters[position];
 
@@ -599,25 +697,9 @@
                     {
                         var channelUser = this.channels[channel].Users[nick];
 
-                        this.logger.InfoFormat("Seen {0}o on {1}.", addMode ? "+" : "-", channelUser);
+                        this.logger.InfoFormat("Seen {0}{2} on {1}.", addMode ? "+" : "-", channelUser, c);
 
-                        channelUser.Operator = addMode;
-
-                        position++;
-                    }
-                }
-
-                if (c == 'v')
-                {
-                    var nick = parameters[position];
-
-                    lock (this.userOperationLock)
-                    {
-                        var channelUser = this.channels[channel].Users[nick];
-
-                        this.logger.InfoFormat("Seen {0}v on {1}.", addMode ? "+" : "-", channelUser, channel);
-
-                        channelUser.Voice = addMode;
+                        this.modeMapping[c.ToString()](channelUser, addMode);
 
                         position++;
                     }
@@ -697,6 +779,7 @@
                 lock (this.userOperationLock)
                 {
                     // add the channel to the list of channels I'm in.
+                    this.logger.DebugFormat("Adding {0} to the list of channels I'm in.", channelName);
                     this.Channels.Add(channelName, new IrcChannel(channelName));
                 }
             }
@@ -708,6 +791,7 @@
                 {
                     if (!this.Channels[channelName].Users.ContainsKey(user.Nickname))
                     {
+                        this.logger.DebugFormat("Adding user {0} to the list of users in channel {1}", user, channelName);
                         this.Channels[channelName]
                             .Users.Add(
                                 user.Nickname,
@@ -719,12 +803,12 @@
                         this.nickTrackingValid = false;
                     }
                 }
-            }
 
-            var temp = this.JoinReceivedEvent;
-            if (temp != null)
-            {
-                temp(this, new JoinEventArgs(e.Message, user, channelName));
+                var temp = this.JoinReceivedEvent;
+                if (temp != null)
+                {
+                    temp(this, new JoinEventArgs(e.Message, user, channelName, this));
+                }
             }
         }
 
@@ -782,6 +866,11 @@
                 this.OnNameReplyReceived(e);
             }
 
+            if (e.Message.Command == Numerics.ISupport)
+            {
+                this.OnISupportMessageRecieved(e);
+            }
+
             if (e.Message.Command == Numerics.WhoXReply)
             {
                 this.logger.DebugFormat("WHOX Reply:{0}", e.Message.Parameters.Implode());
@@ -816,7 +905,7 @@
                 var modeEvent = this.ModeReceivedEvent;
                 if (modeEvent != null)
                 {
-                    modeEvent(this, new ModeEventArgs(e.Message, user, parameters[0], parameters.Skip(1).ToList()));
+                    modeEvent(this, new ModeEventArgs(e.Message, user, parameters[0], parameters.Skip(1).ToList(), this));
                 }
             }
 
@@ -829,7 +918,7 @@
                 var modeEvent = this.ModeReceivedEvent;
                 if (modeEvent != null)
                 {
-                    modeEvent(this, new ModeEventArgs(e.Message, user, parameters[0], parameters.Skip(1).ToList()));
+                    modeEvent(this, new ModeEventArgs(e.Message, user, parameters[0], parameters.Skip(1).ToList(), this));
                 }
             }
 
@@ -859,9 +948,39 @@
                 if (inviteReceivedEvent != null)
                 {
                     var parameters = e.Message.Parameters.ToList();
-                    inviteReceivedEvent(this, new InviteEventArgs(e.Message, user, parameters[1], parameters[0]));
+                    inviteReceivedEvent(this, new InviteEventArgs(e.Message, user, parameters[1], parameters[0], this));
                 }
             }
+        }
+
+        private void OnISupportMessageRecieved(MessageReceivedEventArgs e)
+        {
+            // User modes in channels
+            var prefixMessage = e.Message.Parameters.FirstOrDefault(x => x.StartsWith("PREFIX="));
+            if (prefixMessage != null)
+            {
+                this.supportHelper.HandlePrefixMessageSupport(prefixMessage, this.prefixes);
+            }
+
+            // status message for voiced/opped users only
+            var statusMessage = e.Message.Parameters.FirstOrDefault(x => x.StartsWith("STATUSMSG="));
+            if (statusMessage != null)
+            {
+                this.supportHelper.HandleStatusMessageSupport(prefixMessage, this.destinationFlags);
+            }
+
+            // TODO: finish me
+            
+            // Max mode changes in one command
+            var modeLimit = e.Message.Parameters.FirstOrDefault(x => x.StartsWith("MODES="));
+
+            // Channel type prefixes
+            var channelTypes = e.Message.Parameters.FirstOrDefault(x => x.StartsWith("CHANTYPES="));
+
+            // max channels:
+            var chanLimit = e.Message.Parameters.FirstOrDefault(x => x.StartsWith("CHANLIMIT="));
+
+            // whox
         }
 
         /// <summary>
@@ -907,7 +1026,7 @@
                     }
                     else
                     {
-                        var ircUser = new IrcUser {Nickname = parsedName, Skeleton = true};
+                        var ircUser = new IrcUser { Nickname = parsedName, Skeleton = true };
                         if (this.userCache.ContainsKey(parsedName))
                         {
                             ircUser = this.userCache[parsedName];
@@ -917,7 +1036,7 @@
                             this.userCache.Add(parsedName, ircUser);
                         }
 
-                        var channelUser = new IrcChannelUser(ircUser, channel) {Voice = voice, Operator = op};
+                        var channelUser = new IrcChannelUser(ircUser, channel) { Voice = voice, Operator = op };
 
                         this.channels[channel].Users.Add(parsedName, channelUser);
                     }
@@ -1035,9 +1154,7 @@
                 lock (this.userOperationLock)
                 {
                     var channelUsers = this.channels[channel].Users.Select(x => x.Key);
-                    foreach (var u in channelUsers.Where(
-                        u =>
-                            this.channels.Count(x => x.Value.Users.ContainsKey(u)) == 0))
+                    foreach (var u in channelUsers.Where(u => this.channels.Count(x => x.Value.Users.ContainsKey(u)) == 0))
                     {
                         this.logger.InfoFormat(
                             "{0} is no longer in any channel I'm in, removing them from tracking",
@@ -1073,7 +1190,7 @@
             var onPartReceivedEvent = this.PartReceivedEvent;
             if (onPartReceivedEvent != null)
             {
-                onPartReceivedEvent(this, new JoinEventArgs(e.Message, user, channel));
+                onPartReceivedEvent(this, new JoinEventArgs(e.Message, user, channel, this));
             }
         }
 
@@ -1096,9 +1213,8 @@
                 lock (this.userOperationLock)
                 {
                     var channelUsers = this.channels[channel].Users.Select(x => x.Key);
-                    foreach (var u in channelUsers.Where(
-                        u =>
-                            this.channels.Count(x => x.Value.Users.ContainsKey(u)) == 0))
+                    var channelsWithUser = channelUsers.Where(u => this.channels.Count(x => x.Value.Users.ContainsKey(u)) == 0);
+                    foreach (var u in channelsWithUser)
                     {
                         this.logger.InfoFormat(
                             "{0} is no longer in any channel I'm in, removing them from tracking",
@@ -1108,6 +1224,7 @@
                         this.userCache.Remove(u);
                     }
 
+                    this.logger.DebugFormat("Removing {0} from channel list", channel);
                     this.channels.Remove(channel);
                 }
 
@@ -1166,7 +1283,7 @@
             var receivedMessageEvent = this.ReceivedMessage;
             if (receivedMessageEvent != null)
             {
-                receivedMessageEvent(this, new MessageReceivedEventArgs(message));
+                receivedMessageEvent(this, new MessageReceivedEventArgs(message, this));
             }
         }
 
@@ -1250,7 +1367,7 @@
                     var caps = serverCapabilities.Intersect(this.clientCapabilities).ToList();
 
                     // We don't support one without the other!
-                    if (caps.Intersect(new[] {"account-notify", "extended-join"}).Count() == 1)
+                    if (caps.Intersect(new[] { "account-notify", "extended-join" }).Count() == 1)
                     {
                         this.logger.Warn(
                             "Dropping account-notify and extended-join support since server only supports one of them!");

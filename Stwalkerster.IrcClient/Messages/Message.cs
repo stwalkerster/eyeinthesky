@@ -16,14 +16,14 @@
         private readonly string command;
 
         /// <summary>
-        /// The parameters.
-        /// </summary>
-        private readonly IEnumerable<string> parameters;
-
-        /// <summary>
         /// The prefix.
         /// </summary>
         private readonly string prefix;
+
+        /// <summary>
+        /// The parameters.
+        /// </summary>
+        private readonly IEnumerable<string> parameters;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="Message" /> class.

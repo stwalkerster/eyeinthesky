@@ -47,6 +47,7 @@
     <Compile Include="Events\MessageReceivedEventArgs.cs" />
     <Compile Include="Events\ModeEventArgs.cs" />
     <Compile Include="Events\UserEventArgsBase.cs" />
+    <Compile Include="Exceptions\OperationNotSupportedException.cs" />
     <Compile Include="Extensions\CtcpExtensions.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Extensions\ListExtensions.cs" />
@@ -55,12 +56,16 @@
     <Compile Include="Interfaces\IIrcClient.cs" />
     <Compile Include="Interfaces\IIrcConfiguration.cs" />
     <Compile Include="Interfaces\INetworkClient.cs" />
+    <Compile Include="Interfaces\ISupportHelper.cs" />
     <Compile Include="IrcClient.cs" />
     <Compile Include="IrcColours.cs" />
     <Compile Include="IrcConfiguration.cs" />
     <Compile Include="Messages\IMessage.cs" />
     <Compile Include="Messages\Message.cs" />
+    <Compile Include="Messages\Notice.cs" />
     <Compile Include="Messages\Numerics.cs" />
+    <Compile Include="Messages\PrivateMessage.cs" />
+    <Compile Include="Model\DestinationFlags.cs" />
     <Compile Include="Model\Interfaces\IUser.cs" />
     <Compile Include="Model\IrcChannel.cs" />
     <Compile Include="Model\IrcChannelUser.cs" />
@@ -69,6 +74,7 @@
     <Compile Include="Network\NetworkClient.cs" />
     <Compile Include="Network\SslNetworkClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SupportHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

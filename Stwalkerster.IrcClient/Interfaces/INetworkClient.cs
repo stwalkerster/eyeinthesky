@@ -17,6 +17,16 @@
         event EventHandler<DataReceivedEventArgs> DataReceived;
 
         /// <summary>
+        /// Gets the hostname.
+        /// </summary>
+        string Hostname { get; }
+
+        /// <summary>
+        /// Gets the port.
+        /// </summary>
+        int Port { get; }
+
+        /// <summary>
         /// The send.
         /// </summary>
         /// <param name="message">

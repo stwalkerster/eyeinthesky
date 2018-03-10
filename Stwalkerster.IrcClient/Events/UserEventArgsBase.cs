@@ -1,5 +1,6 @@
 ﻿namespace Stwalkerster.IrcClient.Events
 {
+    using Stwalkerster.IrcClient.Interfaces;
     using Stwalkerster.IrcClient.Messages;
     using Stwalkerster.IrcClient.Model.Interfaces;
 
@@ -22,8 +23,11 @@
         /// <param name="user">
         /// The user.
         /// </param>
-        public UserEventArgsBase(IMessage message, IUser user)
-            : base(message)
+        /// <param name="client">
+        /// The client.
+        /// </param>
+        public UserEventArgsBase(IMessage message, IUser user, IIrcClient client)
+            : base(message, client)
         {
             this.user = user;
         }
@@ -33,7 +37,10 @@
         /// </summary>
         public IUser User
         {
-            get { return this.user; }
+            get
+            {
+                return this.user;
+            }
         }
     }
 }

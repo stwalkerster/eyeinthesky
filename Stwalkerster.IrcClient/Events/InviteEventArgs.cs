@@ -1,5 +1,6 @@
 ﻿namespace Stwalkerster.IrcClient.Events
 {
+    using Stwalkerster.IrcClient.Interfaces;
     using Stwalkerster.IrcClient.Messages;
     using Stwalkerster.IrcClient.Model.Interfaces;
 
@@ -33,19 +34,22 @@
         /// <param name="nickname">
         /// The nickname.
         /// </param>
-        public InviteEventArgs(IMessage message, IUser user, string channel, string nickname)
-            : base(message, user)
+        public InviteEventArgs(IMessage message, IUser user, string channel, string nickname, IIrcClient client)
+            : base(message, user, client)
         {
             this.channel = channel;
             this.nickname = nickname;
         }
 
         /// <summary>
-        ///     Gets the channel.
+        /// Gets the channel.
         /// </summary>
         public string Channel
         {
-            get { return this.channel; }
+            get
+            {
+                return this.channel;
+            }
         }
 
         /// <summary>
@@ -53,7 +57,10 @@
         /// </summary>
         public string Nickname
         {
-            get { return this.nickname; }
+            get
+            {
+                return this.nickname;
+            }
         }
     }
 }

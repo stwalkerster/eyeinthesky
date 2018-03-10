@@ -1,5 +1,6 @@
 ﻿namespace Stwalkerster.IrcClient.Events
 {
+    using Stwalkerster.IrcClient.Interfaces;
     using Stwalkerster.IrcClient.Messages;
     using Stwalkerster.IrcClient.Model.Interfaces;
 
@@ -25,8 +26,9 @@
         /// <param name="channel">
         ///     The channel.
         /// </param>
-        public JoinEventArgs(IMessage message, IUser user, string channel)
-            : base(message, user)
+        /// <param name="client"></param>
+        public JoinEventArgs(IMessage message, IUser user, string channel, IIrcClient client)
+            : base(message, user, client)
         {
             this.channel = channel;
         }

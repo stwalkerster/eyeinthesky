@@ -21,6 +21,15 @@
         public const string Welcome = "001";
 
         /// <summary>
+        /// The I support message
+        /// </summary>
+        /// <remarks>
+        /// It's literally called ISUPPORT in the documentation, hence suppressing inconsistent naming warning
+        /// </remarks>
+        // ReSharper disable once InconsistentNaming
+        public const string ISupport = "005";
+
+        /// <summary>
         /// The no channel topic.
         /// </summary>
         public const string NoChannelTopic = "331";
@@ -49,6 +58,36 @@
         /// The who x reply.
         /// </summary>
         public const string WhoXReply = "354";
+
+        /// <summary>
+        /// The forwarding to other channel.
+        /// </summary>
+        public const string ForwardingToOtherChannel = "470";
+
+        /// <summary>
+        /// The channel full.
+        /// </summary>
+        public const string ChannelFull = "471";
+
+        /// <summary>
+        /// The invite only channel.
+        /// </summary>
+        public const string InviteOnlyChannel = "473";
+
+        /// <summary>
+        /// The banned from channel.
+        /// </summary>
+        public const string BannedFromChannel = "474";
+
+        /// <summary>
+        /// The bad channel key.
+        /// </summary>
+        public const string BadChannelKey = "475";
+
+        /// <summary>
+        /// The channel throttle exceeded.
+        /// </summary>
+        public const string ChannelThrottleExceeded = "480";
 
         public const string BanListEntry = "367";
         public const string QuietListEntry = "728";

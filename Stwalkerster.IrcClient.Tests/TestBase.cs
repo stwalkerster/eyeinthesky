@@ -21,6 +21,11 @@
         /// Gets or sets the logger.
         /// </summary>
         protected Mock<ILogger> Logger { get; set; }
+        
+        /// <summary>
+        /// The SupportHelper mock
+        /// </summary>
+        protected Mock<ISupportHelper> SupportHelper { get; set; }
 
         /// <summary>
         /// The common setup.
@@ -41,8 +46,9 @@
             this.Logger.Setup(x => x.ErrorFormat(It.IsAny<Exception>(), It.IsAny<string>(), It.IsAny<IEnumerable<object>>())).Callback(() => Assert.Fail("Logger recorded error."));
             this.Logger.Setup(x => x.ErrorFormat(It.IsAny<string>(), It.IsAny<IEnumerable<object>>())).Callback(() => Assert.Fail("Logger recorded error."));
 
-            
             this.IrcConfiguration = new Mock<IIrcConfiguration>();
+            
+            this.SupportHelper = new Mock<ISupportHelper>();
 
             this.LocalSetup();
         }

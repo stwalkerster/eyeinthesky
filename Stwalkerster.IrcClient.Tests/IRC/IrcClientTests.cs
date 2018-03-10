@@ -1,7 +1,6 @@
 ﻿namespace Stwalkerster.IrcClient.Tests.IRC
 {
     using Moq;
-    using Castle.Core.Logging;
     using NUnit.Framework;
     using Stwalkerster.IrcClient.Events;
     using Stwalkerster.IrcClient.Interfaces;
@@ -23,7 +22,7 @@
             this.IrcConfiguration.Setup(x => x.Nickname).Returns("nickname");
             this.IrcConfiguration.Setup(x => x.Username).Returns("username");
             this.IrcConfiguration.Setup(x => x.RealName).Returns("real name");
-            var client = new IrcClient(network.Object, this.Logger.Object, this.IrcConfiguration.Object);
+            var client = new IrcClient(network.Object, this.Logger.Object, this.IrcConfiguration.Object, this.SupportHelper.Object);
 
             // init IRC
             // Setup capabilities
@@ -66,7 +65,7 @@
             this.IrcConfiguration.Setup(x => x.Nickname).Returns("nickname");
             this.IrcConfiguration.Setup(x => x.Username).Returns("username");
             this.IrcConfiguration.Setup(x => x.RealName).Returns("real name");
-            var client = new IrcClient(network.Object, this.Logger.Object, this.IrcConfiguration.Object);
+            var client = new IrcClient(network.Object, this.Logger.Object, this.IrcConfiguration.Object, this.SupportHelper.Object);
 
             // init IRC
             // Setup capabilities
