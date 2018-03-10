@@ -169,7 +169,7 @@
 
             return string.Format(
                 this.appConfig.EmailRcTemplate,
-                stalkInfo,
+                stalkInfo.ToString().TrimEnd(),
                 rc.Url,
                 rc.Page,
                 rc.User,
