@@ -19,15 +19,6 @@
     /// </summary>
     public class IrcClient : IIrcClient, IDisposable
     {
-        protected virtual void OnBotKickedEvent(KickedEventArgs e)
-        {
-            var handler = this.BotKickedEvent;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
-        }
-
         #region Fields
 
         /// <summary>
@@ -525,6 +516,16 @@
                 this.RegisterConnection(message);
             }
         }
+        
+        protected virtual void OnBotKickedEvent(KickedEventArgs e)
+        {
+            var handler = this.BotKickedEvent;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
 
         /// <summary>
         /// The on account message received.
