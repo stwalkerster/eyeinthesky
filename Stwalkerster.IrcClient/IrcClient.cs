@@ -7,6 +7,7 @@
     using System.Threading;
 
     using Castle.Core.Logging;
+    using Stwalkerster.Extensions;
     using Stwalkerster.IrcClient.Events;
     using Stwalkerster.IrcClient.Exceptions;
     using Stwalkerster.IrcClient.Extensions;

@@ -1,4 +1,4 @@
-﻿namespace Stwalkerster.IrcClient.Extensions
+﻿namespace Stwalkerster.Extensions
 {
     using System.Collections.Generic;
 

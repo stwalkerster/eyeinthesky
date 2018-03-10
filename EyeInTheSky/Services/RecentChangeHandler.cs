@@ -11,7 +11,7 @@
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Services.Interfaces;
     using Stwalkerster.IrcClient.Events;
-    using Stwalkerster.IrcClient.Extensions;
+    using Stwalkerster.Extensions;
     using Stwalkerster.IrcClient.Interfaces;
     using Stwalkerster.IrcClient.Model;
 

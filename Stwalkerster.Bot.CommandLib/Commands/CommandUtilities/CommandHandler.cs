@@ -106,49 +106,48 @@
             try
             {
                 IEnumerable<CommandResponse> commandResponses = command.Run();
-                commandResponses.ForEach(
-                    x =>
-                        {
-                            x.RedirectionTarget = command.RedirectionTarget;
 
-                            string destination;
+                foreach (var x in commandResponses)
+                {
+                    x.RedirectionTarget = command.RedirectionTarget;
 
-                            switch (x.Destination)
+                    string destination;
+
+                    switch (x.Destination)
+                    {
+                        case CommandResponseDestination.ChannelDebug:
+                            destination = this.configProvider.DebugChannel;
+                            break;
+                        case CommandResponseDestination.PrivateMessage:
+                            destination = command.User.Nickname;
+                            break;
+                        case CommandResponseDestination.Default:
+                            if (command.CommandSource == client.Nickname)
                             {
-                                case CommandResponseDestination.ChannelDebug:
-                                    destination = this.configProvider.DebugChannel;
-                                    break;
-                                case CommandResponseDestination.PrivateMessage:
-                                    destination = command.User.Nickname;
-                                    break;
-                                case CommandResponseDestination.Default:
-                                    if (command.CommandSource == client.Nickname)
-                                    {
-                                        // PMs to the bot.
-                                        destination = command.User.Nickname;
-                                    }
-                                    else
-                                    {
-                                        destination = command.CommandSource;
-                                    }
-                                    break;
-                                default:
-                                    destination = command.CommandSource;
-                                    this.logger.Warn("Command response has an unknown destination!");
-                                    break;
+                                // PMs to the bot.
+                                destination = command.User.Nickname;
                             }
+                            else
+                            {
+                                destination = command.CommandSource;
+                            }
+                            break;
+                        default:
+                            destination = command.CommandSource;
+                            this.logger.Warn("Command response has an unknown destination!");
+                            break;
+                    }
 
                            
-                                if (x.Type == CommandResponseType.Notice)
-                                {
-                                    client.Send(new Notice(destination, x.CompileMessage()));
-                                }
-                                else
-                                {
-                                    client.Send(new PrivateMessage(destination, x.CompileMessage()));
-                                }
-                            
-                        });
+                    if (x.Type == CommandResponseType.Notice)
+                    {
+                        client.Send(new Notice(destination, x.CompileMessage()));
+                    }
+                    else
+                    {
+                        client.Send(new PrivateMessage(destination, x.CompileMessage()));
+                    }
+                }
             }
             finally
             {

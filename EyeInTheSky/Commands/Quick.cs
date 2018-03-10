@@ -6,7 +6,7 @@ namespace EyeInTheSky.Commands
     using System.Collections.Generic;
     using System.Linq;
     using EyeInTheSky.Model;
-    using Stwalkerster.IrcClient.Extensions;
+    using Stwalkerster.Extensions;
     using Stwalkerster.IrcClient.Model.Interfaces;
 
     class Quick : GenericCommand

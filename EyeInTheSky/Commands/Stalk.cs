@@ -8,7 +8,7 @@ namespace EyeInTheSky.Commands
     using System.Linq;
     using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
-    using Stwalkerster.IrcClient.Extensions;
+    using Stwalkerster.Extensions;
     using Stwalkerster.IrcClient.Model.Interfaces;
 
     class Stalk : GenericCommand
@@ -23,7 +23,7 @@ namespace EyeInTheSky.Commands
                 return;
             }
 
-            string mode =tokenList.PopFromFront();
+            string mode = tokenList.PopFromFront();
             if(mode == "add")
             #region add
             {

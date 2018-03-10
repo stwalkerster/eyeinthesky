@@ -6,7 +6,7 @@ using EyeInTheSky.StalkNodes;
 namespace EyeInTheSky.Commands
 {
     using EyeInTheSky.Model;
-    using Stwalkerster.IrcClient.Extensions;
+    using Stwalkerster.Extensions;
     using Stwalkerster.IrcClient.Model.Interfaces;
 
     class Acc : GenericCommand

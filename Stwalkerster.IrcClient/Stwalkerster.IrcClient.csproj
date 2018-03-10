@@ -49,10 +49,6 @@
     <Compile Include="Events\UserEventArgsBase.cs" />
     <Compile Include="Exceptions\OperationNotSupportedException.cs" />
     <Compile Include="Extensions\CtcpExtensions.cs" />
-    <Compile Include="Extensions\EnumerableExtensions.cs" />
-    <Compile Include="Extensions\ListExtensions.cs" />
-    <Compile Include="Extensions\ObjectExtensions.cs" />
-    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Interfaces\IIrcClient.cs" />
     <Compile Include="Interfaces\IIrcConfiguration.cs" />
     <Compile Include="Interfaces\INetworkClient.cs" />
@@ -78,6 +74,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Stwalkerster.Extensions\Stwalkerster.Extensions.csproj">
+      <Project>{452248af-32ab-4a57-85fa-fb6173f6ce41}</Project>
+      <Name>Stwalkerster.Extensions</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

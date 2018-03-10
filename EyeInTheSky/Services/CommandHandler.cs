@@ -5,7 +5,7 @@
     using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
     using Stwalkerster.IrcClient.Events;
-    using Stwalkerster.IrcClient.Extensions;
+    using Stwalkerster.Extensions;
     using Stwalkerster.IrcClient.Interfaces;
     using Stwalkerster.IrcClient.Model;
 

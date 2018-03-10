@@ -139,6 +139,10 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Stwalkerster.Extensions\Stwalkerster.Extensions.csproj">
+      <Project>{452248af-32ab-4a57-85fa-fb6173f6ce41}</Project>
+      <Name>Stwalkerster.Extensions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Stwalkerster.IrcClient\Stwalkerster.IrcClient.csproj">
       <Project>{47674028-79d0-4cb6-9f36-4c58b8178947}</Project>
       <Name>Stwalkerster.IrcClient</Name>

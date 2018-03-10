@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
     using NUnit.Framework;
-    using Stwalkerster.IrcClient.Extensions;
+    using Stwalkerster.Extensions;
 
     /// <summary>
     /// The list extensions tests.
