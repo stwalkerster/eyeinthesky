@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stwalkerster.IrcClient", "S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stwalkerster.IrcClient.Tests", "Stwalkerster.IrcClient.Tests\Stwalkerster.IrcClient.Tests.csproj", "{09A8A105-3F93-4840-AFAF-6870C91CE306}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stwalkerster.Bot.CommandLib", "Stwalkerster.Bot.CommandLib\Stwalkerster.Bot.CommandLib.csproj", "{727151DD-DB3A-4CF0-850B-9233437DE6DA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +39,10 @@ Global
 		{09A8A105-3F93-4840-AFAF-6870C91CE306}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{09A8A105-3F93-4840-AFAF-6870C91CE306}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{09A8A105-3F93-4840-AFAF-6870C91CE306}.Release|Any CPU.Build.0 = Release|Any CPU
+		{727151DD-DB3A-4CF0-850B-9233437DE6DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{727151DD-DB3A-4CF0-850B-9233437DE6DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{727151DD-DB3A-4CF0-850B-9233437DE6DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{727151DD-DB3A-4CF0-850B-9233437DE6DA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

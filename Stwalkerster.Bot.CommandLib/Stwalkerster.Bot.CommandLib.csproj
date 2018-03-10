@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{727151DD-DB3A-4CF0-850B-9233437DE6DA}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Stwalkerster.Bot.CommandLib</RootNamespace>
+    <AssemblyName>Stwalkerster.Bot.CommandLib</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <LangVersion>5</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc">
+      <HintPath>..\packages\Castle.Core.4.2.1\lib\net45\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Attributes\CommandFlagAttribute.cs" />
+    <Compile Include="Attributes\CommandInvocationAttribute.cs" />
+    <Compile Include="Commands\AccessControl\CommandAccessCommand.cs" />
+    <Compile Include="Commands\AccessControl\MyFlagsCommand.cs" />
+    <Compile Include="Commands\BotManagement\DieCommand.cs" />
+    <Compile Include="Commands\CommandUtilities\CommandBase.cs" />
+    <Compile Include="Commands\CommandUtilities\CommandHandler.cs" />
+    <Compile Include="Commands\CommandUtilities\Models\HelpMessage.cs" />
+    <Compile Include="Commands\CommandUtilities\Models\RedirectionResult.cs" />
+    <Compile Include="Commands\CommandUtilities\Response\CommandResponse.cs" />
+    <Compile Include="Commands\CommandUtilities\Response\CommandResponseDestination.cs" />
+    <Compile Include="Commands\CommandUtilities\Response\CommandResponseHandler.cs" />
+    <Compile Include="Commands\CommandUtilities\Response\CommandResponseType.cs" />
+    <Compile Include="Commands\HelpCommand.cs" />
+    <Compile Include="Commands\Interfaces\ICommand.cs" />
+    <Compile Include="Commands\Interfaces\ICommandHandler.cs" />
+    <Compile Include="Exceptions\ArgumentCountException.cs" />
+    <Compile Include="Exceptions\CommandErrorException.cs" />
+    <Compile Include="Exceptions\CommandExecutionException.cs" />
+    <Compile Include="Exceptions\CommandInvocationException.cs" />
+    <Compile Include="Exceptions\ConfigurationException.cs" />
+    <Compile Include="ExtensionMethods\TypedFactoryExtensions.cs" />
+    <Compile Include="Model\CommandMessage.cs" />
+    <Compile Include="Model\CommandRegistration.cs" />
+    <Compile Include="Model\Flag.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\CommandParser.cs" />
+    <Compile Include="Services\ICommandParser.cs" />
+    <Compile Include="Services\IConfigurationProvider.cs" />
+    <Compile Include="Services\IFlagService.cs" />
+    <Compile Include="TypedFactories\ICommandTypedFactory.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Stwalkerster.IrcClient\Stwalkerster.IrcClient.csproj">
+      <Project>{47674028-79d0-4cb6-9f36-4c58b8178947}</Project>
+      <Name>Stwalkerster.IrcClient</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+         Other similar extension points exist, see Microsoft.Common.targets.
+    <Target Name="BeforeBuild">
+    </Target>
+    <Target Name="AfterBuild">
+    </Target>
+    -->
+</Project>
