@@ -6,8 +6,6 @@
     {
         public EmailConfiguration(string hostname,
             int port,
-            string username,
-            string password,
             string sender,
             string to,
             string subject)
@@ -34,11 +32,21 @@
 
             this.Hostname = hostname;
             this.Port = port;
-            this.Username = username;
-            this.Password = password;
             this.Sender = sender;
             this.To = to;
             this.Subject = subject;
+        }
+
+        public EmailConfiguration(string hostname,
+            int port,
+            string username,
+            string password,
+            string sender,
+            string to,
+            string subject) : this(hostname, port, sender, to, subject)
+        {
+            this.Username = username;
+            this.Password = password;
         }
 
         public string Hostname { get; private set; }

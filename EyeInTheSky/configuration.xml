@@ -49,8 +49,6 @@ Expiry:              {4}
 
 ]]></emailStalkTemplate>
                 <dateFormat>u</dateFormat>
-                <emailSender>eyeinthesky@eyeinthesky.im</emailSender>
-                <dateFormat>u</dateFormat>
                 <emailConfiguration>${emailConfig}</emailConfiguration>
             </parameters>
         </component>
