@@ -5,6 +5,7 @@ using EyeInTheSky.StalkNodes;
 
 namespace EyeInTheSky.Commands
 {
+    using EyeInTheSky.Model;
     using Stwalkerster.IrcClient.Extensions;
     using Stwalkerster.IrcClient.Model.Interfaces;
 
@@ -20,38 +21,38 @@ namespace EyeInTheSky.Commands
                 return;
             }
 
-            string id = tokenList.PopFromFront();
-            string user = tokenList.Implode();
+            var id = tokenList.PopFromFront();
+            var user = tokenList.Implode();
 
             var s = new ComplexStalk( "acc" + id );
 
-            OrNode or = new OrNode();
+            var or = new OrNode();
 
-            OrNode uor = new OrNode();
-            UserStalkNode usn = new UserStalkNode();
-            usn.setMatchExpression(user);
+            var uor = new OrNode();
+            var usn = new UserStalkNode();
+            usn.SetMatchExpression(user);
 
-            PageStalkNode psn = new PageStalkNode();
-            psn.setMatchExpression(user);
+            var psn = new PageStalkNode();
+            psn.SetMatchExpression(user);
 
             uor.LeftChildNode = usn;
             uor.RightChildNode = psn;
 
-            OrNode upor = new OrNode();
+            var upor = new OrNode();
 
-            PageStalkNode upsn = new PageStalkNode();
-            upsn.setMatchExpression("User:" + user);
+            var upsn = new PageStalkNode();
+            upsn.SetMatchExpression("User:" + user);
 
-            PageStalkNode utpsn = new PageStalkNode();
-            utpsn.setMatchExpression("User talk:" + user);
+            var utpsn = new PageStalkNode();
+            utpsn.SetMatchExpression("User talk:" + user);
 
             upor.LeftChildNode = upsn;
             upor.RightChildNode = utpsn;
 
-            SummaryStalkNode ssn = new SummaryStalkNode();
-            ssn.setMatchExpression(user);
+            var ssn = new SummaryStalkNode();
+            ssn.SetMatchExpression(user);
             
-            OrNode or2 = new OrNode();
+            var or2 = new OrNode();
             or2.LeftChildNode = uor;
             or2.RightChildNode = upor;
             

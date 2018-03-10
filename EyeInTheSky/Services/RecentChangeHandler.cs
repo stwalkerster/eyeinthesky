@@ -6,6 +6,7 @@
     using System.Linq;
     using System.Text;
     using Castle.Core.Logging;
+    using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Services.Interfaces;
     using MailKit.Net.Smtp;

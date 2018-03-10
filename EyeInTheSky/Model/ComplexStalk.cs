@@ -1,15 +1,13 @@
-﻿using System;
-using System.Globalization;
-using System.IO;
-using System.Net.Mail;
-using System.Xml;
-using EyeInTheSky.StalkNodes;
-using Castle.Core.Logging;
-using EyeInTheSky.Model.Interfaces;
-using Microsoft.Practices.ServiceLocation;
-
-namespace EyeInTheSky
+﻿namespace EyeInTheSky.Model
 {
+    using System;
+    using System.Globalization;
+    using System.Xml;
+    using Castle.Core.Logging;
+    using EyeInTheSky.Model.Interfaces;
+    using EyeInTheSky.StalkNodes;
+    using Microsoft.Practices.ServiceLocation;
+
     public class ComplexStalk : IStalk
     {
         public ComplexStalk(string flag)
@@ -161,7 +159,7 @@ namespace EyeInTheSky
                 return false;
             }
 
-            return this.baseNode.match(rc);
+            return this.baseNode.Match(rc);
         }
 
         public XmlElement ToXmlFragment(XmlDocument doc, string xmlns)
@@ -175,7 +173,7 @@ namespace EyeInTheSky
             e.SetAttribute("enabled", this.IsEnabled.ToString());
             e.SetAttribute("expiry", this.ExpiryTime.ToString("O"));
 
-            e.AppendChild(this.baseNode.toXmlFragment(doc, xmlns));
+            e.AppendChild(this.baseNode.ToXmlFragment(doc, xmlns));
             return e;
         }
 
@@ -210,51 +208,11 @@ namespace EyeInTheSky
 
             if (element.HasChildNodes)
             {
-                StalkNode n = StalkNode.newFromXmlFragment(element.FirstChild);
+                StalkNode n = StalkNode.NewFromXmlFragment(element.FirstChild);
                 s.baseNode = n;
             }
 
             return s;
-        }
-
-        [Obsolete("This is in the complete wrong place.")]
-        public static void immediateMail(IRecentChange rc, ComplexStalk stalk)
-        {
-            string arg1 = stalk.Flag;
-            string arg2 = rc.Page;
-            string arg3 = rc.User;
-            string arg4 = rc.EditSummary;
-            string arg5 = rc.Url;
-            string arg6 = DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToLongTimeString();
-            string arg7 = stalk.Description;
-            string arg8 = stalk.SearchTree.ToString();
-            string arg9 = rc.EditFlags;
-
-            string template = new StreamReader("Templates/individual.txt").ReadToEnd();
-            template = template
-                    .Replace("$1", arg1)
-                    .Replace("$2", arg2)
-                    .Replace("$3", arg3)
-                    .Replace("$4", arg4)
-                    .Replace("$5", arg5)
-                    .Replace("$6", arg6)
-                    .Replace("$7", arg7)
-                    .Replace("$8", arg8)
-                    .Replace("$9", arg9)
-                ;
-
-            var mailMessage = new MailMessage
-            {
-                From = new MailAddress("eyeinthesky@eyeinthesky.im"),
-                Subject = "[EyeInTheSky] '" + stalk.Flag + "' notification",
-                Body = template
-            };
-
-            mailMessage.To.Add("simon@stwalkerster.co.uk");
-
-            var client = new SmtpClient("mail.srv.stwalkerster.net");
-
-            client.Send(mailMessage);
         }
     }
 }

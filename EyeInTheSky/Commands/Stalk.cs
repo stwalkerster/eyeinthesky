@@ -6,6 +6,8 @@ using EyeInTheSky.StalkNodes;
 namespace EyeInTheSky.Commands
 {
     using System.Linq;
+    using EyeInTheSky.Model;
+    using EyeInTheSky.Model.Interfaces;
     using Stwalkerster.IrcClient.Extensions;
     using Stwalkerster.IrcClient.Model.Interfaces;
 
@@ -69,7 +71,7 @@ namespace EyeInTheSky.Commands
                     return;
                 }
                 
-                ComplexStalk s = this.StalkConfig.Stalks[stalk];
+                IStalk s = this.StalkConfig.Stalks[stalk];
 
                 if (tokenList.Count < 1)
                 {
@@ -84,7 +86,7 @@ namespace EyeInTheSky.Commands
                     {
                         case "user":
                             var usn = new UserStalkNode();
-                            usn.setMatchExpression(regex);
+                            usn.SetMatchExpression(regex);
                             s.SearchTree = usn;
                             this.Client.SendMessage(destination,
                                        "Set " + type + " for stalk " + stalk +
@@ -92,7 +94,7 @@ namespace EyeInTheSky.Commands
                             break;
                         case "page":
                             var psn = new PageStalkNode();
-                            psn.setMatchExpression(regex);
+                            psn.SetMatchExpression(regex);
                             s.SearchTree = psn;
                             this.Client.SendMessage(destination,
                                        "Set " + type + " for stalk " + stalk +
@@ -100,7 +102,7 @@ namespace EyeInTheSky.Commands
                             break;
                         case "summary":
                             var ssn = new SummaryStalkNode();
-                            ssn.setMatchExpression(regex);
+                            ssn.SetMatchExpression(regex);
                             s.SearchTree = ssn;
                             this.Client.SendMessage(destination,
                                        "Set " + type + " for stalk " + stalk +
@@ -114,7 +116,7 @@ namespace EyeInTheSky.Commands
                                 xd.LoadXml(xmlfragment);
 
 
-                                StalkNode node = StalkNode.newFromXmlFragment(xd.FirstChild);
+                                StalkNode node = StalkNode.NewFromXmlFragment(xd.FirstChild);
                                 s.SearchTree = node;
                                 this.Client.SendMessage(destination,
                                        "Set " + type + " for stalk " + stalk +
@@ -137,10 +139,9 @@ namespace EyeInTheSky.Commands
             #region list
             {
                 this.Client.SendNotice(source.Nickname, "Stalk list:");
-                foreach (KeyValuePair<string, ComplexStalk> kvp in this.StalkConfig.Stalks)
+                foreach (var kvp in this.StalkConfig.Stalks)
                 {
-                        this.Client.SendNotice(source.Nickname,
-                                                              kvp.Value.ToString());
+                    this.Client.SendNotice(source.Nickname, kvp.Value.ToString());
 
                 }
                 this.Client.SendNotice(source.Nickname, "End of stalk list.");
@@ -195,13 +196,12 @@ namespace EyeInTheSky.Commands
                     this.Client.SendNotice(source.Nickname, "More params pls!");
                     return;
                 }
-                string stalk = tokenList.PopFromFront();
-                string date = tokenList.Implode();
+                var stalk = tokenList.PopFromFront();
+                var date = tokenList.Implode();
 
-                DateTime expiryTime = DateTime.Parse(date);
+                var expiryTime = DateTime.Parse(date);
                 this.StalkConfig.Stalks[stalk].ExpiryTime = expiryTime;
-                this.Client.SendMessage(destination,
-                                                       "Set expiry attribute on stalk " + stalk + " to " + expiryTime);
+                this.Client.SendMessage(destination, "Set expiry attribute on stalk " + stalk + " to " + expiryTime);
 
 
             }
@@ -216,7 +216,7 @@ namespace EyeInTheSky.Commands
                 }
 
                 var stalkName = tokenList.PopFromFront();
-                bool enabled = bool.Parse(tokenList.PopFromFront());
+                var enabled = bool.Parse(tokenList.PopFromFront());
                 this.Client.SendMessage(destination, "Set enabled attribute on stalk " + stalkName + " to " + enabled);
                 this.StalkConfig.Stalks[stalkName].IsEnabled = enabled;
             }
@@ -232,7 +232,7 @@ namespace EyeInTheSky.Commands
                 string stalk = tokenList.PopFromFront();
 
 
-                ComplexStalk s = this.StalkConfig.Stalks[stalk];
+                var s = this.StalkConfig.Stalks[stalk];
 
                 if (tokenList.Count < 1)
                 {
@@ -249,7 +249,7 @@ namespace EyeInTheSky.Commands
                 {
                     case "user":
                         var usn = new UserStalkNode();
-                        usn.setMatchExpression(stalkTarget);
+                        usn.SetMatchExpression(stalkTarget);
                         newroot.RightChildNode = usn;
                         s.SearchTree = newroot;
                         this.Client.SendMessage(destination,
@@ -258,7 +258,7 @@ namespace EyeInTheSky.Commands
                         break;
                     case "page":
                         var psn = new PageStalkNode();
-                        psn.setMatchExpression(stalkTarget);
+                        psn.SetMatchExpression(stalkTarget);
                         newroot.RightChildNode = psn;
                         s.SearchTree = newroot;
                         this.Client.SendMessage(destination,
@@ -267,7 +267,7 @@ namespace EyeInTheSky.Commands
                         break;
                     case "summary":
                         var ssn = new SummaryStalkNode();
-                        ssn.setMatchExpression(stalkTarget);
+                        ssn.SetMatchExpression(stalkTarget);
                         newroot.RightChildNode = ssn;
                         s.SearchTree = newroot;
                         this.Client.SendMessage(destination,
@@ -282,7 +282,7 @@ namespace EyeInTheSky.Commands
                             xd.LoadXml(xmlfragment);
 
 
-                            StalkNode node = StalkNode.newFromXmlFragment(xd.FirstChild);
+                            StalkNode node = StalkNode.NewFromXmlFragment(xd.FirstChild);
 
                             newroot.RightChildNode = node;
                             s.SearchTree = newroot;
@@ -314,7 +314,7 @@ namespace EyeInTheSky.Commands
                 string stalk = tokenList.PopFromFront();
 
 
-                ComplexStalk s = this.StalkConfig.Stalks[stalk];
+                var s = this.StalkConfig.Stalks[stalk];
 
                 if (tokenList.Count < 1)
                 {
@@ -332,7 +332,7 @@ namespace EyeInTheSky.Commands
                 {
                     case "user":
                         var usn = new UserStalkNode();
-                        usn.setMatchExpression(stalkTarget);
+                        usn.SetMatchExpression(stalkTarget);
                         newroot.RightChildNode = usn;
                         s.SearchTree = newroot;
                         this.Client.SendMessage(destination,
@@ -341,7 +341,7 @@ namespace EyeInTheSky.Commands
                         break;
                     case "page":
                         var psn = new PageStalkNode();
-                        psn.setMatchExpression(stalkTarget);
+                        psn.SetMatchExpression(stalkTarget);
                         newroot.RightChildNode = psn;
                         s.SearchTree = newroot;
                         this.Client.SendMessage(destination,
@@ -350,7 +350,7 @@ namespace EyeInTheSky.Commands
                         break;
                     case "summary":
                         var ssn = new SummaryStalkNode();
-                        ssn.setMatchExpression(stalkTarget);
+                        ssn.SetMatchExpression(stalkTarget);
                         newroot.RightChildNode = ssn;
                         s.SearchTree = newroot;
                         this.Client.SendMessage(destination,
@@ -365,7 +365,7 @@ namespace EyeInTheSky.Commands
                             xd.LoadXml(xmlfragment);
 
 
-                            StalkNode node = StalkNode.newFromXmlFragment(xd.FirstChild);
+                            StalkNode node = StalkNode.NewFromXmlFragment(xd.FirstChild);
 
                             newroot.RightChildNode = node;
                             s.SearchTree = newroot;

@@ -5,6 +5,7 @@ namespace EyeInTheSky.Commands
 {
     using System.Collections.Generic;
     using System.Linq;
+    using EyeInTheSky.Model;
     using Stwalkerster.IrcClient.Extensions;
     using Stwalkerster.IrcClient.Model.Interfaces;
 
@@ -22,9 +23,9 @@ namespace EyeInTheSky.Commands
                 return;
             }
 
-            string name = tokenList.PopFromFront();
-            string type = tokenList.PopFromFront();
-            string stalkTarget = tokenList.Implode();
+            var name = tokenList.PopFromFront();
+            var type = tokenList.PopFromFront();
+            var stalkTarget = tokenList.Implode();
 
             var s = new ComplexStalk(name);
 
@@ -39,38 +40,38 @@ namespace EyeInTheSky.Commands
             switch (type)
             {
                 case "user":
-                    UserStalkNode usn = new UserStalkNode();
-                    usn.setMatchExpression(stalkTarget);
+                    var usn = new UserStalkNode();
+                    usn.SetMatchExpression(stalkTarget);
                     s.SearchTree = usn;
                     this.Client.SendMessage(destination,
                                "Set " + type + " for new stalk " + name +
                                " with CSL value: " + usn);
                     break;
                 case "page":
-                    PageStalkNode psn = new PageStalkNode();
-                    psn.setMatchExpression(stalkTarget);
+                    var psn = new PageStalkNode();
+                    psn.SetMatchExpression(stalkTarget);
                     s.SearchTree = psn;
                     this.Client.SendMessage(destination,
                                "Set " + type + " for new stalk " + name +
                                " with CSL value: " + psn);
                     break;
                 case "summary":
-                    SummaryStalkNode ssn = new SummaryStalkNode();
-                    ssn.setMatchExpression(stalkTarget);
+                    var ssn = new SummaryStalkNode();
+                    ssn.SetMatchExpression(stalkTarget);
                     s.SearchTree = ssn;
                     this.Client.SendMessage(destination,
                                "Set " + type + " for new stalk " + name +
                                " with CSL value: " + ssn);
                     break;
                 case "xml":
-                    string xmlfragment = stalkTarget;
+                    var xmlfragment = stalkTarget;
                     try
                     {
-                        XmlDocument xd = new XmlDocument();
+                        var xd = new XmlDocument();
                         xd.LoadXml(xmlfragment);
 
 
-                        StalkNode node = StalkNode.newFromXmlFragment(xd.FirstChild);
+                        var node = StalkNode.NewFromXmlFragment(xd.FirstChild);
                         s.SearchTree = node;
                         this.Client.SendMessage(destination,
                                "Set " + type + " for new stalk " + name +

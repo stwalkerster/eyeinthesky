@@ -1,27 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Xml;
-
-namespace EyeInTheSky.StalkNodes
+﻿namespace EyeInTheSky.StalkNodes
 {
-    using EyeInTheSky.Model;
+    using System.Xml;
     using EyeInTheSky.Model.Interfaces;
 
     class FalseNode : LogicalNode
     {
-        public override bool match(IRecentChange rc)
+        public override bool Match(IRecentChange rc)
         {
             return false;
         }
 
-        public override XmlElement toXmlFragment(XmlDocument doc, string xmlns)
+        public override XmlElement ToXmlFragment(XmlDocument doc, string xmlns)
         {
             return doc.CreateElement("false",xmlns);
         }
 
-        public static new StalkNode newFromXmlFragment(XmlNode xmlNode)
+        public new static StalkNode NewFromXmlFragment(XmlNode xmlNode)
         {
             return new FalseNode();
         }

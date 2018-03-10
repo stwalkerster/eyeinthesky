@@ -1,47 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Xml;
+﻿using System.Xml;
 
 namespace EyeInTheSky.StalkNodes
 {
-    using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
 
     public abstract class StalkNode
     {
-        abstract public bool match(IRecentChange rc);
+        public abstract bool Match(IRecentChange rc);
 
-        public static StalkNode newFromXmlFragment(XmlNode xmlNode)
+        public static StalkNode NewFromXmlFragment(XmlNode xmlNode)
         {
             switch (xmlNode.Name)
             {
                 case "and":
-                    return AndNode.newFromXmlFragment(xmlNode);
+                    return AndNode.NewFromXmlFragment(xmlNode);
                 case "or":
-                    return OrNode.newFromXmlFragment(xmlNode);
+                    return OrNode.NewFromXmlFragment(xmlNode);
                 case "not":
-                    return NotNode.newFromXmlFragment(xmlNode);
+                    return NotNode.NewFromXmlFragment(xmlNode);
                 case "xor":
-                    return XorNode.newFromXmlFragment(xmlNode);
+                    return XorNode.NewFromXmlFragment(xmlNode);
                 case "true":
-                    return TrueNode.newFromXmlFragment(xmlNode);
+                    return TrueNode.NewFromXmlFragment(xmlNode);
                 case "false":
-                    return FalseNode.newFromXmlFragment(xmlNode);
+                    return FalseNode.NewFromXmlFragment(xmlNode);
                 case "user":
-                    return UserStalkNode.newFromXmlFragment(xmlNode);
+                    return UserStalkNode.NewFromXmlFragment(xmlNode);
                 case "page":
-                    return PageStalkNode.newFromXmlFragment(xmlNode);
+                    return PageStalkNode.NewFromXmlFragment(xmlNode);
                 case "summary":
-                    return SummaryStalkNode.newFromXmlFragment(xmlNode);
+                    return SummaryStalkNode.NewFromXmlFragment(xmlNode);
                 case "flag":
-                    return FlagStalkNode.newFromXmlFragment(xmlNode);
+                    return FlagStalkNode.NewFromXmlFragment(xmlNode);
                 default:
                     throw new XmlException();
             }
         }
 
-        public abstract XmlElement toXmlFragment(XmlDocument doc, string xmlns);
+        public abstract XmlElement ToXmlFragment(XmlDocument doc, string xmlns);
     }
 }

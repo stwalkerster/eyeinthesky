@@ -1,38 +1,38 @@
-﻿using System;
-using System.Xml;
+﻿using System.Xml;
 
 namespace EyeInTheSky.StalkNodes
 {
-    using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
 
     class OrNode : DoubleChildLogicalNode
     {
         #region Overrides of StalkNode
 
-        public override bool match(IRecentChange rc)
+        public override bool Match(IRecentChange rc)
         {
-            return (LeftChildNode.match(rc) || RightChildNode.match(rc));
+            return this.LeftChildNode.Match(rc) || this.RightChildNode.Match(rc);
         }
 
-        public static new StalkNode newFromXmlFragment(XmlNode xmlNode)
+        public new static StalkNode NewFromXmlFragment(XmlNode xmlNode)
         {
-            OrNode s = new OrNode();
-            s.LeftChildNode = StalkNode.newFromXmlFragment(xmlNode.ChildNodes[0]);
-            s.RightChildNode = StalkNode.newFromXmlFragment(xmlNode.ChildNodes[1]);
+            var s = new OrNode
+            {
+                LeftChildNode = StalkNode.NewFromXmlFragment(xmlNode.ChildNodes[0]),
+                RightChildNode = StalkNode.NewFromXmlFragment(xmlNode.ChildNodes[1])
+            };
             return s;
         }
-        public override XmlElement toXmlFragment(XmlDocument doc, string xmlns)
+        public override XmlElement ToXmlFragment(XmlDocument doc, string xmlns)
         {
-            XmlElement e = doc.CreateElement("or", xmlns);
-            e.AppendChild(LeftChildNode.toXmlFragment(doc, xmlns));
-            e.AppendChild(RightChildNode.toXmlFragment(doc, xmlns));
+            var e = doc.CreateElement("or", xmlns);
+            e.AppendChild(this.LeftChildNode.ToXmlFragment(doc, xmlns));
+            e.AppendChild(this.RightChildNode.ToXmlFragment(doc, xmlns));
             return e;
         }
 
         public override string ToString()
         {
-            return "(|:" + LeftChildNode + RightChildNode + ")";
+            return "(|:" + this.LeftChildNode + this.RightChildNode + ")";
         }
         #endregion
     }

@@ -21,7 +21,7 @@ namespace EyeInTheSky.Tests.StalkNodes
         [Test, TestCaseSource(typeof(PageStalkNodeTest), "TestCases")]
         public bool TestMatch(StalkNode node)
         {
-            return node.match(this.rc);
+            return node.Match(this.rc);
         }
         
         private static IEnumerable TestCases
@@ -29,22 +29,22 @@ namespace EyeInTheSky.Tests.StalkNodes
             get
             {
                 LeafNode n = new PageStalkNode();
-                n.setMatchExpression("abc");
+                n.SetMatchExpression("abc");
                 yield return new TestCaseData(n).Returns(true);
                 n = new PageStalkNode();
-                n.setMatchExpression("def");
+                n.SetMatchExpression("def");
                 yield return new TestCaseData(n).Returns(false);
                 n = new PageStalkNode();
-                n.setMatchExpression("ghi");
+                n.SetMatchExpression("ghi");
                 yield return new TestCaseData(n).Returns(false);
                 n = new PageStalkNode();
-                n.setMatchExpression("jkl");
+                n.SetMatchExpression("jkl");
                 yield return new TestCaseData(n).Returns(false);
                 n = new PageStalkNode();
-                n.setMatchExpression("mno");
+                n.SetMatchExpression("mno");
                 yield return new TestCaseData(n).Returns(false);
                 n = new PageStalkNode();
-                n.setMatchExpression("123");
+                n.SetMatchExpression("123");
                 yield return new TestCaseData(n).Returns(false);
             }
         }  

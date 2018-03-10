@@ -1,40 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Xml;
+﻿using System.Xml;
 
 namespace EyeInTheSky.StalkNodes
 {
-    using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
 
     class UserStalkNode : LeafNode
     {
         #region Overrides of StalkNode
 
-        public override bool match(IRecentChange rc)
+        public override bool Match(IRecentChange rc)
         {
-            return expression.Match(rc.User).Success;
+            return this.Expression.Match(rc.User).Success;
         }
 
-        public new static StalkNode newFromXmlFragment(XmlNode xmlNode)
+        public new static StalkNode NewFromXmlFragment(XmlNode xmlNode)
         {
-            UserStalkNode s = new UserStalkNode();
-            s.setMatchExpression(xmlNode.Attributes["value"].Value);
+            var s = new UserStalkNode();
+            s.SetMatchExpression(xmlNode.Attributes["value"].Value);
             return s;
         }
 
-        public override XmlElement toXmlFragment(XmlDocument doc, string xmlns)
+        public override XmlElement ToXmlFragment(XmlDocument doc, string xmlns)
         {
-            XmlElement e = doc.CreateElement("user", xmlns);
-            e.SetAttribute("value", expression.ToString());
+            var e = doc.CreateElement("user", xmlns);
+            e.SetAttribute("value", this.Expression.ToString());
             return e;
         }
 
         public override string ToString()
         {
-            return "(user:\"" + expression + "\")";
+            return "(user:\"" + this.Expression + "\")";
         }
 
         #endregion

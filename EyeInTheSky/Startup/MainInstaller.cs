@@ -7,6 +7,7 @@
     using Castle.MicroKernel.SubSystems.Configuration;
     using Castle.Services.Logging.Log4netIntegration;
     using Castle.Windsor;
+    using EyeInTheSky.Model;
     using EyeInTheSky.Services;
     using EyeInTheSky.Services.Interfaces;
     using Stwalkerster.IrcClient;

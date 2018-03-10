@@ -14,7 +14,7 @@
         {
             var node = new FalseNode();
             
-            Assert.Catch(typeof(ArgumentNullException), () => node.match(null));
+            Assert.Catch(typeof(ArgumentNullException), () => node.Match(null));
         }
         
         [Test]
@@ -22,8 +22,8 @@
         {
             var node = new FalseNode();
             
-            Assert.False(node.match(new RecentChange("", "", "", "", "", 0)));
-            Assert.False(node.match(new RecentChange("a", "a", "a", "a", "a", 1)));
+            Assert.False(node.Match(new RecentChange("", "", "", "", "", 0)));
+            Assert.False(node.Match(new RecentChange("a", "a", "a", "a", "a", 1)));
         }
         
         [Test]
@@ -31,7 +31,7 @@
         {
             var node = new FalseNode();
 
-            Assert.AreEqual("<false />", node.toXmlFragment(new XmlDocument(), "").OuterXml);
+            Assert.AreEqual("<false />", node.ToXmlFragment(new XmlDocument(), "").OuterXml);
         }
     }
 }

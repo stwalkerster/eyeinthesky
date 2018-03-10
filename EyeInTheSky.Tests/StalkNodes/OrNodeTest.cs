@@ -16,7 +16,7 @@ namespace EyeInTheSky.Tests.StalkNodes
             node.LeftChildNode = a;
             node.RightChildNode = b;
 
-            return node.match(new RecentChange("", "", "", "", "", 0));
+            return node.Match(new RecentChange("", "", "", "", "", 0));
         }
 
         private static IEnumerable TestCases

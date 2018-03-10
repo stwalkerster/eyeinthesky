@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Xml;
-using System.Xml.XPath;
-
-namespace EyeInTheSky
+﻿namespace EyeInTheSky.Model
 {
+    using System;
+    using System.IO;
+    using System.Xml;
+    using System.Xml.XPath;
     using Castle.Core.Logging;
-    using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
 
     public class StalkConfiguration
     {
+        private const string XmlNamespace = "https://github.com/stwalkerster/eyeinthesky/raw/master/EyeInTheSky/DataFileSchema.xsd";
+        
         private readonly string configurationFileName;
         private readonly ILogger logger;
         private StalkList stalks;
@@ -51,18 +50,15 @@ namespace EyeInTheSky
             this.logger.Info("Loading stalks from configuration...");
             try
             {
-                StreamReader sr = new StreamReader(this.configurationFileName);
+                var sr = new StreamReader(this.configurationFileName);
 
-                XPathDocument xPathDocument = new XPathDocument(sr);
-                XPathNavigator navigator = xPathDocument.CreateNavigator();
+                var navigator = new XPathDocument(sr).CreateNavigator();
 
-                XmlNameTable xnt = navigator.NameTable;
-                XmlNamespaceManager xnm = new XmlNamespaceManager(xnt);
-                xnm.AddNamespace(
-                    "isky",
-                    "https://github.com/stwalkerster/eyeinthesky/raw/master/EyeInTheSky/DataFileSchema.xsd");
+                var xnt = navigator.NameTable;
+                var xnm = new XmlNamespaceManager(xnt);
+                xnm.AddNamespace("isky", XmlNamespace);
 
-                XPathNavigator stalknav = navigator.SelectSingleNode("//isky:stalks", xnm);
+                var stalknav = navigator.SelectSingleNode("//isky:stalks", xnm);
                 this.stalks = stalknav != null ? StalkList.LoadFromXmlFragment(stalknav.OuterXml, xnt) : new StalkList();
 
                 sr.Close();
@@ -89,18 +85,17 @@ namespace EyeInTheSky
 
         private void DoSave()
         {
-            XmlDocument doc = new XmlDocument();
+            var doc = new XmlDocument();
             doc.AppendChild(doc.CreateXmlDeclaration("1.0", null, null));
-            string xmlns = "https://github.com/stwalkerster/eyeinthesky/raw/master/EyeInTheSky/DataFileSchema.xsd";
-            XmlElement root = doc.CreateElement("eyeinthesky", xmlns);
+            var root = doc.CreateElement("eyeinthesky", XmlNamespace);
 
-            XmlElement stalkselem = doc.CreateElement("stalks", xmlns);
-            foreach (KeyValuePair<string, ComplexStalk> kvp in this.stalks)
+            var stalksElement = doc.CreateElement("stalks", XmlNamespace);
+            foreach (var kvp in this.stalks)
             {
-                stalkselem.AppendChild(kvp.Value.ToXmlFragment(doc, xmlns));
+                stalksElement.AppendChild(kvp.Value.ToXmlFragment(doc, XmlNamespace));
             }
 
-            root.AppendChild(stalkselem);
+            root.AppendChild(stalksElement);
 
             doc.AppendChild(root);
 
