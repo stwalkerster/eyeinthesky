@@ -4,11 +4,12 @@
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
-    using System.Net.Mail;
     using System.Text;
     using Castle.Core.Logging;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Services.Interfaces;
+    using MailKit.Net.Smtp;
+    using MimeKit;
     using Stwalkerster.IrcClient.Events;
     using Stwalkerster.IrcClient.Extensions;
     using Stwalkerster.IrcClient.Interfaces;
@@ -87,18 +88,38 @@
                 return;
             }
 
-            var mailMessage = new MailMessage
+            var mailConfig = this.appConfig.EmailConfiguration;
+            if (mailConfig == null)
             {
-                From = new MailAddress(this.appConfig.EmailConfiguration.Sender),
-                Subject = string.Format(this.appConfig.EmailConfiguration.Subject, stalks.Select(x => x.Flag).Implode(", ")),
-                Body = this.FormatMessageForEmail(stalks, rc)
+                this.logger.Info("Not sending email; email configuration is disabled");
+                return;
+            }
+
+            var mailMessage = new MimeMessage();
+            
+            mailMessage.From.Add(MailboxAddress.Parse(mailConfig.Sender));
+            mailMessage.To.Add(MailboxAddress.Parse(mailConfig.To));
+
+            var stalkList = stalks.Select(x => x.Flag).Implode(", ");
+            mailMessage.Subject = string.Format(mailConfig.Subject, stalkList);
+
+            mailMessage.Body = new TextPart("plain")
+            {
+                Text = this.FormatMessageForEmail(stalks, rc)
             };
 
-            mailMessage.To.Add(this.appConfig.EmailConfiguration.To);
+            using (var client = new SmtpClient())
+            {
+                client.Connect(mailConfig.Hostname, mailConfig.Port, false);
 
-            var client = new SmtpClient(this.appConfig.EmailConfiguration.Hostname, this.appConfig.EmailConfiguration.Port);
-
-            client.Send(mailMessage);
+                if (mailConfig.Username != null && mailConfig.Password != null)
+                {
+                    client.Authenticate(mailConfig.Username, mailConfig.Password);
+                }
+                
+                client.Send(mailMessage);
+                client.Disconnect(true);
+            }
         }
 
         private void SendToIrc(IEnumerable<IStalk> stalks, IRecentChange rc)

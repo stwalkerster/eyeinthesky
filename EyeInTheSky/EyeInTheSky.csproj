@@ -38,6 +38,9 @@
     <StartupObject>EyeInTheSky.Startup.Launch</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BouncyCastle.Crypto, Version=1.8.1.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
+      <HintPath>..\packages\BouncyCastle.1.8.1\lib\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
     <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc">
       <HintPath>..\packages\Castle.Core.4.2.1\lib\net45\Castle.Core.dll</HintPath>
     </Reference>
@@ -56,8 +59,14 @@
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="MailKit, Version=2.0.0.0, Culture=neutral, PublicKeyToken=4e064fe7c44a8f1b">
+      <HintPath>..\packages\MailKit.2.0.1\lib\net45\MailKit.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=59d6d24383174ac4">
       <HintPath>..\packages\CommonServiceLocation.1.0.0\lib\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
+    <Reference Include="MimeKit, Version=2.0.0.0, Culture=neutral, PublicKeyToken=bede1c8a46c66814">
+      <HintPath>..\packages\MimeKit.2.0.1\lib\net45\MimeKit.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -73,7 +82,7 @@
     <Compile Include="ComplexStalk.cs" />
     <Compile Include="Model\AppConfiguration.cs" />
     <Compile Include="Model\EmailConfiguration.cs" />
-    <Compile Include="Model\IAppConfiguration.cs" />
+    <Compile Include="Model\Interfaces\IAppConfiguration.cs" />
     <Compile Include="Model\Interfaces\IRecentChange.cs" />
     <Compile Include="Model\Interfaces\IStalk.cs" />
     <Compile Include="Model\RecentChange.cs" />
