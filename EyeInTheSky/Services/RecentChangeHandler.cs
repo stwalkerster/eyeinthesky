@@ -6,11 +6,10 @@
     using System.Linq;
     using System.Text;
     using Castle.Core.Logging;
+    using EyeInTheSky.Helpers;
     using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Services.Interfaces;
-    using MailKit.Net.Smtp;
-    using MimeKit;
     using Stwalkerster.IrcClient.Events;
     using Stwalkerster.IrcClient.Extensions;
     using Stwalkerster.IrcClient.Interfaces;
@@ -96,30 +95,25 @@
                 return;
             }
 
-            var mailMessage = new MimeMessage();
-            
-            mailMessage.From.Add(MailboxAddress.Parse(mailConfig.Sender));
-            mailMessage.To.Add(MailboxAddress.Parse(mailConfig.To));
-
             var stalkList = stalks.Select(x => x.Flag).Implode(", ");
-            mailMessage.Subject = string.Format(mailConfig.Subject, stalkList);
 
-            mailMessage.Body = new TextPart("plain")
+            try
             {
-                Text = this.FormatMessageForEmail(stalks, rc)
-            };
-
-            using (var client = new SmtpClient())
+                EmailHelper.ActuallySendEmail(
+                    mailConfig.Sender,
+                    mailConfig.To,
+                    string.Format(mailConfig.Subject, stalkList),
+                    this.FormatMessageForEmail(stalks, rc),
+                    mailConfig.Hostname,
+                    mailConfig.Port,
+                    mailConfig.Username,
+                    mailConfig.Password,
+                    mailConfig.Thumbprint);
+            }
+            catch (Exception ex)
             {
-                client.Connect(mailConfig.Hostname, mailConfig.Port, false);
-
-                if (mailConfig.Username != null && mailConfig.Password != null)
-                {
-                    client.Authenticate(mailConfig.Username, mailConfig.Password);
-                }
-                
-                client.Send(mailMessage);
-                client.Disconnect(true);
+                this.logger.ErrorFormat(ex, "Failed to send notification email");
+                throw;
             }
         }
 

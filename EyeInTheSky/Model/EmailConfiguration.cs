@@ -49,6 +49,28 @@
             this.Password = password;
         }
 
+        public EmailConfiguration(string hostname,
+            int port,
+            string username,
+            string password,
+            string sender,
+            string to,
+            string subject,
+            string thumbprint) : this(hostname, port, username, password, sender, to, subject)
+        {
+            this.Thumbprint = thumbprint;
+        }
+
+        public EmailConfiguration(string hostname,
+            int port,
+            string sender,
+            string to,
+            string subject,
+            string thumbprint) : this(hostname, port, sender, to, subject)
+        {
+            this.Thumbprint = thumbprint;
+        }
+
         public string Hostname { get; private set; }
         public int Port { get; private set; }
         
@@ -59,5 +81,6 @@
         public string To { get; private set; }
         
         public string Subject { get; private set; }
+        public string Thumbprint { get; private set; }
     }
 }

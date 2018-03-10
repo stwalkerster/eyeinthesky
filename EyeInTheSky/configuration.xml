@@ -58,11 +58,12 @@ Expiry:              {4}
             <parameters>
                 <hostname>localhost</hostname>
                 <port>25</port>
-                <username/>
-                <password/>
                 <sender>eyeinthesky@dorado.scimonshouse.net</sender>
                 <to>stwalkerster@scimonshouse.net</to>
                 <subject>[EITS Debug] Notification: {0}</subject>
+                <!--<username></username>-->
+                <!--<password></password>-->
+                <!--<thumbprint>any</thumbprint>-->
             </parameters>
         </component>
         
