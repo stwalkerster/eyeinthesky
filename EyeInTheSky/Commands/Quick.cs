@@ -41,7 +41,7 @@ namespace EyeInTheSky.Commands
                 case "user":
                     UserStalkNode usn = new UserStalkNode();
                     usn.setMatchExpression(stalkTarget);
-                    s.setSearchTree(usn, true);
+                    s.SearchTree = usn;
                     this.Client.SendMessage(destination,
                                "Set " + type + " for new stalk " + name +
                                " with CSL value: " + usn);
@@ -49,7 +49,7 @@ namespace EyeInTheSky.Commands
                 case "page":
                     PageStalkNode psn = new PageStalkNode();
                     psn.setMatchExpression(stalkTarget);
-                    s.setSearchTree(psn, true);
+                    s.SearchTree = psn;
                     this.Client.SendMessage(destination,
                                "Set " + type + " for new stalk " + name +
                                " with CSL value: " + psn);
@@ -57,7 +57,7 @@ namespace EyeInTheSky.Commands
                 case "summary":
                     SummaryStalkNode ssn = new SummaryStalkNode();
                     ssn.setMatchExpression(stalkTarget);
-                    s.setSearchTree(ssn, true);
+                    s.SearchTree = ssn;
                     this.Client.SendMessage(destination,
                                "Set " + type + " for new stalk " + name +
                                " with CSL value: " + ssn);
@@ -71,7 +71,7 @@ namespace EyeInTheSky.Commands
 
 
                         StalkNode node = StalkNode.newFromXmlFragment(xd.FirstChild);
-                        s.setSearchTree(node, true);
+                        s.SearchTree = node;
                         this.Client.SendMessage(destination,
                                "Set " + type + " for new stalk " + name +
                                " with CSL value: " + node);
@@ -88,7 +88,7 @@ namespace EyeInTheSky.Commands
                     return;
             }
 
-            s.enabled = true;
+            s.IsEnabled = true;
            
             this.StalkConfig.Save();
         }

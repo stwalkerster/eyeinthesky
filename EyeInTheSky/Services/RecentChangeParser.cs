@@ -4,6 +4,7 @@
     using System.Text.RegularExpressions;
     using Castle.Core.Logging;
     using EyeInTheSky.Model;
+    using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Services.Interfaces;
 
     public class RecentChangeParser : IRecentChangeParser
@@ -30,7 +31,7 @@
             return this.colsregex ?? (this.colsregex = new Regex(AntiColourParse));
         }
 
-        public RecentChange Parse(string data)
+        public IRecentChange Parse(string data)
         {
             Match m = this.GetRegex().Match(data);
             if (m.Success == false)

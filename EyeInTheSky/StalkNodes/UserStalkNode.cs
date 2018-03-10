@@ -7,12 +7,13 @@ using System.Xml;
 namespace EyeInTheSky.StalkNodes
 {
     using EyeInTheSky.Model;
+    using EyeInTheSky.Model.Interfaces;
 
     class UserStalkNode : LeafNode
     {
         #region Overrides of StalkNode
 
-        public override bool match(RecentChange rc)
+        public override bool match(IRecentChange rc)
         {
             return expression.Match(rc.User).Success;
         }

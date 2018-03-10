@@ -71,7 +71,11 @@
     <Compile Include="Commands\Acc.cs" />
     <Compile Include="Commands\Quick.cs" />
     <Compile Include="ComplexStalk.cs" />
-    <Compile Include="AppConfiguration.cs" />
+    <Compile Include="Model\AppConfiguration.cs" />
+    <Compile Include="Model\EmailConfiguration.cs" />
+    <Compile Include="Model\IAppConfiguration.cs" />
+    <Compile Include="Model\Interfaces\IRecentChange.cs" />
+    <Compile Include="Model\Interfaces\IStalk.cs" />
     <Compile Include="Model\RecentChange.cs" />
     <Compile Include="Nagios.cs" />
     <Compile Include="Services\CommandHandler.cs" />
@@ -85,7 +89,6 @@
     <Compile Include="GenericCommand.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Stalk.cs" />
     <Compile Include="StalkList.cs" />
     <Compile Include="StalkNodes\FlagStalkNode.cs" />
     <Compile Include="StalkNodes\XorNode.cs" />

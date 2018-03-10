@@ -57,12 +57,12 @@ namespace EyeInTheSky.Commands
             
             or.LeftChildNode = or2;
             or.RightChildNode = ssn;
-            s.immediatemail = true;
+            s.MailEnabled = true;
             s.Description = "ACC " + id + ": " + user;
-            s.setSearchTree(or, true);
-            s.enabled = true;
+            s.SearchTree = or;
+            s.IsEnabled = true;
 
-            s.expiryTime = DateTime.Now.AddMonths(3);
+            s.ExpiryTime = DateTime.Now.AddMonths(3);
             
             this.StalkConfig.Stalks.Add("acc" + id, s);
             this.StalkConfig.Save();

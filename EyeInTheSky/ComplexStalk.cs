@@ -4,44 +4,57 @@ using System.IO;
 using System.Net.Mail;
 using System.Xml;
 using EyeInTheSky.StalkNodes;
+using Castle.Core.Logging;
+using EyeInTheSky.Model.Interfaces;
+using Microsoft.Practices.ServiceLocation;
 
 namespace EyeInTheSky
 {
-    using Castle.Core.Logging;
-    using EyeInTheSky.Model;
-    using Microsoft.Practices.ServiceLocation;
-
-    public class ComplexStalk : Stalk
+    public class ComplexStalk : IStalk
     {
         public ComplexStalk(string flag)
-            : base(flag)
         {
-            _baseNode = new FalseNode();
+            this.Flag = flag;
+            this.baseNode = new FalseNode();
         }
 
-        public ComplexStalk(string flag, string timeupd, string timetrig, string descr, string expiryTime, string immediatemail, string enabled) : base(flag)
+        public ComplexStalk(string flag,
+            string timeupd,
+            string timetrig,
+            string descr,
+            string expiryTime,
+            string immediatemail,
+            string enabled)
         {
-            var logger = ServiceLocator.Current.GetInstance<ILogger>().CreateChildLogger("ComplexStalk").CreateChildLogger(flag);
+            var logger = ServiceLocator.Current.GetInstance<ILogger>()
+                .CreateChildLogger("ComplexStalk")
+                .CreateChildLogger(flag);
 
             if (flag == "")
+            {
                 throw new ArgumentOutOfRangeException();
-            this.flag = flag;
-            
-            if (!bool.TryParse(immediatemail, out _immediatemail))
-                _immediatemail = false;
+            }
 
-            if (!bool.TryParse(enabled, out _enabled))
-                _enabled = true;
+            this.Flag = flag;
 
+            if (!bool.TryParse(immediatemail, out this.mailEnabled))
+            {
+                this.mailEnabled = false;
+            }
 
-            this.ParseDate(flag, timeupd, logger, out this._lastUpdateTime, "last update time");            
-            this.ParseDate(flag, timetrig, logger, out this._lastTriggerTime, "last trigger time");            
-            
-            this._description = descr;
+            if (!bool.TryParse(enabled, out this.isEnabled))
+            {
+                this.isEnabled = true;
+            }
 
-            this.ParseDate(flag, expiryTime, logger, out this._expiryTime, "expiry time");
-            
-            this._baseNode = new FalseNode();
+            this.ParseDate(flag, timeupd, logger, out this.lastUpdateTime, "last update time");
+            this.ParseDate(flag, timetrig, logger, out this.lastTriggerTime, "last trigger time");
+
+            this.description = descr;
+
+            this.ParseDate(flag, expiryTime, logger, out this.expiryTime, "expiry time");
+
+            this.baseNode = new FalseNode();
         }
 
         private void ParseDate(string flagName, string input, ILogger logger, out DateTime result, string propName)
@@ -65,102 +78,120 @@ namespace EyeInTheSky
             }
         }
 
-        private StalkNode _baseNode;
-        private DateTime _lastUpdateTime = DateTime.Now;
-        private DateTime _lastTriggerTime = DateTime.MinValue;
-        private string _description = "";
-        private DateTime _expiryTime = DateTime.MaxValue;
-        private bool _immediatemail = true;
-        private bool _enabled;
+        private StalkNode baseNode;
+        private DateTime lastUpdateTime = DateTime.Now;
+        private DateTime lastTriggerTime = DateTime.MinValue;
+        private string description = "";
+        private DateTime expiryTime = DateTime.MaxValue;
+        private bool mailEnabled = true;
+        private bool isEnabled;
 
+        /// <inheritdoc />
+        public string Flag { get; private set; }
 
         public DateTime LastUpdateTime
         {
-            get { return _lastUpdateTime; }
-            protected set { _lastUpdateTime = value; }
+            get { return this.lastUpdateTime; }
+            private set { this.lastUpdateTime = value; }
         }
 
         public DateTime LastTriggerTime
         {
-            get { return _lastTriggerTime; }
-            protected set { _lastTriggerTime = value; }
+            get { return this.lastTriggerTime; }
+            set { this.lastTriggerTime = value; }
         }
 
-        public bool enabled { get { return _enabled; } set { _enabled = value; } }
+        public bool IsEnabled
+        {
+            get { return this.isEnabled; }
+            set { this.isEnabled = value; }
+        }
 
-        public bool immediatemail { get { return _immediatemail; } set { _immediatemail = value; } }
+        public bool MailEnabled
+        {
+            get { return this.mailEnabled; }
+            set { this.mailEnabled = value; }
+        }
 
         public string Description
         {
-            get { return _description; }
+            get { return this.description; }
             set
             {
-                _description = value;
-                _lastUpdateTime = DateTime.Now;
+                this.description = value;
+                this.lastUpdateTime = DateTime.Now;
             }
         }
 
-        public DateTime expiryTime
+        public DateTime ExpiryTime
         {
-            get { return _expiryTime; }
+            get { return this.expiryTime; }
             set
             {
-                _expiryTime = value;
-                _lastUpdateTime = DateTime.Now;
+                this.expiryTime = value;
+                this.lastUpdateTime = DateTime.Now;
             }
         }
 
-        public bool isActive()
+        public StalkNode SearchTree
         {
-            if (DateTime.Now > expiryTime)
-                return false;
-            return enabled;
-        }
+            get { return this.baseNode; }
 
-        public override bool match(RecentChange rc)
-        {
-            if (!isActive())
-                return false;
-
-            bool success = _baseNode.match(rc);
-            if(success)
+            set
             {
-                LastTriggerTime = DateTime.Now;
-
-                if (immediatemail)
-                    immediateMail(rc);
-
-                return true;
+                this.LastUpdateTime = DateTime.Now;
+                this.baseNode = value;
             }
-            return false;
         }
 
-        public override XmlElement ToXmlFragment(XmlDocument doc, string xmlns)
+        public bool IsActive()
+        {
+            if (DateTime.Now > this.ExpiryTime)
+            {
+                return false;
+            }
+
+            return this.IsEnabled;
+        }
+
+        public bool Match(IRecentChange rc)
+        {
+            if (!this.IsActive())
+            {
+                return false;
+            }
+
+            return this.baseNode.match(rc);
+        }
+
+        public XmlElement ToXmlFragment(XmlDocument doc, string xmlns)
         {
             XmlElement e = doc.CreateElement("complexstalk", xmlns);
-            e.SetAttribute("flag", this.flag);
+            e.SetAttribute("flag", this.Flag);
             e.SetAttribute("lastupdate", this.LastUpdateTime.ToString("O"));
             e.SetAttribute("lasttrigger", this.LastTriggerTime.ToString("O"));
-            e.SetAttribute("immediatemail", this.immediatemail.ToString());
+            e.SetAttribute("immediatemail", this.MailEnabled.ToString());
             e.SetAttribute("description", this.Description);
-            e.SetAttribute("expiry", this.expiryTime.ToString("O"));
-            e.SetAttribute("enabled", this.enabled.ToString());
+            e.SetAttribute("enabled", this.IsEnabled.ToString());
+            e.SetAttribute("expiry", this.ExpiryTime.ToString("O"));
 
-            e.AppendChild(this._baseNode.toXmlFragment(doc, xmlns));
+            e.AppendChild(this.baseNode.toXmlFragment(doc, xmlns));
             return e;
         }
 
         public override string ToString()
         {
-            return "Flag: " + this.flag + ", Last modified: "+ this.LastUpdateTime+", Type: Complex " + _baseNode;
+            return "Flag: " + this.Flag + ", Last modified: " + this.LastUpdateTime + ", Type: Complex "
+                   + this.baseNode;
         }
 
-        public static new Stalk NewFromXmlElement(XmlElement element)
+        public static IStalk NewFromXmlElement(XmlElement element)
         {
             XmlAttribute time = element.Attributes["lastupdate"];
             string lastupdtime = time == null ? DateTime.Now.ToString(CultureInfo.InvariantCulture) : time.Value;
             time = element.Attributes["lasttrigger"];
-            string lastriggertime = time == null ? DateTime.MinValue.ToString(CultureInfo.InvariantCulture) : time.Value;
+            string lastriggertime =
+                time == null ? DateTime.MinValue.ToString(CultureInfo.InvariantCulture) : time.Value;
             time = element.Attributes["expiry"];
             string exptime = time == null ? DateTime.MaxValue.ToString(CultureInfo.InvariantCulture) : time.Value;
 
@@ -168,61 +199,56 @@ namespace EyeInTheSky
             string enbld = element.GetAttribute("enabled");
             string descr = element.GetAttribute("description");
 
-            var s = new ComplexStalk(element.Attributes["flag"].Value, lastupdtime, lastriggertime, descr, exptime, immMail,enbld);
-            
-            if(element.HasChildNodes)
+            var s = new ComplexStalk(
+                element.Attributes["flag"].Value,
+                lastupdtime,
+                lastriggertime,
+                descr,
+                exptime,
+                immMail,
+                enbld);
+
+            if (element.HasChildNodes)
             {
                 StalkNode n = StalkNode.newFromXmlFragment(element.FirstChild);
-                s._baseNode = n;
+                s.baseNode = n;
             }
 
             return s;
         }
 
-        public void setSearchTree(StalkNode node, bool isupdate)
+        [Obsolete("This is in the complete wrong place.")]
+        public static void immediateMail(IRecentChange rc, ComplexStalk stalk)
         {
-            if (isupdate)
-                LastUpdateTime = DateTime.Now;
-
-            _baseNode = node;
-        }
-
-        public StalkNode getSearchTree()
-        {
-            return _baseNode;
-        }
-    
-        public void immediateMail(RecentChange rc)
-        {
-            string arg1 = Flag;
+            string arg1 = stalk.Flag;
             string arg2 = rc.Page;
             string arg3 = rc.User;
             string arg4 = rc.EditSummary;
             string arg5 = rc.Url;
             string arg6 = DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToLongTimeString();
-            string arg7 = Description;
-            string arg8 = _baseNode.ToString();
+            string arg7 = stalk.Description;
+            string arg8 = stalk.SearchTree.ToString();
             string arg9 = rc.EditFlags;
 
             string template = new StreamReader("Templates/individual.txt").ReadToEnd();
             template = template
-                .Replace("$1", arg1)
-                .Replace("$2", arg2)
-                .Replace("$3", arg3)
-                .Replace("$4", arg4)
-                .Replace("$5", arg5)
-                .Replace("$6", arg6)
-                .Replace("$7", arg7)
-                .Replace("$8", arg8)
-                .Replace("$9", arg9)
+                    .Replace("$1", arg1)
+                    .Replace("$2", arg2)
+                    .Replace("$3", arg3)
+                    .Replace("$4", arg4)
+                    .Replace("$5", arg5)
+                    .Replace("$6", arg6)
+                    .Replace("$7", arg7)
+                    .Replace("$8", arg8)
+                    .Replace("$9", arg9)
                 ;
 
             var mailMessage = new MailMessage
-                                   {
-                                       From = new MailAddress("eyeinthesky@eyeinthesky.im"),
-                                       Subject = "[EyeInTheSky] '" + Flag + "' notification",
-                                       Body = template
-                                   };
+            {
+                From = new MailAddress("eyeinthesky@eyeinthesky.im"),
+                Subject = "[EyeInTheSky] '" + stalk.Flag + "' notification",
+                Body = template
+            };
 
             mailMessage.To.Add("simon@stwalkerster.co.uk");
 

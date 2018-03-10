@@ -4,6 +4,8 @@ namespace EyeInTheSky
 {
     using System.Collections.Generic;
     using Castle.Core.Logging;
+    using EyeInTheSky.Model;
+    using EyeInTheSky.Model.Interfaces;
     using Microsoft.Practices.ServiceLocation;
     using Stwalkerster.IrcClient.Interfaces;
     using Stwalkerster.IrcClient.Model.Interfaces;
@@ -36,7 +38,7 @@ namespace EyeInTheSky
 
         public void Run(IUser source, string destination, IEnumerable<string> tokens)
         {
-            var configuration = ServiceLocator.Current.GetInstance<AppConfiguration>();
+            var configuration = ServiceLocator.Current.GetInstance<IAppConfiguration>();
             if (destination != configuration.FreenodeChannel)
             {
                 this.Client.SendNotice(source.Nickname, "Access denied.");

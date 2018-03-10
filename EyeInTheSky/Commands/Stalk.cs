@@ -85,7 +85,7 @@ namespace EyeInTheSky.Commands
                         case "user":
                             var usn = new UserStalkNode();
                             usn.setMatchExpression(regex);
-                            s.setSearchTree(usn, true);
+                            s.SearchTree = usn;
                             this.Client.SendMessage(destination,
                                        "Set " + type + " for stalk " + stalk +
                                        " with CSL value: " + usn);
@@ -93,7 +93,7 @@ namespace EyeInTheSky.Commands
                         case "page":
                             var psn = new PageStalkNode();
                             psn.setMatchExpression(regex);
-                            s.setSearchTree(psn, true);
+                            s.SearchTree = psn;
                             this.Client.SendMessage(destination,
                                        "Set " + type + " for stalk " + stalk +
                                        " with CSL value: " + psn);
@@ -101,7 +101,7 @@ namespace EyeInTheSky.Commands
                         case "summary":
                             var ssn = new SummaryStalkNode();
                             ssn.setMatchExpression(regex);
-                            s.setSearchTree(ssn, true);
+                            s.SearchTree = ssn;
                             this.Client.SendMessage(destination,
                                        "Set " + type + " for stalk " + stalk +
                                        " with CSL value: " + ssn);
@@ -115,7 +115,7 @@ namespace EyeInTheSky.Commands
 
 
                                 StalkNode node = StalkNode.newFromXmlFragment(xd.FirstChild);
-                                s.setSearchTree(node, true);
+                                s.SearchTree = node;
                                 this.Client.SendMessage(destination,
                                        "Set " + type + " for stalk " + stalk +
                                        " with CSL value: " + node);
@@ -165,8 +165,8 @@ namespace EyeInTheSky.Commands
                     return;
                 }
 
-                this.StalkConfig.Stalks[stalkName].immediatemail = mail;
                 this.Client.SendMessage(destination, "Set immediatemail attribute on stalk " + stalkName + " to " + mail);
+                this.StalkConfig.Stalks[stalkName].MailEnabled = mail;
             }
             #endregion
             if(mode == "description")
@@ -199,7 +199,7 @@ namespace EyeInTheSky.Commands
                 string date = tokenList.Implode();
 
                 DateTime expiryTime = DateTime.Parse(date);
-                this.StalkConfig.Stalks[stalk].expiryTime = expiryTime;
+                this.StalkConfig.Stalks[stalk].ExpiryTime = expiryTime;
                 this.Client.SendMessage(destination,
                                                        "Set expiry attribute on stalk " + stalk + " to " + expiryTime);
 
@@ -217,8 +217,8 @@ namespace EyeInTheSky.Commands
 
                 var stalkName = tokenList.PopFromFront();
                 bool enabled = bool.Parse(tokenList.PopFromFront());
-                this.StalkConfig.Stalks[stalkName].enabled = enabled;
                 this.Client.SendMessage(destination, "Set enabled attribute on stalk " + stalkName + " to " + enabled);
+                this.StalkConfig.Stalks[stalkName].IsEnabled = enabled;
             }
             #endregion
             if (mode == "and")
@@ -243,7 +243,7 @@ namespace EyeInTheSky.Commands
 
                 string stalkTarget = tokenList.Implode();
 
-                var newroot = new AndNode {LeftChildNode = s.getSearchTree()};
+                var newroot = new AndNode {LeftChildNode = s.SearchTree};
 
                 switch (type)
                 {
@@ -251,7 +251,7 @@ namespace EyeInTheSky.Commands
                         var usn = new UserStalkNode();
                         usn.setMatchExpression(stalkTarget);
                         newroot.RightChildNode = usn;
-                        s.setSearchTree(newroot, true);
+                        s.SearchTree = newroot;
                         this.Client.SendMessage(destination,
                                    "Set " + type + " for stalk " + stalk +
                                    " with CSL value: " + newroot);
@@ -260,7 +260,7 @@ namespace EyeInTheSky.Commands
                         var psn = new PageStalkNode();
                         psn.setMatchExpression(stalkTarget);
                         newroot.RightChildNode = psn;
-                        s.setSearchTree(newroot, true);
+                        s.SearchTree = newroot;
                         this.Client.SendMessage(destination,
                                    "Set " + type + " for stalk " + stalk +
                                    " with CSL value: " + newroot);
@@ -269,7 +269,7 @@ namespace EyeInTheSky.Commands
                         var ssn = new SummaryStalkNode();
                         ssn.setMatchExpression(stalkTarget);
                         newroot.RightChildNode = ssn;
-                        s.setSearchTree(newroot, true);
+                        s.SearchTree = newroot;
                         this.Client.SendMessage(destination,
                                    "Set " + type + " for stalk " + stalk +
                                    " with CSL value: " + newroot);
@@ -285,7 +285,7 @@ namespace EyeInTheSky.Commands
                             StalkNode node = StalkNode.newFromXmlFragment(xd.FirstChild);
 
                             newroot.RightChildNode = node;
-                            s.setSearchTree(newroot, true);
+                            s.SearchTree = newroot;
                             this.Client.SendMessage(destination,
                                    "Set " + type + " for stalk " + stalk +
                                    " with CSL value: " + newroot);
@@ -326,7 +326,7 @@ namespace EyeInTheSky.Commands
 
                 string stalkTarget = tokenList.Implode();
 
-                var newroot = new OrNode { LeftChildNode = s.getSearchTree() };
+                var newroot = new OrNode { LeftChildNode = s.SearchTree };
 
                 switch (type)
                 {
@@ -334,7 +334,7 @@ namespace EyeInTheSky.Commands
                         var usn = new UserStalkNode();
                         usn.setMatchExpression(stalkTarget);
                         newroot.RightChildNode = usn;
-                        s.setSearchTree(newroot, true);
+                        s.SearchTree = newroot;
                         this.Client.SendMessage(destination,
                                    "Set " + type + " for stalk " + stalk +
                                    " with CSL value: " + newroot);
@@ -343,7 +343,7 @@ namespace EyeInTheSky.Commands
                         var psn = new PageStalkNode();
                         psn.setMatchExpression(stalkTarget);
                         newroot.RightChildNode = psn;
-                        s.setSearchTree(newroot, true);
+                        s.SearchTree = newroot;
                         this.Client.SendMessage(destination,
                                    "Set " + type + " for stalk " + stalk +
                                    " with CSL value: " + newroot);
@@ -352,7 +352,7 @@ namespace EyeInTheSky.Commands
                         var ssn = new SummaryStalkNode();
                         ssn.setMatchExpression(stalkTarget);
                         newroot.RightChildNode = ssn;
-                        s.setSearchTree(newroot, true);
+                        s.SearchTree = newroot;
                         this.Client.SendMessage(destination,
                                    "Set " + type + " for stalk " + stalk +
                                    " with CSL value: " + newroot);
@@ -368,7 +368,7 @@ namespace EyeInTheSky.Commands
                             StalkNode node = StalkNode.newFromXmlFragment(xd.FirstChild);
 
                             newroot.RightChildNode = node;
-                            s.setSearchTree(newroot, true);
+                            s.SearchTree = newroot;
                             this.Client.SendMessage(destination,
                                    "Set " + type + " for stalk " + stalk +
                                    " with CSL value: " + newroot);

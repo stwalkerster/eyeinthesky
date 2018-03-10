@@ -3,6 +3,8 @@
     using System;
     using System.Threading;
     using Castle.Core.Logging;
+    using EyeInTheSky.Model;
+    using EyeInTheSky.Model.Interfaces;
     using Stwalkerster.IrcClient.Interfaces;
 
     public class Application
@@ -10,10 +12,10 @@
         private readonly ILogger logger;
         private readonly IIrcClient freenodeClient;
         private readonly IIrcClient wikimediaClient;
-        private readonly AppConfiguration appConfig;
+        private readonly IAppConfiguration appConfig;
         private bool alive = true;
 
-        public Application(ILogger logger, IIrcClient freenodeClient, IIrcClient wikimediaClient, AppConfiguration appConfig)
+        public Application(ILogger logger, IIrcClient freenodeClient, IIrcClient wikimediaClient, IAppConfiguration appConfig)
         {
             this.logger = logger;
             this.freenodeClient = freenodeClient;

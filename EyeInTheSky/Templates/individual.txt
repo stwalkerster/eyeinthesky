@@ -14,7 +14,7 @@ Description: $7
 CSL: $8
 
 To disable notification of this stalk, run 
-   =stalk mail $1 immediate false
+   =stalk mail $1 false
 in my IRC channel, and I will stop notifying you.
 
 Regards,

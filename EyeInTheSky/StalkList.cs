@@ -1,33 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Xml;
-using System.Xml.XPath;
 
 namespace EyeInTheSky
 {
-    using System;
-    using EyeInTheSky.Model;
+    using EyeInTheSky.Model.Interfaces;
 
-    public class StalkList : SortedList<string,ComplexStalk>
+    public class StalkList : SortedList<string, ComplexStalk>
     {
-        [Obsolete]
-        public Stalk search(RecentChange rc)
+        public IEnumerable<IStalk> Search(IRecentChange rc)
         {
-            foreach (KeyValuePair<string,ComplexStalk> s in this)
+            foreach (KeyValuePair<string, ComplexStalk> s in this)
             {
-                if(s.Value.match(rc))
-                {
-                    return s.Value;
-                }
-            }
-
-            return null;
-        }
-
-        public IEnumerable<Stalk> Search(RecentChange rc)
-        {
-            foreach (KeyValuePair<string,ComplexStalk> s in this)
-            {
-                if(s.Value.match(rc))
+                if(s.Value.Match(rc))
                 {
                     yield return s.Value;
                 }
@@ -48,7 +32,7 @@ namespace EyeInTheSky
 
                 XmlElement element = (XmlElement) childNode;
 
-                ComplexStalk s = (ComplexStalk)Stalk.newFromXmlElement(element);
+                ComplexStalk s = (ComplexStalk)ComplexStalk.NewFromXmlElement(element);
                 list.Add(s.Flag, s);
             }
 

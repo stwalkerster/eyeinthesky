@@ -1,6 +1,7 @@
 ﻿namespace EyeInTheSky.Model
 {
-    public class RecentChange
+    using EyeInTheSky.Model.Interfaces;
+    public class RecentChange : IRecentChange
     {
         public RecentChange(string page, string user, string url, string editsummary, string flags, int sizediff)
         {

@@ -7,10 +7,11 @@ using System.Xml;
 namespace EyeInTheSky.StalkNodes
 {
     using EyeInTheSky.Model;
+    using EyeInTheSky.Model.Interfaces;
 
     class TrueNode : LogicalNode
     {
-        public override bool match(RecentChange rc)
+        public override bool match(IRecentChange rc)
         {
             return true;
         }

@@ -4,12 +4,13 @@ namespace EyeInTheSky.Tests.StalkNodes
 {
     using System.Collections;
     using EyeInTheSky.Model;
+    using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.StalkNodes;
 
     [TestFixture]
     public class UserStalkNodeTest
     {
-        private RecentChange rc;
+        private IRecentChange rc;
 
         [SetUp]
         public void Setup()

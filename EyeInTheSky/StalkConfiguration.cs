@@ -7,6 +7,8 @@ using System.Xml.XPath;
 namespace EyeInTheSky
 {
     using Castle.Core.Logging;
+    using EyeInTheSky.Model;
+    using EyeInTheSky.Model.Interfaces;
 
     public class StalkConfiguration
     {
@@ -16,7 +18,7 @@ namespace EyeInTheSky
 
         private bool initialised;
 
-        public StalkConfiguration(AppConfiguration configuration, ILogger logger)
+        public StalkConfiguration(IAppConfiguration configuration, ILogger logger)
         {
             this.configurationFileName = configuration.StalkConfigFile;
             this.logger = logger;

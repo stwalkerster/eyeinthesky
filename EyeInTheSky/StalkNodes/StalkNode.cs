@@ -7,10 +7,11 @@ using System.Xml;
 namespace EyeInTheSky.StalkNodes
 {
     using EyeInTheSky.Model;
+    using EyeInTheSky.Model.Interfaces;
 
     public abstract class StalkNode
     {
-        abstract public bool match(RecentChange rc);
+        abstract public bool match(IRecentChange rc);
 
         public static StalkNode newFromXmlFragment(XmlNode xmlNode)
         {

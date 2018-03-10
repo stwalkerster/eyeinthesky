@@ -2,6 +2,8 @@
 {
     using System.Linq;
     using Castle.Core.Logging;
+    using EyeInTheSky.Model;
+    using EyeInTheSky.Model.Interfaces;
     using Stwalkerster.IrcClient.Events;
     using Stwalkerster.IrcClient.Extensions;
     using Stwalkerster.IrcClient.Interfaces;
@@ -9,11 +11,11 @@
 
     public class CommandHandler
     {
-        private readonly AppConfiguration configuration;
+        private readonly IAppConfiguration configuration;
         private readonly ILogger logger;
         private readonly StalkConfiguration stalkConfig;
 
-        public CommandHandler(AppConfiguration configuration, ILogger logger, StalkConfiguration stalkConfig)
+        public CommandHandler(IAppConfiguration configuration, ILogger logger, StalkConfiguration stalkConfig)
         {
             this.configuration = configuration;
             this.logger = logger;
