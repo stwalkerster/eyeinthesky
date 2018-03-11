@@ -30,7 +30,7 @@
                 <!-- The prefix for all commands the bot recognises -->
                 <commandPrefix>!</commandPrefix>
                 <!-- The file in which to store the stalk configurations -->
-                <stalkConfigFile>EyeInTheSky.config</stalkConfigFile>
+                <stalkConfigFile>stalks.xml</stalkConfigFile>
                 <!-- The full mask of the RC bot on the Wikimedia network -->
                 <rcUser>rc-pmtpa!~rc-pmtpa@special.user</rcUser>
                 <!-- The full mask of the owner of the bot -->

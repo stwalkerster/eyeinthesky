@@ -4,7 +4,6 @@
     using System.Threading;
     using Castle.Core.Logging;
     using EyeInTheSky.Model.Interfaces;
-    using Stwalkerster.Bot.CommandLib.Services;
     using Stwalkerster.Bot.CommandLib.Services.Interfaces;
     using Stwalkerster.IrcClient.Interfaces;
 
