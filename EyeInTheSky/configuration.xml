@@ -4,6 +4,7 @@
         <botNickname>EITSDebug</botNickname>
         <botGecos>EyeInTheSky - https://stwalkerster.co.uk/eits/</botGecos>
         <botUsername>eyeinthesky</botUsername>
+        <botPassword>eyeinthesky</botPassword>
     </properties>
 
     <components>
