@@ -16,5 +16,6 @@
         string DateFormat { get; }
         EmailConfiguration EmailConfiguration { get; }
         IrcUser Owner { get; }
+        int MonitoringPort { get; set; }
     }
 }

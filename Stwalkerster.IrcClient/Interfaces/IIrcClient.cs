@@ -62,6 +62,9 @@
         /// </summary>
         Dictionary<string, IrcUser> UserCache { get; }
 
+        bool NetworkConnected { get; }
+        string ClientName { get; }
+
         #endregion
 
         #region Public Methods and Operators

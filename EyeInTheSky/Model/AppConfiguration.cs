@@ -93,5 +93,6 @@ namespace EyeInTheSky.Model
         public string EmailStalkTemplate { get; private set; }
         public string DateFormat { get; private set; }
         public EmailConfiguration EmailConfiguration { get; set; }
+        public int MonitoringPort { get; set; }
     }
 }

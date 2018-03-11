@@ -179,7 +179,8 @@
             this.authToServices = configuration.AuthToServices;
 
             this.supportHelper = supportHelper;
-            this.logger = logger.CreateChildLogger(configuration.ClientName);
+            this.ClientName = configuration.ClientName;
+            this.logger = logger.CreateChildLogger(this.ClientName);
 
             this.syncLogger = this.logger.CreateChildLogger("Sync");
             this.ReceivedMessage += this.OnMessageReceivedEvent;
@@ -297,6 +298,8 @@
         {
             get { return this.networkClient.Connected; }
         }
+
+        public string ClientName { get; private set; }
 
         #endregion
 

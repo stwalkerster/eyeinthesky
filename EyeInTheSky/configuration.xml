@@ -50,6 +50,7 @@ Expiry:              {4}
 
 ]]></emailStalkTemplate>
                 <dateFormat>u</dateFormat>
+                <monitoringPort>62168</monitoringPort>
             </parameters>
         </component>
         

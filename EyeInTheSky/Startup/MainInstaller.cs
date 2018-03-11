@@ -10,6 +10,7 @@
     using Castle.Windsor;
     using EyeInTheSky.Model;
     using EyeInTheSky.Services;
+    using EyeInTheSky.Startables;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities;
     using Stwalkerster.Bot.CommandLib.Commands.Interfaces;
     using Stwalkerster.Bot.CommandLib.Services;
@@ -70,14 +71,19 @@
                     .Named("freenodeClient")
                     .DependsOn(Dependency.OnComponent("configuration", "freenodeIrcConfig"))
                     .Start()
-                    .PublishEvent(p => p.ReceivedMessage += null, x=>x.To<CommandHandler>("newCommandHandler", l=>l.OnMessageReceived(null, null))),
+                    .PublishEvent(p => p.ReceivedMessage += null, x=>x.To<CommandHandler>("commandHandler", l=>l.OnMessageReceived(null, null))),
                 Component.For<IIrcClient>()
                     .ImplementedBy<IrcClient>()
                     .Named("wikimediaClient")
                     .DependsOn(Dependency.OnComponent("configuration", "wikimediaIrcConfig"))
                     .Start()
                     .PublishEvent(p => p.ReceivedMessage += null, x=>x.To<RecentChangeHandler>("rcHandler", l=>l.OnReceivedMessage(null, null))),
-                Component.For<Nagios>().Start().StopUsingMethod("Stop")
+                Component.For<NagiosMonitoringService>()
+                    .Start()
+                    .DependsOn(
+                        Dependency.OnComponent("freenodeClient", "freenodeClient"),
+                        Dependency.OnComponent("wikimediaClient", "wikimediaClient")
+                    )
             );
         }
     }

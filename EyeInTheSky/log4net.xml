@@ -11,7 +11,7 @@
         </mapping>
         <mapping>
             <level value="INFO" />
-            <foreColor value="White" />
+            <foreColor value="Blue" />
         </mapping>
         <mapping>
             <level value="Debug" />
@@ -35,9 +35,15 @@
         <appender-ref ref="ConsoleAppender" />
         <appender-ref ref="DebugLogFile" />
     </root>
-    
-    <logger name="Stwalkerster.IrcClient.IrcClient.Wikimedia.NetworkClient">
+
+    <logger name="Stwalkerster.IrcClient.IrcClient.Wikimedia">
         <level value="OFF" />
     </logger>
 
+    <logger name="Stwalkerster.IrcClient.IrcClient.Freenode.NetworkClient">
+        <level value="OFF" />
+    </logger>
+    <logger name="Stwalkerster.IrcClient.IrcClient.Freenode">
+        <level value="WARN" />
+    </logger>
 </log4net>
