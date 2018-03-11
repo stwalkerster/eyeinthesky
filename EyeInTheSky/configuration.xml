@@ -1,22 +1,44 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <configuration>
+    <!--
+    Welcome, new EITS user.
+    
+    There are a few key bits of configuration which you will need to update here.
+    
+    Please consult the documentation for a more thorough explanation
+    -->
     <properties>
-        <botNickname>EITSDebug</botNickname>
+        <!-- The nickname you want the bot to take on both networks -->
+        <botNickname></botNickname>
+        <!-- The real name (or GECOS) you want the bot to take on both networks -->
         <botGecos>EyeInTheSky - https://stwalkerster.co.uk/eits/</botGecos>
-        <botUsername>eyeinthesky</botUsername>
-        <botPassword>eyeinthesky</botPassword>
+        <!-- The Freenode NickServ account name, also used for the ident if an ident service is not running -->
+        <botUsername></botUsername>
+        <!-- The Freenode NickServ password -->
+        <botPassword></botPassword>
     </properties>
 
+    <!-- GENERAL CONFIGURATION -->
     <components>
         <component type="EyeInTheSky.Model.AppConfiguration" 
                    service="EyeInTheSky.Model.Interfaces.IAppConfiguration">
             <parameters>
-                <freenodeChannel>##stwalkerster-development</freenodeChannel>
+                <!-- The Freenode channel to join and report in -->
+                <freenodeChannel></freenodeChannel>
+                <!-- The Wikimedia channel to watch for recent changes -->
                 <wikimediaChannel>#en.wikipedia</wikimediaChannel>
-                <commandPrefix>=</commandPrefix>
+                <!-- The prefix for all commands the bot recognises -->
+                <commandPrefix>!</commandPrefix>
+                <!-- The file in which to store the stalk configurations -->
                 <stalkConfigFile>EyeInTheSky.config</stalkConfigFile>
+                <!-- The full mask of the RC bot on the Wikimedia network -->
                 <rcUser>rc-pmtpa!~rc-pmtpa@special.user</rcUser>
-                <owner>stwalkerster!stwalkerst@wikimedia/stwalkerster</owner>
+                <!-- The full mask of the owner of the bot -->
+                <owner></owner>
+                <!-- The format in which dates should appear -->
+                <dateFormat>u</dateFormat>
+                
+                <!-- The remainder of the settings in this block are for advanced users only. -->
                 <ircAlertFormat>[&#03;4&#02;{0}&#02;&#03;] Stalked edit {1} to page "&#03;3{2}&#03;" by [[User:{3}]], summary: &#03;7{4}</ircAlertFormat>
                 <ircStalkTagSeparator>&#02;&#03;|&#03;4&#02;</ircStalkTagSeparator>
                 <emailRcTemplate><![CDATA[Hi there!
@@ -50,25 +72,36 @@ Email notifications: {3}
 Expiry:              {4}
 
 ]]></emailStalkTemplate>
-                <dateFormat>u</dateFormat>
                 <monitoringPort>62168</monitoringPort>
             </parameters>
         </component>
         
+        <!-- EMAIL CONFIGURATION -->
         <component id="emailConfig"
                    type="EyeInTheSky.Model.EmailConfiguration">
             <parameters>
-                <hostname>localhost</hostname>
-                <port>25</port>
-                <sender>eyeinthesky@dorado.scimonshouse.net</sender>
-                <to>stwalkerster@scimonshouse.net</to>
-                <subject>[EITS Debug] Notification: {0}</subject>
-                <!--<username></username>-->
-                <!--<password></password>-->
+                <!-- The hostname of an SMTP or Submission server -->
+                <hostname></hostname>
+                <!-- The SMTP / Submission port -->
+                <port></port>
+                <!-- The From: header of the email -->
+                <sender></sender>
+                <!-- The recipient of email notifications -->
+                <to></to>
+                <!-- The subject of email notifications -->
+                <subject>[EyeInTheSky] Notification: {0}</subject>
+                <!-- If authentication is required, authenticate as this user -->
+                <username></username>
+                <password></password>
+                <!-- If the certificate is not trusted by the system trust store, you can put the thumbprint here -->
                 <!--<thumbprint>any</thumbprint>-->
             </parameters>
         </component>
-        
+
+        <!-- WIKIMEDIA CONFIGURATION
+         
+         There should be little need to change the parameters in this section.
+         -->
         <component id="wikimediaIrcConfig"
                    service="Stwalkerster.IrcClient.Interfaces.IIrcConfiguration"
                    type="Stwalkerster.IrcClient.IrcConfiguration">
@@ -85,6 +118,10 @@ Expiry:              {4}
             </parameters>
         </component>
 
+        <!-- WIKIMEDIA CONFIGURATION
+         
+         There should be little need to change the parameters in this section.
+         -->
         <component id="freenodeIrcConfig"
                    service="Stwalkerster.IrcClient.Interfaces.IIrcConfiguration"
                    type="Stwalkerster.IrcClient.IrcConfiguration">
