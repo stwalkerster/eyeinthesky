@@ -72,17 +72,28 @@
             this.configProvider = configProvider;
             this.commandFactory = commandFactory;
             this.logger = logger;
-            var types = Assembly.GetExecutingAssembly().GetTypes();
-
+            
+            var types = new List<Type>(); 
             this.commands = new Dictionary<string, Dictionary<CommandRegistration, Type>>();
+            
+            foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                logger.DebugFormat("Scanning {0} for commands...", asm.FullName);
+                
+                foreach (var type in asm.GetTypes())
+                {
+                    if (!type.IsSubclassOf(typeof(CommandBase)))
+                    {
+                        // Not a new command class;
+                        continue;
+                    }
+
+                    types.Add(type);
+                }
+            }
+            
             foreach (var type in types)
             {
-                if (!type.IsSubclassOf(typeof(CommandBase)))
-                {
-                    // Not a new command class;
-                    continue;
-                }
-
                 var customAttributes = type.GetCustomAttributes(typeof(CommandInvocationAttribute), false);
                 if (customAttributes.Length > 0)
                 {
@@ -161,7 +172,18 @@
                 catch (TargetInvocationException e)
                 {
                     this.logger.Error("Unable to create instance of command.", e.InnerException);
-                    client.SendMessage(this.configProvider.DebugChannel, e.InnerException.Message.Replace("\r\n", " "));
+                    if (e.InnerException != null)
+                    {
+                        client.SendMessage(
+                            this.configProvider.DebugChannel,
+                            e.InnerException.Message.Replace("\r\n", " "));
+                    }
+                    else
+                    {
+                        client.SendMessage(
+                            this.configProvider.DebugChannel,
+                            "TargetInvocationException was raised in CommandParser, but no InnerException was present.");
+                    }
                 }
             }
 
@@ -337,12 +359,22 @@
         /// </param>
         public void RegisterCommand(string commandName, Type implementation, string channel)
         {
+            if (!implementation.IsPublic)
+            {
+                this.logger.ErrorFormat(
+                    "Implementation of command '{0}' ({1}) is not public, so cannot be instantiated! Refusing registration.",
+                    commandName,
+                    implementation);
+                return;
+            }
+
             if (!this.commands.ContainsKey(commandName))
             {
                 this.commands.Add(commandName, new Dictionary<CommandRegistration, Type>());
             }
 
             this.commands[commandName].Add(new CommandRegistration(channel, implementation), implementation);
+            this.logger.DebugFormat("Registered command {0}", implementation.FullName);
         }
        
         #endregion

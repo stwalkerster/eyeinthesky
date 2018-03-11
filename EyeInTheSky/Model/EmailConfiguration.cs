@@ -5,7 +5,6 @@
     public class EmailConfiguration
     {
         public EmailConfiguration(string hostname,
-            int port,
             string sender,
             string to,
             string subject)
@@ -31,56 +30,21 @@
             }
 
             this.Hostname = hostname;
-            this.Port = port;
             this.Sender = sender;
             this.To = to;
             this.Subject = subject;
         }
 
-        public EmailConfiguration(string hostname,
-            int port,
-            string username,
-            string password,
-            string sender,
-            string to,
-            string subject) : this(hostname, port, sender, to, subject)
-        {
-            this.Username = username;
-            this.Password = password;
-        }
-
-        public EmailConfiguration(string hostname,
-            int port,
-            string username,
-            string password,
-            string sender,
-            string to,
-            string subject,
-            string thumbprint) : this(hostname, port, username, password, sender, to, subject)
-        {
-            this.Thumbprint = thumbprint;
-        }
-
-        public EmailConfiguration(string hostname,
-            int port,
-            string sender,
-            string to,
-            string subject,
-            string thumbprint) : this(hostname, port, sender, to, subject)
-        {
-            this.Thumbprint = thumbprint;
-        }
-
         public string Hostname { get; private set; }
-        public int Port { get; private set; }
+        public int Port { get; set; }
         
-        public string Username { get; private set; }
-        public string Password { get; private set; }
+        public string Username { get; set; }
+        public string Password { get; set; }
         
         public string Sender { get; private set; }
         public string To { get; private set; }
         
         public string Subject { get; private set; }
-        public string Thumbprint { get; private set; }
+        public string Thumbprint { get; set; }
     }
 }

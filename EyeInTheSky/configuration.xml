@@ -50,7 +50,6 @@ Expiry:              {4}
 
 ]]></emailStalkTemplate>
                 <dateFormat>u</dateFormat>
-                <emailConfiguration>${emailConfig}</emailConfiguration>
             </parameters>
         </component>
         

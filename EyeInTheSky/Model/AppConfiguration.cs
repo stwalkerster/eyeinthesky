@@ -16,7 +16,6 @@ namespace EyeInTheSky.Model
             string emailRcTemplate,
             string emailStalkTemplate,
             string dateFormat,
-            EmailConfiguration emailConfiguration,
             string owner)
         {
             if (freenodeChannel == null)
@@ -80,7 +79,6 @@ namespace EyeInTheSky.Model
             this.EmailRcTemplate = emailRcTemplate;
             this.EmailStalkTemplate = emailStalkTemplate;
             this.DateFormat = dateFormat;
-            this.EmailConfiguration = emailConfiguration;
         }
 
         public string FreenodeChannel { get; private set; }
@@ -94,6 +92,6 @@ namespace EyeInTheSky.Model
         public string EmailRcTemplate { get; private set; }
         public string EmailStalkTemplate { get; private set; }
         public string DateFormat { get; private set; }
-        public EmailConfiguration EmailConfiguration { get; private set; }
+        public EmailConfiguration EmailConfiguration { get; set; }
     }
 }

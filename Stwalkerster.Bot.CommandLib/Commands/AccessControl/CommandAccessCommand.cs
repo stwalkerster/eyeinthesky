@@ -91,6 +91,15 @@
                 this.CommandSource, 
                 this.Client);
 
+            if (command == null)
+            {
+                yield return new CommandResponse
+                {
+                    Message = string.Format("The command {0} was not found.", this.Arguments.First())
+                };
+                yield break;
+            }
+
             var message = string.Format("The command {0} requires the flag '{1}'.", this.Arguments.First(), command.Flag);
             yield return new CommandResponse { Message = message };
         }

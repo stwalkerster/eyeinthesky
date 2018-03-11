@@ -37,6 +37,11 @@
             this.freenodeClient = freenodeClient;
             this.rcParser = rcParser;
             this.emailHelper = emailHelper;
+
+            if (this.appConfig.EmailConfiguration == null)
+            {
+                this.logger.Warn("Not sending email; email configuration is disabled");
+            }
         }
 
         public void OnReceivedMessage(object sender, MessageReceivedEventArgs e)
@@ -91,14 +96,14 @@
         {
             if (!stalks.Any(x => x.MailEnabled))
             {
-                this.logger.Info("Not sending email; no matched stalks support it.");
+                this.logger.Debug("Not sending email; no matched stalks support it.");
                 return;
             }
 
             var mailConfig = this.appConfig.EmailConfiguration;
             if (mailConfig == null)
             {
-                this.logger.Info("Not sending email; email configuration is disabled");
+                this.logger.Debug("Not sending email; email configuration is disabled");
                 return;
             }
 

@@ -74,8 +74,8 @@
       <Link>Properties/GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Application.cs" />
-    <Compile Include="Commands\Acc.cs" />
-    <Compile Include="Commands\Quick.cs" />
+    <Compile Include="Commands\AccCommand.cs" />
+    <Compile Include="Commands\QuickCommand.cs" />
     <Compile Include="Helpers\Interfaces\IEmailHelper.cs" />
     <Compile Include="Helpers\Interfaces\IStalkFactory.cs" />
     <Compile Include="Helpers\StalkFactory.cs" />
@@ -89,15 +89,14 @@
     <Compile Include="Model\RecentChange.cs" />
     <Compile Include="Model\StalkConfiguration.cs" />
     <Compile Include="Nagios.cs" />
-    <Compile Include="Services\CommandHandler.cs" />
     <Compile Include="Services\ConfigurationProvider.cs" />
     <Compile Include="Services\BasicFlagService.cs" />
     <Compile Include="Services\Interfaces\IRecentChangeParser.cs" />
     <Compile Include="Services\RecentChangeHandler.cs" />
     <Compile Include="Services\RecentChangeParser.cs" />
     <Compile Include="StalkNodes\AndNode.cs" />
-    <Compile Include="Commands\Stalk.cs" />
-    <Compile Include="Commands\Version.cs" />
+    <Compile Include="Commands\StalkCommand.cs" />
+    <Compile Include="Commands\VersionCommand.cs" />
     <Compile Include="GenericCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StalkNodes\FlagStalkNode.cs" />

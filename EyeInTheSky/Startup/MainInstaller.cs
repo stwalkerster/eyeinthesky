@@ -10,7 +10,6 @@
     using Castle.Windsor;
     using EyeInTheSky.Model;
     using EyeInTheSky.Services;
-    using EyeInTheSky.Services.Interfaces;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities;
     using Stwalkerster.Bot.CommandLib.Commands.Interfaces;
     using Stwalkerster.Bot.CommandLib.Services;
@@ -18,9 +17,6 @@
     using Stwalkerster.Bot.CommandLib.TypedFactories;
     using Stwalkerster.IrcClient;
     using Stwalkerster.IrcClient.Interfaces;
-    
-    using LegacyCommandHandler = EyeInTheSky.Services.CommandHandler;
-    using NewCommandHandler = Stwalkerster.Bot.CommandLib.Commands.CommandUtilities.CommandHandler;
 
     public class MainInstaller : IWindsorInstaller
     {
@@ -48,6 +44,9 @@
                 // Services
                 Classes.FromThisAssembly().InNamespace("EyeInTheSky.Services").WithServiceAllInterfaces(),
                 
+                // Commands
+                Classes.FromThisAssembly().InNamespace("EyeInTheSky.Commands").LifestyleTransient(),
+                
                 // Main application
                 Component.For<IApplication>()
                     .ImplementedBy<Application>()
@@ -57,8 +56,7 @@
                     ),
                 
                 // Individual components
-                Component.For<LegacyCommandHandler>().Named("commandHandler"),
-                Component.For<ICommandHandler>().ImplementedBy<NewCommandHandler>().Named("newCommandHandler"),
+                Component.For<ICommandHandler>().ImplementedBy<CommandHandler>().Named("commandHandler"),
                 
                 Component.For<ISupportHelper>().ImplementedBy<SupportHelper>(),
                 Component.For<RecentChangeHandler>().Named("rcHandler")
@@ -72,8 +70,7 @@
                     .Named("freenodeClient")
                     .DependsOn(Dependency.OnComponent("configuration", "freenodeIrcConfig"))
                     .Start()
-                    .PublishEvent(p => p.ReceivedMessage += null, x=>x.To<LegacyCommandHandler>("commandHandler", l=>l.OnReceivedMessage(null, null)))
-                    .PublishEvent(p => p.ReceivedMessage += null, x=>x.To<NewCommandHandler>("newCommandHandler", l=>l.OnMessageReceived(null, null))),
+                    .PublishEvent(p => p.ReceivedMessage += null, x=>x.To<CommandHandler>("newCommandHandler", l=>l.OnMessageReceived(null, null))),
                 Component.For<IIrcClient>()
                     .ImplementedBy<IrcClient>()
                     .Named("wikimediaClient")
