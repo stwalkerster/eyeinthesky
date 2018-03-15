@@ -17,7 +17,7 @@
         {
             this.logger = logger;
         }
-        
+
         public IStalk NewFromXmlElement(XmlElement element)
         {
             var flag = element.Attributes["flag"].Value;
@@ -27,24 +27,21 @@
             var lastUpdateTimeText = timeAttribute == null
                 ? DateTime.Now.ToString(CultureInfo.InvariantCulture)
                 : timeAttribute.Value;
-            DateTime lastUpdateTime;
-            this.ParseDate(flag, lastUpdateTimeText, out lastUpdateTime, "last update time");
+            var lastUpdateTime = this.ParseDate(flag, lastUpdateTimeText, "last update time");
 
             // Last trigger time
             timeAttribute = element.Attributes["lasttrigger"];
             var lastTriggerTimeText = timeAttribute == null
                 ? DateTime.MinValue.ToString(CultureInfo.InvariantCulture)
                 : timeAttribute.Value;
-            DateTime lastTriggerTime;
-            this.ParseDate(flag, lastTriggerTimeText, out lastTriggerTime, "last trigger time");
+            var lastTriggerTime = this.ParseDate(flag, lastTriggerTimeText, "last trigger time");
 
             // Expiry time
             timeAttribute = element.Attributes["expiry"];
             var expiryTimeText = timeAttribute == null
                 ? DateTime.MaxValue.ToString(CultureInfo.InvariantCulture)
                 : timeAttribute.Value;
-            DateTime expiryTime;
-            this.ParseDate(flag, expiryTimeText, out expiryTime, "expiry time");
+            var expiryTime = this.ParseDate(flag, expiryTimeText, "expiry time");
 
             // Email attribute
             var immediateMailText = element.GetAttribute("immediatemail");
@@ -91,8 +88,10 @@
             return s;
         }
 
-        private void ParseDate(string flagName, string input, out DateTime result, string propName)
+        internal DateTime ParseDate(string flagName, string input, string propName)
         {
+            DateTime result;
+
             if (!DateTime.TryParseExact(
                 input,
                 "O",
@@ -110,6 +109,8 @@
                     throw new FormatException(err);
                 }
             }
+
+            return result;
         }
     }
 }

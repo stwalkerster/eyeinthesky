@@ -9,7 +9,7 @@
     [TestFixture]
     public class TrueNodeTest 
     {
-        [Test, Ignore("Existing failure")]
+        [Test]
         public void ShouldRejectNullChange()
         {
             var node = new TrueNode();
@@ -21,7 +21,6 @@
         {
             var node = new TrueNode();
             
-            Assert.True(node.Match(null));
             Assert.True(node.Match(new RecentChange("", "", "", "", "", 0)));
             Assert.That(node.Match(new RecentChange("a", "a", "a", "a", "a", 1)));
         }

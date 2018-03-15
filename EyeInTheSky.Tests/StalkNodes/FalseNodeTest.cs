@@ -9,7 +9,7 @@
     [TestFixture]
     public class FalseNodeTest 
     {
-        [Test, Ignore("Existing failure")]
+        [Test]
         public void ShouldRejectNullChange()
         {
             var node = new FalseNode();

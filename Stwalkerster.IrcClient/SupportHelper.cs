@@ -66,9 +66,9 @@
         /// </param>
         public void HandleStatusMessageSupport(string statusMessage, IList<string> supportedDestinationFlags)
         {
-            foreach (var c in statusMessage.ToList())
+            foreach (var c in supportedDestinationFlags.ToList())
             {
-                statusMessage.Remove(c);
+                supportedDestinationFlags.Remove(c);
             }
             
             //// STATUSMSG=@+

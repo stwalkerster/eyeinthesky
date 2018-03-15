@@ -68,7 +68,7 @@
                 sr.Close();
 
                 this.initialised = true;
-                this.logger.Info("Successfully loaded stalks from configuration.");
+                this.logger.InfoFormat("Successfully loaded {0} stalks from configuration.", this.stalks.Count);
             }
             catch (XmlException ex)
             {

@@ -1,5 +1,6 @@
 ﻿namespace EyeInTheSky.StalkNodes
 {
+    using System;
     using System.Xml;
     using EyeInTheSky.Model.Interfaces;
 
@@ -7,6 +8,11 @@
     {
         public override bool Match(IRecentChange rc)
         {
+            if (rc == null)
+            {
+                throw new ArgumentNullException("rc");
+            }
+            
             return false;
         }
 
