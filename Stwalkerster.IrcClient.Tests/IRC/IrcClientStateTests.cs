@@ -1,5 +1,6 @@
 ﻿namespace Stwalkerster.IrcClient.Tests.IRC
 {
+    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using Moq;
@@ -35,6 +36,14 @@
             this.IrcConfiguration.Setup(x => x.Nickname).Returns(nickName);
             this.IrcConfiguration.Setup(x => x.Username).Returns("username");
             this.IrcConfiguration.Setup(x => x.RealName).Returns("real name");
+            this.SupportHelper
+                .Setup(x => x.HandlePrefixMessageSupport(It.IsAny<string>(), It.IsAny<IDictionary<string, string>>()))
+                .Callback(
+                    (string s, IDictionary<string, string> r) =>
+                    {
+                        r.Add("v", "+");
+                        r.Add("o", "@");
+                    });
             this.client = new IrcClient(this.networkClient.Object, this.Logger.Object, this.IrcConfiguration.Object, this.SupportHelper.Object);
         }
 

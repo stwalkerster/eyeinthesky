@@ -1,6 +1,7 @@
 ﻿namespace Stwalkerster.IrcClient
 {
     using System.Collections.Generic;
+    using System.Linq;
     using Castle.Core.Logging;
     using Stwalkerster.IrcClient.Interfaces;
 
@@ -36,6 +37,8 @@
         /// </param>
         public void HandlePrefixMessageSupport(string prefixMessage, IDictionary<string, string> prefixes)
         {
+            prefixes.Clear();
+            
             //// PREFIX=(Yqaohv)!~&@%+
             var strings = prefixMessage.Split('(', ')');
             var modes = strings[1];
@@ -63,6 +66,11 @@
         /// </param>
         public void HandleStatusMessageSupport(string statusMessage, IList<string> supportedDestinationFlags)
         {
+            foreach (var c in statusMessage.ToList())
+            {
+                statusMessage.Remove(c);
+            }
+            
             //// STATUSMSG=@+
             var strings = statusMessage.Split('=');
             var modes = strings[1];
