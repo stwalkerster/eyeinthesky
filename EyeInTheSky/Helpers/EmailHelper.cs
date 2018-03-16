@@ -8,11 +8,6 @@
 
     public class EmailHelper : IEmailHelper
     {
-        public EmailHelper()
-        {
-            
-        }
-
         public void SendEmail(string sender,
             string to,
             string subject,

@@ -1,8 +1,6 @@
 ﻿namespace Stwalkerster.Extensions
 {
-    using System;
     using System.Collections.Generic;
-    using System.Data;
     using System.Linq;
 
     /// <summary>
@@ -25,14 +23,6 @@
         public static string Implode(this IEnumerable<string> value, string separator = " ")
         {
             return string.Join(separator, value.ToArray());
-        }
-
-        public static void ForEach<T>(this IEnumerable<T> collection, Action<T> action)
-        {
-            foreach (var item in collection)
-            {
-                action(item);
-            }
         }
     }
 }
