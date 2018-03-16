@@ -4,11 +4,11 @@
     using EyeInTheSky.Model.Interfaces;
 
     [StalkNodeType("page")]
-    class PageStalkNode : LeafNode
+    public class PageStalkNode : LeafNode
     {
         #region Overrides of StalkNode
 
-        public override bool Match(IRecentChange rc)
+        protected override bool DoMatch(IRecentChange rc)
         {
             return this.Expression.Match(rc.Page).Success;
         }

@@ -1,6 +1,6 @@
 ﻿namespace EyeInTheSky.StalkNodes
 {
-    abstract class LogicalNode : StalkNode
+    public abstract class LogicalNode : StalkNode
     {
     }
 }

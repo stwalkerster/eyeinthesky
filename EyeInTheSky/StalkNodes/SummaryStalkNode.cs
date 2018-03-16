@@ -4,11 +4,11 @@
     using EyeInTheSky.Model.Interfaces;
 
     [StalkNodeType("summary")]
-    class SummaryStalkNode : LeafNode
+    public class SummaryStalkNode : LeafNode
     {
         #region Overrides of StalkNode
 
-        public override bool Match(IRecentChange rc)
+        protected override bool DoMatch(IRecentChange rc)
         {
             return this.Expression.Match(rc.EditSummary).Success;
         }

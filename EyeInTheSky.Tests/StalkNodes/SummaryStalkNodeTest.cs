@@ -2,18 +2,19 @@
 
 namespace EyeInTheSky.Tests.StalkNodes
 {
+    using System;
     using System.Collections;
     using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.StalkNodes;
 
     [TestFixture]
-    public class SummaryStalkNodeTest
+    public class SummaryStalkNodeTest : LeafNodeTestBase<SummaryStalkNode>
     {
         private IRecentChange rc;
 
         [SetUp]
-        public void Setup()
+        public void LocalSetup()
         {
             this.rc = new RecentChange("abc", "def", "ghi", "jkl", "mno", 123);
         }

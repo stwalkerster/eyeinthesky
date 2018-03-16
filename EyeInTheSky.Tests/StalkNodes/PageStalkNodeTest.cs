@@ -8,12 +8,12 @@ namespace EyeInTheSky.Tests.StalkNodes
     using EyeInTheSky.StalkNodes;
 
     [TestFixture]
-    public class PageStalkNodeTest
+    public class PageStalkNodeTest : LeafNodeTestBase<PageStalkNode>
     {
         private IRecentChange rc;
 
         [SetUp]
-        public void Setup()
+        public void LocalSetup()
         {
             this.rc = new RecentChange("abc", "def", "ghi", "jkl", "mno", 123);
         }

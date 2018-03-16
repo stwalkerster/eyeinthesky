@@ -7,7 +7,7 @@ namespace EyeInTheSky.Tests.StalkNodes
     using EyeInTheSky.StalkNodes;
 
     [TestFixture]
-    public class OrNodeTest
+    public class OrNodeTest : DoubleChildNodeTestBase<OrNode>
     {
         [Test, TestCaseSource(typeof(OrNodeTest), "TestCases")]
         public bool DualOperatorTest(StalkNode a, StalkNode b)

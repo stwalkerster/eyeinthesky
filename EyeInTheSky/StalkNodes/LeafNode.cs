@@ -2,7 +2,10 @@
 
 namespace EyeInTheSky.StalkNodes
 {
-    abstract class LeafNode : StalkNode
+    using System;
+    using EyeInTheSky.Model.Interfaces;
+
+    public abstract class LeafNode : StalkNode
     {
         protected Regex Expression;
 
@@ -14,6 +17,16 @@ namespace EyeInTheSky.StalkNodes
         public string GetMatchExpression()
         {
             return this.Expression.ToString();
+        }
+
+        protected override void SanityCheck(IRecentChange rc)
+        {
+            base.SanityCheck(rc);
+
+            if (this.Expression == null)
+            {
+                throw new InvalidOperationException("No match expression has been set!");
+            }
         }
     }
 }

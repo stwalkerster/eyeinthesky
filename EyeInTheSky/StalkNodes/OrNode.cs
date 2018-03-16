@@ -4,11 +4,11 @@
     using EyeInTheSky.Model.Interfaces;
 
     [StalkNodeType("or")]
-    class OrNode : DoubleChildLogicalNode
+    public class OrNode : DoubleChildLogicalNode
     {
         #region Overrides of StalkNode
 
-        public override bool Match(IRecentChange rc)
+        protected override bool DoMatch(IRecentChange rc)
         {
             return this.LeftChildNode.Match(rc) || this.RightChildNode.Match(rc);
         }

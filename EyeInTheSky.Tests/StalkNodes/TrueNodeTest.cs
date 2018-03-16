@@ -1,21 +1,12 @@
 ﻿namespace EyeInTheSky.Tests.StalkNodes
 {
-    using System;
-    using System.Xml;
     using EyeInTheSky.Model;
     using EyeInTheSky.StalkNodes;
     using NUnit.Framework;
 
     [TestFixture]
-    public class TrueNodeTest 
+    public class TrueNodeTest : LogicalNodeTestBase<TrueNode>
     {
-        [Test]
-        public void ShouldRejectNullChange()
-        {
-            var node = new TrueNode();
-            
-            Assert.Catch(typeof(ArgumentNullException), () => node.Match(null));
-        }
         [Test]
         public void ShouldMatchEverything()
         {

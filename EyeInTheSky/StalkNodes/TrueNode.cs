@@ -1,19 +1,13 @@
 ﻿namespace EyeInTheSky.StalkNodes
 {
-    using System;
     using EyeInTheSky.Attributes;
     using EyeInTheSky.Model.Interfaces;
 
     [StalkNodeType("true")]
-    class TrueNode : LogicalNode
+    public class TrueNode : LogicalNode
     {
-        public override bool Match(IRecentChange rc)
+        protected override bool DoMatch(IRecentChange rc)
         {
-            if (rc == null)
-            {
-                throw new ArgumentNullException("rc");
-            }
-            
             return true;
         }
 
