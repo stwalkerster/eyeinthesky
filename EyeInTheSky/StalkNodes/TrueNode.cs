@@ -22,11 +22,6 @@ namespace EyeInTheSky.StalkNodes
             return doc.CreateElement("true", xmlns);
         }
 
-        public new static IStalkNode NewFromXmlFragment(XmlNode xmlNode)
-        {
-            return new TrueNode();
-        }
-
         public override string ToString()
         {
             return "(true)";

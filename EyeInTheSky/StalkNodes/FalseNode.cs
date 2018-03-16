@@ -21,11 +21,6 @@
             return doc.CreateElement("false",xmlns);
         }
 
-        public new static IStalkNode NewFromXmlFragment(XmlNode xmlNode)
-        {
-            return new FalseNode();
-        }
-
         public override string ToString()
         {
             return "(false)";

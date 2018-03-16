@@ -9,12 +9,6 @@ namespace EyeInTheSky.StalkNodes
     {
         public abstract bool Match(IRecentChange rc);
 
-        [Obsolete("Use StalkNodeFactory instead", true)]
-        public static IStalkNode NewFromXmlFragment(XmlNode xmlNode)
-        {
-            return null;
-        }
-
         public abstract XmlElement ToXmlFragment(XmlDocument doc, string xmlns);
     }
 }

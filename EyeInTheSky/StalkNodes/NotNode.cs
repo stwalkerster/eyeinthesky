@@ -12,13 +12,7 @@ namespace EyeInTheSky.StalkNodes
         {
             return !this.ChildNode.Match(rc);
         }
-
-        public new static IStalkNode NewFromXmlFragment(XmlNode xmlNode)
-        {
-            var s = new NotNode {ChildNode = StalkNode.NewFromXmlFragment(xmlNode.ChildNodes[0])};
-            return s;
-        }
-
+        
         public override XmlElement ToXmlFragment(XmlDocument doc, string xmlns)
         {
             var e = doc.CreateElement("not", xmlns);

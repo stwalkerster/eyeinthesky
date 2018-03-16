@@ -13,12 +13,6 @@ namespace EyeInTheSky.StalkNodes
             return this.Expression.Match(rc.Page).Success;
         }
 
-        public new static IStalkNode NewFromXmlFragment(XmlNode xmlNode)
-        {
-            var s = new PageStalkNode();
-            s.SetMatchExpression(xmlNode.Attributes["value"].Value);
-            return s;
-        }
         public override XmlElement ToXmlFragment(XmlDocument doc, string xmlns)
         {
             var e = doc.CreateElement("page", xmlns);

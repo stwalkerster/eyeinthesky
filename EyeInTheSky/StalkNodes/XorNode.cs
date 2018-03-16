@@ -12,17 +12,6 @@ namespace EyeInTheSky.StalkNodes
         {
             return this.LeftChildNode.Match(rc) ^ this.RightChildNode.Match(rc);
         }
-
-        public new static IStalkNode NewFromXmlFragment(XmlNode xmlNode)
-        {
-            var s = new XorNode
-            {
-                LeftChildNode = StalkNode.NewFromXmlFragment(xmlNode.ChildNodes[0]),
-                RightChildNode = StalkNode.NewFromXmlFragment(xmlNode.ChildNodes[1])
-            };
-            
-            return s;
-        }
         
         public override XmlElement ToXmlFragment(XmlDocument doc, string xmlns)
         {

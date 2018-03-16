@@ -8,31 +8,101 @@ namespace EyeInTheSky.Helpers
     {
         public IStalkNode NewFromXmlFragment(XmlElement fragment)
         {
+            IStalkNode result;
+            
             switch (fragment.Name)
             {
                 case "and":
-                    return AndNode.NewFromXmlFragment(fragment);
                 case "or":
-                    return OrNode.NewFromXmlFragment(fragment);
-                case "not":
-                    return NotNode.NewFromXmlFragment(fragment);
                 case "xor":
-                    return XorNode.NewFromXmlFragment(fragment);
-                case "true":
-                    return TrueNode.NewFromXmlFragment(fragment);
-                case "false":
-                    return FalseNode.NewFromXmlFragment(fragment);
+                    return this.NewDCLN(fragment);
+                    
+                case "not":
+                    return this.NewSCLN(fragment);
+                    
                 case "user":
-                    return UserStalkNode.NewFromXmlFragment(fragment);
                 case "page":
-                    return PageStalkNode.NewFromXmlFragment(fragment);
                 case "summary":
-                    return SummaryStalkNode.NewFromXmlFragment(fragment);
                 case "flag":
-                    return FlagStalkNode.NewFromXmlFragment(fragment);
+                    return this.NewLeafNode(fragment);
+                    
+                case "true":
+                    return new TrueNode();
+                case "false":
+                    return new FalseNode();
+                    
                 default:
                     throw new XmlException();
             }
+        }
+        
+        private IStalkNode NewSCLN(XmlElement fragment) {
+            SingleChildLogicalNode node;
+            switch (fragment.Name)
+            {
+                case "not":
+                    node = new NotNode();
+                    break;
+                default:
+                    throw new XmlException();
+            }
+
+            IStalkNode child = this.NewFromXmlFragment((XmlElement)fragment.ChildNodes[0]);
+
+            node.ChildNode = child;
+
+            return node;
+        }
+        
+        private IStalkNode NewDCLN(XmlElement fragment) {
+            DoubleChildLogicalNode node;
+            switch (fragment.Name)
+            {
+                case "and":
+                    node = new AndNode();
+                    break;
+                case "or":
+                    node = new OrNode();
+                    break;
+                case "xor":
+                    node = new XorNode();
+                    break;
+                default:
+                    throw new XmlException();
+            }
+
+            IStalkNode left = this.NewFromXmlFragment((XmlElement)fragment.ChildNodes[0]);
+            IStalkNode right = this.NewFromXmlFragment((XmlElement)fragment.ChildNodes[1]);
+
+            node.LeftChildNode = left;
+            node.RightChildNode = right;
+
+            return node;
+        }
+        
+        private IStalkNode NewLeafNode(XmlElement fragment) {
+            LeafStalkNode node;
+            switch (fragment.Name)
+            {
+                case "user":
+                    node = new UserStalkNode();
+                    break;
+                case "page":
+                    node = new PageStalkNode();
+                    break;
+                case "summary":
+                    node = new SummaryStalkNode();
+                    break;
+                case "flag":
+                    node = new FlagStalkNode();
+                    break;
+                default:
+                    throw new XmlException();
+            }
+
+            node.SetMatchExpression(fragment.Attributes["value"].Value);
+
+            return node;
         }
     }
 }
