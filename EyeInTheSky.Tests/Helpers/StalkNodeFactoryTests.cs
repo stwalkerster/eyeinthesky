@@ -8,6 +8,8 @@
     [TestFixture]
     public class StalkNodeFactoryTests
     {
+        #region Object tests
+        
         [Test]
         public void ShouldCreateTrueNode()
         {
@@ -177,5 +179,207 @@
             Assert.IsInstanceOf<TrueNode>(scln.LeftChildNode);
             Assert.IsInstanceOf<FalseNode>(scln.RightChildNode);
         }
+        #endregion
+        
+        #region XML tests
+
+        [Test]
+        public void ShouldSerialiseTrueCorrectly()
+        {
+            // arrange 
+            var node = new TrueNode();
+            var doc = new XmlDocument();
+            var ns = string.Empty;
+            
+            var snf = new StalkNodeFactory(); 
+            
+            // act
+            var result = snf.ToXml(doc, ns, node);
+
+            // assert
+            Assert.AreEqual("<true />", result.OuterXml);
+        }
+        
+        [Test]
+        public void ShouldSerialiseFalseCorrectly()
+        {
+            // arrange 
+            var node = new FalseNode();
+            var doc = new XmlDocument();
+            var ns = string.Empty;
+            
+            var snf = new StalkNodeFactory(); 
+            
+            // act
+            var result = snf.ToXml(doc, ns, node);
+
+            // assert
+            Assert.AreEqual("<false />", result.OuterXml);
+        }
+        
+        [Test]
+        public void ShouldSerialiseUserCorrectly()
+        {
+            // arrange 
+            var node = new UserStalkNode();
+            node.SetMatchExpression("abc");
+            
+            var doc = new XmlDocument();
+            var ns = string.Empty;
+            
+            var snf = new StalkNodeFactory(); 
+            
+            // act
+            var result = snf.ToXml(doc, ns, node);
+
+            // assert
+            Assert.AreEqual("<user value=\"abc\" />", result.OuterXml);
+        }
+        
+        [Test]
+        public void ShouldSerialisePageCorrectly()
+        {
+            // arrange 
+            var node = new PageStalkNode();
+            node.SetMatchExpression("abc");
+            
+            var doc = new XmlDocument();
+            var ns = string.Empty;
+            
+            var snf = new StalkNodeFactory(); 
+            
+            // act
+            var result = snf.ToXml(doc, ns, node);
+
+            // assert
+            Assert.AreEqual("<page value=\"abc\" />", result.OuterXml);
+        }
+        
+        [Test]
+        public void ShouldSerialiseSummaryCorrectly()
+        {
+            // arrange 
+            var node = new SummaryStalkNode();
+            node.SetMatchExpression("abc");
+            
+            var doc = new XmlDocument();
+            var ns = string.Empty;
+            
+            var snf = new StalkNodeFactory(); 
+            
+            // act
+            var result = snf.ToXml(doc, ns, node);
+
+            // assert
+            Assert.AreEqual("<summary value=\"abc\" />", result.OuterXml);
+        }
+        
+        [Test]
+        public void ShouldSerialiseFlagCorrectly()
+        {
+            // arrange 
+            var node = new FlagStalkNode();
+            node.SetMatchExpression("abc");
+            
+            var doc = new XmlDocument();
+            var ns = string.Empty;
+            
+            var snf = new StalkNodeFactory(); 
+            
+            // act
+            var result = snf.ToXml(doc, ns, node);
+
+            // assert
+            Assert.AreEqual("<flag value=\"abc\" />", result.OuterXml);
+        }
+        
+        [Test]
+        public void ShouldSerialiseAndCorrectly()
+        {
+            // arrange 
+            var node = new AndNode
+            {
+                LeftChildNode = new TrueNode(),
+                RightChildNode = new FalseNode()
+            };
+
+            var doc = new XmlDocument();
+            var ns = string.Empty;
+            
+            var snf = new StalkNodeFactory(); 
+            
+            // act
+            var result = snf.ToXml(doc, ns, node);
+
+            // assert
+            Assert.AreEqual("<and><true /><false /></and>", result.OuterXml);
+        }
+        
+        [Test]
+        public void ShouldSerialiseOrCorrectly()
+        {
+            // arrange 
+            var node = new OrNode
+            {
+                LeftChildNode = new TrueNode(),
+                RightChildNode = new FalseNode()
+            };
+
+            var doc = new XmlDocument();
+            var ns = string.Empty;
+            
+            var snf = new StalkNodeFactory(); 
+            
+            // act
+            var result = snf.ToXml(doc, ns, node);
+
+            // assert
+            Assert.AreEqual("<or><true /><false /></or>", result.OuterXml);
+        }
+        
+        [Test]
+        public void ShouldSerialiseXorCorrectly()
+        {
+            // arrange 
+            var node = new XorNode
+            {
+                LeftChildNode = new TrueNode(),
+                RightChildNode = new FalseNode()
+            };
+
+            var doc = new XmlDocument();
+            var ns = string.Empty;
+            
+            var snf = new StalkNodeFactory(); 
+            
+            // act
+            var result = snf.ToXml(doc, ns, node);
+
+            // assert
+            Assert.AreEqual("<xor><true /><false /></xor>", result.OuterXml);
+        }
+        
+        [Test]
+        public void ShouldSerialiseNotCorrectly()
+        {
+            // arrange 
+            var node = new NotNode
+            {
+                ChildNode = new TrueNode()
+            };
+
+            var doc = new XmlDocument();
+            var ns = string.Empty;
+            
+            var snf = new StalkNodeFactory(); 
+            
+            // act
+            var result = snf.ToXml(doc, ns, node);
+
+            // assert
+            Assert.AreEqual("<not><true /></not>", result.OuterXml);
+        } 
+        
+        #endregion
     }
 }

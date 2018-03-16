@@ -1,10 +1,10 @@
-﻿using System.Xml;
-
-namespace EyeInTheSky.StalkNodes
+﻿namespace EyeInTheSky.StalkNodes
 {
     using System;
+    using EyeInTheSky.Attributes;
     using EyeInTheSky.Model.Interfaces;
 
+    [StalkNodeType("true")]
     class TrueNode : LogicalNode
     {
         public override bool Match(IRecentChange rc)
@@ -15,11 +15,6 @@ namespace EyeInTheSky.StalkNodes
             }
             
             return true;
-        }
-
-        public override XmlElement ToXmlFragment(XmlDocument doc, string xmlns)
-        {
-            return doc.CreateElement("true", xmlns);
         }
 
         public override string ToString()

@@ -74,6 +74,7 @@
       <Link>Properties/GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Application.cs" />
+    <Compile Include="Attributes\StalkNodeTypeAttribute.cs" />
     <Compile Include="Commands\AccCommand.cs" />
     <Compile Include="Commands\QuickCommand.cs" />
     <Compile Include="Helpers\Interfaces\IEmailHelper.cs" />

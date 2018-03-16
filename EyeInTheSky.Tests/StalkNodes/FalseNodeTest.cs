@@ -25,13 +25,5 @@
             Assert.False(node.Match(new RecentChange("", "", "", "", "", 0)));
             Assert.False(node.Match(new RecentChange("a", "a", "a", "a", "a", 1)));
         }
-        
-        [Test]
-        public void ShouldExportCorrectly()
-        {
-            var node = new FalseNode();
-
-            Assert.AreEqual("<false />", node.ToXmlFragment(new XmlDocument(), "").OuterXml);
-        }
     }
 }

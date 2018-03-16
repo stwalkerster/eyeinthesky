@@ -47,11 +47,11 @@ namespace EyeInTheSky.Tests.Helpers
         {
             // arrange
             var doc = new XmlDocument();
-            var ns = String.Empty;
+            var ns = string.Empty;
             var snf = new Mock<IStalkNodeFactory>();
+            snf.Setup(x => x.ToXml(doc, ns, It.IsAny<IStalkNode>())).Returns(doc.CreateElement("false", ns));
             
             var node = new Mock<IStalkNode>();
-            node.Setup(x => x.ToXmlFragment(doc, ns)).Returns(doc.CreateElement("false"));
             
             var stalk = new Mock<IStalk>();
             stalk.Setup(x => x.SearchTree).Returns(node.Object);
@@ -80,7 +80,7 @@ namespace EyeInTheSky.Tests.Helpers
             doc.LoadXml("<or><true /><false /></or>");
             
             var node = new Mock<IStalkNode>();
-            node.Setup(x => x.ToXmlFragment(doc, ns)).Returns(doc.DocumentElement);
+            snf.Setup(x => x.ToXml(doc, ns, It.IsAny<IStalkNode>())).Returns(doc.DocumentElement);
             
             var stalk = new Mock<IStalk>();
             stalk.Setup(x => x.SearchTree).Returns(node.Object);
@@ -107,7 +107,8 @@ namespace EyeInTheSky.Tests.Helpers
             var snf = new Mock<IStalkNodeFactory>();
             
             var node = new Mock<IStalkNode>();
-            node.Setup(x => x.ToXmlFragment(doc, ns)).Returns(doc.CreateElement("false"));
+            snf.Setup(x => x.ToXml(doc, ns, It.IsAny<IStalkNode>())).Returns(doc.CreateElement("false", ns));
+           
             
             var stalk = new Mock<IStalk>();
             stalk.Setup(x => x.SearchTree).Returns(node.Object);

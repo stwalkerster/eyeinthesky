@@ -1,9 +1,9 @@
-﻿using System.Xml;
-
-namespace EyeInTheSky.StalkNodes
+﻿namespace EyeInTheSky.StalkNodes
 {
+    using EyeInTheSky.Attributes;
     using EyeInTheSky.Model.Interfaces;
 
+    [StalkNodeType("summary")]
     class SummaryStalkNode : LeafNode
     {
         #region Overrides of StalkNode
@@ -11,13 +11,6 @@ namespace EyeInTheSky.StalkNodes
         public override bool Match(IRecentChange rc)
         {
             return this.Expression.Match(rc.EditSummary).Success;
-        }
-
-        public override XmlElement ToXmlFragment(XmlDocument doc, string xmlns)
-        {
-            var e = doc.CreateElement("summary", xmlns);
-            e.SetAttribute("value", this.Expression.ToString());
-            return e;
         }
         
         public override string ToString()

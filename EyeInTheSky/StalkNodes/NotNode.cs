@@ -1,9 +1,9 @@
-﻿using System.Xml;
-
-namespace EyeInTheSky.StalkNodes
+﻿namespace EyeInTheSky.StalkNodes
 {
+    using EyeInTheSky.Attributes;
     using EyeInTheSky.Model.Interfaces;
 
+    [StalkNodeType("not")]
     class NotNode : SingleChildLogicalNode
     {
         #region Overrides of StalkNode
@@ -11,13 +11,6 @@ namespace EyeInTheSky.StalkNodes
         public override bool Match(IRecentChange rc)
         {
             return !this.ChildNode.Match(rc);
-        }
-        
-        public override XmlElement ToXmlFragment(XmlDocument doc, string xmlns)
-        {
-            var e = doc.CreateElement("not", xmlns);
-            e.AppendChild(this.ChildNode.ToXmlFragment(doc, xmlns));
-            return e;
         }
 
         public override string ToString()

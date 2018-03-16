@@ -127,7 +127,7 @@
                 e.SetAttribute("expiry", XmlConvert.ToString(stalk.ExpiryTime.Value, XmlDateTimeSerializationMode.Utc));
             }
 
-            e.AppendChild(stalk.SearchTree.ToXmlFragment(doc, xmlns));
+            e.AppendChild(this.stalkNodeFactory.ToXml(doc, xmlns, stalk.SearchTree));
             
             return e;
         }

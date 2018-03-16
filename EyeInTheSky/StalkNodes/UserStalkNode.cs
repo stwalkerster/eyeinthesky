@@ -1,9 +1,9 @@
-﻿using System.Xml;
-
-namespace EyeInTheSky.StalkNodes
+﻿namespace EyeInTheSky.StalkNodes
 {
+    using EyeInTheSky.Attributes;
     using EyeInTheSky.Model.Interfaces;
 
+    [StalkNodeType("user")]
     class UserStalkNode : LeafNode
     {
         #region Overrides of StalkNode
@@ -12,14 +12,7 @@ namespace EyeInTheSky.StalkNodes
         {
             return this.Expression.Match(rc.User).Success;
         }
-
-        public override XmlElement ToXmlFragment(XmlDocument doc, string xmlns)
-        {
-            var e = doc.CreateElement("user", xmlns);
-            e.SetAttribute("value", this.Expression.ToString());
-            return e;
-        }
-
+        
         public override string ToString()
         {
             return "(user:\"" + this.Expression + "\")";
