@@ -78,8 +78,10 @@
     <Compile Include="Commands\QuickCommand.cs" />
     <Compile Include="Helpers\Interfaces\IEmailHelper.cs" />
     <Compile Include="Helpers\Interfaces\IStalkFactory.cs" />
+    <Compile Include="Helpers\Interfaces\IStalkNodeFactory.cs" />
     <Compile Include="Helpers\StalkFactory.cs" />
     <Compile Include="Helpers\EmailHelper.cs" />
+    <Compile Include="Helpers\StalkNodeFactory.cs" />
     <Compile Include="Model\AppConfiguration.cs" />
     <Compile Include="Model\ComplexStalk.cs" />
     <Compile Include="Model\EmailConfiguration.cs" />

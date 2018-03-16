@@ -1,4 +1,6 @@
-﻿namespace EyeInTheSky.Tests.Helpers
+﻿using EyeInTheSky.Helpers.Interfaces;
+
+namespace EyeInTheSky.Tests.Helpers
 {
     using System;
     using System.Collections.Generic;
@@ -15,7 +17,8 @@
         [Test, TestCaseSource(typeof(StalkFactoryTests), "DateParseTestCases")]
         public DateTime ShouldParseDateCorrectly(string inputDate)
         {
-            var sf = new StalkFactory(this.LoggerMock.Object);
+            var snf = new Mock<IStalkNodeFactory>();
+            var sf = new StalkFactory(this.LoggerMock.Object, snf.Object);
             
             return sf.ParseDate(string.Empty, inputDate, string.Empty);
         }
@@ -45,6 +48,7 @@
             // arrange
             var doc = new XmlDocument();
             var ns = String.Empty;
+            var snf = new Mock<IStalkNodeFactory>();
             
             var node = new Mock<IStalkNode>();
             node.Setup(x => x.ToXmlFragment(doc, ns)).Returns(doc.CreateElement("false"));
@@ -56,7 +60,7 @@
             stalk.Setup(x => x.MailEnabled).Returns(true);
             
             
-            var sf = new StalkFactory(this.LoggerMock.Object);
+            var sf = new StalkFactory(this.LoggerMock.Object, snf.Object);
 
             // act
             var xmlElement = sf.ToXmlElement(stalk.Object, doc, "");
@@ -71,6 +75,7 @@
             // arrange
             var doc = new XmlDocument();
             var ns = String.Empty;
+            var snf = new Mock<IStalkNodeFactory>();
             
             doc.LoadXml("<or><true /><false /></or>");
             
@@ -84,7 +89,7 @@
             stalk.Setup(x => x.MailEnabled).Returns(true);
             
             
-            var sf = new StalkFactory(this.LoggerMock.Object);
+            var sf = new StalkFactory(this.LoggerMock.Object, snf.Object);
 
             // act
             var xmlElement = sf.ToXmlElement(stalk.Object, doc, "");
@@ -99,6 +104,7 @@
             // arrange
             var doc = new XmlDocument();
             var ns = String.Empty;
+            var snf = new Mock<IStalkNodeFactory>();
             
             var node = new Mock<IStalkNode>();
             node.Setup(x => x.ToXmlFragment(doc, ns)).Returns(doc.CreateElement("false"));
@@ -113,7 +119,7 @@
             stalk.Setup(x => x.LastTriggerTime).Returns(DateTime.MinValue);
             stalk.Setup(x => x.ExpiryTime).Returns(DateTime.MaxValue);
             
-            var sf = new StalkFactory(this.LoggerMock.Object);
+            var sf = new StalkFactory(this.LoggerMock.Object, snf.Object);
 
             // act
             var xmlElement = sf.ToXmlElement(stalk.Object, doc, "");

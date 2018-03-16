@@ -12,10 +12,12 @@
     public class StalkFactory : IStalkFactory
     {
         private readonly ILogger logger;
+        private readonly IStalkNodeFactory stalkNodeFactory;
 
-        public StalkFactory(ILogger logger)
+        public StalkFactory(ILogger logger, IStalkNodeFactory stalkNodeFactory)
         {
             this.logger = logger;
+            this.stalkNodeFactory = stalkNodeFactory;
         }
 
         public IStalk NewFromXmlElement(XmlElement element)
@@ -75,7 +77,7 @@
             IStalkNode baseNode = new FalseNode();
             if (element.HasChildNodes)
             {
-                baseNode = StalkNode.NewFromXmlFragment(element.FirstChild);
+                baseNode = this.stalkNodeFactory.NewFromXmlFragment((XmlElement) element.FirstChild);
             }
 
             var s = new ComplexStalk(
