@@ -38,6 +38,12 @@
             if (timeAttribute != null)
             {
                 lastTriggerTime = this.ParseDate(flag, timeAttribute.Value, "last trigger time");
+                
+                // backwards compat
+                if (lastTriggerTime == new DateTime(1970, 1, 1, 0, 0, 0))
+                {
+                    lastTriggerTime = null;
+                }
             }
 
             // Expiry time
@@ -46,6 +52,12 @@
             if (timeAttribute != null)
             {
                 expiryTime = this.ParseDate(flag, timeAttribute.Value, "expiry time");
+                
+                // backwards compat
+                if (expiryTime == new DateTime(9999, 12, 31, 23, 59, 59))
+                {
+                    expiryTime = null;
+                }
             }
 
             // Email attribute
@@ -73,6 +85,10 @@
             }
 
             var description = element.GetAttribute("description");
+            if (string.IsNullOrWhiteSpace(description))
+            {
+                description = null;
+            }
 
             IStalkNode baseNode = new FalseNode();
             if (element.HasChildNodes)
@@ -136,12 +152,11 @@
         {
             DateTime result;
 
-            if (!DateTime.TryParseExact(
-                input,
-                "O",
-                CultureInfo.InvariantCulture,
-                DateTimeStyles.AssumeUniversal,
-                out result))
+            try
+            {
+                result = XmlConvert.ToDateTime(input, XmlDateTimeSerializationMode.Utc);
+            }
+            catch (FormatException ex)
             {
                 this.logger.WarnFormat("Unknown date format in stalk '{0}' {2}: {1}", flagName, input, propName);
 
@@ -150,7 +165,7 @@
                     var err = string.Format("Failed date parse for stalk '{0}' {2}: {1}", flagName, input, propName);
 
                     this.logger.Error(err);
-                    throw new FormatException(err);
+                    throw new FormatException(err, ex);
                 }
             }
 

@@ -15,30 +15,51 @@ namespace EyeInTheSky.Tests.Helpers
     public class StalkFactoryTests : TestBase
     {
         [Test, TestCaseSource(typeof(StalkFactoryTests), "DateParseTestCases")]
-        public DateTime ShouldParseDateCorrectly(string inputDate)
+        public DateTime ShouldParseDateCorrectly(string inputDate, bool throwWarning)
         {
             var snf = new Mock<IStalkNodeFactory>();
             var sf = new StalkFactory(this.LoggerMock.Object, snf.Object);
-            
-            return sf.ParseDate(string.Empty, inputDate, string.Empty);
+
+            var actual = sf.ParseDate(string.Empty, inputDate, string.Empty);
+
+            if (throwWarning)
+            {
+                this.LoggerMock.Verify(
+                    x => x.WarnFormat(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()),
+                    Times.Once);
+            }
+            else
+            {
+                this.LoggerMock.Verify(
+                    x => x.WarnFormat(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()),
+                    Times.Never);
+            }
+
+            return actual;
         }
 
         public static IEnumerable<TestCaseData> DateParseTestCases
         {
             get
             {
-                yield return new TestCaseData("03/16/2014 18:16:43")
+                yield return new TestCaseData("03/16/2014 18:16:43", true)
                     .Returns(new DateTime(2014, 3, 16, 18, 16, 43));
-                yield return new TestCaseData("12/31/9999 23:59:59")
+                yield return new TestCaseData("12/31/9999 23:59:59", true)
                     .Returns(new DateTime(9999, 12, 31, 23, 59, 59));
-                yield return new TestCaseData("01/01/1970 00:00:00")
+                yield return new TestCaseData("01/01/1970 00:00:00", true)
                     .Returns(new DateTime(1970, 1, 1, 0, 0, 0));
-                yield return new TestCaseData("2018-03-15T23:32:20.4640000+00:00")
+                yield return new TestCaseData("2018-03-15T23:32:20.4640000+00:00", false)
                     .Returns(new DateTime(2018, 3, 15, 23, 32, 20, 464));
-                yield return new TestCaseData("0001-01-01T00:00:00.0000000")
+                yield return new TestCaseData("0001-01-01T00:00:00.0000000", false)
                     .Returns(new DateTime(1, 1, 1, 0, 0, 0, 0));
-                yield return new TestCaseData("9999-12-31T23:59:59.9990000")
+                yield return new TestCaseData("9999-12-31T23:59:59.9990000", false)
                     .Returns(new DateTime(9999, 12, 31, 23, 59, 59, 999));
+                yield return new TestCaseData("2018-03-15T23:32:20Z", false)
+                    .Returns(new DateTime(2018, 3, 15, 23, 32, 20));
+                yield return new TestCaseData("0001-01-01T00:00:00Z", false)
+                    .Returns(new DateTime(1, 1, 1, 0, 0, 0, 0));
+                yield return new TestCaseData("9999-12-31T23:59:59Z", false)
+                    .Returns(new DateTime(9999, 12, 31, 23, 59, 59));
             }
         }
 

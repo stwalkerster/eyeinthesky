@@ -67,6 +67,8 @@
 
                 sr.Close();
 
+                this.DoSave();
+                
                 this.initialised = true;
                 this.logger.InfoFormat("Successfully loaded {0} stalks from configuration.", this.stalks.Count);
             }
