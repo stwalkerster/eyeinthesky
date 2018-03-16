@@ -45,7 +45,7 @@ namespace EyeInTheSky.Helpers
                     throw new XmlException();
             }
 
-            IStalkNode child = this.NewFromXmlFragment((XmlElement)fragment.ChildNodes[0]);
+            var child = this.NewFromXmlFragment((XmlElement)fragment.ChildNodes[0]);
 
             node.ChildNode = child;
 
@@ -69,8 +69,8 @@ namespace EyeInTheSky.Helpers
                     throw new XmlException();
             }
 
-            IStalkNode left = this.NewFromXmlFragment((XmlElement)fragment.ChildNodes[0]);
-            IStalkNode right = this.NewFromXmlFragment((XmlElement)fragment.ChildNodes[1]);
+            var left = this.NewFromXmlFragment((XmlElement)fragment.ChildNodes[0]);
+            var right = this.NewFromXmlFragment((XmlElement)fragment.ChildNodes[1]);
 
             node.LeftChildNode = left;
             node.RightChildNode = right;

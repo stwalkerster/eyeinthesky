@@ -10,5 +10,10 @@ namespace EyeInTheSky.StalkNodes
         {
             this.Expression = new Regex(regex);
         }
+        
+        public string GetMatchExpression()
+        {
+            return this.Expression.ToString();
+        }
     }
 }

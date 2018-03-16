@@ -95,7 +95,7 @@
 
         public XmlElement ToXmlElement(IStalk stalk, XmlDocument doc, string xmlns)
         {
-            XmlElement e = doc.CreateElement("complexstalk", xmlns);
+            var e = doc.CreateElement("complexstalk", xmlns);
             
             e.SetAttribute("flag", stalk.Flag);
             
