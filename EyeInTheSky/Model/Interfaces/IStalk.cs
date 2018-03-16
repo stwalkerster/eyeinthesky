@@ -7,12 +7,12 @@
     public interface IStalk
     {
         string Flag { get; }
-        DateTime LastUpdateTime { get; }
-        DateTime LastTriggerTime { get; set; }
+        DateTime? LastUpdateTime { get; }
+        DateTime? LastTriggerTime { get; set; }
         bool IsEnabled { get; set; }
         bool MailEnabled { get; set; }
         string Description { get; set; }
-        DateTime ExpiryTime { get; set; }
+        DateTime? ExpiryTime { get; set; }
         IStalkNode SearchTree { get; set; }
         bool IsActive();
         bool Match(IRecentChange rc);

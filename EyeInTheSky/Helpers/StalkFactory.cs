@@ -24,31 +24,34 @@
 
             // Last update time
             var timeAttribute = element.Attributes["lastupdate"];
-            var lastUpdateTimeText = timeAttribute == null
-                ? DateTime.Now.ToString(CultureInfo.InvariantCulture)
-                : timeAttribute.Value;
-            var lastUpdateTime = this.ParseDate(flag, lastUpdateTimeText, "last update time");
-
+            DateTime? lastUpdateTime = null;
+            if (timeAttribute != null)
+            {
+                lastUpdateTime = this.ParseDate(flag, timeAttribute.Value, "last update time");
+            }
+            
             // Last trigger time
             timeAttribute = element.Attributes["lasttrigger"];
-            var lastTriggerTimeText = timeAttribute == null
-                ? DateTime.MinValue.ToString(CultureInfo.InvariantCulture)
-                : timeAttribute.Value;
-            var lastTriggerTime = this.ParseDate(flag, lastTriggerTimeText, "last trigger time");
+            DateTime? lastTriggerTime = null;
+            if (timeAttribute != null)
+            {
+                lastTriggerTime = this.ParseDate(flag, timeAttribute.Value, "last trigger time");
+            }
 
             // Expiry time
             timeAttribute = element.Attributes["expiry"];
-            var expiryTimeText = timeAttribute == null
-                ? DateTime.MaxValue.ToString(CultureInfo.InvariantCulture)
-                : timeAttribute.Value;
-            var expiryTime = this.ParseDate(flag, expiryTimeText, "expiry time");
+            DateTime? expiryTime = null;
+            if (timeAttribute != null)
+            {
+                expiryTime = this.ParseDate(flag, timeAttribute.Value, "expiry time");
+            }
 
             // Email attribute
             var immediateMailText = element.GetAttribute("immediatemail");
             bool mailEnabled;
             if (!bool.TryParse(immediateMailText, out mailEnabled))
             {
-                this.logger.ErrorFormat(
+                this.logger.WarnFormat(
                     "Unable to parse immediatemail attribute value '{1}' for stalk {0}. Defaulting to enabled.",
                     flag,
                     immediateMailText);
@@ -93,12 +96,34 @@
             XmlElement e = doc.CreateElement("complexstalk", xmlns);
             
             e.SetAttribute("flag", stalk.Flag);
-            e.SetAttribute("lastupdate", XmlConvert.ToString(stalk.LastUpdateTime, XmlDateTimeSerializationMode.Utc));
-            e.SetAttribute("lasttrigger", XmlConvert.ToString(stalk.LastTriggerTime, XmlDateTimeSerializationMode.Utc));
+            
+            if (stalk.LastUpdateTime != null)
+            {
+                e.SetAttribute(
+                    "lastupdate",
+                    XmlConvert.ToString(stalk.LastUpdateTime.Value, XmlDateTimeSerializationMode.Utc));
+            }
+
+            if (stalk.LastTriggerTime != null)
+            {
+                e.SetAttribute(
+                    "lasttrigger",
+                    XmlConvert.ToString(stalk.LastTriggerTime.Value, XmlDateTimeSerializationMode.Utc));
+            }
+
             e.SetAttribute("immediatemail", XmlConvert.ToString(stalk.MailEnabled));
-            e.SetAttribute("description", stalk.Description);
+            
+            if (stalk.Description != null)
+            {
+                e.SetAttribute("description", stalk.Description);
+            }
+
             e.SetAttribute("enabled", XmlConvert.ToString(stalk.IsEnabled));
-            e.SetAttribute("expiry", XmlConvert.ToString(stalk.ExpiryTime, XmlDateTimeSerializationMode.Utc));
+            
+            if (stalk.ExpiryTime != null)
+            {
+                e.SetAttribute("expiry", XmlConvert.ToString(stalk.ExpiryTime.Value, XmlDateTimeSerializationMode.Utc));
+            }
 
             e.AppendChild(stalk.SearchTree.ToXmlFragment(doc, xmlns));
             

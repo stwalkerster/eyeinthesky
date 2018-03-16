@@ -168,6 +168,10 @@
             var stalkInfo = new StringBuilder();
             foreach (var stalk in stalks)
             {
+                var expiry = stalk.ExpiryTime.HasValue
+                    ? stalk.ExpiryTime.Value.ToString(this.appConfig.DateFormat)
+                    : "never";
+                
                 stalkInfo.Append(
                     string.Format(
                         this.appConfig.EmailStalkTemplate,
@@ -175,7 +179,7 @@
                         stalk.Description,
                         stalk.SearchTree,
                         stalk.MailEnabled,
-                        stalk.ExpiryTime.ToString(this.appConfig.DateFormat)
+                        expiry
                     ));
             }
 

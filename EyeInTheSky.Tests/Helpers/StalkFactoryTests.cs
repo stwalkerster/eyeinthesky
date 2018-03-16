@@ -2,7 +2,11 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Xml;
     using EyeInTheSky.Helpers;
+    using EyeInTheSky.Model.Interfaces;
+    using EyeInTheSky.StalkNodes;
+    using Moq;
     using NUnit.Framework;
 
     [TestFixture]
@@ -33,6 +37,31 @@
                 yield return new TestCaseData("9999-12-31T23:59:59.9990000")
                     .Returns(new DateTime(9999, 12, 31, 23, 59, 59, 999));
             }
+        }
+
+        [Test]
+        public void ShouldCreateXmlElement()
+        {
+            // arrange
+            var doc = new XmlDocument();
+            var ns = String.Empty;
+            
+            var node = new Mock<IStalkNode>();
+            node.Setup(x => x.ToXmlFragment(doc, ns)).Returns(doc.CreateElement("false"));
+            
+            var stalk = new Mock<IStalk>();
+            stalk.Setup(x => x.SearchTree).Returns(node.Object);
+            stalk.Setup(x => x.Flag).Returns("testflag");
+            stalk.Setup(x => x.Description).Returns("my description here");
+            
+            
+            var sf = new StalkFactory(this.LoggerMock.Object);
+
+            // act
+            var xmlElement = sf.ToXmlElement(stalk.Object, doc, "");
+            
+            // assert
+            Assert.AreEqual("<complexstalk flag=\"testflag\" description=\"my description here\"><false /></complexstalk>", xmlElement.OuterXml);
         }
     }
 }

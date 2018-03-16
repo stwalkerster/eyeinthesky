@@ -16,10 +16,10 @@
 
         internal ComplexStalk(
             string flag,
-            DateTime lastUpdateTime,
-            DateTime lastTriggerTime,
+            DateTime? lastUpdateTime,
+            DateTime? lastTriggerTime,
             string description,
-            DateTime expiryTime,
+            DateTime? expiryTime,
             bool mailEnabled,
             bool isEnabled,
             IStalkNode baseNode)
@@ -35,16 +35,16 @@
         }
 
         private IStalkNode baseNode;
-        private string description = "";
-        private DateTime expiryTime = DateTime.MaxValue;
+        private string description;
+        private DateTime? expiryTime;
         private bool mailEnabled = true;
         private bool isEnabled;
 
         public string Flag { get; private set; }
 
-        public DateTime LastUpdateTime { get; private set; }
+        public DateTime? LastUpdateTime { get; private set; }
 
-        public DateTime LastTriggerTime { get; set; }
+        public DateTime? LastTriggerTime { get; set; }
 
         public bool IsEnabled
         {
@@ -73,7 +73,7 @@
             }
         }
 
-        public DateTime ExpiryTime
+        public DateTime? ExpiryTime
         {
             get { return this.expiryTime; }
             set
