@@ -22,11 +22,11 @@
                 return true;
             }
 
-            if(flag == Flag.Standard)
+            if (flag == Flag.Standard)
             {
                 return true;
             }
-            
+
             return false;
         }
 
