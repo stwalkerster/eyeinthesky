@@ -7,18 +7,16 @@ namespace EyeInTheSky.Helpers
     public class StalkNodeFactory : IStalkNodeFactory
     {
         public IStalkNode NewFromXmlFragment(XmlElement fragment)
-        {
-            IStalkNode result;
-            
+        {   
             switch (fragment.Name)
             {
                 case "and":
                 case "or":
                 case "xor":
-                    return this.NewDCLN(fragment);
+                    return this.NewDoubleChildNode(fragment);
                     
                 case "not":
-                    return this.NewSCLN(fragment);
+                    return this.NewSingleChildNode(fragment);
                     
                 case "user":
                 case "page":
@@ -36,7 +34,7 @@ namespace EyeInTheSky.Helpers
             }
         }
         
-        private IStalkNode NewSCLN(XmlElement fragment) {
+        private IStalkNode NewSingleChildNode(XmlElement fragment) {
             SingleChildLogicalNode node;
             switch (fragment.Name)
             {
@@ -54,7 +52,7 @@ namespace EyeInTheSky.Helpers
             return node;
         }
         
-        private IStalkNode NewDCLN(XmlElement fragment) {
+        private IStalkNode NewDoubleChildNode(XmlElement fragment) {
             DoubleChildLogicalNode node;
             switch (fragment.Name)
             {
@@ -81,7 +79,7 @@ namespace EyeInTheSky.Helpers
         }
         
         private IStalkNode NewLeafNode(XmlElement fragment) {
-            LeafStalkNode node;
+            LeafNode node;
             switch (fragment.Name)
             {
                 case "user":
