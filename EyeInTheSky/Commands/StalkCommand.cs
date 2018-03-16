@@ -1,4 +1,6 @@
-﻿namespace EyeInTheSky.Commands
+﻿using EyeInTheSky.Helpers.Interfaces;
+
+namespace EyeInTheSky.Commands
 {
     using System;
     using System.Collections.Generic;
@@ -22,6 +24,7 @@
     public class StalkCommand : CommandBase
     {
         private readonly StalkConfiguration stalkConfig;
+        private readonly IStalkNodeFactory stalkNodeFactory;
 
         public StalkCommand(string commandSource,
             IUser user,
@@ -30,7 +33,8 @@
             IFlagService flagService,
             IConfigurationProvider configurationProvider,
             IIrcClient client,
-            StalkConfiguration stalkConfig) : base(
+            StalkConfiguration stalkConfig,
+            IStalkNodeFactory stalkNodeFactory) : base(
             commandSource,
             user,
             arguments,
@@ -40,6 +44,7 @@
             client)
         {
             this.stalkConfig = stalkConfig;
+            this.stalkNodeFactory = stalkNodeFactory;
         }
 
         protected override IEnumerable<CommandResponse> Execute()
@@ -136,7 +141,7 @@
                         var xd = new XmlDocument();
                         xd.LoadXml(xmlfragment);
 
-                        var node = StalkNode.NewFromXmlFragment(xd.FirstChild);
+                        var node = this.stalkNodeFactory.NewFromXmlFragment((XmlElement) xd.FirstChild);
 
                         newroot.RightChildNode = node;
                         s.SearchTree = newroot;
@@ -215,7 +220,7 @@
                         var xd = new XmlDocument();
                         xd.LoadXml(xmlfragment);
 
-                        var node = StalkNode.NewFromXmlFragment(xd.FirstChild);
+                        var node = this.stalkNodeFactory.NewFromXmlFragment((XmlElement) xd.FirstChild);
 
                         newroot.RightChildNode = node;
                         s.SearchTree = newroot;
@@ -423,7 +428,7 @@
                         var xd = new XmlDocument();
                         xd.LoadXml(xmlfragment);
 
-                        node = StalkNode.NewFromXmlFragment(xd.FirstChild);
+                        node = this.stalkNodeFactory.NewFromXmlFragment((XmlElement) xd.FirstChild);
                         s.SearchTree = node;
                     }
                     catch (XmlException ex)

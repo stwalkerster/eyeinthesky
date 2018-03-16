@@ -1,4 +1,6 @@
-﻿namespace EyeInTheSky.Commands
+﻿using EyeInTheSky.Helpers.Interfaces;
+
+namespace EyeInTheSky.Commands
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -21,6 +23,7 @@
     public class QuickCommand : CommandBase
     {
         private readonly StalkConfiguration stalkConfig;
+        private readonly IStalkNodeFactory stalkNodeFactory;
 
         public QuickCommand(string commandSource,
             IUser user,
@@ -29,7 +32,8 @@
             IFlagService flagService,
             IConfigurationProvider configurationProvider,
             IIrcClient client,
-            StalkConfiguration stalkConfig) : base(
+            StalkConfiguration stalkConfig,
+            IStalkNodeFactory stalkNodeFactory) : base(
             commandSource,
             user,
             arguments,
@@ -39,6 +43,7 @@
             client)
         {
             this.stalkConfig = stalkConfig;
+            this.stalkNodeFactory = stalkNodeFactory;
         }
 
         #region Overrides of GenericCommand
@@ -102,7 +107,7 @@
                         var xd = new XmlDocument();
                         xd.LoadXml(xmlfragment);
 
-                        node = StalkNode.NewFromXmlFragment(xd.FirstChild);
+                        node = this.stalkNodeFactory.NewFromXmlFragment((XmlElement) xd.FirstChild);
                         s.SearchTree = node;
                     }
                     catch (XmlException ex)

@@ -1,4 +1,5 @@
-﻿using System.Xml;
+﻿using System;
+using System.Xml;
 
 namespace EyeInTheSky.StalkNodes
 {
@@ -8,33 +9,10 @@ namespace EyeInTheSky.StalkNodes
     {
         public abstract bool Match(IRecentChange rc);
 
+        [Obsolete("Use StalkNodeFactory instead", true)]
         public static IStalkNode NewFromXmlFragment(XmlNode xmlNode)
         {
-            switch (xmlNode.Name)
-            {
-                case "and":
-                    return AndNode.NewFromXmlFragment(xmlNode);
-                case "or":
-                    return OrNode.NewFromXmlFragment(xmlNode);
-                case "not":
-                    return NotNode.NewFromXmlFragment(xmlNode);
-                case "xor":
-                    return XorNode.NewFromXmlFragment(xmlNode);
-                case "true":
-                    return TrueNode.NewFromXmlFragment(xmlNode);
-                case "false":
-                    return FalseNode.NewFromXmlFragment(xmlNode);
-                case "user":
-                    return UserStalkNode.NewFromXmlFragment(xmlNode);
-                case "page":
-                    return PageStalkNode.NewFromXmlFragment(xmlNode);
-                case "summary":
-                    return SummaryStalkNode.NewFromXmlFragment(xmlNode);
-                case "flag":
-                    return FlagStalkNode.NewFromXmlFragment(xmlNode);
-                default:
-                    throw new XmlException();
-            }
+            return null;
         }
 
         public abstract XmlElement ToXmlFragment(XmlDocument doc, string xmlns);
