@@ -13,7 +13,7 @@ namespace EyeInTheSky.StalkNodes
             return !this.ChildNode.Match(rc);
         }
 
-        public new static StalkNode NewFromXmlFragment(XmlNode xmlNode)
+        public new static IStalkNode NewFromXmlFragment(XmlNode xmlNode)
         {
             var s = new NotNode {ChildNode = StalkNode.NewFromXmlFragment(xmlNode.ChildNodes[0])};
             return s;

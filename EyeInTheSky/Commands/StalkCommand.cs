@@ -136,7 +136,7 @@
                         var xd = new XmlDocument();
                         xd.LoadXml(xmlfragment);
 
-                        StalkNode node = StalkNode.NewFromXmlFragment(xd.FirstChild);
+                        var node = StalkNode.NewFromXmlFragment(xd.FirstChild);
 
                         newroot.RightChildNode = node;
                         s.SearchTree = newroot;
@@ -215,7 +215,7 @@
                         var xd = new XmlDocument();
                         xd.LoadXml(xmlfragment);
 
-                        StalkNode node = StalkNode.NewFromXmlFragment(xd.FirstChild);
+                        var node = StalkNode.NewFromXmlFragment(xd.FirstChild);
 
                         newroot.RightChildNode = node;
                         s.SearchTree = newroot;
@@ -417,7 +417,7 @@
                     break;
                 case "xml":
                     var xmlfragment = tokenList.Implode();
-                    StalkNode node;
+                    IStalkNode node;
                     try
                     {
                         var xd = new XmlDocument();

@@ -21,7 +21,7 @@ namespace EyeInTheSky.StalkNodes
             return e;
         }
 
-        public new static StalkNode NewFromXmlFragment(XmlNode xmlNode)
+        public new static IStalkNode NewFromXmlFragment(XmlNode xmlNode)
         {
             AndNode s = new AndNode
             {

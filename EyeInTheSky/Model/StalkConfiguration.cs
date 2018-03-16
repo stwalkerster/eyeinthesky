@@ -119,7 +119,7 @@
             var stalksElement = doc.CreateElement("stalks", XmlNamespace);
             foreach (var kvp in this.stalks)
             {
-                stalksElement.AppendChild(kvp.Value.ToXmlFragment(doc, XmlNamespace));
+                stalksElement.AppendChild(this.stalkFactory.ToXmlElement(kvp.Value, doc, XmlNamespace));
             }
 
             root.AppendChild(stalksElement);

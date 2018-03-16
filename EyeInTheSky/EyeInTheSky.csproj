@@ -98,6 +98,7 @@
     <Compile Include="Commands\VersionCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StalkNodes\FlagStalkNode.cs" />
+    <Compile Include="StalkNodes\IStalkNode.cs" />
     <Compile Include="StalkNodes\XorNode.cs" />
     <Compile Include="StalkNodes\DoubleChildLogicalNode.cs" />
     <Compile Include="StalkNodes\FalseNode.cs" />

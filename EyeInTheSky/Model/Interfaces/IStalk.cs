@@ -13,9 +13,8 @@
         bool MailEnabled { get; set; }
         string Description { get; set; }
         DateTime ExpiryTime { get; set; }
-        StalkNode SearchTree { get; set; }
+        IStalkNode SearchTree { get; set; }
         bool IsActive();
         bool Match(IRecentChange rc);
-        XmlElement ToXmlFragment(XmlDocument doc, string xmlns);
     }
 }

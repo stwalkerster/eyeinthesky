@@ -13,7 +13,7 @@ namespace EyeInTheSky.StalkNodes
             return this.Expression.Match(rc.EditSummary).Success;
         }
 
-        public new static StalkNode NewFromXmlFragment(XmlNode xmlNode)
+        public new static IStalkNode NewFromXmlFragment(XmlNode xmlNode)
         {
             var s = new SummaryStalkNode();
             s.SetMatchExpression(xmlNode.Attributes["value"].Value);

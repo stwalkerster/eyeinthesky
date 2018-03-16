@@ -1,7 +1,6 @@
 ﻿namespace EyeInTheSky.Model
 {
     using System;
-    using System.Xml;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.StalkNodes;
 
@@ -9,6 +8,8 @@
     {
         public ComplexStalk(string flag)
         {
+            this.LastTriggerTime = DateTime.MinValue;
+            this.LastUpdateTime = DateTime.Now;
             this.Flag = flag;
             this.baseNode = new FalseNode();
         }
@@ -21,11 +22,11 @@
             DateTime expiryTime,
             bool mailEnabled,
             bool isEnabled,
-            StalkNode baseNode)
+            IStalkNode baseNode)
         {
             this.Flag = flag;
-            this.lastUpdateTime = lastUpdateTime;
-            this.lastTriggerTime = lastTriggerTime;
+            this.LastUpdateTime = lastUpdateTime;
+            this.LastTriggerTime = lastTriggerTime;
             this.description = description;
             this.expiryTime = expiryTime;
             this.mailEnabled = mailEnabled;
@@ -33,9 +34,7 @@
             this.baseNode = baseNode;
         }
 
-        private StalkNode baseNode;
-        private DateTime lastUpdateTime = DateTime.Now;
-        private DateTime lastTriggerTime = DateTime.MinValue;
+        private IStalkNode baseNode;
         private string description = "";
         private DateTime expiryTime = DateTime.MaxValue;
         private bool mailEnabled = true;
@@ -43,28 +42,25 @@
 
         public string Flag { get; private set; }
 
-        public DateTime LastUpdateTime
-        {
-            get { return this.lastUpdateTime; }
-            private set { this.lastUpdateTime = value; }
-        }
+        public DateTime LastUpdateTime { get; private set; }
 
-        public DateTime LastTriggerTime
-        {
-            get { return this.lastTriggerTime; }
-            set { this.lastTriggerTime = value; }
-        }
+        public DateTime LastTriggerTime { get; set; }
 
         public bool IsEnabled
         {
             get { return this.isEnabled; }
-            set { this.isEnabled = value; }
+            set
+            {
+                this.isEnabled = value;
+                this.LastUpdateTime = DateTime.Now;
+            }
         }
 
         public bool MailEnabled
         {
             get { return this.mailEnabled; }
-            set { this.mailEnabled = value; }
+            set { this.mailEnabled = value; 
+                this.LastUpdateTime = DateTime.Now;}
         }
 
         public string Description
@@ -73,7 +69,7 @@
             set
             {
                 this.description = value;
-                this.lastUpdateTime = DateTime.Now;
+                this.LastUpdateTime = DateTime.Now;
             }
         }
 
@@ -83,11 +79,11 @@
             set
             {
                 this.expiryTime = value;
-                this.lastUpdateTime = DateTime.Now;
+                this.LastUpdateTime = DateTime.Now;
             }
         }
 
-        public StalkNode SearchTree
+        public IStalkNode SearchTree
         {
             get { return this.baseNode; }
 
@@ -116,21 +112,6 @@
             }
 
             return this.baseNode.Match(rc);
-        }
-
-        public XmlElement ToXmlFragment(XmlDocument doc, string xmlns)
-        {
-            XmlElement e = doc.CreateElement("complexstalk", xmlns);
-            e.SetAttribute("flag", this.Flag);
-            e.SetAttribute("lastupdate", this.LastUpdateTime.ToString("O"));
-            e.SetAttribute("lasttrigger", this.LastTriggerTime.ToString("O"));
-            e.SetAttribute("immediatemail", this.MailEnabled.ToString());
-            e.SetAttribute("description", this.Description);
-            e.SetAttribute("enabled", this.IsEnabled.ToString());
-            e.SetAttribute("expiry", this.ExpiryTime.ToString("O"));
-
-            e.AppendChild(this.baseNode.ToXmlFragment(doc, xmlns));
-            return e;
         }
 
         public override string ToString()

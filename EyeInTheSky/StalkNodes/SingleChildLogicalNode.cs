@@ -2,6 +2,6 @@
 {
     abstract class SingleChildLogicalNode : LogicalNode
     {
-        public StalkNode ChildNode { get; set; }
+        public IStalkNode ChildNode { get; set; }
     }
 }

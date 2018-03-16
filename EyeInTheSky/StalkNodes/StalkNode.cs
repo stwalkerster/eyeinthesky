@@ -4,11 +4,11 @@ namespace EyeInTheSky.StalkNodes
 {
     using EyeInTheSky.Model.Interfaces;
 
-    public abstract class StalkNode
+    public abstract class StalkNode : IStalkNode
     {
         public abstract bool Match(IRecentChange rc);
 
-        public static StalkNode NewFromXmlFragment(XmlNode xmlNode)
+        public static IStalkNode NewFromXmlFragment(XmlNode xmlNode)
         {
             switch (xmlNode.Name)
             {

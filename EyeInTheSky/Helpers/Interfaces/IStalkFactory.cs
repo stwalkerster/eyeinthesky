@@ -6,5 +6,6 @@
     public interface IStalkFactory
     {
         IStalk NewFromXmlElement(XmlElement element);
+        XmlElement ToXmlElement(IStalk stalk, XmlDocument doc, string xmlns);
     }
 }

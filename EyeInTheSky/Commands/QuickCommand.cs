@@ -96,7 +96,7 @@
                     break;
                 case "xml":
                     var xmlfragment = stalkTarget;
-                    StalkNode node;
+                    IStalkNode node;
                     try
                     {
                         var xd = new XmlDocument();

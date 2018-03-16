@@ -69,7 +69,7 @@
 
             var description = element.GetAttribute("description");
 
-            StalkNode baseNode = new FalseNode();
+            IStalkNode baseNode = new FalseNode();
             if (element.HasChildNodes)
             {
                 baseNode = StalkNode.NewFromXmlFragment(element.FirstChild);
@@ -88,6 +88,23 @@
             return s;
         }
 
+        public XmlElement ToXmlElement(IStalk stalk, XmlDocument doc, string xmlns)
+        {
+            XmlElement e = doc.CreateElement("complexstalk", xmlns);
+            
+            e.SetAttribute("flag", stalk.Flag);
+            e.SetAttribute("lastupdate", XmlConvert.ToString(stalk.LastUpdateTime, XmlDateTimeSerializationMode.Utc));
+            e.SetAttribute("lasttrigger", XmlConvert.ToString(stalk.LastTriggerTime, XmlDateTimeSerializationMode.Utc));
+            e.SetAttribute("immediatemail", XmlConvert.ToString(stalk.MailEnabled));
+            e.SetAttribute("description", stalk.Description);
+            e.SetAttribute("enabled", XmlConvert.ToString(stalk.IsEnabled));
+            e.SetAttribute("expiry", XmlConvert.ToString(stalk.ExpiryTime, XmlDateTimeSerializationMode.Utc));
+
+            e.AppendChild(stalk.SearchTree.ToXmlFragment(doc, xmlns));
+            
+            return e;
+        }
+        
         internal DateTime ParseDate(string flagName, string input, string propName)
         {
             DateTime result;
