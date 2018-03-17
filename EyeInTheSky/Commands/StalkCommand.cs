@@ -520,7 +520,7 @@ namespace EyeInTheSky.Commands
                     new HelpMessage(
                         this.CommandName,
                         "mail <Flag> <true|false>",
-                        "Enables or disables email notifications of the specified stalk")
+                        "Enables or disables email notifications for each trigger of the specified stalk")
                 },{
                     "description",
                     new HelpMessage(
