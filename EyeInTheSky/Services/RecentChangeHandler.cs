@@ -114,7 +114,7 @@
                 this.emailHelper.SendEmail(
                     mailConfig.Sender,
                     mailConfig.To,
-                    string.Format(mailConfig.Subject, stalkList),
+                    string.Format(mailConfig.Subject, stalkList, rc.Page),
                     this.FormatMessageForEmail(stalks, rc),
                     mailConfig.Hostname,
                     mailConfig.Port,

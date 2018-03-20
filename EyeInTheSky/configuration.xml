@@ -89,7 +89,7 @@ Expiry:              {4}
                 <!-- The recipient of email notifications -->
                 <to></to>
                 <!-- The subject of email notifications -->
-                <subject>[EyeInTheSky] Notification: {0}</subject>
+                <subject>[EyeInTheSky] Notification: {0} - [[{1}]]</subject>
                 <!-- If authentication is required, authenticate as this user -->
                 <username></username>
                 <password></password>
