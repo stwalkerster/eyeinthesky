@@ -20,11 +20,17 @@
             if(initialResult.HasValue) {
                 return initialResult.Value;
             }
+
+            var match = this.Match(rc, true);
+            if (match.HasValue)
+            {
+                return match.Value;
+            }
             
-            return this.Match(rc, true);
+            throw new InvalidOperationException("Result of forced match is null!");
         }
         
-        protected bool? Match(IRecentChange rc, bool forceMatch)
+        public bool? Match(IRecentChange rc, bool forceMatch)
         {
             this.SanityCheck(rc);
             return this.DoMatch(rc, forceMatch);
