@@ -66,6 +66,7 @@
     <Compile Include="Helpers\StalkNodeFactoryTests.cs" />
     <Compile Include="RecentChangeTest.cs" />
     <Compile Include="Services\RecentChangeHandlerTests.cs" />
+    <Compile Include="Services\RecentChangeParserTests.cs" />
     <Compile Include="StalkNodes\AndNodeTest.cs" />
     <Compile Include="StalkNodes\StalkNodeTestBase.cs" />
     <Compile Include="StalkNodes\FalseNodeTest.cs" />
