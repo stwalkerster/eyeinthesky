@@ -1,22 +1,20 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using EyeInTheSky.Model.Interfaces;
 
 namespace EyeInTheSky.StalkNodes
 {
-    using System;
-    using EyeInTheSky.Model.Interfaces;
-
     public abstract class LeafNode : StalkNode
     {
-        protected Regex Expression;
+        protected string Expression;
 
-        public void SetMatchExpression(string regex)
+        public virtual void SetMatchExpression(string matchExpr)
         {
-            this.Expression = new Regex(regex);
+            this.Expression = matchExpr;
         }
         
-        public string GetMatchExpression()
+        public virtual string GetMatchExpression()
         {
-            return this.Expression.ToString();
+            return this.Expression;
         }
 
         protected override void SanityCheck(IRecentChange rc)

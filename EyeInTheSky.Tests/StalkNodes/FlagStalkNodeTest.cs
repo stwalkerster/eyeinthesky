@@ -8,7 +8,7 @@ namespace EyeInTheSky.Tests.StalkNodes
     using EyeInTheSky.StalkNodes;
 
     [TestFixture]
-    public class FlagStalkNodeTest : LeafNodeTestBase<FlagStalkNode>
+    public class FlagStalkNodeTest : RegexLeafNodeTestBase<FlagStalkNode>
     {
         private IRecentChange rc;
 
@@ -28,7 +28,7 @@ namespace EyeInTheSky.Tests.StalkNodes
         {
             get
             {
-                LeafNode n = new FlagStalkNode();
+                RegexLeafNode n = new FlagStalkNode();
                 n.SetMatchExpression("abc");
                 yield return new TestCaseData(n).Returns(false);
                 n = new FlagStalkNode();

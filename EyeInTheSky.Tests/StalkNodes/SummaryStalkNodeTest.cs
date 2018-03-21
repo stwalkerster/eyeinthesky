@@ -9,7 +9,7 @@ namespace EyeInTheSky.Tests.StalkNodes
     using EyeInTheSky.StalkNodes;
 
     [TestFixture]
-    public class SummaryStalkNodeTest : LeafNodeTestBase<SummaryStalkNode>
+    public class SummaryStalkNodeTest : RegexLeafNodeTestBase<SummaryStalkNode>
     {
         private IRecentChange rc;
 
@@ -29,7 +29,7 @@ namespace EyeInTheSky.Tests.StalkNodes
         {
             get
             {
-                LeafNode n = new SummaryStalkNode();
+                RegexLeafNode n = new SummaryStalkNode();
                 n.SetMatchExpression("abc");
                 yield return new TestCaseData(n).Returns(false);
                 n = new SummaryStalkNode();

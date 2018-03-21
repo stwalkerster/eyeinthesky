@@ -40,11 +40,14 @@
     }
     
     public abstract class LogicalNodeTestBase<T> : StalkNodeTestBase<T> where T : LogicalNode, new()
+    {   
+    }
+
+    public abstract class LeafNodeTestBase<T> : StalkNodeTestBase<T> where T : LeafNode, new()
     {
-        
     }
     
-    public abstract class LeafNodeTestBase<T> : StalkNodeTestBase<T> where T : LeafNode, new()
+    public abstract class RegexLeafNodeTestBase<T> : LeafNodeTestBase<T> where T : RegexLeafNode, new()
     {
         [Test]
         public void ShouldRejectNoDefinitionMatch()

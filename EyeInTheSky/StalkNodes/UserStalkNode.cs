@@ -4,18 +4,18 @@
     using EyeInTheSky.Model.Interfaces;
 
     [StalkNodeType("user")]
-    public class UserStalkNode : LeafNode
+    public class UserStalkNode : RegexLeafNode
     {
         #region Overrides of StalkNode
 
         protected override bool? DoMatch(IRecentChange rc, bool forceMatch)
         {
-            return this.Expression.Match(rc.User).Success;
+            return this.RegexExpression.Match(rc.User).Success;
         }
 
         public override string ToString()
         {
-            return "(user:\"" + this.Expression + "\")";
+            return "(user:\"" + this.RegexExpression + "\")";
         }
 
         #endregion

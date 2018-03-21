@@ -84,7 +84,7 @@
 
         private IStalkNode NewLeafNode(XmlElement fragment)
         {
-            LeafNode node;
+            RegexLeafNode node;
             switch (fragment.Name)
             {
                 case "user":
@@ -116,7 +116,7 @@
                 return this.LogicalToXml(doc, xmlns, logicalNode);
             }
 
-            var leafNode = node as LeafNode;
+            var leafNode = node as RegexLeafNode;
             if (leafNode != null)
             {
                 return this.LeafToXml(doc, xmlns, leafNode);
@@ -140,7 +140,7 @@
             return elem;
         }
 
-        private XmlElement LeafToXml(XmlDocument doc, string xmlns, LeafNode node)
+        private XmlElement LeafToXml(XmlDocument doc, string xmlns, RegexLeafNode node)
         {
             var elem = this.CreateElement(doc, xmlns, node);
             elem.SetAttribute("value", node.GetMatchExpression());
