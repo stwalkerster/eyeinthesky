@@ -6,7 +6,7 @@
     [StalkNodeType("true")]
     public class TrueNode : LogicalNode
     {
-        protected override bool DoMatch(IRecentChange rc)
+        protected override bool? DoMatch(IRecentChange rc, bool forceMatch)
         {
             return true;
         }

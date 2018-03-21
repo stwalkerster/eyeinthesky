@@ -8,7 +8,7 @@
     {
         #region Overrides of StalkNode
 
-        protected override bool DoMatch(IRecentChange rc)
+        protected override bool? DoMatch(IRecentChange rc, bool forceMatch)
         {
             return this.Expression.Match(rc.Page).Success;
         }

@@ -8,10 +8,31 @@
     {
         #region Overrides of StalkNode
 
-        protected override bool DoMatch(IRecentChange rc)
+        protected override bool? DoMatch(IRecentChange rc, bool forceMatch)
         {
-            return this.LeftChildNode.Match(rc) || this.RightChildNode.Match(rc);
-        }
+            var leftResult = this.LeftChildNode.Match(rc, false);
+
+            if(leftResult == true) {
+                return true;
+            }
+
+            var rightResult = this.RightChildNode.Match(rc, false);
+
+            if(rightResult == true) {
+                return true;
+            }
+
+            if(leftResult.HasValue && rightResult.HasValue && !leftResult.Value && !rightResult.Value)
+            {
+                return false;
+            }
+
+            if(!forceMatch)
+            {
+                return null;
+            }
+            
+            
 
         public override string ToString()
         {

@@ -16,11 +16,20 @@
 
         public bool Match(IRecentChange rc)
         {
-            this.SanityCheck(rc);
-
-            return this.DoMatch(rc);
+            var initialResult = this.Match(rc, false);
+            if(initialResult.HasValue) {
+                return initialResult.Value;
+            }
+            
+            return this.Match(rc, true);
         }
         
-        protected abstract bool DoMatch(IRecentChange rc);
+        protected bool? Match(IRecentChange rc, bool forceMatch)
+        {
+            this.SanityCheck(rc);
+            return this.DoMatch(rc, forceMatch);
+        }
+        
+        protected abstract bool? DoMatch(IRecentChange rc, bool forceMatch);
     }
 }
