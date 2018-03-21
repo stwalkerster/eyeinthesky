@@ -1,4 +1,4 @@
-﻿namespace Stwalkerster.Extensions
+﻿namespace EyeInTheSky.Extensions
 {
     using System.Collections.Generic;
 

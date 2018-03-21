@@ -11,7 +11,6 @@
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Services.Interfaces;
     using Stwalkerster.IrcClient.Events;
-    using Stwalkerster.Extensions;
     using Stwalkerster.IrcClient.Interfaces;
     using Stwalkerster.IrcClient.Model;
 
@@ -73,8 +72,10 @@
                 {
                     return;
                 }
-                
-                this.logger.InfoFormat("Seen stalked change for stalks: {0}", stalks.Select(x => x.Flag).Implode());
+
+                this.logger.InfoFormat(
+                    "Seen stalked change for stalks: {0}",
+                    string.Join(" ", stalks.Select(x => x.Flag)));
                 
                 // touch update flag
                 foreach (var stalk in stalks)
@@ -107,7 +108,7 @@
                 return;
             }
 
-            var stalkList = stalks.Select(x => x.Flag).Implode(", ");
+            var stalkList = string.Join(", ", stalks.Select(x => x.Flag));
 
             try
             {

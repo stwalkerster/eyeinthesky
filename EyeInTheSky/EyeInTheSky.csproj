@@ -65,6 +65,9 @@
     <Reference Include="MimeKit, Version=2.0.0.0, Culture=neutral, PublicKeyToken=bede1c8a46c66814">
       <HintPath>..\packages\MimeKit.2.0.1\lib\net45\MimeKit.dll</HintPath>
     </Reference>
+    <Reference Include="Stwalkerster.Bot.CommandLib, Version=7.0.3.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\Stwalkerster.Bot.CommandLib.7.0.3\lib\net45\Stwalkerster.Bot.CommandLib.dll</HintPath>
+    </Reference>
     <Reference Include="Stwalkerster.IrcClient, Version=7.0.11.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\packages\Stwalkerster.IrcClient.7.0.11\lib\net45\Stwalkerster.IrcClient.dll</HintPath>
     </Reference>
@@ -80,6 +83,7 @@
     <Compile Include="Attributes\StalkNodeTypeAttribute.cs" />
     <Compile Include="Commands\AccCommand.cs" />
     <Compile Include="Commands\QuickCommand.cs" />
+    <Compile Include="Extensions\ListExtensions.cs" />
     <Compile Include="Helpers\Interfaces\IEmailHelper.cs" />
     <Compile Include="Helpers\Interfaces\IStalkFactory.cs" />
     <Compile Include="Helpers\Interfaces\IStalkNodeFactory.cs" />
@@ -140,16 +144,6 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Stwalkerster.Bot.CommandLib\Stwalkerster.Bot.CommandLib.csproj">
-      <Project>{727151dd-db3a-4cf0-850b-9233437de6da}</Project>
-      <Name>Stwalkerster.Bot.CommandLib</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Stwalkerster.Extensions\Stwalkerster.Extensions.csproj">
-      <Project>{452248af-32ab-4a57-85fa-fb6173f6ce41}</Project>
-      <Name>Stwalkerster.Extensions</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

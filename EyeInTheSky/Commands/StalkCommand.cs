@@ -7,6 +7,7 @@ namespace EyeInTheSky.Commands
     using System.Linq;
     using System.Xml;
     using Castle.Core.Logging;
+    using EyeInTheSky.Extensions;
     using EyeInTheSky.Model;
     using EyeInTheSky.StalkNodes;
     using Stwalkerster.Bot.CommandLib.Attributes;
@@ -15,7 +16,6 @@ namespace EyeInTheSky.Commands
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities.Response;
     using Stwalkerster.Bot.CommandLib.Exceptions;
     using Stwalkerster.Bot.CommandLib.Services.Interfaces;
-    using Stwalkerster.Extensions;
     using Stwalkerster.IrcClient.Interfaces;
     using Stwalkerster.IrcClient.Model.Interfaces;
 
@@ -98,7 +98,7 @@ namespace EyeInTheSky.Commands
 
             string type = tokenList.PopFromFront();
 
-            string stalkTarget = tokenList.Implode();
+            string stalkTarget = string.Join(" ", tokenList);
 
             var newroot = new OrNode {LeftChildNode = s.SearchTree};
 
@@ -177,7 +177,7 @@ namespace EyeInTheSky.Commands
 
             string type = tokenList.PopFromFront();
 
-            string stalkTarget = tokenList.Implode();
+            string stalkTarget = string.Join(" ", tokenList);
 
             var newroot = new AndNode {LeftChildNode = s.SearchTree};
 
@@ -280,7 +280,7 @@ namespace EyeInTheSky.Commands
             }
 
             var stalk = tokenList.PopFromFront();
-            var date = tokenList.Implode();
+            var date = string.Join(" ", tokenList);
 
             var expiryTime = DateTime.Parse(date);
             this.stalkConfig.Stalks[stalk].ExpiryTime = expiryTime;
@@ -302,7 +302,7 @@ namespace EyeInTheSky.Commands
             }
 
             string stalk = tokenList.PopFromFront();
-            string descr = tokenList.Implode();
+            string descr = string.Join(" ", tokenList);
 
             this.stalkConfig.Stalks[stalk].Description = descr;
             
@@ -389,7 +389,7 @@ namespace EyeInTheSky.Commands
             var s = this.stalkConfig.Stalks[stalk];
 
             var type = tokenList.PopFromFront();
-            var regex = tokenList.Implode();
+            var regex = string.Join(" ", tokenList);
 
             switch (type)
             {
@@ -421,7 +421,7 @@ namespace EyeInTheSky.Commands
                     };
                     break;
                 case "xml":
-                    var xmlfragment = tokenList.Implode();
+                    var xmlfragment = string.Join(" ", tokenList);
                     IStalkNode node;
                     try
                     {

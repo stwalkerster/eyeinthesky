@@ -1,8 +1,8 @@
-﻿namespace Stwalkerster.IrcClient.Tests.Extensions
+﻿namespace EyeInTheSky.Tests.Extensions
 {
     using System.Collections.Generic;
+    using EyeInTheSky.Extensions;
     using NUnit.Framework;
-    using Stwalkerster.Extensions;
 
     /// <summary>
     /// The list extensions tests.

@@ -6,6 +6,7 @@ namespace EyeInTheSky.Commands
     using System.Linq;
     using System.Xml;
     using Castle.Core.Logging;
+    using EyeInTheSky.Extensions;
     using EyeInTheSky.Model;
     using EyeInTheSky.StalkNodes;
     using Stwalkerster.Bot.CommandLib.Attributes;
@@ -14,7 +15,6 @@ namespace EyeInTheSky.Commands
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities.Response;
     using Stwalkerster.Bot.CommandLib.Exceptions;
     using Stwalkerster.Bot.CommandLib.Services.Interfaces;
-    using Stwalkerster.Extensions;
     using Stwalkerster.IrcClient.Interfaces;
     using Stwalkerster.IrcClient.Model.Interfaces;
 
@@ -59,7 +59,7 @@ namespace EyeInTheSky.Commands
 
             var name = tokenList.PopFromFront();
             var type = tokenList.PopFromFront();
-            var stalkTarget = tokenList.Implode();
+            var stalkTarget = string.Join(" ", tokenList);
 
             var s = new ComplexStalk(name);
 

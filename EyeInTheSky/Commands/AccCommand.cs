@@ -6,13 +6,13 @@
     using EyeInTheSky.Model;
     using EyeInTheSky.StalkNodes;
     using Castle.Core.Logging;
+    using EyeInTheSky.Extensions;
     using Stwalkerster.Bot.CommandLib.Attributes;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities.Models;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities.Response;
     using Stwalkerster.Bot.CommandLib.Exceptions;
     using Stwalkerster.Bot.CommandLib.Services.Interfaces;
-    using Stwalkerster.Extensions;
     using Stwalkerster.IrcClient.Interfaces;
     using Stwalkerster.IrcClient.Model.Interfaces;
 
@@ -52,7 +52,7 @@
             }
 
             var id = tokenList.PopFromFront();
-            var user = tokenList.Implode();
+            var user = string.Join(" ", tokenList);
 
             var s = new ComplexStalk("acc" + id);
 
