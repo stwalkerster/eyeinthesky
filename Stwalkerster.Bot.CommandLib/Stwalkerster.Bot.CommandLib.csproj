@@ -36,6 +36,9 @@
     <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc">
       <HintPath>..\packages\Castle.Core.4.2.1\lib\net45\Castle.Core.dll</HintPath>
     </Reference>
+    <Reference Include="Stwalkerster.IrcClient, Version=7.0.11.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\Stwalkerster.IrcClient.7.0.11\lib\net45\Stwalkerster.IrcClient.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
@@ -79,10 +82,6 @@
     <ProjectReference Include="..\Stwalkerster.Extensions\Stwalkerster.Extensions.csproj">
       <Project>{452248af-32ab-4a57-85fa-fb6173f6ce41}</Project>
       <Name>Stwalkerster.Extensions</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Stwalkerster.IrcClient\Stwalkerster.IrcClient.csproj">
-      <Project>{47674028-79d0-4cb6-9f36-4c58b8178947}</Project>
-      <Name>Stwalkerster.IrcClient</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

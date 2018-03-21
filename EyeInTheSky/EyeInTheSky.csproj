@@ -65,6 +65,9 @@
     <Reference Include="MimeKit, Version=2.0.0.0, Culture=neutral, PublicKeyToken=bede1c8a46c66814">
       <HintPath>..\packages\MimeKit.2.0.1\lib\net45\MimeKit.dll</HintPath>
     </Reference>
+    <Reference Include="Stwalkerster.IrcClient, Version=7.0.11.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\Stwalkerster.IrcClient.7.0.11\lib\net45\Stwalkerster.IrcClient.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -145,10 +148,6 @@
     <ProjectReference Include="..\Stwalkerster.Extensions\Stwalkerster.Extensions.csproj">
       <Project>{452248af-32ab-4a57-85fa-fb6173f6ce41}</Project>
       <Name>Stwalkerster.Extensions</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Stwalkerster.IrcClient\Stwalkerster.IrcClient.csproj">
-      <Project>{47674028-79d0-4cb6-9f36-4c58b8178947}</Project>
-      <Name>Stwalkerster.IrcClient</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

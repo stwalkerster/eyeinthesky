@@ -40,6 +40,9 @@
     <Reference Include="Moq, Version=4.8.0.0, Culture=neutral, PublicKeyToken=69f491c39445e920">
       <HintPath>..\packages\Moq.4.8.2\lib\net45\Moq.dll</HintPath>
     </Reference>
+    <Reference Include="Stwalkerster.IrcClient, Version=7.0.11.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\Stwalkerster.IrcClient.7.0.11\lib\net45\Stwalkerster.IrcClient.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
@@ -80,10 +83,6 @@
     <ProjectReference Include="..\EyeInTheSky\EyeInTheSky.csproj">
       <Project>{382387bb-cf3e-4164-ac29-04f1a42c7eaf}</Project>
       <Name>EyeInTheSky</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Stwalkerster.IrcClient\Stwalkerster.IrcClient.csproj">
-      <Project>{47674028-79d0-4cb6-9f36-4c58b8178947}</Project>
-      <Name>Stwalkerster.IrcClient</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
