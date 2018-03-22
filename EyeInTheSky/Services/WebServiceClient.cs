@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Specialized;
     using System.IO;
+    using System.Linq;
     using System.Net;
     using Castle.Core.Logging;
     using EyeInTheSky.Model.Interfaces;
@@ -26,8 +27,10 @@
         public Stream DoApiCall(NameValueCollection query)
         {
             query.Set("format", "xml");
+
+            var queryFragment = string.Join("&", query.AllKeys.Select(a => a + "=" + WebUtility.UrlEncode(query[a])));
             
-            var url = string.Format("{0}?{1}", this.endpoint, query);
+            var url = string.Format("{0}?{1}", this.endpoint, queryFragment);
             
             this.logger.DebugFormat("Requesting {0}", url);
             
@@ -52,7 +55,7 @@
                 }
             }
 
-            memstream.Position = 1;
+            memstream.Position = 0;
             return memstream;
         }
     }
