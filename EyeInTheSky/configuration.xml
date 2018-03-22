@@ -42,7 +42,7 @@
                 
                 <!-- The remainder of the settings in this block are for advanced users only. -->
                 <useragent>EyeInTheSkyBot (+mailto:wikimedia@stwalkerster.co.uk; [[User:Stwalkerster]])</useragent>
-                <ircAlertFormat>[&#03;4&#02;{0}&#02;&#03;] Stalked edit {1} to page "&#03;3{2}&#03;" by [[User:{3}]], summary: &#03;7{4}</ircAlertFormat>
+                <ircAlertFormat>[&#03;04&#02;{0}&#02;&#03;] Stalked edit {1} to page "&#03;03{2}&#03;" by [[User:{3}]], summary: &#03;07{4}</ircAlertFormat>
                 <ircStalkTagSeparator>&#02;&#03;|&#03;4&#02;</ircStalkTagSeparator>
                 <emailRcTemplate><![CDATA[Hi there!
 
