@@ -1,9 +1,14 @@
 ﻿namespace EyeInTheSky.Model
 {
+    using System;
+    using System.Collections.Generic;
     using EyeInTheSky.Model.Interfaces;
+    using EyeInTheSky.Services.Interfaces;
 
     public class RecentChange : IRecentChange
     {
+        private IEnumerable<string> usergroups;
+        
         public RecentChange(string page, string user, string url, string editsummary, string flags, int sizediff)
         {
             this.Page = page;
@@ -25,6 +30,23 @@
         public string EditFlags { get; private set; }
 
         public int SizeDifference { get; private set; }
+        
+        public IMediaWikiApi MediaWikiApi { get; set; }
+        
+        public IEnumerable<string> GetUserGroups()
+        {
+            if (this.MediaWikiApi == null)
+            {
+                throw new InvalidOperationException("API helper not available");
+            }
+
+            if (this.usergroups == null)
+            {
+                this.usergroups = this.MediaWikiApi.GetUserGroups(this.User);
+            }
+            
+            return this.usergroups;
+        }
 
         protected bool Equals(RecentChange other)
         {

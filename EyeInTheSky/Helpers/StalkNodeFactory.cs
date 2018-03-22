@@ -24,6 +24,7 @@
                 case "page":
                 case "summary":
                 case "flag":
+                case "usergroup":
                     return this.NewLeafNode(fragment);
 
                 case "true":
@@ -84,6 +85,28 @@
 
         private IStalkNode NewLeafNode(XmlElement fragment)
         {
+            LeafNode node;
+            switch (fragment.Name)
+            {
+                case "user":
+                case "page":
+                case "summary":
+                case "flag":
+                    return this.NewRegexLeafNode(fragment);
+                case "usergroup":
+                    node = new UserGroupStalkNode();
+                    break;
+                default:
+                    throw new XmlException();
+            }
+
+            node.SetMatchExpression(fragment.Attributes["value"].Value);
+
+            return node;
+        }
+
+        private IStalkNode NewRegexLeafNode(XmlElement fragment)
+        {
             RegexLeafNode node;
             switch (fragment.Name)
             {
@@ -116,7 +139,7 @@
                 return this.LogicalToXml(doc, xmlns, logicalNode);
             }
 
-            var leafNode = node as RegexLeafNode;
+            var leafNode = node as LeafNode;
             if (leafNode != null)
             {
                 return this.LeafToXml(doc, xmlns, leafNode);
@@ -140,7 +163,7 @@
             return elem;
         }
 
-        private XmlElement LeafToXml(XmlDocument doc, string xmlns, RegexLeafNode node)
+        private XmlElement LeafToXml(XmlDocument doc, string xmlns, LeafNode node)
         {
             var elem = this.CreateElement(doc, xmlns, node);
             elem.SetAttribute("value", node.GetMatchExpression());

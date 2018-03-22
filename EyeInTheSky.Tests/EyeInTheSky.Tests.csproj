@@ -65,6 +65,7 @@
     <Compile Include="Helpers\StalkFactoryTests.cs" />
     <Compile Include="Helpers\StalkNodeFactoryTests.cs" />
     <Compile Include="RecentChangeTest.cs" />
+    <Compile Include="Services\MediaWikiApiTests.cs" />
     <Compile Include="Services\RecentChangeHandlerTests.cs" />
     <Compile Include="Services\RecentChangeParserTests.cs" />
     <Compile Include="StalkNodes\AndNodeTest.cs" />
@@ -77,6 +78,7 @@
     <Compile Include="StalkNodes\SummaryStalkNodeTest.cs" />
     <Compile Include="StalkNodes\TrueNodeTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StalkNodes\UserGroupStalkNodeTest.cs" />
     <Compile Include="StalkNodes\UserStalkNodeTest.cs" />
     <Compile Include="StalkNodes\XorNodeTest.cs" />
     <Compile Include="TestBase.cs" />

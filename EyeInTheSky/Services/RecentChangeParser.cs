@@ -10,15 +10,17 @@
     public class RecentChangeParser : IRecentChangeParser
     {
         private readonly ILogger logger;
+        private readonly IMediaWikiApi mediaWikiApi;
         private const string FullStringRegex = @"14\[\[07(?<title>.*)14\]\]4 (?<flag>.*)10 02(?<url>[^ ]*) 5\* 03(?<user>.*) 5\* (?:\((?<szdiff>.*)\))? 10(?<comment>.*?)?$";
         private const string AntiColourParse = @"[01]?[0-9]";
         
         private Regex dataregex;
         private Regex colsregex;
 
-        public RecentChangeParser(ILogger logger)
+        public RecentChangeParser(ILogger logger, IMediaWikiApi mediaWikiApi)
         {
             this.logger = logger;
+            this.mediaWikiApi = mediaWikiApi;
         }
 
         private Regex GetRegex()
@@ -63,6 +65,8 @@
             }
             
             var rc = new RecentChange(titleValue, userValue, urlValue, comment, flagValue, rcSizeDiff);
+
+            rc.MediaWikiApi = this.mediaWikiApi;
 
             return rc;
         }

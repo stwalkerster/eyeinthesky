@@ -100,9 +100,13 @@
     <Compile Include="Model\StalkConfiguration.cs" />
     <Compile Include="Services\ConfigurationProvider.cs" />
     <Compile Include="Services\BasicFlagService.cs" />
+    <Compile Include="Services\Interfaces\IMediaWikiApi.cs" />
     <Compile Include="Services\Interfaces\IRecentChangeParser.cs" />
+    <Compile Include="Services\Interfaces\IWebServiceClient.cs" />
+    <Compile Include="Services\MediaWikiApi.cs" />
     <Compile Include="Services\RecentChangeHandler.cs" />
     <Compile Include="Services\RecentChangeParser.cs" />
+    <Compile Include="Services\WebServiceClient.cs" />
     <Compile Include="StalkNodes\AndNode.cs" />
     <Compile Include="Commands\StalkCommand.cs" />
     <Compile Include="Commands\VersionCommand.cs" />
@@ -110,6 +114,7 @@
     <Compile Include="StalkNodes\FlagStalkNode.cs" />
     <Compile Include="StalkNodes\IStalkNode.cs" />
     <Compile Include="StalkNodes\LeafNode.cs" />
+    <Compile Include="StalkNodes\UserGroupStalkNode.cs" />
     <Compile Include="StalkNodes\XorNode.cs" />
     <Compile Include="StalkNodes\DoubleChildLogicalNode.cs" />
     <Compile Include="StalkNodes\FalseNode.cs" />

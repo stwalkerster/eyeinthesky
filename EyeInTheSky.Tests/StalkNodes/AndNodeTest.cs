@@ -5,7 +5,9 @@ using NUnit.Framework;
 namespace EyeInTheSky.Tests.StalkNodes
 {
     using System.Collections;
+    using System.Collections.Generic;
     using EyeInTheSky.Model;
+    using EyeInTheSky.Services.Interfaces;
     using EyeInTheSky.StalkNodes;
 
     [TestFixture]
@@ -39,6 +41,54 @@ namespace EyeInTheSky.Tests.StalkNodes
                 yield return new TestCaseData(nullNodeMock.Object, new FalseNode()).Returns(false);
                 yield return new TestCaseData(nullNodeMock.Object, nullNodeMock.Object).Returns(null);
             }
+        }
+
+        [Test]
+        public void LazyEvaluationSkipTest()
+        {
+            // arrange
+            var mwApi = new Mock<IMediaWikiApi>();
+            mwApi.Setup(x => x.GetUserGroups(It.IsAny<string>())).Returns(new List<string> {"user", "*"});
+            
+            var rc = new RecentChange("a", "b", "c", "d", "e", 0);
+            rc.MediaWikiApi = mwApi.Object;
+            
+            var node = new AndNode();
+            node.LeftChildNode = new FalseNode();
+            
+            var nodeRightChildNode = new UserGroupStalkNode();
+            nodeRightChildNode.SetMatchExpression("sysop");
+            node.RightChildNode = nodeRightChildNode;
+            
+            // act
+            node.Match(rc);
+
+            // assert
+            mwApi.Verify(x => x.GetUserGroups(It.IsAny<string>()), Times.Never);
+        }
+
+        [Test]
+        public void LazyEvaluationForceTest()
+        {
+            // arrange
+            var mwApi = new Mock<IMediaWikiApi>();
+            mwApi.Setup(x => x.GetUserGroups(It.IsAny<string>())).Returns(new List<string> {"user", "*"});
+            
+            var rc = new RecentChange("a", "b", "c", "d", "e", 0);
+            rc.MediaWikiApi = mwApi.Object;
+            
+            var node = new AndNode();
+            node.LeftChildNode = new TrueNode();
+            
+            var nodeRightChildNode = new UserGroupStalkNode();
+            nodeRightChildNode.SetMatchExpression("sysop");
+            node.RightChildNode = nodeRightChildNode;
+            
+            // act
+            node.Match(rc);
+
+            // assert
+            mwApi.Verify(x => x.GetUserGroups(It.IsAny<string>()), Times.Once);
         }
     }
 }

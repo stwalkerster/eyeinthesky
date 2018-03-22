@@ -14,6 +14,8 @@
         string EmailRcTemplate { get; }
         string EmailStalkTemplate { get; }
         string DateFormat { get; }
+        string MediaWikiApiEndpoint { get; }
+        string UserAgent { get; }
         EmailConfiguration EmailConfiguration { get; }
         IrcUser Owner { get; }
         int MonitoringPort { get; set; }

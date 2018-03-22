@@ -106,6 +106,22 @@
         }
 
         [Test]
+        public void ShouldCreateUserGroupNode()
+        {
+            // arrange
+            var snf = new StalkNodeFactory();
+            var doc = new XmlDocument();
+            doc.LoadXml("<usergroup value=\"abc\" />");
+
+            // act
+            var result = snf.NewFromXmlFragment(doc.DocumentElement);
+
+            // assert
+            Assert.IsInstanceOf<UserGroupStalkNode>(result);
+            Assert.AreEqual("abc", ((UserGroupStalkNode) result).GetMatchExpression());
+        }
+
+        [Test]
         public void ShouldCreateNotNode()
         {
             // arrange
@@ -291,6 +307,25 @@
 
             // assert
             Assert.AreEqual("<flag value=\"abc\" />", result.OuterXml);
+        }
+        
+        [Test]
+        public void ShouldSerialiseUserGroupCorrectly()
+        {
+            // arrange 
+            var node = new UserGroupStalkNode();
+            node.SetMatchExpression("abc");
+            
+            var doc = new XmlDocument();
+            var ns = string.Empty;
+            
+            var snf = new StalkNodeFactory(); 
+            
+            // act
+            var result = snf.ToXml(doc, ns, node);
+
+            // assert
+            Assert.AreEqual("<usergroup value=\"abc\" />", result.OuterXml);
         }
         
         [Test]

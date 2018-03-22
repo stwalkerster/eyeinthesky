@@ -1,5 +1,8 @@
 ﻿namespace EyeInTheSky.Model.Interfaces
 {
+    using System.Collections.Generic;
+    using EyeInTheSky.Services.Interfaces;
+
     public interface IRecentChange
     {
         string Page { get; }
@@ -8,5 +11,8 @@
         string EditSummary { get; }
         string EditFlags { get; }
         int SizeDifference { get; }
+        IMediaWikiApi MediaWikiApi { get; set; }
+
+        IEnumerable<string> GetUserGroups();
     }
 }

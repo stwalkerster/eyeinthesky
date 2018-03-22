@@ -14,7 +14,7 @@
         [SetUp]
         public void LocalSetup()
         {
-            this.rcparser = new RecentChangeParser(this.LoggerMock.Object);
+            this.rcparser = new RecentChangeParser(this.LoggerMock.Object, null);
         }
 
         [Test, TestCaseSource(typeof(RecentChangeParserTests), "ParseTestData")]
