@@ -64,7 +64,7 @@
                 this.recentChangeHandler.FormatStalkListForEmail(expired)
             );
 
-            this.emailHelper.SendEmail(body, this.templates.EmailStalkReportSubject);
+            this.emailHelper.SendEmail(body, this.templates.EmailStalkReportSubject, null);
 
             yield return new CommandResponse
             {

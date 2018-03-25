@@ -5,10 +5,11 @@
     using MailKit.Net.Smtp;
     using MailKit.Security;
     using MimeKit;
+    using MimeKit.Utils;
 
     public class EmailSender : IEmailSender
     {
-        public void SendEmail(string sender,
+        public string SendEmail(string sender,
             string to,
             string subject,
             string body,
@@ -16,7 +17,8 @@
             int port,
             string username,
             string password,
-            string thumbprint)
+            string thumbprint,
+            string inReplyTo)
         {
             var mailMessage = new MimeMessage();
 
@@ -29,6 +31,13 @@
                 Text = body
             };
 
+            mailMessage.MessageId = MimeUtils.GenerateMessageId("eyeinthesky.im");
+
+            if (!string.IsNullOrWhiteSpace(inReplyTo))
+            {
+                mailMessage.InReplyTo = inReplyTo;
+            }
+            
             using (var client = new SmtpClient())
             {
                 client.ServerCertificateValidationCallback =
@@ -52,6 +61,8 @@
                 client.Send(mailMessage);
                 client.Disconnect(true);
             }
+
+            return mailMessage.MessageId;
         }
     }
 }

@@ -3,7 +3,6 @@
     using System.Text;
     using Castle.Core.Logging;
     using EyeInTheSky.Helpers.Interfaces;
-    using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
 
     public class EmailHelper : IEmailHelper
@@ -21,24 +20,24 @@
             this.emailSender = emailSender;
         }
 
-        public void SendEmail(string message, string subject)
+        public string SendEmail(string message, string subject, string inReplyTo)
         {
             if (this.appConfig.EmailConfiguration == null)
             {
                 this.logger.Debug("Not sending email; email configuration is disabled");
-                return;
+                return null;
             }
 
             if (string.IsNullOrWhiteSpace(subject))
             {
                 this.logger.Error("No subject specified in outbound email!");
-                return;
+                return null;
             }
             
             if (string.IsNullOrWhiteSpace(message))
             {
                 this.logger.Error("No message specified in outbound email!");
-                return;
+                return null;
             }
 
             var builder = new StringBuilder();
@@ -46,7 +45,7 @@
             builder.Append(message);
             builder.Append(this.templates.EmailSignature);
             
-            this.emailSender.SendEmail(
+            return this.emailSender.SendEmail(
                 this.appConfig.EmailConfiguration.Sender,
                 this.appConfig.EmailConfiguration.To,
                 subject,
@@ -55,7 +54,8 @@
                 this.appConfig.EmailConfiguration.Port,
                 this.appConfig.EmailConfiguration.Username,
                 this.appConfig.EmailConfiguration.Password,
-                this.appConfig.EmailConfiguration.Thumbprint);
+                this.appConfig.EmailConfiguration.Thumbprint,
+                inReplyTo);
         }
     }
 }

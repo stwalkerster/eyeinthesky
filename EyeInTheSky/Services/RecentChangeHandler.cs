@@ -118,17 +118,24 @@
             }
 
             var stalkList = string.Join(", ", stalks.Select(x => x.Flag));
+            var messageId = stalks.Count(x => x.LastMessageId != null) > 1 ? null : stalks.First().LastMessageId;
 
             try
             {
-                this.emailHelper.SendEmail(
+                messageId = this.emailHelper.SendEmail(
                     this.FormatMessageForEmail(stalks, rc),
-                    string.Format(this.templates.EmailRcSubject, stalkList, rc.Page));
+                    string.Format(this.templates.EmailRcSubject, stalkList, rc.Page),
+                    messageId);
             }
             catch (Exception ex)
             {
                 this.logger.ErrorFormat(ex, "Failed to send notification email for RC {0}", rc);
                 throw;
+            }
+
+            foreach (var stalk in stalks)
+            {
+                stalk.LastMessageId = messageId;
             }
         }
 

@@ -2,6 +2,6 @@
 {
     public interface IEmailHelper
     {
-        void SendEmail(string message, string subject);
+        string SendEmail(string message, string subject, string inReplyTo);
     }
 }

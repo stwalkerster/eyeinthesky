@@ -14,8 +14,7 @@
             this.baseNode = new FalseNode();
         }
 
-        internal ComplexStalk(
-            string flag,
+        internal ComplexStalk(string flag,
             DateTime? lastUpdateTime,
             DateTime? lastTriggerTime,
             string description,
@@ -23,12 +22,14 @@
             bool mailEnabled,
             bool isEnabled,
             int triggerCount,
+            string lastMessageId,
             IStalkNode baseNode)
         {
             this.Flag = flag;
             this.LastUpdateTime = lastUpdateTime;
             this.LastTriggerTime = lastTriggerTime;
             this.TriggerCount = triggerCount;
+            this.LastMessageId = lastMessageId;
             this.description = description;
             this.expiryTime = expiryTime;
             this.mailEnabled = mailEnabled;
@@ -49,6 +50,8 @@
         public DateTime? LastTriggerTime { get; set; }
         
         public int TriggerCount { get; set; }
+        
+        public string LastMessageId { get; set; }
 
         public bool IsEnabled
         {

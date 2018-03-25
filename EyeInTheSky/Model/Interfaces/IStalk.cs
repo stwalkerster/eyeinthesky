@@ -15,6 +15,7 @@
         DateTime? ExpiryTime { get; set; }
         IStalkNode SearchTree { get; set; }
         int TriggerCount { get; set; }
+        string LastMessageId { get; set; }
         bool IsActive();
         bool Match(IRecentChange rc);
     }

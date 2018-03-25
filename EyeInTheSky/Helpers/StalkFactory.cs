@@ -94,6 +94,12 @@
                 description = null;
             }
 
+            var lastMessageId = element.GetAttribute("lastmessageid");
+            if (string.IsNullOrWhiteSpace(lastMessageId))
+            {
+                lastMessageId = null;
+            }
+
             IStalkNode baseNode = new FalseNode();
             if (element.HasChildNodes)
             {
@@ -109,6 +115,7 @@
                 mailEnabled,
                 enabled,
                 triggerCount,
+                lastMessageId,
                 baseNode);
 
             return s;
@@ -139,6 +146,11 @@
             if (stalk.Description != null)
             {
                 e.SetAttribute("description", stalk.Description);
+            }
+            
+            if (stalk.LastMessageId != null)
+            {
+                e.SetAttribute("lastmessageid", stalk.LastMessageId);
             }
 
             e.SetAttribute("enabled", XmlConvert.ToString(stalk.IsEnabled));
