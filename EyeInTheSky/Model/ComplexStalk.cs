@@ -22,11 +22,13 @@
             DateTime? expiryTime,
             bool mailEnabled,
             bool isEnabled,
+            int triggerCount,
             IStalkNode baseNode)
         {
             this.Flag = flag;
             this.LastUpdateTime = lastUpdateTime;
             this.LastTriggerTime = lastTriggerTime;
+            this.TriggerCount = triggerCount;
             this.description = description;
             this.expiryTime = expiryTime;
             this.mailEnabled = mailEnabled;
@@ -45,6 +47,8 @@
         public DateTime? LastUpdateTime { get; private set; }
 
         public DateTime? LastTriggerTime { get; set; }
+        
+        public int TriggerCount { get; set; }
 
         public bool IsEnabled
         {

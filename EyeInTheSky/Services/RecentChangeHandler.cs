@@ -97,6 +97,7 @@
             foreach (var stalk in stalks)
             {
                 stalk.LastTriggerTime = DateTime.Now;
+                stalk.TriggerCount++;
             }
             
             this.stalkConfig.Save();
@@ -211,7 +212,8 @@
                         stalk.SearchTree,
                         stalk.MailEnabled,
                         expiry,
-                        lastTrigger
+                        lastTrigger,
+                        stalk.TriggerCount
                     ));
             }
 

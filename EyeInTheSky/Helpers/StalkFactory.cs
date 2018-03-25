@@ -84,6 +84,10 @@
                 enabled = true;
             }
 
+            var triggercountText = element.GetAttribute("triggercount");
+            int triggerCount;
+            int.TryParse(triggercountText, out triggerCount);
+
             var description = element.GetAttribute("description");
             if (string.IsNullOrWhiteSpace(description))
             {
@@ -104,6 +108,7 @@
                 expiryTime,
                 mailEnabled,
                 enabled,
+                triggerCount,
                 baseNode);
 
             return s;
@@ -142,6 +147,8 @@
             {
                 e.SetAttribute("expiry", XmlConvert.ToString(stalk.ExpiryTime.Value, XmlDateTimeSerializationMode.Utc));
             }
+
+            e.SetAttribute("triggercount", XmlConvert.ToString(stalk.TriggerCount));
 
             e.AppendChild(this.stalkNodeFactory.ToXml(doc, xmlns, stalk.SearchTree));
             

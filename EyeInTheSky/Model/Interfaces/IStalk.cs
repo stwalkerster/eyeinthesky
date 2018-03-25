@@ -14,6 +14,7 @@
         string Description { get; set; }
         DateTime? ExpiryTime { get; set; }
         IStalkNode SearchTree { get; set; }
+        int TriggerCount { get; set; }
         bool IsActive();
         bool Match(IRecentChange rc);
     }
