@@ -70,6 +70,6 @@ namespace EyeInTheSky.Tests.StalkNodes
                 yield return new TestCaseData(n, new List<string> {"user", "sysop", "*", "autoconfirmed"})
                     .Returns(false);
             }
-        }  
+        }
     }
 }

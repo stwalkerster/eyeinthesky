@@ -37,6 +37,22 @@
             // act
             return this.mwApi.GetUserGroups(user).ToList();
         }
+        
+        [Test, TestCaseSource(typeof(MediaWikiApiTests), "CategoryParseTestCases")]
+        public bool ShouldParseCategoriesCorrectly(string input)
+        {
+            // arrange
+            var memstream = new MemoryStream();
+            var sw = new StreamWriter(memstream);
+            sw.Write(input);
+            sw.Flush();
+            memstream.Position = 0;
+            
+            this.wsClient.Setup(x => x.DoApiCall(It.IsAny<NameValueCollection>())).Returns(memstream);
+            
+            // act
+            return this.mwApi.PageIsInCategory(string.Empty, string.Empty);
+        }
 
         public static IEnumerable<TestCaseData> GroupParseTestCases
         {
@@ -54,6 +70,22 @@
                         "127.0.0.1",
                         "<?xml version=\"1.0\"?><api batchcomplete=\"\"><query><users><user name=\"127.0.0.1\" invalid=\"\" /></users></query></api>")
                     .Returns(new List<string> {"*"});
+            }
+        }
+
+        public static IEnumerable<TestCaseData> CategoryParseTestCases
+        {
+            get
+            {
+                yield return new TestCaseData(
+                        "<?xml version=\"1.0\"?><api batchcomplete=\"\"><query><pages><page _idx=\"534366\" pageid=\"534366\" ns=\"0\" title=\"Barack Obama\"><categories><cl ns=\"14\" title=\"Category:Living people\" /></categories></page></pages></query></api>")
+                    .Returns(true);
+                yield return new TestCaseData(
+                        "<?xml version=\"1.0\"?><api batchcomplete=\"\"><query><pages><page _idx=\"534366\" pageid=\"534366\" ns=\"0\" title=\"Barack Obama\" /></pages></query></api>")
+                    .Returns(false);
+                yield return new TestCaseData(
+                        "<?xml version=\"1.0\"?><api batchcomplete=\"\"><query><pages><page _idx=\"-1\" ns=\"0\" title=\"Nonexisdyrnfdnkdkdkkfd\" missing=\"\" /></pages></query></api>")
+                    .Returns(false);
             }
         }
     }

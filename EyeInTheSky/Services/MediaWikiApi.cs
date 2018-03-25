@@ -46,7 +46,35 @@
             
             return userGroups;
         }
-        
+
+        public bool PageIsInCategory(string page, string category)
+        {
+            this.logger.InfoFormat("Getting category {1} for {0} from webservice", page, category);
+            
+            var queryparams = new NameValueCollection
+            {
+                {"action", "query"},
+                {"prop", "categories"},
+                {"titles", page},
+                {"clcategories", category},
+            };
+
+            var result = this.GetCategories(this.wsClient.DoApiCall(queryparams)).ToList();
+            return result.Any();
+        }
+
+        private IEnumerable<string> GetCategories(Stream apiResult)
+        {
+            var nav = new XPathDocument(apiResult).CreateNavigator();
+            var groups = new List<string>();
+            foreach (var node in nav.Select("//categories/cl/@title"))
+            {
+                groups.Add(node.ToString());
+            }
+
+            return groups;
+        }
+
         private IEnumerable<string> GetGroups(Stream apiResult)
         {
             var nav = new XPathDocument(apiResult).CreateNavigator();

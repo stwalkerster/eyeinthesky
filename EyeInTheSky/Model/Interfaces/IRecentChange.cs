@@ -14,5 +14,6 @@
         IMediaWikiApi MediaWikiApi { get; set; }
 
         IEnumerable<string> GetUserGroups();
+        bool PageIsInCategory(string category);
     }
 }

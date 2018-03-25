@@ -48,6 +48,21 @@
             return this.usergroups;
         }
 
+        public bool PageIsInCategory(string category)
+        {
+            if (this.MediaWikiApi == null)
+            {
+                throw new InvalidOperationException("API helper not available");
+            }
+
+            if (!category.StartsWith("Category:"))
+            {
+                category = "Category:" + category;
+            }
+            
+            return this.MediaWikiApi.PageIsInCategory(this.Page, category);
+        }
+
         protected bool Equals(RecentChange other)
         {
             return string.Equals(this.Page, other.Page) && string.Equals(this.User, other.User)
