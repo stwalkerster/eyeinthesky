@@ -227,7 +227,7 @@ namespace EyeInTheSky.Commands
                     }
                     catch (XmlException ex)
                     {
-                        throw new CommandErrorException("XML error setting search tree", ex);
+                        throw new CommandErrorException(ex.Message, ex);
                     }
                     
                     yield return new CommandResponse
@@ -344,14 +344,29 @@ namespace EyeInTheSky.Commands
 
         private IEnumerable<CommandResponse> ListMode()
         {
+            var activeStalks = this.stalkConfig.Stalks.Where(x => x.Value.IsActive()).ToList();
+
+            if (!activeStalks.Any())
+            {
+                yield return new CommandResponse
+                {
+                    Message = "There are no active stalks.",
+                    Type = CommandResponseType.Notice,
+                    Destination = CommandResponseDestination.PrivateMessage
+                };
+                
+                yield break;
+            }
+            
             yield return new CommandResponse
             {
                 Message = "Active stalk list:",
                 Type = CommandResponseType.Notice,
                 Destination = CommandResponseDestination.PrivateMessage
             };
+
             
-            foreach (var kvp in this.stalkConfig.Stalks.Where(x => x.Value.IsActive()))
+            foreach (var kvp in activeStalks)
             {
                 yield return new CommandResponse
                 {
@@ -363,7 +378,7 @@ namespace EyeInTheSky.Commands
 
             yield return new CommandResponse
             {
-                Message = "End of stalk list:",
+                Message = "End of stalk list.",
                 Type = CommandResponseType.Notice,
                 Destination = CommandResponseDestination.PrivateMessage
             };
