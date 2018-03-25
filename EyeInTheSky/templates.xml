@@ -25,6 +25,7 @@ Description:         {1}
 Configuration:       {2}
 Email notifications: {3}
 Expiry:              {4}
+Last trigger:        {5}
 
 ]]></emailStalkTemplate>
                 <emailGreeting><![CDATA[Hi there!

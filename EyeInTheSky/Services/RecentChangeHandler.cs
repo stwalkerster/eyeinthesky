@@ -198,6 +198,10 @@
                 var expiry = stalk.ExpiryTime.HasValue
                     ? stalk.ExpiryTime.Value.ToString(this.appConfig.DateFormat)
                     : "never";
+                
+                var lastTrigger = stalk.LastTriggerTime.HasValue
+                    ? stalk.LastTriggerTime.Value.ToString(this.appConfig.DateFormat)
+                    : "never";
 
                 stalkInfo.Append(
                     string.Format(
@@ -206,7 +210,8 @@
                         stalk.Description,
                         stalk.SearchTree,
                         stalk.MailEnabled,
-                        expiry
+                        expiry,
+                        lastTrigger
                     ));
             }
 
