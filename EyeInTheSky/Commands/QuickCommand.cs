@@ -4,13 +4,10 @@ namespace EyeInTheSky.Commands
 {
     using System.Collections.Generic;
     using System.Linq;
-    using System.Xml;
     using Castle.Core.Logging;
     using EyeInTheSky.Extensions;
     using EyeInTheSky.Model;
-    using EyeInTheSky.StalkNodes;
     using Stwalkerster.Bot.CommandLib.Attributes;
-    using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities.Models;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities.Response;
     using Stwalkerster.Bot.CommandLib.Exceptions;
@@ -20,11 +17,8 @@ namespace EyeInTheSky.Commands
 
     [CommandInvocation("quick")]
     [CommandFlag(Stwalkerster.Bot.CommandLib.Model.Flag.Protected)]
-    public class QuickCommand : CommandBase
+    public class QuickCommand : StalkCommandBase
     {
-        private readonly StalkConfiguration stalkConfig;
-        private readonly IStalkNodeFactory stalkNodeFactory;
-
         public QuickCommand(string commandSource,
             IUser user,
             IEnumerable<string> arguments,
@@ -40,10 +34,10 @@ namespace EyeInTheSky.Commands
             logger,
             flagService,
             configurationProvider,
-            client)
+            client,
+            stalkConfig,
+            stalkNodeFactory)
         {
-            this.stalkConfig = stalkConfig;
-            this.stalkNodeFactory = stalkNodeFactory;
         }
 
         #region Overrides of GenericCommand
@@ -57,76 +51,34 @@ namespace EyeInTheSky.Commands
                 throw new ArgumentCountException(3, tokenList.Count);
             }
 
-            var name = tokenList.PopFromFront();
-            var type = tokenList.PopFromFront();
+            var stalkName = tokenList.PopFromFront();
+            var stalkType = tokenList.PopFromFront();
             var stalkTarget = string.Join(" ", tokenList);
 
-            var s = new ComplexStalk(name);
+            var stalk = new ComplexStalk(stalkName);
 
-            if (this.stalkConfig.Stalks.ContainsKey(name))
+            if (this.StalkConfig.Stalks.ContainsKey(stalkName))
             {
                 throw new CommandErrorException("This stalk already exists!");
             }
 
-            this.stalkConfig.Stalks.Add(name, s);
+            this.StalkConfig.Stalks.Add(stalkName, stalk);
 
-            switch (type)
+            var stalkNode = this.CreateNode(stalkType, stalkTarget);
+            stalk.SearchTree = stalkNode;
+
+            yield return new CommandResponse
             {
-                case "user":
-                    var usn = new UserStalkNode();
-                    usn.SetMatchExpression(stalkTarget);
-                    s.SearchTree = usn;
-                    yield return new CommandResponse
-                    {
-                        Message = string.Format("Set {0} for new stalk {1} with CSL value: {2}", type, name, usn)
-                    };
-                    break;
-                case "page":
-                    var psn = new PageStalkNode();
-                    psn.SetMatchExpression(stalkTarget);
-                    s.SearchTree = psn;
-                    yield return new CommandResponse
-                    {
-                        Message = string.Format("Set {0} for new stalk {1} with CSL value: {2}", type, name, psn)
-                    };
-                    break;
-                case "summary":
-                    var ssn = new SummaryStalkNode();
-                    ssn.SetMatchExpression(stalkTarget);
-                    s.SearchTree = ssn;
-                    yield return new CommandResponse
-                    {
-                        Message = string.Format("Set {0} for new stalk {1} with CSL value: {2}", type, name, ssn)
-                    };
-                    break;
-                case "xml":
-                    var xmlfragment = stalkTarget;
-                    IStalkNode node;
-                    try
-                    {
-                        var xd = new XmlDocument();
-                        xd.LoadXml(xmlfragment);
+                Message = string.Format(
+                    "Set {0} for new stalk {1} with CSL value: {2}",
+                    stalkType,
+                    stalkName,
+                    stalkNode)
+            };
 
-                        node = this.stalkNodeFactory.NewFromXmlFragment((XmlElement) xd.FirstChild);
-                        s.SearchTree = node;
-                    }
-                    catch (XmlException ex)
-                    {
-                        throw new CommandErrorException("XML error setting search tree", ex);
-                    }
+            stalk.IsEnabled = true;
 
-                    yield return new CommandResponse
-                    {
-                        Message = string.Format("Set {0} for new stalk {1} with CSL value: {2}", type, name, node)
-                    };
-                    break;
-                default:
-                    throw new CommandErrorException("Unknown stalk type");
-            }
-
-            s.IsEnabled = true;
-
-            this.stalkConfig.Save();
+            this.StalkConfig.Save();
         }
 
         protected override IDictionary<string, HelpMessage> Help()

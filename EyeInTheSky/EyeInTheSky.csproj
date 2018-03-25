@@ -83,6 +83,7 @@
     <Compile Include="Attributes\StalkNodeTypeAttribute.cs" />
     <Compile Include="Commands\AccCommand.cs" />
     <Compile Include="Commands\QuickCommand.cs" />
+    <Compile Include="Commands\StalkCommandBase.cs" />
     <Compile Include="Commands\StalkReportCommand.cs" />
     <Compile Include="Extensions\ListExtensions.cs" />
     <Compile Include="Helpers\EmailHelper.cs" />

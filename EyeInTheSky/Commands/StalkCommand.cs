@@ -1,17 +1,14 @@
-﻿using EyeInTheSky.Helpers.Interfaces;
-
-namespace EyeInTheSky.Commands
+﻿namespace EyeInTheSky.Commands
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Xml;
     using Castle.Core.Logging;
     using EyeInTheSky.Extensions;
+    using EyeInTheSky.Helpers.Interfaces;
     using EyeInTheSky.Model;
     using EyeInTheSky.StalkNodes;
     using Stwalkerster.Bot.CommandLib.Attributes;
-    using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities.Models;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities.Response;
     using Stwalkerster.Bot.CommandLib.Exceptions;
@@ -21,11 +18,8 @@ namespace EyeInTheSky.Commands
 
     [CommandInvocation("stalk")]
     [CommandFlag(Stwalkerster.Bot.CommandLib.Model.Flag.Protected)]
-    public class StalkCommand : CommandBase
+    public class StalkCommand : StalkCommandBase
     {
-        private readonly StalkConfiguration stalkConfig;
-        private readonly IStalkNodeFactory stalkNodeFactory;
-
         public StalkCommand(string commandSource,
             IUser user,
             IEnumerable<string> arguments,
@@ -41,10 +35,10 @@ namespace EyeInTheSky.Commands
             logger,
             flagService,
             configurationProvider,
-            client)
+            client,
+            stalkConfig,
+            stalkNodeFactory)
         {
-            this.stalkConfig = stalkConfig;
-            this.stalkNodeFactory = stalkNodeFactory;
         }
 
         protected override IEnumerable<CommandResponse> Execute()
@@ -57,200 +51,106 @@ namespace EyeInTheSky.Commands
             }
 
             string mode = tokenList.PopFromFront();
-            
+
             switch (mode)
             {
                 case "add":
                     return this.AddMode(tokenList);
-                case "del":
-                    return this.DeleteMode(tokenList);
-                case "set":
-                    return this.SetMode(tokenList);
                 case "list":
                     return this.ListMode();
+            }
+
+            var stalkName = tokenList.PopFromFront();
+            if (!this.StalkConfig.Stalks.ContainsKey(stalkName))
+            {
+                throw new CommandErrorException(string.Format("Can't find the stalk '{0}'!", stalkName));
+            }
+            
+            switch (mode)
+            {
+                case "del":
+                    return this.DeleteMode(stalkName);
+                case "set":
+                    return this.SetMode(tokenList, stalkName);
                 case "mail":
-                    return this.MailMode(tokenList);
+                    return this.MailMode(tokenList, stalkName);
                 case "description":
-                    return this.DescriptionMode(tokenList);
+                    return this.DescriptionMode(tokenList, stalkName);
                 case "expiry":
-                    return this.ExpiryMode(tokenList);
+                    return this.ExpiryMode(tokenList, stalkName);
                 case "enabled":
-                    return this.EnabledMode(tokenList);
+                    return this.EnabledMode(tokenList, stalkName);
                 case "and":
-                    return this.AndMode(tokenList);
+                    return this.AndMode(tokenList, stalkName);
                 case "or":
-                    return this.OrMode(tokenList);
+                    return this.OrMode(tokenList, stalkName);
                 default:
                     throw new CommandInvocationException();
             }
         }
 
-        private IEnumerable<CommandResponse> OrMode(List<string> tokenList)
+        private IEnumerable<CommandResponse> OrMode(List<string> tokenList, string stalkName)
         {
-            if (tokenList.Count < 2)
+            if (tokenList.Count < 1)
             {
                 throw new ArgumentCountException(3, this.Arguments.Count());
             }
 
-            string stalk = tokenList.PopFromFront();
-
-            var s = this.stalkConfig.Stalks[stalk];
-
-            string type = tokenList.PopFromFront();
-
-            string stalkTarget = string.Join(" ", tokenList);
-
-            var newroot = new OrNode {LeftChildNode = s.SearchTree};
-
-            switch (type)
-            {
-                case "user":
-                    var usn = new UserStalkNode();
-                    usn.SetMatchExpression(stalkTarget);
-                    newroot.RightChildNode = usn;
-                    s.SearchTree = newroot;
-                    yield return new CommandResponse
-                    {
-                        Message = string.Format("Set {0} for stalk {1} with CSL value: {2}", type, stalk, newroot)
-                    };
-                    break;
-                case "page":
-                    var psn = new PageStalkNode();
-                    psn.SetMatchExpression(stalkTarget);
-                    newroot.RightChildNode = psn;
-                    s.SearchTree = newroot;
-                    yield return new CommandResponse
-                    {
-                        Message = string.Format("Set {0} for stalk {1} with CSL value: {2}", type, stalk, newroot)
-                    };
-                    break;
-                case "summary":
-                    var ssn = new SummaryStalkNode();
-                    ssn.SetMatchExpression(stalkTarget);
-                    newroot.RightChildNode = ssn;
-                    s.SearchTree = newroot;
-                    yield return new CommandResponse
-                    {
-                        Message = string.Format("Set {0} for stalk {1} with CSL value: {2}", type, stalk, newroot)
-                    };
-                    break;
-                case "xml":
-                    string xmlfragment = stalkTarget;
-                    try
-                    {
-                        var xd = new XmlDocument();
-                        xd.LoadXml(xmlfragment);
-
-                        var node = this.stalkNodeFactory.NewFromXmlFragment((XmlElement) xd.FirstChild);
-
-                        newroot.RightChildNode = node;
-                        s.SearchTree = newroot;
-                    }
-                    catch (XmlException ex)
-                    {
-                        throw new CommandErrorException("XML error setting search tree", ex);
-                    }
-                    
-                    yield return new CommandResponse
-                    {
-                        Message = string.Format("Set {0} for stalk {1} with CSL value: {2}", type, stalk, newroot)
-                    };
-
-                    break;
-                default:
-                    throw new CommandErrorException("Unknown stalk type!");
-            }
+            var newStalkType = tokenList.PopFromFront();
             
-            this.stalkConfig.Save();
+            var stalk = this.StalkConfig.Stalks[stalkName];
+            var newTarget = string.Join(" ", tokenList);
+
+            var newroot = new OrNode
+            {
+                LeftChildNode = stalk.SearchTree,
+                RightChildNode = this.CreateNode(newStalkType, newTarget)
+            };
+            
+            stalk.SearchTree = newroot;
+            
+            yield return new CommandResponse
+            {
+                Message = string.Format("Set {0} for stalk {1} with CSL value: {2}", newStalkType, stalkName, newroot)
+            };
+            
+            this.StalkConfig.Save();
         }
 
-        private IEnumerable<CommandResponse> AndMode(List<string> tokenList)
+        private IEnumerable<CommandResponse> AndMode(List<string> tokenList, string stalkName)
         {
-            if (tokenList.Count < 2)
+            if (tokenList.Count < 1)
             {
                 throw new ArgumentCountException(3, this.Arguments.Count());
             }
 
-            string stalk = tokenList.PopFromFront();
+            var newStalkType = tokenList.PopFromFront();
 
-            var s = this.stalkConfig.Stalks[stalk];
+            var stalk = this.StalkConfig.Stalks[stalkName];
+            var newTarget = string.Join(" ", tokenList);
 
-            string type = tokenList.PopFromFront();
-
-            string stalkTarget = string.Join(" ", tokenList);
-
-            var newroot = new AndNode {LeftChildNode = s.SearchTree};
-
-            switch (type)
+            var newroot = new AndNode
             {
-                case "user":
-                    var usn = new UserStalkNode();
-                    usn.SetMatchExpression(stalkTarget);
-                    newroot.RightChildNode = usn;
-                    s.SearchTree = newroot;
-                    yield return new CommandResponse
-                    {
-                        Message = string.Format("Set {0} for stalk {1} with CSL value: {2}", type, stalk, newroot)
-                    };
-                    break;
-                case "page":
-                    var psn = new PageStalkNode();
-                    psn.SetMatchExpression(stalkTarget);
-                    newroot.RightChildNode = psn;
-                    s.SearchTree = newroot;
-                    yield return new CommandResponse
-                    {
-                        Message = string.Format("Set {0} for stalk {1} with CSL value: {2}", type, stalk, newroot)
-                    };
-                    break;
-                case "summary":
-                    var ssn = new SummaryStalkNode();
-                    ssn.SetMatchExpression(stalkTarget);
-                    newroot.RightChildNode = ssn;
-                    s.SearchTree = newroot;
-                    yield return new CommandResponse
-                    {
-                        Message = string.Format("Set {0} for stalk {1} with CSL value: {2}", type, stalk, newroot)
-                    };
-                    break;
-                case "xml":
-                    string xmlfragment = stalkTarget;
-                    try
-                    {
-                        var xd = new XmlDocument();
-                        xd.LoadXml(xmlfragment);
-
-                        var node = this.stalkNodeFactory.NewFromXmlFragment((XmlElement) xd.FirstChild);
-
-                        newroot.RightChildNode = node;
-                        s.SearchTree = newroot;
-                    }
-                    catch (XmlException ex)
-                    {
-                        throw new CommandErrorException(ex.Message, ex);
-                    }
-                    
-                    yield return new CommandResponse
-                    {
-                        Message = string.Format("Set {0} for stalk {1} with CSL value: {2}", type, stalk, newroot)
-                    };
-
-                    break;
-                default:
-                    throw new CommandErrorException("Unknown stalk type!");
-            }
+                LeftChildNode = stalk.SearchTree,
+                RightChildNode = this.CreateNode(newStalkType, newTarget)
+            };
             
-            this.stalkConfig.Save();
+            stalk.SearchTree = newroot;
+            
+            yield return new CommandResponse
+            {
+                Message = string.Format("Set {0} for stalk {1} with CSL value: {2}", newStalkType, stalkName, newroot)
+            };
+
+            this.StalkConfig.Save();
         }
 
-        private IEnumerable<CommandResponse> EnabledMode(List<string> tokenList)
+        private IEnumerable<CommandResponse> EnabledMode(List<string> tokenList, string stalkName)
         {
-            if (tokenList.Count < 2)
+            if (tokenList.Count < 1)
             {
                 throw new ArgumentCountException(3, this.Arguments.Count());
             }
-
-            var stalkName = tokenList.PopFromFront();
             
             bool enabled;
             var possibleBoolean = tokenList.PopFromFront();
@@ -267,60 +167,63 @@ namespace EyeInTheSky.Commands
                 Message = string.Format("Set enabled attribute on stalk {0} to {1}", stalkName, enabled)
             };
             
-            this.stalkConfig.Stalks[stalkName].IsEnabled = enabled;
+            this.StalkConfig.Stalks[stalkName].IsEnabled = enabled;
             
-            this.stalkConfig.Save();
+            this.StalkConfig.Save();
         }
 
-        private IEnumerable<CommandResponse> ExpiryMode(List<string> tokenList)
-        {
-            if (tokenList.Count < 2)
-            {
-                throw new ArgumentCountException(3, this.Arguments.Count());
-            }
-
-            var stalk = tokenList.PopFromFront();
-            var date = string.Join(" ", tokenList);
-
-            var expiryTime = DateTime.Parse(date);
-            this.stalkConfig.Stalks[stalk].ExpiryTime = expiryTime;
-            
-            yield return new CommandResponse
-            {
-                Message = string.Format("Set expiry attribute on stalk {0} to {1}", stalk, expiryTime)
-            };
-            
-            this.stalkConfig.Save();
-        }
-
-        private IEnumerable<CommandResponse> DescriptionMode(List<string> tokenList)
+        private IEnumerable<CommandResponse> ExpiryMode(List<string> tokenList, string stalkName)
         {
             if (tokenList.Count < 1)
             {
-                throw new ArgumentCountException(2, this.Arguments.Count());
-            }
-
-            string stalk = tokenList.PopFromFront();
-            string descr = string.Join(" ", tokenList);
-
-            this.stalkConfig.Stalks[stalk].Description = descr;
-            
-            yield return new CommandResponse
-            {
-                Message = string.Format("Set description attribute on stalk {0} to {1}", stalk, descr)
-            };
-            
-            this.stalkConfig.Save();
-        }
-
-        private IEnumerable<CommandResponse> MailMode(List<string> tokenList)
-        {
-            if (tokenList.Count < 2)
-            {
                 throw new ArgumentCountException(3, this.Arguments.Count());
             }
 
-            var stalkName = tokenList.PopFromFront();
+            var date = string.Join(" ", tokenList);
+
+            var expiryTime = DateTime.Parse(date);
+            this.StalkConfig.Stalks[stalkName].ExpiryTime = expiryTime;
+            
+            yield return new CommandResponse
+            {
+                Message = string.Format("Set expiry attribute on stalk {0} to {1}", stalkName, expiryTime)
+            };
+            
+            this.StalkConfig.Save();
+        }
+
+        private IEnumerable<CommandResponse> DescriptionMode(List<string> tokenList, string stalkName)
+        {
+            var descr = string.Join(" ", tokenList);
+
+            if (string.IsNullOrWhiteSpace(descr))
+            {
+                this.StalkConfig.Stalks[stalkName].Description = null;
+                
+                yield return new CommandResponse
+                {
+                    Message = string.Format("Cleared description attribute on stalk {0}", stalkName)
+                };
+            }
+            else
+            {
+                this.StalkConfig.Stalks[stalkName].Description = descr;
+
+                yield return new CommandResponse
+                {
+                    Message = string.Format("Set description attribute on stalk {0} to {1}", stalkName, descr)
+                };
+            }
+
+            this.StalkConfig.Save();
+        }
+
+        private IEnumerable<CommandResponse> MailMode(List<string> tokenList, string stalkName)
+        {
+            if (tokenList.Count < 1)
+            {
+                throw new ArgumentCountException(3, this.Arguments.Count());
+            }
 
             bool mail;
             var possibleBoolean = tokenList.PopFromFront();
@@ -337,14 +240,14 @@ namespace EyeInTheSky.Commands
                 Message = string.Format("Set immediatemail attribute on stalk {0} to {1}", stalkName, mail)
             };
             
-            this.stalkConfig.Stalks[stalkName].MailEnabled = mail;
+            this.StalkConfig.Stalks[stalkName].MailEnabled = mail;
             
-            this.stalkConfig.Save();
+            this.StalkConfig.Save();
         }
 
         private IEnumerable<CommandResponse> ListMode()
         {
-            var activeStalks = this.stalkConfig.Stalks.Where(x => x.Value.IsActive()).ToList();
+            var activeStalks = this.StalkConfig.Stalks.Where(x => x.Value.IsActive()).ToList();
 
             if (!activeStalks.Any())
             {
@@ -383,102 +286,42 @@ namespace EyeInTheSky.Commands
                 Destination = CommandResponseDestination.PrivateMessage
             };
 
-            this.stalkConfig.Save();
+            this.StalkConfig.Save();
         }
 
-        private IEnumerable<CommandResponse> SetMode(List<string> tokenList)
+        private IEnumerable<CommandResponse> SetMode(List<string> tokenList, string stalkName)
         {
-            if (tokenList.Count < 2)
+            if (tokenList.Count < 1)
             {
                 throw new ArgumentCountException(3, this.Arguments.Count());
             }
 
-            var stalk = tokenList.PopFromFront();
+            var newStalkType = tokenList.PopFromFront();
 
-            if (!this.stalkConfig.Stalks.ContainsKey(stalk))
+            var stalk = this.StalkConfig.Stalks[stalkName];
+            var newTarget = string.Join(" ", tokenList);
+
+            var newroot = this.CreateNode(newStalkType, newTarget);
+            stalk.SearchTree = newroot;
+
+            yield return new CommandResponse
             {
-                throw new CommandErrorException(string.Format("Can't find the stalk '{0}'!", stalk));
-            }
-
-            var s = this.stalkConfig.Stalks[stalk];
-
-            var type = tokenList.PopFromFront();
-            var regex = string.Join(" ", tokenList);
-
-            switch (type)
-            {
-                case "user":
-                    var usn = new UserStalkNode();
-                    usn.SetMatchExpression(regex);
-                    s.SearchTree = usn;
-                    yield return new CommandResponse
-                    {
-                        Message = string.Format("Set {0} for stalk {1} with CSL value: {2}", type, stalk, usn)
-                    };
-                    break;
-                case "page":
-                    var psn = new PageStalkNode();
-                    psn.SetMatchExpression(regex);
-                    s.SearchTree = psn;
-                    yield return new CommandResponse
-                    {
-                        Message = string.Format("Set {0} for stalk {1} with CSL value: {2}", type, stalk, psn)
-                    };
-                    break;
-                case "summary":
-                    var ssn = new SummaryStalkNode();
-                    ssn.SetMatchExpression(regex);
-                    s.SearchTree = ssn;
-                    yield return new CommandResponse
-                    {
-                        Message = string.Format("Set {0} for stalk {1} with CSL value: {2}", type, stalk, ssn)
-                    };
-                    break;
-                case "xml":
-                    var xmlfragment = string.Join(" ", tokenList);
-                    IStalkNode node;
-                    try
-                    {
-                        var xd = new XmlDocument();
-                        xd.LoadXml(xmlfragment);
-
-                        node = this.stalkNodeFactory.NewFromXmlFragment((XmlElement) xd.FirstChild);
-                        s.SearchTree = node;
-                    }
-                    catch (XmlException ex)
-                    {
-                        throw new CommandErrorException("XML error setting search tree", ex);
-                    }
-
-                    yield return new CommandResponse
-                    {
-                        Message = string.Format("Set {0} for stalk {1} with CSL value: {2}", type, stalk, node)
-                    };
-                    break;
-                default:
-                    throw new CommandErrorException("Unknown stalk type!");
-            }
+                Message = string.Format("Set {0} for stalk {1} with CSL value: {2}", newStalkType, stalkName, newroot)
+            };
             
-            this.stalkConfig.Save();
+            this.StalkConfig.Save();
         }
 
-        private IEnumerable<CommandResponse> DeleteMode(List<string> tokenList)
+        private IEnumerable<CommandResponse> DeleteMode(string stalkName)
         {
-            if (tokenList.Count < 1)
-            {
-                throw new ArgumentCountException(2, this.Arguments.Count());
-            }
-
-            var stalkName = tokenList.First();
-
-            this.stalkConfig.Stalks.Remove(stalkName);
+            this.StalkConfig.Stalks.Remove(stalkName);
             
             yield return new CommandResponse
             {
                 Message = string.Format("Deleted stalk {0}", stalkName)
             };
             
-            this.stalkConfig.Save();
+            this.StalkConfig.Save();
         }
 
         private IEnumerable<CommandResponse> AddMode(List<string> tokenList)
@@ -489,16 +332,16 @@ namespace EyeInTheSky.Commands
             }
 
             var stalkName = tokenList.First();
-            var s = new ComplexStalk(stalkName);
+            var stalk = new ComplexStalk(stalkName);
 
-            this.stalkConfig.Stalks.Add(stalkName, s);
+            this.StalkConfig.Stalks.Add(stalkName, stalk);
             
             yield return new CommandResponse
             {
-                Message = string.Format("Added stalk {0} with CSL value: {1}", stalkName, s.SearchTree)
+                Message = string.Format("Added disabled stalk {0} with CSL value: {1}", stalkName, stalk.SearchTree)
             };
             
-            this.stalkConfig.Save();
+            this.StalkConfig.Save();
         }
 
         protected override IDictionary<string, HelpMessage> Help()

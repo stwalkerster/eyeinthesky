@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text.RegularExpressions;
     using EyeInTheSky.Model;
     using EyeInTheSky.StalkNodes;
     using Castle.Core.Logging;
@@ -51,56 +52,43 @@
                 throw new ArgumentCountException(2, tokenList.Count);
             }
 
-            var id = tokenList.PopFromFront();
-            var user = string.Join(" ", tokenList);
+            var accRequestId = tokenList.PopFromFront();
+            var username = string.Join(" ", tokenList);
+            var regexData = Regex.Escape(username);
+            
+            var userStalkNode = new UserStalkNode();
+            var pageStalkNode = new PageStalkNode();
+            var summaryStalkNode = new SummaryStalkNode();
 
-            var s = new ComplexStalk("acc" + id);
+            userStalkNode.SetMatchExpression(regexData);
+            pageStalkNode.SetMatchExpression(regexData);
+            summaryStalkNode.SetMatchExpression(regexData);
 
-            var or = new OrNode();
+            var rootNode = new OrNode
+            {
+                LeftChildNode = new OrNode
+                {
+                    LeftChildNode = userStalkNode,
+                    RightChildNode = pageStalkNode
+                },
+                RightChildNode = summaryStalkNode
+            };
 
-            var uor = new OrNode();
-            var usn = new UserStalkNode();
-            usn.SetMatchExpression(user);
+            var stalk = new ComplexStalk("acc" + accRequestId)
+            {
+                MailEnabled = true,
+                Description = "ACC " + accRequestId + ": " + username,
+                SearchTree = rootNode,
+                IsEnabled = true,
+                ExpiryTime = DateTime.Now.AddMonths(3)
+            };
 
-            var psn = new PageStalkNode();
-            psn.SetMatchExpression(user);
-
-            uor.LeftChildNode = usn;
-            uor.RightChildNode = psn;
-
-            var upor = new OrNode();
-
-            var upsn = new PageStalkNode();
-            upsn.SetMatchExpression("User:" + user);
-
-            var utpsn = new PageStalkNode();
-            utpsn.SetMatchExpression("User talk:" + user);
-
-            upor.LeftChildNode = upsn;
-            upor.RightChildNode = utpsn;
-
-            var ssn = new SummaryStalkNode();
-            ssn.SetMatchExpression(user);
-
-            var or2 = new OrNode();
-            or2.LeftChildNode = uor;
-            or2.RightChildNode = upor;
-
-            or.LeftChildNode = or2;
-            or.RightChildNode = ssn;
-            s.MailEnabled = true;
-            s.Description = "ACC " + id + ": " + user;
-            s.SearchTree = or;
-            s.IsEnabled = true;
-
-            s.ExpiryTime = DateTime.Now.AddMonths(3);
-
-            this.stalkConfig.Stalks.Add("acc" + id, s);
+            this.stalkConfig.Stalks.Add("acc" + accRequestId, stalk);
             this.stalkConfig.Save();
 
             yield return new CommandResponse
             {
-                Message = string.Format("Set new stalk {0} with CSL value: {1}", s.Flag, or)
+                Message = string.Format("Set new stalk {0} with CSL value: {1}", stalk.Flag, stalk.SearchTree)
             };
         }
 
