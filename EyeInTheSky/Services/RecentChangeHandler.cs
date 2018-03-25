@@ -22,13 +22,15 @@
         private readonly IIrcClient freenodeClient;
         private readonly IRecentChangeParser rcParser;
         private readonly IEmailHelper emailHelper;
+        private readonly INotificationTemplates templates;
 
         public RecentChangeHandler(IAppConfiguration appConfig,
             ILogger logger,
             StalkConfiguration stalkConfig,
             IIrcClient freenodeClient,
             IRecentChangeParser rcParser,
-            IEmailHelper emailHelper)
+            IEmailHelper emailHelper,
+            INotificationTemplates templates)
         {
             this.appConfig = appConfig;
             this.logger = logger;
@@ -36,6 +38,7 @@
             this.freenodeClient = freenodeClient;
             this.rcParser = rcParser;
             this.emailHelper = emailHelper;
+            this.templates = templates;
 
             if (this.appConfig.EmailConfiguration == null)
             {
@@ -100,9 +103,8 @@
                 this.logger.Debug("Not sending email; no matched stalks support it.");
                 return;
             }
-
-            var mailConfig = this.appConfig.EmailConfiguration;
-            if (mailConfig == null)
+            
+            if (this.appConfig.EmailConfiguration == null)
             {
                 this.logger.Debug("Not sending email; email configuration is disabled");
                 return;
@@ -113,15 +115,8 @@
             try
             {
                 this.emailHelper.SendEmail(
-                    mailConfig.Sender,
-                    mailConfig.To,
-                    string.Format(mailConfig.Subject, stalkList, rc.Page),
                     this.FormatMessageForEmail(stalks, rc),
-                    mailConfig.Hostname,
-                    mailConfig.Port,
-                    mailConfig.Username,
-                    mailConfig.Password,
-                    mailConfig.Thumbprint);
+                    string.Format(this.templates.EmailRcSubject, stalkList, rc.Page));
             }
             catch (Exception ex)
             {
@@ -143,7 +138,7 @@
             {
                 if (!first)
                 {
-                    stalkTags.Append(this.appConfig.IrcStalkTagSeparator);
+                    stalkTags.Append(this.templates.IrcStalkTagSeparator);
                 }
                 
                 first = false;
@@ -152,7 +147,7 @@
             }
 
             return string.Format(
-                this.appConfig.IrcAlertFormat,
+                this.templates.IrcAlertFormat,
                 stalkTags,
                 rc.Url,
                 rc.Page,
@@ -166,27 +161,11 @@
 
         public string FormatMessageForEmail(IEnumerable<IStalk> stalks, IRecentChange rc)
         {
-            var stalkInfo = new StringBuilder();
-            foreach (var stalk in stalks)
-            {
-                var expiry = stalk.ExpiryTime.HasValue
-                    ? stalk.ExpiryTime.Value.ToString(this.appConfig.DateFormat)
-                    : "never";
-                
-                stalkInfo.Append(
-                    string.Format(
-                        this.appConfig.EmailStalkTemplate,
-                        stalk.Flag,
-                        stalk.Description,
-                        stalk.SearchTree,
-                        stalk.MailEnabled,
-                        expiry
-                    ));
-            }
+            var stalksFormatted = this.FormatStalkListForEmail(stalks);
 
             return string.Format(
-                this.appConfig.EmailRcTemplate,
-                stalkInfo.ToString().TrimEnd(),
+                this.templates.EmailRcTemplate,
+                stalksFormatted,
                 rc.Url,
                 rc.Page,
                 rc.User,
@@ -195,6 +174,30 @@
                 rc.EditFlags,
                 DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToLongTimeString()
             );
+        }
+
+        public string FormatStalkListForEmail(IEnumerable<IStalk> stalks)
+        {
+            var stalkInfo = new StringBuilder();
+            foreach (var stalk in stalks)
+            {
+                var expiry = stalk.ExpiryTime.HasValue
+                    ? stalk.ExpiryTime.Value.ToString(this.appConfig.DateFormat)
+                    : "never";
+
+                stalkInfo.Append(
+                    string.Format(
+                        this.templates.EmailStalkTemplate,
+                        stalk.Flag,
+                        stalk.Description,
+                        stalk.SearchTree,
+                        stalk.MailEnabled,
+                        expiry
+                    ));
+            }
+
+            var stalksFormatted = stalkInfo.ToString().TrimEnd();
+            return stalksFormatted;
         }
     }
 }

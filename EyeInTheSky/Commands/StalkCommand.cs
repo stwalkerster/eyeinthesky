@@ -284,7 +284,6 @@ namespace EyeInTheSky.Commands
 
             var expiryTime = DateTime.Parse(date);
             this.stalkConfig.Stalks[stalk].ExpiryTime = expiryTime;
-            this.Client.SendMessage(this.CommandSource, "Set expiry attribute on stalk " + stalk + " to " + expiryTime);
             
             yield return new CommandResponse
             {
@@ -347,12 +346,12 @@ namespace EyeInTheSky.Commands
         {
             yield return new CommandResponse
             {
-                Message = "Stalk list:",
+                Message = "Active stalk list:",
                 Type = CommandResponseType.Notice,
                 Destination = CommandResponseDestination.PrivateMessage
             };
             
-            foreach (var kvp in this.stalkConfig.Stalks)
+            foreach (var kvp in this.stalkConfig.Stalks.Where(x => x.Value.IsActive()))
             {
                 yield return new CommandResponse
                 {
@@ -496,7 +495,7 @@ namespace EyeInTheSky.Commands
                     new HelpMessage(
                         this.CommandName,
                         "list",
-                        "Lists all configured stalks")
+                        "Lists all active stalks")
                 },{
                     "add",
                     new HelpMessage(

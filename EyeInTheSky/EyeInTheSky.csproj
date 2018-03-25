@@ -83,21 +83,26 @@
     <Compile Include="Attributes\StalkNodeTypeAttribute.cs" />
     <Compile Include="Commands\AccCommand.cs" />
     <Compile Include="Commands\QuickCommand.cs" />
+    <Compile Include="Commands\StalkReportCommand.cs" />
     <Compile Include="Extensions\ListExtensions.cs" />
+    <Compile Include="Helpers\EmailHelper.cs" />
     <Compile Include="Helpers\Interfaces\IEmailHelper.cs" />
+    <Compile Include="Helpers\Interfaces\IEmailSender.cs" />
     <Compile Include="Helpers\Interfaces\IStalkFactory.cs" />
     <Compile Include="Helpers\Interfaces\IStalkNodeFactory.cs" />
     <Compile Include="Helpers\StalkFactory.cs" />
-    <Compile Include="Helpers\EmailHelper.cs" />
+    <Compile Include="Helpers\EmailSender.cs" />
     <Compile Include="Helpers\StalkNodeFactory.cs" />
     <Compile Include="Model\AppConfiguration.cs" />
     <Compile Include="Model\ComplexStalk.cs" />
     <Compile Include="Model\EmailConfiguration.cs" />
     <Compile Include="Model\Interfaces\IAppConfiguration.cs" />
+    <Compile Include="Model\Interfaces\INotificationTemplates.cs" />
     <Compile Include="Model\Interfaces\IRecentChange.cs" />
     <Compile Include="Model\Interfaces\IStalk.cs" />
     <Compile Include="Model\RecentChange.cs" />
     <Compile Include="Model\StalkConfiguration.cs" />
+    <Compile Include="Model\NotificationTemplates.cs" />
     <Compile Include="Services\ConfigurationProvider.cs" />
     <Compile Include="Services\BasicFlagService.cs" />
     <Compile Include="Services\Interfaces\IMediaWikiApi.cs" />
@@ -144,6 +149,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="log4net.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="templates.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

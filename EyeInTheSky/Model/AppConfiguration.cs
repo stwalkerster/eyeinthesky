@@ -11,10 +11,6 @@ namespace EyeInTheSky.Model
             string commandPrefix,
             string stalkConfigFile,
             string rcUser,
-            string ircAlertFormat,
-            string ircStalkTagSeparator,
-            string emailRcTemplate,
-            string emailStalkTemplate,
             string dateFormat,
             string owner,
             string mediaWikiApiEndpoint,
@@ -45,26 +41,6 @@ namespace EyeInTheSky.Model
                 throw new ArgumentNullException("rcUser");
             }
 
-            if (ircAlertFormat == null)
-            {
-                throw new ArgumentNullException("ircAlertFormat");
-            }
-
-            if (ircStalkTagSeparator == null)
-            {
-                throw new ArgumentNullException("ircStalkTagSeparator");
-            }
-
-            if (emailRcTemplate == null)
-            {
-                throw new ArgumentNullException("emailRcTemplate");
-            }
-
-            if (emailStalkTemplate == null)
-            {
-                throw new ArgumentNullException("emailStalkTemplate");
-            }
-
             if (dateFormat == null)
             {
                 throw new ArgumentNullException("dateFormat");
@@ -86,10 +62,6 @@ namespace EyeInTheSky.Model
             this.StalkConfigFile = stalkConfigFile;
             this.RcUser = IrcUser.FromPrefix(rcUser);
             this.Owner = IrcUser.FromPrefix(owner);
-            this.IrcAlertFormat = ircAlertFormat;
-            this.IrcStalkTagSeparator = ircStalkTagSeparator;
-            this.EmailRcTemplate = emailRcTemplate;
-            this.EmailStalkTemplate = emailStalkTemplate;
             this.DateFormat = dateFormat;
             this.MediaWikiApiEndpoint = mediaWikiApiEndpoint;
             this.UserAgent = userAgent;
@@ -101,10 +73,6 @@ namespace EyeInTheSky.Model
         public string StalkConfigFile { get; private set; }
         public IrcUser RcUser { get; private set; }
         public IrcUser Owner { get; private set; }
-        public string IrcAlertFormat { get; private set; }
-        public string IrcStalkTagSeparator { get; private set; }
-        public string EmailRcTemplate { get; private set; }
-        public string EmailStalkTemplate { get; private set; }
         public string DateFormat { get; private set; }
         public string MediaWikiApiEndpoint { get; private set; }
         public string UserAgent { get; private set; }

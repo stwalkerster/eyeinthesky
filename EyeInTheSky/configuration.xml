@@ -42,60 +42,24 @@
                 
                 <!-- The remainder of the settings in this block are for advanced users only. -->
                 <useragent>EyeInTheSkyBot (+mailto:wikimedia@stwalkerster.co.uk; [[User:Stwalkerster]])</useragent>
-                <ircAlertFormat>[&#03;04&#02;{0}&#02;&#03;] Stalked edit {1} to page "&#03;03{2}&#03;" by [[User:{3}]], summary: &#03;07{4}</ircAlertFormat>
-                <ircStalkTagSeparator>&#02;&#03;|&#03;4&#02;</ircStalkTagSeparator>
-                <emailRcTemplate><![CDATA[Hi there!
-
-A recent change to Wikipedia has been spotted which you have previously indicated interest in.
-
-Title:        {2}
-User:         {3}
-Summary:      {4}
-Flags:        {6}
-Trigger time: {7}
-Link:         {1}
-
-----
-
-This alert was triggered because the following stalks were triggered, and at least one of these has email notifications enabled:
-
-{0}
-
-----
-
-Regards,
-
-The Eye In The Sky
-https://stwalkerster.co.uk/eits/
-]]></emailRcTemplate>
-                <emailStalkTemplate><![CDATA[Flag:                {0}
-Description:         {1}
-Configuration:       {2}
-Email notifications: {3}
-Expiry:              {4}
-
-]]></emailStalkTemplate>
                 <monitoringPort>62168</monitoringPort>
             </parameters>
         </component>
         
         <!-- EMAIL CONFIGURATION -->
-        <component id="emailConfig"
-                   type="EyeInTheSky.Model.EmailConfiguration">
+        <component type="EyeInTheSky.Model.EmailConfiguration">
             <parameters>
                 <!-- The hostname of an SMTP or Submission server -->
                 <hostname></hostname>
                 <!-- The SMTP / Submission port -->
-                <port></port>
+                <!--<port></port>-->
                 <!-- The From: header of the email -->
                 <sender></sender>
                 <!-- The recipient of email notifications -->
                 <to></to>
-                <!-- The subject of email notifications -->
-                <subject>[EyeInTheSky] Notification: {0} - [[{1}]]</subject>
                 <!-- If authentication is required, authenticate as this user -->
-                <username></username>
-                <password></password>
+                <!--<username></username>-->
+                <!--<password></password>-->
                 <!-- If the certificate is not trusted by the system trust store, you can put the thumbprint here -->
                 <!--<thumbprint>any</thumbprint>-->
             </parameters>

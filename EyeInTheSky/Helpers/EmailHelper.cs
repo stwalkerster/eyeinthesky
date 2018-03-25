@@ -1,57 +1,61 @@
 ﻿namespace EyeInTheSky.Helpers
 {
-    using System.Security.Cryptography.X509Certificates;
+    using System.Text;
+    using Castle.Core.Logging;
     using EyeInTheSky.Helpers.Interfaces;
-    using MailKit.Net.Smtp;
-    using MailKit.Security;
-    using MimeKit;
+    using EyeInTheSky.Model;
+    using EyeInTheSky.Model.Interfaces;
 
     public class EmailHelper : IEmailHelper
     {
-        public void SendEmail(string sender,
-            string to,
-            string subject,
-            string body,
-            string hostname,
-            int port,
-            string username,
-            string password,
-            string thumbprint)
+        private readonly ILogger logger;
+        private readonly INotificationTemplates templates;
+        private readonly IAppConfiguration appConfig;
+        private readonly IEmailSender emailSender;
+
+        public EmailHelper(IAppConfiguration appConfig, IEmailSender emailSender, ILogger logger, INotificationTemplates templates)
         {
-            var mailMessage = new MimeMessage();
+            this.logger = logger;
+            this.templates = templates;
+            this.appConfig = appConfig;
+            this.emailSender = emailSender;
+        }
 
-            mailMessage.From.Add(MailboxAddress.Parse(sender));
-            mailMessage.To.Add(MailboxAddress.Parse(to));
-            mailMessage.Subject = subject;
-
-            mailMessage.Body = new TextPart("plain")
+        public void SendEmail(string message, string subject)
+        {
+            if (this.appConfig.EmailConfiguration == null)
             {
-                Text = body
-            };
-
-            using (var client = new SmtpClient())
-            {
-                client.ServerCertificateValidationCallback =
-                    (o, cert, chain, errors) =>
-                    {
-                        if (thumbprint == "any")
-                        {
-                            return true;
-                        }
-
-                        return ((X509Certificate2) cert).Thumbprint == thumbprint;
-                    };
-                
-                client.Connect(hostname, port, SecureSocketOptions.StartTls);
-
-                if (username != null && password != null)
-                {
-                    client.Authenticate(username, password);
-                }
-
-                client.Send(mailMessage);
-                client.Disconnect(true);
+                this.logger.Debug("Not sending email; email configuration is disabled");
+                return;
             }
+
+            if (string.IsNullOrWhiteSpace(subject))
+            {
+                this.logger.Error("No subject specified in outbound email!");
+                return;
+            }
+            
+            if (string.IsNullOrWhiteSpace(message))
+            {
+                this.logger.Error("No message specified in outbound email!");
+                return;
+            }
+
+            var builder = new StringBuilder();
+            builder.Append(this.templates.EmailGreeting);
+            builder.Append(message);
+            builder.Append(this.templates.EmailSignature);
+            
+            this.emailSender.SendEmail(
+                this.appConfig.EmailConfiguration.Sender,
+                this.appConfig.EmailConfiguration.To,
+                subject,
+                builder.ToString(),
+                this.appConfig.EmailConfiguration.Hostname,
+                this.appConfig.EmailConfiguration.Port,
+                this.appConfig.EmailConfiguration.Username,
+                this.appConfig.EmailConfiguration.Password,
+                this.appConfig.EmailConfiguration.Thumbprint);
         }
     }
 }

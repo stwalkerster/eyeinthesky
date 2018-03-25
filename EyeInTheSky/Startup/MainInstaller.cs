@@ -8,6 +8,7 @@
     using Castle.MicroKernel.SubSystems.Configuration;
     using Castle.Services.Logging.Log4netIntegration;
     using Castle.Windsor;
+    using Castle.Windsor.Installer;
     using EyeInTheSky.Model;
     using EyeInTheSky.Services;
     using EyeInTheSky.Startables;
@@ -29,6 +30,8 @@
             container.AddFacility<StartableFacility>(f => f.DeferredStart());
             container.AddFacility<TypedFactoryFacility>();
 
+            container.Install(Configuration.FromXmlFile("templates.xml"));
+            
             container.Register(
                 // CommandLib commands
                 Classes.FromAssemblyContaining<CommandBase>().BasedOn<ICommand>().LifestyleTransient(),

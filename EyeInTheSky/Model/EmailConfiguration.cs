@@ -6,8 +6,7 @@
     {
         public EmailConfiguration(string hostname,
             string sender,
-            string to,
-            string subject)
+            string to)
         {
             if (hostname == null)
             {
@@ -24,15 +23,9 @@
                 throw new ArgumentNullException("to");
             }
 
-            if (subject == null)
-            {
-                throw new ArgumentNullException("subject");
-            }
-
             this.Hostname = hostname;
             this.Sender = sender;
             this.To = to;
-            this.Subject = subject;
         }
 
         public string Hostname { get; private set; }
@@ -44,7 +37,6 @@
         public string Sender { get; private set; }
         public string To { get; private set; }
         
-        public string Subject { get; private set; }
         public string Thumbprint { get; set; }
     }
 }

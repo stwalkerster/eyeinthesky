@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+    <components>
+        <component type="EyeInTheSky.Model.NotificationTemplates" service="EyeInTheSky.Model.Interfaces.INotificationTemplates">
+            <parameters>
+                <emailRcSubject>[EyeInTheSky] Notification: {0} - [[{1}]]</emailRcSubject>
+                <emailRcTemplate><![CDATA[A recent change to Wikipedia has been spotted which you have previously indicated interest in.
+
+Title:        {2}
+User:         {3}
+Summary:      {4}
+Flags:        {6}
+Trigger time: {7}
+Link:         {1}
+
+----
+
+This alert was triggered because the following stalks were triggered, and at least one of these has email notifications enabled:
+
+{0}
+
+]]></emailRcTemplate>
+                <emailStalkTemplate><![CDATA[Flag:                {0}
+Description:         {1}
+Configuration:       {2}
+Email notifications: {3}
+Expiry:              {4}
+
+]]></emailStalkTemplate>
+                <emailGreeting><![CDATA[Hi there!
+
+]]></emailGreeting>
+                <emailSignature><![CDATA[----
+
+Regards,
+
+The Eye In The Sky
+https://stwalkerster.co.uk/eits/
+]]></emailSignature>
+                <emailStalkReport><![CDATA[You have requested a report of all of the configured stalks.
+
+----
+Active:
+
+{0}
+
+----
+Disabled:
+
+{1}
+
+----
+Expired:
+
+{2}
+
+]]></emailStalkReport>
+                <emailStalkReportSubject>[EyeInTheSky] Stalk Report</emailStalkReportSubject>
+
+                <ircAlertFormat>[&#03;04&#02;{0}&#02;&#03;] Stalked edit {1} to page "&#03;03{2}&#03;" by [[User:{3}]], summary: &#03;07{4}</ircAlertFormat>
+                <ircStalkTagSeparator>&#02;&#03;|&#03;4&#02;</ircStalkTagSeparator>
+            </parameters>
+        </component>
+    </components>
+</configuration>

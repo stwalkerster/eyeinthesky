@@ -9,10 +9,6 @@
         string CommandPrefix { get; }
         string StalkConfigFile { get; }
         IrcUser RcUser { get; }
-        string IrcAlertFormat { get; }
-        string IrcStalkTagSeparator { get; }
-        string EmailRcTemplate { get; }
-        string EmailStalkTemplate { get; }
         string DateFormat { get; }
         string MediaWikiApiEndpoint { get; }
         string UserAgent { get; }
