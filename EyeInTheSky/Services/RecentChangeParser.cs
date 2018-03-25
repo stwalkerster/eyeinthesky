@@ -33,6 +33,12 @@
             return this.colsregex ?? (this.colsregex = new Regex(AntiColourParse));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        /// <exception cref="FormatException"></exception>
         public IRecentChange Parse(string data)
         {
             Match m = this.GetRegex().Match(data);

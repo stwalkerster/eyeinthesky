@@ -53,47 +53,53 @@
                 return;
             }
 
+            var messagePrefix = e.Message.Prefix;
+            var source = IrcUser.FromPrefix(messagePrefix);
+
+            if (!source.Equals(this.appConfig.RcUser))
+            {
+                this.logger.WarnFormat(
+                    "Received private message from {0} instead of expected {1}!",
+                    source.ToString(),
+                    this.appConfig.RcUser.ToString());
+                return;
+            }
+            
+            var rcMessage = e.Message.Parameters.Skip(1).FirstOrDefault();
+            
+            
+            IRecentChange rc;
+
             try
             {
-                var source = IrcUser.FromPrefix(e.Message.Prefix);
-
-                if (!source.Equals(this.appConfig.RcUser))
-                {
-                    this.logger.WarnFormat(
-                        "Received private message from {0} instead of expected {1}!",
-                        source.ToString(),
-                        this.appConfig.RcUser.ToString());
-                    return;
-                }
-
-                var rcMessage = e.Message.Parameters.Skip(1).FirstOrDefault();
-                var rc = this.rcParser.Parse(rcMessage);
-
-                var stalks = this.stalkConfig.MatchStalks(rc).ToList();
-
-                if (stalks.Count == 0)
-                {
-                    return;
-                }
-
-                this.logger.InfoFormat(
-                    "Seen stalked change for stalks: {0}",
-                    string.Join(" ", stalks.Select(x => x.Flag)));
-                
-                // touch update flag
-                foreach (var stalk in stalks)
-                {
-                    stalk.LastTriggerTime = DateTime.Now;
-                }
-                
-                // send notifications
-                this.SendToIrc(stalks, rc);
-                this.SendEmail(stalks, rc);
+                rc = this.rcParser.Parse(rcMessage);
             }
-            catch (Exception ex)
+            catch (FormatException ex)
             {
                 this.logger.ErrorFormat(ex, "Error processing received message: {0}", e.Message);
+                return;
             }
+            
+            var stalks = this.stalkConfig.MatchStalks(rc).ToList();
+
+            if (stalks.Count == 0)
+            {
+                return;
+            }
+
+            this.logger.InfoFormat("Seen stalked change for stalks: {0}", string.Join(" ", stalks.Select(x => x.Flag)));
+            
+            // send notifications
+            this.SendToIrc(stalks, rc);
+            this.SendEmail(stalks, rc);
+                
+            // touch update flag
+            foreach (var stalk in stalks)
+            {
+                stalk.LastTriggerTime = DateTime.Now;
+            }
+            
+            this.stalkConfig.Save();
         }
 
         private void SendEmail(IList<IStalk> stalks, IRecentChange rc)
@@ -120,14 +126,22 @@
             }
             catch (Exception ex)
             {
-                this.logger.ErrorFormat(ex, "Failed to send notification email");
+                this.logger.ErrorFormat(ex, "Failed to send notification email for RC {0}", rc);
                 throw;
             }
         }
 
         private void SendToIrc(IEnumerable<IStalk> stalks, IRecentChange rc)
         {
-            this.freenodeClient.SendMessage(this.appConfig.FreenodeChannel, this.FormatMessageForIrc(stalks, rc));
+            try
+            {
+                this.freenodeClient.SendMessage(this.appConfig.FreenodeChannel, this.FormatMessageForIrc(stalks, rc));
+            }
+            catch (Exception ex)
+            {
+                this.logger.ErrorFormat(ex, "Failed to send notification IRC message for RC {0}", rc);
+                throw;
+            }
         }
 
         public string FormatMessageForIrc(IEnumerable<IStalk> stalks, IRecentChange rc)
@@ -172,7 +186,7 @@
                 rc.EditSummary,
                 (rc.SizeDifference > 0 ? "+" : string.Empty) + rc.SizeDifference.ToString(CultureInfo.InvariantCulture),
                 rc.EditFlags,
-                DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToLongTimeString()
+                DateTime.Now.ToString(this.appConfig.DateFormat)
             );
         }
 

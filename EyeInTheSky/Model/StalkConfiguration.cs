@@ -135,7 +135,20 @@
         {
             foreach (var s in this.stalks)
             {
-                if(s.Value.Match(rc))
+                bool isMatch;
+             
+                try
+                {
+                    isMatch = s.Value.Match(rc);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    this.logger.ErrorFormat(ex, "Error during evaluation of stalk {0}", s.Key);
+                    // skip this stalk, resume with the others
+                    continue;
+                }
+                
+                if (isMatch)
                 {
                     yield return s.Value;
                 }
