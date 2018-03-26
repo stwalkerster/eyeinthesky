@@ -60,6 +60,11 @@
                     return this.ListMode();
             }
 
+            if (tokenList.Count < 1)
+            {
+                throw new ArgumentCountException(2, this.Arguments.Count(), mode);
+            }
+            
             var stalkName = tokenList.PopFromFront();
             if (!this.StalkConfig.Stalks.ContainsKey(stalkName))
             {
@@ -93,7 +98,7 @@
         {
             if (tokenList.Count < 1)
             {
-                throw new ArgumentCountException(3, this.Arguments.Count());
+                throw new ArgumentCountException(3, this.Arguments.Count(), "or");
             }
 
             var newStalkType = tokenList.PopFromFront();
@@ -121,7 +126,7 @@
         {
             if (tokenList.Count < 1)
             {
-                throw new ArgumentCountException(3, this.Arguments.Count());
+                throw new ArgumentCountException(3, this.Arguments.Count(), "and");
             }
 
             var newStalkType = tokenList.PopFromFront();
@@ -149,7 +154,7 @@
         {
             if (tokenList.Count < 1)
             {
-                throw new ArgumentCountException(3, this.Arguments.Count());
+                throw new ArgumentCountException(3, this.Arguments.Count(), "enabled");
             }
             
             bool enabled;
@@ -176,7 +181,7 @@
         {
             if (tokenList.Count < 1)
             {
-                throw new ArgumentCountException(3, this.Arguments.Count());
+                throw new ArgumentCountException(3, this.Arguments.Count(), "expiry");
             }
 
             var date = string.Join(" ", tokenList);
@@ -222,7 +227,7 @@
         {
             if (tokenList.Count < 1)
             {
-                throw new ArgumentCountException(3, this.Arguments.Count());
+                throw new ArgumentCountException(3, this.Arguments.Count(), "mail");
             }
 
             bool mail;
@@ -293,7 +298,7 @@
         {
             if (tokenList.Count < 1)
             {
-                throw new ArgumentCountException(3, this.Arguments.Count());
+                throw new ArgumentCountException(3, this.Arguments.Count(), "set");
             }
 
             var newStalkType = tokenList.PopFromFront();
@@ -328,7 +333,7 @@
         {
             if (tokenList.Count < 1)
             {
-                throw new ArgumentCountException(2, this.Arguments.Count());
+                throw new ArgumentCountException(2, this.Arguments.Count(), "add");
             }
 
             var stalkName = tokenList.First();
