@@ -2,6 +2,7 @@
 
 namespace EyeInTheSky.Commands
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Castle.Core.Logging;
@@ -55,18 +56,23 @@ namespace EyeInTheSky.Commands
             var stalkType = tokenList.PopFromFront();
             var stalkTarget = string.Join(" ", tokenList);
 
-            var stalk = new ComplexStalk(stalkName);
-
             if (this.StalkConfig.Stalks.ContainsKey(stalkName))
             {
                 throw new CommandErrorException("This stalk already exists!");
             }
 
-            this.StalkConfig.Stalks.Add(stalkName, stalk);
-
             var stalkNode = this.CreateNode(stalkType, stalkTarget);
-            stalk.SearchTree = stalkNode;
 
+            var stalk = new ComplexStalk(stalkName)
+            {
+                SearchTree = stalkNode,
+                IsEnabled = true,
+                MailEnabled = true,
+                ExpiryTime = DateTime.Now.AddMonths(3)
+            };
+
+            this.StalkConfig.Stalks.Add(stalkName, stalk);
+            
             yield return new CommandResponse
             {
                 Message = string.Format(
@@ -76,7 +82,6 @@ namespace EyeInTheSky.Commands
                     stalkNode)
             };
 
-            stalk.IsEnabled = true;
 
             this.StalkConfig.Save();
         }
