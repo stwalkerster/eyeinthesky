@@ -83,7 +83,7 @@
                 ExpiryTime = DateTime.Now.AddMonths(3)
             };
 
-            this.stalkConfig.Stalks.Add("acc" + accRequestId, stalk);
+            this.stalkConfig.Add("acc" + accRequestId, stalk);
             this.stalkConfig.Save();
 
             yield return new CommandResponse

@@ -16,8 +16,9 @@
         private readonly string configurationFileName;
         private readonly ILogger logger;
         private readonly IStalkFactory stalkFactory;
-        private SortedList<string, IStalk> stalks;
-
+        private readonly SortedList<string, IStalk> stalks = new SortedList<string, IStalk>();
+        private readonly object stalkSaveLock = new object();
+        
         private bool initialised;
 
         public StalkConfiguration(IAppConfiguration configuration, ILogger logger, IStalkFactory stalkFactory)
@@ -31,12 +32,11 @@
                 this.logger.Warn(
                     "Can't find stalk configuration file at " + this.configurationFileName
                                                           + ", using defaults");
-                this.stalks = new SortedList<string, IStalk>();
                 this.DoSave();
             }
         }
 
-        public SortedList<string, IStalk> Stalks
+        public IReadOnlyList<IStalk> StalkList
         {
             get
             {
@@ -44,8 +44,53 @@
                 {
                     throw new ApplicationException("Cannot get configuration when not initialised!");
                 }
+                
+                lock (this.stalks)
+                {
+                    return new List<IStalk>(this.stalks.Values);
+                }
+            }
+        }
 
-                return this.stalks;
+        public IStalk this[string stalkName]
+        {
+            get
+            {
+                if (!this.initialised)
+                {
+                    throw new ApplicationException("Cannot get configuration when not initialised!");
+                }
+                
+                lock (this.stalks)
+                {
+                    return this.stalks[stalkName];
+                }
+            }
+        }
+
+        public void Add(string key, IStalk stalk)
+        {
+            if (!this.initialised)
+            {
+                throw new ApplicationException("Cannot mutate configuration when not initialised!");
+            }
+            
+            lock (this.stalks)
+            {
+                this.stalks.Add(key, stalk);
+            }
+        }
+
+        public void Remove(string key)
+        {
+            if (!this.initialised)
+            {
+                throw new ApplicationException("Cannot mutate configuration when not initialised!");
+            }
+            
+            lock (this.stalks)
+            {
+                this.stalks.Remove(key);
             }
         }
 
@@ -54,6 +99,8 @@
             this.logger.Info("Loading stalks from configuration...");
             try
             {
+                this.initialised = false;
+                
                 var sr = new StreamReader(this.configurationFileName);
 
                 var navigator = new XPathDocument(sr).CreateNavigator();
@@ -63,14 +110,33 @@
                 xnm.AddNamespace("isky", XmlNamespace);
 
                 var stalknav = navigator.SelectSingleNode("//isky:stalks", xnm);
-                this.stalks = stalknav != null ? this.LoadFromXmlFragment(stalknav.OuterXml, xnt) : new SortedList<string, IStalk>();
+                
+                int stalksCount;
+                
+                lock (this.stalks)
+                {
+                    this.stalks.Clear();
+                    
+                    if (stalknav != null)
+                    {
+                        var loadedStalks = this.LoadFromXmlFragment(stalknav.OuterXml, xnt);
+
+                        foreach (var stalk in loadedStalks)
+                        {
+                            this.stalks.Add(stalk.Key, stalk.Value);
+                        }
+                    }
+                    
+                    stalksCount = this.stalks.Count;
+                }
 
                 sr.Close();
 
-                this.DoSave();
+                this.DoSave();  
                 
                 this.initialised = true;
-                this.logger.InfoFormat("Successfully loaded {0} stalks from configuration.", this.stalks.Count);
+                
+                this.logger.InfoFormat("Successfully loaded {0} stalks from configuration.", stalksCount);
             }
             catch (XmlException ex)
             {
@@ -114,26 +180,47 @@
 
         private void DoSave()
         {
-            var doc = new XmlDocument();
-            doc.AppendChild(doc.CreateXmlDeclaration("1.0", null, null));
-            var root = doc.CreateElement("eyeinthesky", XmlNamespace);
-
-            var stalksElement = doc.CreateElement("stalks", XmlNamespace);
-            foreach (var kvp in this.stalks)
+            lock (this.stalkSaveLock)
             {
-                stalksElement.AppendChild(this.stalkFactory.ToXmlElement(kvp.Value, doc, XmlNamespace));
+                SortedList<string, IStalk> stalkListClone;
+                lock (this.stalks)
+                {
+                    stalkListClone = new SortedList<string, IStalk>(this.stalks);
+                }
+
+                var doc = new XmlDocument();
+                doc.AppendChild(doc.CreateXmlDeclaration("1.0", null, null));
+                var root = doc.CreateElement("eyeinthesky", XmlNamespace);
+
+                var stalksElement = doc.CreateElement("stalks", XmlNamespace);
+                
+                foreach (var kvp in stalkListClone)
+                {
+                    stalksElement.AppendChild(this.stalkFactory.ToXmlElement(kvp.Value, doc, XmlNamespace));
+                }
+
+                root.AppendChild(stalksElement);
+
+                doc.AppendChild(root);
+
+                doc.Save(this.configurationFileName);
             }
-
-            root.AppendChild(stalksElement);
-
-            doc.AppendChild(root);
-
-            doc.Save(this.configurationFileName);
         }
 
         public IEnumerable<IStalk> MatchStalks(IRecentChange rc)
         {
-            foreach (var s in this.stalks)
+            if (!this.initialised)
+            {
+                throw new ApplicationException("Cannot match when not initialised!");
+            }
+            
+            SortedList<string, IStalk> stalkListClone;
+            lock (this.stalks)
+            {
+                stalkListClone = new SortedList<string, IStalk>(this.stalks);
+            }
+            
+            foreach (var s in stalkListClone)
             {
                 bool isMatch;
              
@@ -152,6 +239,19 @@
                 {
                     yield return s.Value;
                 }
+            }
+        }
+
+        public bool ContainsKey(string stalkName)
+        {
+            if (!this.initialised)
+            {
+                throw new ApplicationException("Cannot get configuration when not initialised!");
+            }
+            
+            lock (this.stalks)
+            {
+                return this.stalks.ContainsKey(stalkName);
             }
         }
     }

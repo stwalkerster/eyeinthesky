@@ -56,7 +56,7 @@ namespace EyeInTheSky.Commands
             var stalkType = tokenList.PopFromFront();
             var stalkTarget = string.Join(" ", tokenList);
 
-            if (this.StalkConfig.Stalks.ContainsKey(stalkName))
+            if (this.StalkConfig.ContainsKey(stalkName))
             {
                 throw new CommandErrorException("This stalk already exists!");
             }
@@ -71,7 +71,7 @@ namespace EyeInTheSky.Commands
                 ExpiryTime = DateTime.Now.AddMonths(3)
             };
 
-            this.StalkConfig.Stalks.Add(stalkName, stalk);
+            this.StalkConfig.Add(stalkName, stalk);
             
             yield return new CommandResponse
             {

@@ -66,7 +66,7 @@
             }
             
             var stalkName = tokenList.PopFromFront();
-            if (!this.StalkConfig.Stalks.ContainsKey(stalkName))
+            if (!this.StalkConfig.ContainsKey(stalkName))
             {
                 throw new CommandErrorException(string.Format("Can't find the stalk '{0}'!", stalkName));
             }
@@ -103,7 +103,7 @@
 
             var newStalkType = tokenList.PopFromFront();
             
-            var stalk = this.StalkConfig.Stalks[stalkName];
+            var stalk = this.StalkConfig[stalkName];
             var newTarget = string.Join(" ", tokenList);
 
             var newroot = new OrNode
@@ -131,7 +131,7 @@
 
             var newStalkType = tokenList.PopFromFront();
 
-            var stalk = this.StalkConfig.Stalks[stalkName];
+            var stalk = this.StalkConfig[stalkName];
             var newTarget = string.Join(" ", tokenList);
 
             var newroot = new AndNode
@@ -172,7 +172,7 @@
                 Message = string.Format("Set enabled attribute on stalk {0} to {1}", stalkName, enabled)
             };
             
-            this.StalkConfig.Stalks[stalkName].IsEnabled = enabled;
+            this.StalkConfig[stalkName].IsEnabled = enabled;
             
             this.StalkConfig.Save();
         }
@@ -187,7 +187,7 @@
             var date = string.Join(" ", tokenList);
 
             var expiryTime = DateTime.Parse(date);
-            this.StalkConfig.Stalks[stalkName].ExpiryTime = expiryTime;
+            this.StalkConfig[stalkName].ExpiryTime = expiryTime;
             
             yield return new CommandResponse
             {
@@ -203,7 +203,7 @@
 
             if (string.IsNullOrWhiteSpace(descr))
             {
-                this.StalkConfig.Stalks[stalkName].Description = null;
+                this.StalkConfig[stalkName].Description = null;
                 
                 yield return new CommandResponse
                 {
@@ -212,7 +212,7 @@
             }
             else
             {
-                this.StalkConfig.Stalks[stalkName].Description = descr;
+                this.StalkConfig[stalkName].Description = descr;
 
                 yield return new CommandResponse
                 {
@@ -245,14 +245,14 @@
                 Message = string.Format("Set immediatemail attribute on stalk {0} to {1}", stalkName, mail)
             };
             
-            this.StalkConfig.Stalks[stalkName].MailEnabled = mail;
+            this.StalkConfig[stalkName].MailEnabled = mail;
             
             this.StalkConfig.Save();
         }
 
         private IEnumerable<CommandResponse> ListMode()
         {
-            var activeStalks = this.StalkConfig.Stalks.Where(x => x.Value.IsActive()).ToList();
+            var activeStalks = this.StalkConfig.StalkList.Where(x => x.IsActive()).ToList();
 
             if (!activeStalks.Any())
             {
@@ -278,7 +278,7 @@
             {
                 yield return new CommandResponse
                 {
-                    Message = kvp.Value.ToString(),
+                    Message = kvp.ToString(),
                     Type = CommandResponseType.Notice,
                     Destination = CommandResponseDestination.PrivateMessage
                 };
@@ -303,7 +303,7 @@
 
             var newStalkType = tokenList.PopFromFront();
 
-            var stalk = this.StalkConfig.Stalks[stalkName];
+            var stalk = this.StalkConfig[stalkName];
             var newTarget = string.Join(" ", tokenList);
 
             var newroot = this.CreateNode(newStalkType, newTarget);
@@ -319,7 +319,7 @@
 
         private IEnumerable<CommandResponse> DeleteMode(string stalkName)
         {
-            this.StalkConfig.Stalks.Remove(stalkName);
+            this.StalkConfig.Remove(stalkName);
             
             yield return new CommandResponse
             {
@@ -339,7 +339,7 @@
             var stalkName = tokenList.First();
             var stalk = new ComplexStalk(stalkName);
 
-            this.StalkConfig.Stalks.Add(stalkName, stalk);
+            this.StalkConfig.Add(stalkName, stalk);
             
             yield return new CommandResponse
             {

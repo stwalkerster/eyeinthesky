@@ -51,7 +51,7 @@
 
         protected override IEnumerable<CommandResponse> Execute()
         {
-            var stalks = this.stalkConfig.Stalks.Select(x => x.Value).ToList();
+            var stalks = this.stalkConfig.StalkList;
             
             var disabled = stalks.Where(x => !x.IsEnabled);
             var expired = stalks.Where(x => x.ExpiryTime != null && x.ExpiryTime < DateTime.Now);            
