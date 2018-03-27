@@ -11,14 +11,13 @@ namespace EyeInTheSky.Tests.StalkNodes
     using EyeInTheSky.StalkNodes;
 
     [TestFixture]
-    public class AndNodeTest : DoubleChildNodeTestBase<AndNode>
+    public class AndNodeTest : MultiChildNodeTestBase<AndNode>
     {   
         [Test, TestCaseSource(typeof(AndNodeTest), "TestCases")]
-        public bool? DualOperatorTest(IStalkNode a, IStalkNode b)
+        public bool? MultiOperatorTest(List<IStalkNode> a)
         {
             var node = new AndNode();
-            node.LeftChildNode = a;
-            node.RightChildNode = b;
+            node.ChildNodes.AddRange(a);
 
             return node.Match(new RecentChange("", "", "", "", "", 0), false);
         }
@@ -30,16 +29,23 @@ namespace EyeInTheSky.Tests.StalkNodes
                 var nullNodeMock = new Mock<IStalkNode>();
                 nullNodeMock.Setup(x => x.Match(It.IsAny<IRecentChange>())).Returns(null);
                 
-                yield return new TestCaseData(new TrueNode(), new TrueNode()).Returns(true);
-                yield return new TestCaseData(new FalseNode(), new TrueNode()).Returns(false);
-                yield return new TestCaseData(new TrueNode(), new FalseNode()).Returns(false);
-                yield return new TestCaseData(new FalseNode(), new FalseNode()).Returns(false);
+                yield return new TestCaseData(new List<IStalkNode> {new TrueNode(), new TrueNode()}).Returns(true);
+                yield return new TestCaseData(new List<IStalkNode> {new FalseNode(), new TrueNode()}).Returns(false);
+                yield return new TestCaseData(new List<IStalkNode> {new TrueNode(), new FalseNode()}).Returns(false);
+                yield return new TestCaseData(new List<IStalkNode> {new FalseNode(), new FalseNode()}).Returns(false);
                 
-                yield return new TestCaseData(new TrueNode(), nullNodeMock.Object).Returns(null);
-                yield return new TestCaseData(new FalseNode(), nullNodeMock.Object).Returns(false);
-                yield return new TestCaseData(nullNodeMock.Object, new TrueNode()).Returns(null);
-                yield return new TestCaseData(nullNodeMock.Object, new FalseNode()).Returns(false);
-                yield return new TestCaseData(nullNodeMock.Object, nullNodeMock.Object).Returns(null);
+                yield return new TestCaseData(new List<IStalkNode> {new TrueNode(), nullNodeMock.Object}).Returns(null);
+                yield return new TestCaseData(new List<IStalkNode> {new FalseNode(), nullNodeMock.Object}).Returns(false);
+                yield return new TestCaseData(new List<IStalkNode> {nullNodeMock.Object, new TrueNode()}).Returns(null);
+                yield return new TestCaseData(new List<IStalkNode> {nullNodeMock.Object, new FalseNode()}).Returns(false);
+                yield return new TestCaseData(new List<IStalkNode> {nullNodeMock.Object, nullNodeMock.Object}).Returns(null);
+                
+                yield return new TestCaseData(new List<IStalkNode> {new TrueNode(), new TrueNode(), new TrueNode()}).Returns(true);
+                yield return new TestCaseData(new List<IStalkNode> {new FalseNode(),new FalseNode(), new FalseNode()}).Returns(false);
+                yield return new TestCaseData(new List<IStalkNode> {new FalseNode(),new FalseNode(), new TrueNode()}).Returns(false);
+                yield return new TestCaseData(new List<IStalkNode> {new TrueNode()}).Returns(true);
+                yield return new TestCaseData(new List<IStalkNode> {new FalseNode()}).Returns(false);
+                yield return new TestCaseData(new List<IStalkNode> {nullNodeMock.Object}).Returns(null);
             }
         }
 
@@ -54,11 +60,11 @@ namespace EyeInTheSky.Tests.StalkNodes
             rc.MediaWikiApi = mwApi.Object;
             
             var node = new AndNode();
-            node.LeftChildNode = new FalseNode();
+            node.ChildNodes.Add(new FalseNode());
             
             var nodeRightChildNode = new UserGroupStalkNode();
             nodeRightChildNode.SetMatchExpression("sysop");
-            node.RightChildNode = nodeRightChildNode;
+            node.ChildNodes.Add(nodeRightChildNode);
             
             // act
             node.Match(rc);
@@ -78,11 +84,11 @@ namespace EyeInTheSky.Tests.StalkNodes
             rc.MediaWikiApi = mwApi.Object;
             
             var node = new AndNode();
-            node.LeftChildNode = new TrueNode();
+            node.ChildNodes.Add(new TrueNode());
             
             var nodeRightChildNode = new UserGroupStalkNode();
             nodeRightChildNode.SetMatchExpression("sysop");
-            node.RightChildNode = nodeRightChildNode;
+            node.ChildNodes.Add(nodeRightChildNode);
             
             // act
             node.Match(rc);

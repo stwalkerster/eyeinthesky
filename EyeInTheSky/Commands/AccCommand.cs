@@ -66,12 +66,7 @@
 
             var rootNode = new OrNode
             {
-                LeftChildNode = new OrNode
-                {
-                    LeftChildNode = userStalkNode,
-                    RightChildNode = pageStalkNode
-                },
-                RightChildNode = summaryStalkNode
+                ChildNodes = new List<IStalkNode> {userStalkNode, pageStalkNode, summaryStalkNode}
             };
 
             var stalk = new ComplexStalk("acc" + accRequestId)

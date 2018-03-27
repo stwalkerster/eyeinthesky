@@ -117,17 +117,32 @@
             var stalk = this.StalkConfig[stalkName];
             var newTarget = string.Join(" ", tokenList);
 
-            var newroot = new OrNode
+            var newNode = this.CreateNode(newStalkType, newTarget);
+            if (stalk.SearchTree.GetType() == typeof(OrNode))
             {
-                LeftChildNode = stalk.SearchTree,
-                RightChildNode = this.CreateNode(newStalkType, newTarget)
-            };
-            
-            stalk.SearchTree = newroot;
-            
+                ((OrNode)stalk.SearchTree).ChildNodes.Add(newNode);
+            }
+            else
+            {
+                var newroot = new OrNode
+                {
+                    ChildNodes = new List<IStalkNode>
+                    {
+                        stalk.SearchTree,
+                        newNode
+                    }
+                };
+                
+                stalk.SearchTree = newroot;
+            }
+
             yield return new CommandResponse
             {
-                Message = string.Format("Set {0} for stalk {1} with CSL value: {2}", newStalkType, stalkName, newroot)
+                Message = string.Format(
+                    "Set {0} for stalk {1} with CSL value: {2}",
+                    newStalkType,
+                    stalkName,
+                    stalk.SearchTree)
             };
             
             this.StalkConfig.Save();
@@ -145,17 +160,33 @@
             var stalk = this.StalkConfig[stalkName];
             var newTarget = string.Join(" ", tokenList);
 
-            var newroot = new AndNode
+            var newNode = this.CreateNode(newStalkType, newTarget);
+            
+            if (stalk.SearchTree.GetType() == typeof(AndNode))
             {
-                LeftChildNode = stalk.SearchTree,
-                RightChildNode = this.CreateNode(newStalkType, newTarget)
-            };
-            
-            stalk.SearchTree = newroot;
-            
+                ((AndNode)stalk.SearchTree).ChildNodes.Add(newNode);
+            }
+            else
+            {
+                var newroot = new AndNode
+                {
+                    ChildNodes = new List<IStalkNode>
+                    {
+                        stalk.SearchTree,
+                        newNode
+                    }
+                };
+                
+                stalk.SearchTree = newroot;
+            }
+
             yield return new CommandResponse
             {
-                Message = string.Format("Set {0} for stalk {1} with CSL value: {2}", newStalkType, stalkName, newroot)
+                Message = string.Format(
+                    "Set {0} for stalk {1} with CSL value: {2}",
+                    newStalkType,
+                    stalkName,
+                    stalk.SearchTree)
             };
 
             this.StalkConfig.Save();

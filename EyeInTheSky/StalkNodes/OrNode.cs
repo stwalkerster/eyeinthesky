@@ -2,59 +2,59 @@
 
 namespace EyeInTheSky.StalkNodes
 {
+    using System.Text;
     using EyeInTheSky.Attributes;
     using EyeInTheSky.Model.Interfaces;
 
     [StalkNodeType("or")]
-    public class OrNode : DoubleChildLogicalNode
+    public class OrNode : MultiChildLogicalNode
     {
         #region Overrides of StalkNode
 
         protected override bool? DoMatch(IRecentChange rc, bool forceMatch)
         {
-            var leftResult = this.LeftChildNode.Match(rc, false);
+            // Pessimism!
+            bool? result = false;
 
-            if (leftResult == true)
+            foreach (var childNode in this.ChildNodes)
             {
-                return true;
+                var localResult = childNode.Match(rc, forceMatch);
+
+                if (localResult.GetValueOrDefault(false))
+                {
+                    return true;
+                }
+
+                if (localResult != null)
+                {
+                    continue;
+                }
+
+                if (forceMatch)
+                {
+                    throw new InvalidOperationException("Child is null despite forced match");
+                }
+                    
+                result = null;
             }
 
-            var rightResult = this.RightChildNode.Match(rc, false);
-
-            if (rightResult == true)
-            {
-                return true;
-            }
-
-            if (leftResult.HasValue && rightResult.HasValue && !leftResult.Value && !rightResult.Value)
-            {
-                return false;
-            }
-
-            if (!forceMatch)
-            {
-                return null;
-            }
-
-            leftResult = leftResult ?? this.LeftChildNode.Match(rc, true);
-            rightResult = rightResult ?? this.RightChildNode.Match(rc, true);
-
-            if (!leftResult.HasValue)
-            {
-                throw new InvalidOperationException("Left child is null despite forced match");
-            }
-
-            if (!rightResult.HasValue)
-            {
-                throw new InvalidOperationException("Left child is null despite forced match");
-            }
-
-            return leftResult.Value || rightResult.Value;
+            return result;        
         }
 
         public override string ToString()
         {
-            return "(|:" + this.LeftChildNode + this.RightChildNode + ")";
+            var sb = new StringBuilder();
+            
+            sb.Append("(|:");
+            
+            foreach (var node in this.ChildNodes)
+            {
+                sb.Append(node);
+            }
+            
+            sb.Append(")");
+            
+            return sb.ToString();        
         }
         #endregion
     }

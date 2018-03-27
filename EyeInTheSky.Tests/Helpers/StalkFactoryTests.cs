@@ -236,10 +236,11 @@ namespace EyeInTheSky.Tests.Helpers
             Assert.IsInstanceOf<AndNode>(stalk.SearchTree);
 
             var andnode = (AndNode)stalk.SearchTree;
-            Assert.IsNotNull(andnode.LeftChildNode);
-            Assert.IsNotNull(andnode.RightChildNode);
-            Assert.IsInstanceOf<TrueNode>(andnode.LeftChildNode);
-            Assert.IsInstanceOf<FalseNode>(andnode.RightChildNode);
+            Assert.AreEqual(2, andnode.ChildNodes.Count);
+            Assert.IsNotNull(andnode.ChildNodes[0]);
+            Assert.IsNotNull(andnode.ChildNodes[1]);
+            Assert.IsInstanceOf<TrueNode>(andnode.ChildNodes[0]);
+            Assert.IsInstanceOf<FalseNode>(andnode.ChildNodes[1]);
             
             snf.Verify(x => x.NewFromXmlFragment(It.IsAny<XmlElement>()), Times.AtLeastOnce);
         }

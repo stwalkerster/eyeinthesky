@@ -122,6 +122,7 @@
     <Compile Include="StalkNodes\InCategoryNode.cs" />
     <Compile Include="StalkNodes\IStalkNode.cs" />
     <Compile Include="StalkNodes\LeafNode.cs" />
+    <Compile Include="StalkNodes\MultiChildLogicalNode.cs" />
     <Compile Include="StalkNodes\UserGroupStalkNode.cs" />
     <Compile Include="StalkNodes\XorNode.cs" />
     <Compile Include="StalkNodes\DoubleChildLogicalNode.cs" />

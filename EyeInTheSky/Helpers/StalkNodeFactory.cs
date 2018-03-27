@@ -1,5 +1,6 @@
 ﻿namespace EyeInTheSky.Helpers
 {
+    using System.Collections.Generic;
     using System.Linq;
     using System.Xml;
     using EyeInTheSky.Attributes;
@@ -14,6 +15,7 @@
             {
                 case "and":
                 case "or":
+                    return this.NewMultiChildNode(fragment);
                 case "xor":
                     return this.NewDoubleChildNode(fragment);
 
@@ -62,12 +64,6 @@
             DoubleChildLogicalNode node;
             switch (fragment.Name)
             {
-                case "and":
-                    node = new AndNode();
-                    break;
-                case "or":
-                    node = new OrNode();
-                    break;
                 case "xor":
                     node = new XorNode();
                     break;
@@ -80,6 +76,38 @@
 
             node.LeftChildNode = left;
             node.RightChildNode = right;
+
+            return node;
+        }
+
+        private IStalkNode NewMultiChildNode(XmlElement fragment)
+        {
+            MultiChildLogicalNode node;
+            switch (fragment.Name)
+            {
+                case "and":
+                    node = new AndNode();
+                    break;
+                case "or":
+                    node = new OrNode();
+                    break;
+                default:
+                    throw new XmlException();
+            }
+
+            node.ChildNodes = new List<IStalkNode>();
+            
+            foreach (XmlNode fragmentChildNode in fragment.ChildNodes)
+            {
+                var elem = fragmentChildNode as XmlElement;
+                if (elem == null)
+                {
+                    continue;
+                }
+
+                var n = this.NewFromXmlFragment(elem);
+                node.ChildNodes.Add(n);
+            }
 
             return node;
         }
@@ -177,17 +205,23 @@
 
         private XmlElement LogicalToXml(XmlDocument doc, string xmlns, LogicalNode node)
         {
-            var logicalNode = node as DoubleChildLogicalNode;
-            if (logicalNode != null)
+            var doubleChildLogicalNode = node as DoubleChildLogicalNode;
+            if (doubleChildLogicalNode != null)
             {
-                return this.DoubleChildToXml(doc, xmlns, logicalNode);
+                return this.DoubleChildToXml(doc, xmlns, doubleChildLogicalNode);
+            }
+            
+            var multiChildLogicalNode = node as MultiChildLogicalNode;
+            if (multiChildLogicalNode != null)
+            {
+                return this.MultiChildToXml(doc, xmlns, multiChildLogicalNode);
             }
 
-            var childLogicalNode = node as SingleChildLogicalNode;
-            if (childLogicalNode != null)
+            var singleChildLogicalNode = node as SingleChildLogicalNode;
+            if (singleChildLogicalNode != null)
             {
-                return this.SingleChildToXml(doc, xmlns, childLogicalNode);
-            }
+                return this.SingleChildToXml(doc, xmlns, singleChildLogicalNode);
+            }   
 
             return this.CreateElement(doc, xmlns, node);
         }
@@ -208,6 +242,18 @@
             elem.AppendChild(this.ToXml(doc, xmlns, node.LeftChildNode));
             elem.AppendChild(this.ToXml(doc, xmlns, node.RightChildNode));
 
+            return elem;
+        }
+
+        private XmlElement MultiChildToXml(XmlDocument doc, string xmlns, MultiChildLogicalNode node)
+        {
+            var elem = this.CreateElement(doc, xmlns, node);
+
+            foreach (var childNode in node.ChildNodes)
+            {
+                elem.AppendChild(this.ToXml(doc, xmlns, childNode));    
+            }
+            
             return elem;
         }
     }

@@ -1,11 +1,33 @@
 ﻿namespace EyeInTheSky.Tests.StalkNodes
 {
     using System;
+    using System.Collections.Generic;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.StalkNodes;
     using Moq;
     using NUnit.Framework;
 
+    public abstract class MultiChildNodeTestBase<T> : LogicalNodeTestBase<T> where T : MultiChildLogicalNode, new()
+    {
+        [Test]
+        public void ShouldRejectNullNodeMatch()
+        {
+            var node = new T {ChildNodes = null};
+            var rc = new Mock<IRecentChange> {DefaultValueProvider = new ValueProvider()};
+
+            Assert.Catch(typeof(InvalidOperationException), () => node.Match(rc.Object));
+        }
+        
+        [Test]
+        public void ShouldRejectEmptyNodeListMatch()
+        {    
+            var node = new T {ChildNodes = new List<IStalkNode>()};
+            var rc = new Mock<IRecentChange> {DefaultValueProvider = new ValueProvider()};
+
+            Assert.Catch(typeof(InvalidOperationException), () => node.Match(rc.Object));
+        }
+    }
+    
     public abstract class DoubleChildNodeTestBase<T> : LogicalNodeTestBase<T> where T : DoubleChildLogicalNode, new()
     {
         [Test]

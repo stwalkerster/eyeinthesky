@@ -1,5 +1,6 @@
 ﻿namespace EyeInTheSky.Tests.Helpers
 {
+    using System.Collections.Generic;
     using System.Xml;
     using EyeInTheSky.Helpers;
     using EyeInTheSky.StalkNodes;
@@ -172,9 +173,10 @@
             // assert
             Assert.IsInstanceOf<AndNode>(result);
             
-            var scln = (DoubleChildLogicalNode)result;           
-            Assert.IsInstanceOf<TrueNode>(scln.LeftChildNode);
-            Assert.IsInstanceOf<FalseNode>(scln.RightChildNode);
+            var mcln = (MultiChildLogicalNode)result;    
+            Assert.AreEqual(2, mcln.ChildNodes.Count);
+            Assert.IsInstanceOf<TrueNode>(mcln.ChildNodes[0]);
+            Assert.IsInstanceOf<FalseNode>(mcln.ChildNodes[1]);
         }
         
         [Test]
@@ -191,9 +193,10 @@
             // assert
             Assert.IsInstanceOf<OrNode>(result);
             
-            var scln = (DoubleChildLogicalNode)result;           
-            Assert.IsInstanceOf<TrueNode>(scln.LeftChildNode);
-            Assert.IsInstanceOf<FalseNode>(scln.RightChildNode);
+            var mcln = (MultiChildLogicalNode)result;           
+            Assert.AreEqual(2, mcln.ChildNodes.Count);
+            Assert.IsInstanceOf<TrueNode>(mcln.ChildNodes[0]);
+            Assert.IsInstanceOf<FalseNode>(mcln.ChildNodes[1]);
         }
         #endregion
         
@@ -334,8 +337,11 @@
             // arrange 
             var node = new AndNode
             {
-                LeftChildNode = new TrueNode(),
-                RightChildNode = new FalseNode()
+                ChildNodes = new List<IStalkNode>
+                {
+                    new TrueNode(),
+                    new FalseNode()
+                }
             };
 
             var doc = new XmlDocument();
@@ -356,8 +362,11 @@
             // arrange 
             var node = new OrNode
             {
-                LeftChildNode = new TrueNode(),
-                RightChildNode = new FalseNode()
+                ChildNodes = new List<IStalkNode>
+                {
+                    new TrueNode(),
+                    new FalseNode()
+                }
             };
 
             var doc = new XmlDocument();
