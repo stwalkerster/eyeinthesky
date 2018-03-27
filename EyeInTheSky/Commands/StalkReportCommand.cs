@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Linq;
     using Castle.Core.Logging;
-    using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Services;
     using EyeInTheSky.Services.Interfaces;
@@ -19,7 +18,7 @@
     [CommandFlag(Stwalkerster.Bot.CommandLib.Model.Flag.Protected)]
     public class StalkReportCommand : CommandBase
     {
-        private readonly StalkConfiguration stalkConfig;
+        private readonly IStalkConfiguration stalkConfig;
         private readonly IEmailHelper emailHelper;
         private readonly RecentChangeHandler recentChangeHandler;
         private readonly INotificationTemplates templates;
@@ -31,7 +30,7 @@
             IFlagService flagService,
             IConfigurationProvider configurationProvider,
             IIrcClient client,
-            StalkConfiguration stalkConfig,
+            IStalkConfiguration stalkConfig,
             IEmailHelper emailHelper,
             RecentChangeHandler recentChangeHandler,
             INotificationTemplates templates) : base(

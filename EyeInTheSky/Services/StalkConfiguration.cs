@@ -1,15 +1,17 @@
-﻿namespace EyeInTheSky.Model
+﻿namespace EyeInTheSky.Services
 {
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Xml;
     using System.Xml.XPath;
+    using Castle.Core;
     using Castle.Core.Logging;
+    using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Services.Interfaces;
 
-    public class StalkConfiguration
+    public class StalkConfiguration : IStalkConfiguration, IInitializable
     {
         private const string XmlNamespace = "https://github.com/stwalkerster/eyeinthesky/raw/master/EyeInTheSky/DataFileSchema.xsd";
         
@@ -92,9 +94,9 @@
             {
                 this.stalks.Remove(key);
             }
-        }
+        }    
 
-        public void Initialise()
+        public void Initialize()
         {
             this.logger.Info("Loading stalks from configuration...");
             try

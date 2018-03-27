@@ -4,7 +4,6 @@
     using System.Text.RegularExpressions;
     using System.Xml;
     using Castle.Core.Logging;
-    using EyeInTheSky.Model;
     using EyeInTheSky.Model.StalkNodes;
     using EyeInTheSky.Model.StalkNodes.BaseNodes;
     using EyeInTheSky.Services.Interfaces;
@@ -16,7 +15,7 @@
 
     public abstract class StalkCommandBase : CommandBase
     {
-        protected StalkConfiguration StalkConfig { get; private set; }
+        protected IStalkConfiguration StalkConfig { get; private set; }
         private IStalkNodeFactory StalkNodeFactory { get; set; }
 
         protected StalkCommandBase(string commandSource,
@@ -26,7 +25,7 @@
             IFlagService flagService,
             IConfigurationProvider configurationProvider,
             IIrcClient client,
-            StalkConfiguration stalkConfig,
+            IStalkConfiguration stalkConfig,
             IStalkNodeFactory stalkNodeFactory) : base(
             commandSource,
             user,

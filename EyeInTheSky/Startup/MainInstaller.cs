@@ -9,7 +9,6 @@
     using Castle.Services.Logging.Log4netIntegration;
     using Castle.Windsor;
     using Castle.Windsor.Installer;
-    using EyeInTheSky.Model;
     using EyeInTheSky.Services;
     using EyeInTheSky.Startables;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities;
@@ -39,13 +38,12 @@
                 Classes.FromAssemblyContaining<CommandParser>()
                     .InSameNamespaceAs<CommandParser>()
                     .WithServiceAllInterfaces(),
+                
+                // Factories
                 Component.For<ICommandTypedFactory>().AsFactory(),
-
                 
                 // Services
                 Classes.FromThisAssembly().InNamespace("EyeInTheSky.Services").WithServiceAllInterfaces(),
-                
-                // Commands
                 Classes.FromThisAssembly().InNamespace("EyeInTheSky.Commands").LifestyleTransient(),
                 
                 // Main application
@@ -58,14 +56,13 @@
                 
                 // Individual components
                 Component.For<ICommandHandler>().ImplementedBy<CommandHandler>().Named("commandHandler"),
-                
-                Component.For<ISupportHelper>().ImplementedBy<SupportHelper>(),
                 Component.For<RecentChangeHandler>().Named("rcHandler")
                     .DependsOn(
                         Dependency.OnComponent("freenodeClient", "freenodeClient")
                     ),
-                Component.For<StalkConfiguration>()
-                    .OnCreate((kernel, instance) => instance.Initialise()),
+                
+                // IRC - not using separate installer because we need special configuration here.
+                Component.For<ISupportHelper>().ImplementedBy<SupportHelper>(),
                 Component.For<IIrcClient>()
                     .ImplementedBy<IrcClient>()
                     .Named("freenodeClient")
@@ -78,6 +75,8 @@
                     .DependsOn(Dependency.OnComponent("configuration", "wikimediaIrcConfig"))
                     .Start()
                     .PublishEvent(p => p.ReceivedMessage += null, x=>x.To<RecentChangeHandler>("rcHandler", l=>l.OnReceivedMessage(null, null))),
+                
+                // Linked to IRC services, so needs special configuration.
                 Component.For<NagiosMonitoringService>()
                     .Start()
                     .DependsOn(

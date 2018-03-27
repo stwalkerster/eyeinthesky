@@ -26,7 +26,7 @@
             IFlagService flagService,
             IConfigurationProvider configurationProvider,
             IIrcClient client,
-            StalkConfiguration stalkConfig,
+            IStalkConfiguration stalkConfig,
             IStalkNodeFactory stalkNodeFactory) : base(
             commandSource,
             user,

@@ -6,7 +6,6 @@
     using System.Linq;
     using System.Text;
     using Castle.Core.Logging;
-    using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Services.Interfaces;
     using Stwalkerster.IrcClient.Events;
@@ -17,7 +16,7 @@
     {
         private readonly IAppConfiguration appConfig;
         private readonly ILogger logger;
-        private readonly StalkConfiguration stalkConfig;
+        private readonly IStalkConfiguration stalkConfig;
         private readonly IIrcClient freenodeClient;
         private readonly IRecentChangeParser rcParser;
         private readonly IEmailHelper emailHelper;
@@ -25,7 +24,7 @@
 
         public RecentChangeHandler(IAppConfiguration appConfig,
             ILogger logger,
-            StalkConfiguration stalkConfig,
+            IStalkConfiguration stalkConfig,
             IIrcClient freenodeClient,
             IRecentChangeParser rcParser,
             IEmailHelper emailHelper,

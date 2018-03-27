@@ -9,6 +9,7 @@
     using EyeInTheSky.Extensions;
     using EyeInTheSky.Model.StalkNodes;
     using EyeInTheSky.Model.StalkNodes.BaseNodes;
+    using EyeInTheSky.Services.Interfaces;
     using Stwalkerster.Bot.CommandLib.Attributes;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities.Models;
@@ -22,7 +23,7 @@
     [CommandFlag(Stwalkerster.Bot.CommandLib.Model.Flag.Protected)]
     public class AccCommand : CommandBase
     {
-        private readonly StalkConfiguration stalkConfig;
+        private readonly IStalkConfiguration stalkConfig;
 
         public AccCommand(string commandSource,
             IUser user,
@@ -31,7 +32,7 @@
             IFlagService flagService,
             IConfigurationProvider configurationProvider,
             IIrcClient client,
-            StalkConfiguration stalkConfig)
+            IStalkConfiguration stalkConfig)
             : base(
                 commandSource,
                 user,
