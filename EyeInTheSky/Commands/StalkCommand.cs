@@ -400,19 +400,19 @@
                     new HelpMessage(
                         this.CommandName,
                         "set <Flag> <user|page|summary|xml> <Match...>",
-                        "Sets the stalk configuration of the specified stalk to specified user, page, or edit summary regex. Alternatively, manually specify an XML tree (advanced).")
+                        "Sets the stalk configuration of the specified stalk to specified user, page, or edit summary. Alternatively, manually specify an XML tree (advanced).")
                 },{
                     "and",
                     new HelpMessage(
                         this.CommandName,
                         "and <Flag> <user|page|summary|xml> <Match...>",
-                        "Sets the stalk configuration of the specified stalk to the logical AND of the current configuration, and a specified user, page, or edit summary regex; or XML tree (advanced).")
+                        "Sets the stalk configuration of the specified stalk to the logical AND of the current configuration, and a specified user, page, or edit summary; or XML tree (advanced).")
                 },{
                     "or",
                     new HelpMessage(
                         this.CommandName,
                         "or <Flag> <user|page|summary|xml> <Match...>",
-                        "Sets the stalk configuration of the specified stalk to the logical OR of the current configuration, and a specified user, page, or edit summary regex; or XML tree (advanced).")
+                        "Sets the stalk configuration of the specified stalk to the logical OR of the current configuration, and a specified user, page, or edit summary; or XML tree (advanced).")
                 },
             };
         }

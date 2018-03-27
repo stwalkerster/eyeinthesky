@@ -1,6 +1,7 @@
 ﻿namespace EyeInTheSky.Commands
 {
     using System.Collections.Generic;
+    using System.Text.RegularExpressions;
     using System.Xml;
     using Castle.Core.Logging;
     using EyeInTheSky.Helpers.Interfaces;
@@ -42,21 +43,23 @@
         {
             IStalkNode newNode;
 
+            var escapedTarget = Regex.Escape(stalkTarget);
+            
             switch (type)
             {
                 case "user":
                     var usn = new UserStalkNode();
-                    usn.SetMatchExpression(stalkTarget);
+                    usn.SetMatchExpression(escapedTarget);
                     newNode = usn;
                     break;
                 case "page":
                     var psn = new PageStalkNode();
-                    psn.SetMatchExpression(stalkTarget);
+                    psn.SetMatchExpression(escapedTarget);
                     newNode = psn;
                     break;
                 case "summary":
                     var ssn = new SummaryStalkNode();
-                    ssn.SetMatchExpression(stalkTarget);
+                    ssn.SetMatchExpression(escapedTarget);
                     newNode = ssn;
                     break;
                 case "xml":
