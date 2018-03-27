@@ -4,9 +4,10 @@
     using System.Collections.Generic;
     using System.Xml;
     using EyeInTheSky.Model.Interfaces;
+    using EyeInTheSky.Model.StalkNodes;
+    using EyeInTheSky.Model.StalkNodes.BaseNodes;
     using EyeInTheSky.Services;
     using EyeInTheSky.Services.Interfaces;
-    using EyeInTheSky.StalkNodes;
     using Moq;
     using NUnit.Framework;
 

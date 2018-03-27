@@ -7,9 +7,10 @@
     using EyeInTheSky.Extensions;
     using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
+    using EyeInTheSky.Model.StalkNodes;
+    using EyeInTheSky.Model.StalkNodes.BaseNodes;
     using EyeInTheSky.Services;
     using EyeInTheSky.Services.Interfaces;
-    using EyeInTheSky.StalkNodes;
     using Stwalkerster.Bot.CommandLib.Attributes;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities.Models;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities.Response;

@@ -6,8 +6,8 @@
     using Castle.Core.Logging;
     using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
+    using EyeInTheSky.Model.StalkNodes.BaseNodes;
     using EyeInTheSky.Services.Interfaces;
-    using EyeInTheSky.StalkNodes;
 
     public class StalkFactory : IStalkFactory
     {

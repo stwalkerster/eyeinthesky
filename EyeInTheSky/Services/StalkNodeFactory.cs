@@ -4,8 +4,9 @@
     using System.Linq;
     using System.Xml;
     using EyeInTheSky.Attributes;
+    using EyeInTheSky.Model.StalkNodes;
+    using EyeInTheSky.Model.StalkNodes.BaseNodes;
     using EyeInTheSky.Services.Interfaces;
-    using EyeInTheSky.StalkNodes;
 
     public class StalkNodeFactory : IStalkNodeFactory
     {

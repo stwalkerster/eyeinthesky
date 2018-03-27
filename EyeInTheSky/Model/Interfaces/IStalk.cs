@@ -2,7 +2,7 @@
 {
     using System;
     using System.Xml;
-    using EyeInTheSky.StalkNodes;
+    using EyeInTheSky.Model.StalkNodes.BaseNodes;
 
     public interface IStalk
     {

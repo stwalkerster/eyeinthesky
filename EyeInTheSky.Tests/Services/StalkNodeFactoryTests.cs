@@ -2,8 +2,9 @@
 {
     using System.Collections.Generic;
     using System.Xml;
+    using EyeInTheSky.Model.StalkNodes;
+    using EyeInTheSky.Model.StalkNodes.BaseNodes;
     using EyeInTheSky.Services;
-    using EyeInTheSky.StalkNodes;
     using NUnit.Framework;
 
     [TestFixture]

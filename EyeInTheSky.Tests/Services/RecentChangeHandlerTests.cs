@@ -2,8 +2,8 @@
 {
     using System;
     using EyeInTheSky.Model.Interfaces;
+    using EyeInTheSky.Model.StalkNodes;
     using EyeInTheSky.Services;
-    using EyeInTheSky.StalkNodes;
     using Moq;
     using NUnit.Framework;
 

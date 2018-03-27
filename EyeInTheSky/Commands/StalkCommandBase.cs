@@ -5,8 +5,9 @@
     using System.Xml;
     using Castle.Core.Logging;
     using EyeInTheSky.Model;
+    using EyeInTheSky.Model.StalkNodes;
+    using EyeInTheSky.Model.StalkNodes.BaseNodes;
     using EyeInTheSky.Services.Interfaces;
-    using EyeInTheSky.StalkNodes;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities;
     using Stwalkerster.Bot.CommandLib.Exceptions;
     using Stwalkerster.Bot.CommandLib.Services.Interfaces;

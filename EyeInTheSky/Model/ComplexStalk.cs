@@ -2,7 +2,8 @@
 {
     using System;
     using EyeInTheSky.Model.Interfaces;
-    using EyeInTheSky.StalkNodes;
+    using EyeInTheSky.Model.StalkNodes;
+    using EyeInTheSky.Model.StalkNodes.BaseNodes;
 
     public class ComplexStalk : IStalk
     {

@@ -5,9 +5,10 @@
     using System.Linq;
     using System.Text.RegularExpressions;
     using EyeInTheSky.Model;
-    using EyeInTheSky.StalkNodes;
     using Castle.Core.Logging;
     using EyeInTheSky.Extensions;
+    using EyeInTheSky.Model.StalkNodes;
+    using EyeInTheSky.Model.StalkNodes.BaseNodes;
     using Stwalkerster.Bot.CommandLib.Attributes;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities.Models;

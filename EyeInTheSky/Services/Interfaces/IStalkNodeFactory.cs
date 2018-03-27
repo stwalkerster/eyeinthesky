@@ -1,7 +1,7 @@
 ﻿namespace EyeInTheSky.Services.Interfaces
 {
     using System.Xml;
-    using EyeInTheSky.StalkNodes;
+    using EyeInTheSky.Model.StalkNodes.BaseNodes;
 
     public interface IStalkNodeFactory
     {
