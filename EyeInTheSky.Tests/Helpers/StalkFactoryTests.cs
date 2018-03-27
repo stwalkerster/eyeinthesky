@@ -213,6 +213,37 @@ namespace EyeInTheSky.Tests.Helpers
             snf.Verify(x => x.NewFromXmlFragment(It.IsAny<XmlElement>()), Times.Once);
         }
         
+
+        [Test, Ignore("Waiting on T964")]
+        public void ShouldCreateObjectFromXmlWithComments()
+        {
+            string xml =
+                "<complexstalk flag=\"testytest\" enabled=\"false\"><!-- comment 1 --><searchtree><!--comment 2--><and><!-- comment 3 --><true /><!-- comment 4 --><false /><!-- comment 5 --></and><!-- comment 6 --></searchtree><!-- lastcomment --></complexstalk>";
+            var doc = new XmlDocument();
+            doc.LoadXml(xml);
+            var snf = new Mock<IStalkNodeFactory>();
+            snf.Setup(x => x.NewFromXmlFragment(It.IsAny<XmlElement>())).Returns(new TrueNode());
+            
+            // act
+            var fact = new StalkFactory(this.LoggerMock.Object, snf.Object);
+            var stalk = fact.NewFromXmlElement(doc.DocumentElement);
+
+            // assert
+            Assert.AreEqual("testytest", stalk.Flag);
+            Assert.IsFalse(stalk.IsEnabled);
+            
+            Assert.IsNotNull(stalk.SearchTree);
+            Assert.IsInstanceOf<AndNode>(stalk.SearchTree);
+
+            var andnode = (AndNode)stalk.SearchTree;
+            Assert.IsNotNull(andnode.LeftChildNode);
+            Assert.IsNotNull(andnode.RightChildNode);
+            Assert.IsInstanceOf<TrueNode>(andnode.LeftChildNode);
+            Assert.IsInstanceOf<FalseNode>(andnode.RightChildNode);
+            
+            snf.Verify(x => x.NewFromXmlFragment(It.IsAny<XmlElement>()), Times.AtLeastOnce);
+        }
+        
         [Test]
         public void ShouldCreateObjectFromXmlWithTriggerCount()
         {
