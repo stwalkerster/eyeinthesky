@@ -129,7 +129,6 @@
             catch (Exception ex)
             {
                 this.logger.ErrorFormat(ex, "Failed to send notification email for RC {0}", rc);
-                throw;
             }
 
             foreach (var stalk in stalks)
@@ -147,7 +146,6 @@
             catch (Exception ex)
             {
                 this.logger.ErrorFormat(ex, "Failed to send notification IRC message for RC {0}", rc);
-                throw;
             }
         }
 
