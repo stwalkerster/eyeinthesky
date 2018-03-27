@@ -1,12 +1,12 @@
-﻿namespace EyeInTheSky.Helpers
+﻿namespace EyeInTheSky.Services
 {
     using System;
     using System.Globalization;
     using System.Xml;
     using Castle.Core.Logging;
-    using EyeInTheSky.Helpers.Interfaces;
     using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
+    using EyeInTheSky.Services.Interfaces;
     using EyeInTheSky.StalkNodes;
 
     public class StalkFactory : IStalkFactory

@@ -6,8 +6,8 @@
     using System.Xml;
     using System.Xml.XPath;
     using Castle.Core.Logging;
-    using EyeInTheSky.Helpers.Interfaces;
     using EyeInTheSky.Model.Interfaces;
+    using EyeInTheSky.Services.Interfaces;
 
     public class StalkConfiguration
     {

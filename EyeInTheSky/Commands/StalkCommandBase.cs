@@ -4,8 +4,8 @@
     using System.Text.RegularExpressions;
     using System.Xml;
     using Castle.Core.Logging;
-    using EyeInTheSky.Helpers.Interfaces;
     using EyeInTheSky.Model;
+    using EyeInTheSky.Services.Interfaces;
     using EyeInTheSky.StalkNodes;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities;
     using Stwalkerster.Bot.CommandLib.Exceptions;

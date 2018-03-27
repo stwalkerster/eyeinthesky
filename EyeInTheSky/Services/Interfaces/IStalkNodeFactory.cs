@@ -1,8 +1,8 @@
-﻿using System.Xml;
-using EyeInTheSky.StalkNodes;
-
-namespace EyeInTheSky.Helpers.Interfaces
+﻿namespace EyeInTheSky.Services.Interfaces
 {
+    using System.Xml;
+    using EyeInTheSky.StalkNodes;
+
     public interface IStalkNodeFactory
     {
         IStalkNode NewFromXmlFragment(XmlElement fragment);

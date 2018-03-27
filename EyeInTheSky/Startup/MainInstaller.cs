@@ -42,9 +42,6 @@
                 Component.For<ICommandTypedFactory>().AsFactory(),
 
                 
-                // Helpers
-                Classes.FromThisAssembly().InNamespace("EyeInTheSky.Helpers").WithServiceAllInterfaces(),
-                
                 // Services
                 Classes.FromThisAssembly().InNamespace("EyeInTheSky.Services").WithServiceAllInterfaces(),
                 
@@ -53,7 +50,7 @@
                 
                 // Main application
                 Component.For<IApplication>()
-                    .ImplementedBy<Application>()
+                    .ImplementedBy<Launch>()
                     .DependsOn(
                         Dependency.OnComponent("freenodeClient", "freenodeClient"),
                         Dependency.OnComponent("wikimediaClient", "wikimediaClient")

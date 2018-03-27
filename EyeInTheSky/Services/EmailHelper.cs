@@ -1,9 +1,9 @@
-﻿namespace EyeInTheSky.Helpers
+﻿namespace EyeInTheSky.Services
 {
     using System.Text;
     using Castle.Core.Logging;
-    using EyeInTheSky.Helpers.Interfaces;
     using EyeInTheSky.Model.Interfaces;
+    using EyeInTheSky.Services.Interfaces;
 
     public class EmailHelper : IEmailHelper
     {

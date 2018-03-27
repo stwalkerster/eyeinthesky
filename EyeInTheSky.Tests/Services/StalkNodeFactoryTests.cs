@@ -1,8 +1,8 @@
-﻿namespace EyeInTheSky.Tests.Helpers
+﻿namespace EyeInTheSky.Tests.Services
 {
     using System.Collections.Generic;
     using System.Xml;
-    using EyeInTheSky.Helpers;
+    using EyeInTheSky.Services;
     using EyeInTheSky.StalkNodes;
     using NUnit.Framework;
 

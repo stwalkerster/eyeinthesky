@@ -1,4 +1,4 @@
-﻿namespace EyeInTheSky.Helpers.Interfaces
+﻿namespace EyeInTheSky.Services.Interfaces
 {
     public interface IEmailHelper
     {

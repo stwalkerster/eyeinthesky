@@ -1,6 +1,4 @@
-﻿using EyeInTheSky.Helpers.Interfaces;
-
-namespace EyeInTheSky.Commands
+﻿namespace EyeInTheSky.Commands
 {
     using System;
     using System.Collections.Generic;
@@ -8,6 +6,7 @@ namespace EyeInTheSky.Commands
     using Castle.Core.Logging;
     using EyeInTheSky.Extensions;
     using EyeInTheSky.Model;
+    using EyeInTheSky.Services.Interfaces;
     using Stwalkerster.Bot.CommandLib.Attributes;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities.Models;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities.Response;

@@ -5,10 +5,10 @@
     using System.Linq;
     using Castle.Core.Logging;
     using EyeInTheSky.Extensions;
-    using EyeInTheSky.Helpers;
-    using EyeInTheSky.Helpers.Interfaces;
     using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
+    using EyeInTheSky.Services;
+    using EyeInTheSky.Services.Interfaces;
     using EyeInTheSky.StalkNodes;
     using Stwalkerster.Bot.CommandLib.Attributes;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities.Models;

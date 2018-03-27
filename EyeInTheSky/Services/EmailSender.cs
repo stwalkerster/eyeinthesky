@@ -1,7 +1,7 @@
-﻿namespace EyeInTheSky.Helpers
+﻿namespace EyeInTheSky.Services
 {
     using System.Security.Cryptography.X509Certificates;
-    using EyeInTheSky.Helpers.Interfaces;
+    using EyeInTheSky.Services.Interfaces;
     using MailKit.Net.Smtp;
     using MailKit.Security;
     using MimeKit;

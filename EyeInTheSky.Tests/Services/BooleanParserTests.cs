@@ -1,7 +1,7 @@
-﻿namespace EyeInTheSky.Tests.Helpers
+﻿namespace EyeInTheSky.Tests.Services
 {
     using System.Collections;
-    using EyeInTheSky.Helpers;
+    using EyeInTheSky.Services;
     using NUnit.Framework;
 
     [TestFixture]

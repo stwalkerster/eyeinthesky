@@ -1,10 +1,10 @@
-﻿namespace EyeInTheSky.Helpers
+﻿namespace EyeInTheSky.Services
 {
     using System.Collections.Generic;
     using System.Linq;
     using System.Xml;
     using EyeInTheSky.Attributes;
-    using EyeInTheSky.Helpers.Interfaces;
+    using EyeInTheSky.Services.Interfaces;
     using EyeInTheSky.StalkNodes;
 
     public class StalkNodeFactory : IStalkNodeFactory

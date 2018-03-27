@@ -1,12 +1,11 @@
-﻿using EyeInTheSky.Helpers.Interfaces;
-
-namespace EyeInTheSky.Tests.Helpers
+﻿namespace EyeInTheSky.Tests.Services
 {
     using System;
     using System.Collections.Generic;
     using System.Xml;
-    using EyeInTheSky.Helpers;
     using EyeInTheSky.Model.Interfaces;
+    using EyeInTheSky.Services;
+    using EyeInTheSky.Services.Interfaces;
     using EyeInTheSky.StalkNodes;
     using Moq;
     using NUnit.Framework;

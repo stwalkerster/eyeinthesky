@@ -1,4 +1,4 @@
-﻿namespace EyeInTheSky.Helpers
+﻿namespace EyeInTheSky.Services
 {
     public class BooleanParser
     {

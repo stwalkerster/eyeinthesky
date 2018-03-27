@@ -79,22 +79,12 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties/GlobalAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Application.cs" />
     <Compile Include="Attributes\StalkNodeTypeAttribute.cs" />
     <Compile Include="Commands\AccCommand.cs" />
     <Compile Include="Commands\QuickCommand.cs" />
     <Compile Include="Commands\StalkCommandBase.cs" />
     <Compile Include="Commands\StalkReportCommand.cs" />
     <Compile Include="Extensions\ListExtensions.cs" />
-    <Compile Include="Helpers\BooleanParser.cs" />
-    <Compile Include="Helpers\EmailHelper.cs" />
-    <Compile Include="Helpers\Interfaces\IEmailHelper.cs" />
-    <Compile Include="Helpers\Interfaces\IEmailSender.cs" />
-    <Compile Include="Helpers\Interfaces\IStalkFactory.cs" />
-    <Compile Include="Helpers\Interfaces\IStalkNodeFactory.cs" />
-    <Compile Include="Helpers\StalkFactory.cs" />
-    <Compile Include="Helpers\EmailSender.cs" />
-    <Compile Include="Helpers\StalkNodeFactory.cs" />
     <Compile Include="Model\AppConfiguration.cs" />
     <Compile Include="Model\ComplexStalk.cs" />
     <Compile Include="Model\EmailConfiguration.cs" />
@@ -105,14 +95,23 @@
     <Compile Include="Model\RecentChange.cs" />
     <Compile Include="Model\StalkConfiguration.cs" />
     <Compile Include="Model\NotificationTemplates.cs" />
+    <Compile Include="Services\BooleanParser.cs" />
     <Compile Include="Services\ConfigurationProvider.cs" />
     <Compile Include="Services\BasicFlagService.cs" />
+    <Compile Include="Services\EmailHelper.cs" />
+    <Compile Include="Services\EmailSender.cs" />
+    <Compile Include="Services\Interfaces\IEmailHelper.cs" />
+    <Compile Include="Services\Interfaces\IEmailSender.cs" />
     <Compile Include="Services\Interfaces\IMediaWikiApi.cs" />
     <Compile Include="Services\Interfaces\IRecentChangeParser.cs" />
+    <Compile Include="Services\Interfaces\IStalkFactory.cs" />
+    <Compile Include="Services\Interfaces\IStalkNodeFactory.cs" />
     <Compile Include="Services\Interfaces\IWebServiceClient.cs" />
     <Compile Include="Services\MediaWikiApi.cs" />
     <Compile Include="Services\RecentChangeHandler.cs" />
     <Compile Include="Services\RecentChangeParser.cs" />
+    <Compile Include="Services\StalkFactory.cs" />
+    <Compile Include="Services\StalkNodeFactory.cs" />
     <Compile Include="Services\WebServiceClient.cs" />
     <Compile Include="StalkNodes\AndNode.cs" />
     <Compile Include="Commands\StalkCommand.cs" />
@@ -143,9 +142,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="DataFileSchema.xsd">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
