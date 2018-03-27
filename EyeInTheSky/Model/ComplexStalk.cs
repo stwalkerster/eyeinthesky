@@ -120,11 +120,5 @@
 
             return this.baseNode.Match(rc);
         }
-
-        public override string ToString()
-        {
-            return "Flag: " + this.Flag + ", Last modified: " + this.LastUpdateTime + ", Type: Complex "
-                   + this.baseNode;
-        }
     }
 }

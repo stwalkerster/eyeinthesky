@@ -8,6 +8,7 @@
     using EyeInTheSky.Helpers;
     using EyeInTheSky.Helpers.Interfaces;
     using EyeInTheSky.Model;
+    using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.StalkNodes;
     using Stwalkerster.Bot.CommandLib.Attributes;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities.Models;
@@ -21,6 +22,8 @@
     [CommandFlag(Stwalkerster.Bot.CommandLib.Model.Flag.Protected)]
     public class StalkCommand : StalkCommandBase
     {
+        private readonly IAppConfiguration config;
+
         public StalkCommand(string commandSource,
             IUser user,
             IEnumerable<string> arguments,
@@ -29,7 +32,8 @@
             IConfigurationProvider configurationProvider,
             IIrcClient client,
             StalkConfiguration stalkConfig,
-            IStalkNodeFactory stalkNodeFactory) : base(
+            IStalkNodeFactory stalkNodeFactory,
+            IAppConfiguration config) : base(
             commandSource,
             user,
             arguments,
@@ -40,6 +44,7 @@
             stalkConfig,
             stalkNodeFactory)
         {
+            this.config = config;
         }
 
         protected override IEnumerable<CommandResponse> Execute()
@@ -194,10 +199,13 @@
 
             var expiryTime = DateTime.Parse(date);
             this.StalkConfig[stalkName].ExpiryTime = expiryTime;
-            
+
             yield return new CommandResponse
             {
-                Message = string.Format("Set expiry attribute on stalk {0} to {1}", stalkName, expiryTime)
+                Message = string.Format(
+                    "Set expiry attribute on stalk {0} to {1}",
+                    stalkName,
+                    expiryTime.ToString(this.config.DateFormat))
             };
             
             this.StalkConfig.Save();
@@ -280,11 +288,17 @@
             };
 
             
-            foreach (var kvp in activeStalks)
+            foreach (var stalk in activeStalks)
             {
+                var message = string.Format(
+                    "Flag: {0}, Last modified: {1}, Type: Complex {2}",
+                    stalk.Flag,
+                    stalk.LastUpdateTime.GetValueOrDefault().ToString(this.config.DateFormat),
+                    stalk.SearchTree);
+                
                 yield return new CommandResponse
                 {
-                    Message = kvp.ToString(),
+                    Message = message,
                     Type = CommandResponseType.Notice,
                     Destination = CommandResponseDestination.PrivateMessage
                 };
