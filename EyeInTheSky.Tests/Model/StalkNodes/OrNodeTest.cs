@@ -63,9 +63,33 @@
             var node = new OrNode();
             node.ChildNodes.Add(new TrueNode());
             
-            var nodeRightChildNode = new UserGroupStalkNode();
-            nodeRightChildNode.SetMatchExpression("sysop");
-            node.ChildNodes.Add(nodeRightChildNode);
+            var lazyNode = new UserGroupStalkNode();
+            lazyNode.SetMatchExpression("sysop");
+            node.ChildNodes.Add(lazyNode);
+            
+            // act
+            node.Match(rc);
+
+            // assert
+            mwApi.Verify(x => x.GetUserGroups(It.IsAny<string>()), Times.Never);
+        }
+        
+        [Test]
+        public void LazyEvaluationInverseSkipTest()
+        {
+            // arrange
+            var mwApi = new Mock<IMediaWikiApi>();
+            mwApi.Setup(x => x.GetUserGroups(It.IsAny<string>())).Returns(new List<string> {"user", "*"});
+            
+            var rc = new RecentChange("a", "b", "c", "d", "e", 0);
+            rc.MediaWikiApi = mwApi.Object;
+            
+            var node = new OrNode();
+            var lazyNode = new UserGroupStalkNode();
+            lazyNode.SetMatchExpression("sysop");
+            node.ChildNodes.Add(lazyNode);
+            
+            node.ChildNodes.Add(new TrueNode());
             
             // act
             node.Match(rc);
@@ -87,10 +111,34 @@
             var node = new OrNode();
             node.ChildNodes.Add(new FalseNode());
             
-            var nodeRightChildNode = new UserGroupStalkNode();
-            nodeRightChildNode.SetMatchExpression("sysop");
-            node.ChildNodes.Add(nodeRightChildNode);
+            var lazyNode = new UserGroupStalkNode();
+            lazyNode.SetMatchExpression("sysop");
+            node.ChildNodes.Add(lazyNode);
             
+            // act
+            node.Match(rc);
+
+            // assert
+            mwApi.Verify(x => x.GetUserGroups(It.IsAny<string>()), Times.Once);
+        }
+
+        [Test]
+        public void LazyEvaluationInverseForceTest()
+        {
+            // arrange
+            var mwApi = new Mock<IMediaWikiApi>();
+            mwApi.Setup(x => x.GetUserGroups(It.IsAny<string>())).Returns(new List<string> {"user", "*"});
+            
+            var rc = new RecentChange("a", "b", "c", "d", "e", 0);
+            rc.MediaWikiApi = mwApi.Object;
+            
+            var node = new OrNode();
+            var lazyNode = new UserGroupStalkNode();
+            lazyNode.SetMatchExpression("sysop");
+            node.ChildNodes.Add(lazyNode);
+
+            node.ChildNodes.Add(new FalseNode());
+
             // act
             node.Match(rc);
 
