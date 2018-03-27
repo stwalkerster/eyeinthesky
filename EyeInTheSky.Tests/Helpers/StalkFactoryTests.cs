@@ -88,7 +88,7 @@ namespace EyeInTheSky.Tests.Helpers
             var xmlElement = sf.ToXmlElement(stalk.Object, doc, "");
             
             // assert
-            Assert.AreEqual("<complexstalk flag=\"testflag\" immediatemail=\"true\" enabled=\"true\" triggercount=\"4\"><false /></complexstalk>", xmlElement.OuterXml);
+            Assert.AreEqual("<complexstalk flag=\"testflag\" immediatemail=\"true\" enabled=\"true\" triggercount=\"4\"><searchtree><false /></searchtree></complexstalk>", xmlElement.OuterXml);
         }
 
         [Test]
@@ -117,7 +117,7 @@ namespace EyeInTheSky.Tests.Helpers
             var xmlElement = sf.ToXmlElement(stalk.Object, doc, "");
             
             // assert
-            Assert.AreEqual("<complexstalk flag=\"testflag\" immediatemail=\"true\" enabled=\"true\" triggercount=\"0\"><or><true /><false /></or></complexstalk>", xmlElement.OuterXml);
+            Assert.AreEqual("<complexstalk flag=\"testflag\" immediatemail=\"true\" enabled=\"true\" triggercount=\"0\"><searchtree><or><true /><false /></or></searchtree></complexstalk>", xmlElement.OuterXml);
         }
 
         [Test]
@@ -150,14 +150,44 @@ namespace EyeInTheSky.Tests.Helpers
             var xmlElement = sf.ToXmlElement(stalk.Object, doc, "");
             
             // assert
-            Assert.AreEqual("<complexstalk flag=\"testflag\" lastupdate=\"2018-03-14T01:02:03Z\" lasttrigger=\"0001-01-01T00:00:00Z\" immediatemail=\"true\" description=\"my description here\" lastmessageid=\"foobar\" enabled=\"true\" expiry=\"9999-12-31T23:59:59.9999999Z\" triggercount=\"3334\"><false /></complexstalk>", xmlElement.OuterXml);
+            Assert.AreEqual("<complexstalk flag=\"testflag\" lastupdate=\"2018-03-14T01:02:03Z\" lasttrigger=\"0001-01-01T00:00:00Z\" immediatemail=\"true\" description=\"my description here\" lastmessageid=\"foobar\" enabled=\"true\" expiry=\"9999-12-31T23:59:59.9999999Z\" triggercount=\"3334\"><searchtree><false /></searchtree></complexstalk>", xmlElement.OuterXml);
+        }
+
+        [Test]
+        public void ShouldCreateObjectFromLegacyXml()
+        {
+            string xml =
+                "<complexstalk flag=\"testytest\" lastupdate=\"2018-03-25T16:42:30.984000Z\" lasttrigger=\"2018-03-25T16:42:21.878000Z\" immediatemail=\"true\" lastmessageid=\"foobar\" enabled=\"false\"><true /></complexstalk>";
+            var doc = new XmlDocument();
+            doc.LoadXml(xml);
+            var snf = new Mock<IStalkNodeFactory>();
+            snf.Setup(x => x.NewFromXmlFragment(It.IsAny<XmlElement>())).Returns(new TrueNode());
+            
+            // act
+            var fact = new StalkFactory(this.LoggerMock.Object, snf.Object);
+            var stalk = fact.NewFromXmlElement(doc.DocumentElement);
+
+            // assert
+            Assert.IsNull(stalk.Description);
+            Assert.IsNull(stalk.ExpiryTime);
+            Assert.AreEqual("testytest", stalk.Flag);
+            Assert.IsFalse(stalk.IsEnabled);
+            Assert.AreEqual("foobar", stalk.LastMessageId);
+            Assert.AreEqual(new DateTime(2018,03,25,16,42,21,878), stalk.LastTriggerTime);
+            Assert.AreEqual(new DateTime(2018,03,25,16,42,30,984), stalk.LastUpdateTime);
+            Assert.AreEqual(0, stalk.TriggerCount);
+
+            Assert.IsNotNull(stalk.SearchTree);
+            Assert.IsInstanceOf<IStalkNode>(stalk.SearchTree);
+            
+            snf.Verify(x => x.NewFromXmlFragment(It.IsAny<XmlElement>()), Times.Once);
         }
 
         [Test]
         public void ShouldCreateObjectFromXml()
         {
             string xml =
-                "<complexstalk flag=\"testytest\" lastupdate=\"2018-03-25T16:42:30.984000Z\" lasttrigger=\"2018-03-25T16:42:21.878000Z\" immediatemail=\"true\" lastmessageid=\"foobar\" enabled=\"false\"><true /></complexstalk>";
+                "<complexstalk flag=\"testytest\" lastupdate=\"2018-03-25T16:42:30.984000Z\" lasttrigger=\"2018-03-25T16:42:21.878000Z\" immediatemail=\"true\" lastmessageid=\"foobar\" enabled=\"false\"><searchtree><true /></searchtree></complexstalk>";
             var doc = new XmlDocument();
             doc.LoadXml(xml);
             var snf = new Mock<IStalkNodeFactory>();
@@ -187,7 +217,7 @@ namespace EyeInTheSky.Tests.Helpers
         public void ShouldCreateObjectFromXmlWithTriggerCount()
         {
             string xml =
-                "<complexstalk flag=\"testytest\" lastupdate=\"2018-03-25T16:42:30.984000Z\" lasttrigger=\"2018-03-25T16:42:21.878000Z\" immediatemail=\"true\" enabled=\"false\" triggercount=\"533\"><true /></complexstalk>";
+                "<complexstalk flag=\"testytest\" lastupdate=\"2018-03-25T16:42:30.984000Z\" lasttrigger=\"2018-03-25T16:42:21.878000Z\" immediatemail=\"true\" enabled=\"false\" triggercount=\"533\"><searchtree><true /></searchtree></complexstalk>";
             var doc = new XmlDocument();
             doc.LoadXml(xml);
             var snf = new Mock<IStalkNodeFactory>();

@@ -100,10 +100,34 @@
                 lastMessageId = null;
             }
 
-            IStalkNode baseNode = new FalseNode();
+            IStalkNode baseNode = null;
+            
             if (element.HasChildNodes)
             {
-                baseNode = this.stalkNodeFactory.NewFromXmlFragment((XmlElement) element.FirstChild);
+                var childNodeCollection = element.ChildNodes;
+
+                foreach (XmlNode node in childNodeCollection)
+                {
+                    var xmlElement = node as XmlElement;
+                    if (xmlElement == null)
+                    {
+                        continue;
+                    }
+
+                    if (xmlElement.Name == "searchtree")
+                    {
+                        baseNode = this.stalkNodeFactory.NewFromXmlFragment((XmlElement) xmlElement.FirstChild);
+                        continue;
+                    }
+                    
+                    this.logger.DebugFormat("Unrecognised child {0} of stalk {1}", xmlElement.Name, flag);
+                }
+
+                if (baseNode == null)
+                {
+                    this.logger.InfoFormat("Assuming stalk {0} is legacy", flag);
+                    baseNode = this.stalkNodeFactory.NewFromXmlFragment((XmlElement) element.FirstChild);
+                }
             }
 
             var s = new ComplexStalk(
@@ -162,7 +186,10 @@
 
             e.SetAttribute("triggercount", XmlConvert.ToString(stalk.TriggerCount));
 
-            e.AppendChild(this.stalkNodeFactory.ToXml(doc, xmlns, stalk.SearchTree));
+            var searchTreeParentElement = doc.CreateElement("searchtree", xmlns);
+            searchTreeParentElement.AppendChild(this.stalkNodeFactory.ToXml(doc, xmlns, stalk.SearchTree));
+            
+            e.AppendChild(searchTreeParentElement);
             
             return e;
         }
