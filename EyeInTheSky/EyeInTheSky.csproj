@@ -86,6 +86,7 @@
     <Compile Include="Commands\StalkCommandBase.cs" />
     <Compile Include="Commands\StalkReportCommand.cs" />
     <Compile Include="Extensions\ListExtensions.cs" />
+    <Compile Include="Helpers\BooleanParser.cs" />
     <Compile Include="Helpers\EmailHelper.cs" />
     <Compile Include="Helpers\Interfaces\IEmailHelper.cs" />
     <Compile Include="Helpers\Interfaces\IEmailSender.cs" />

@@ -5,6 +5,7 @@
     using System.Linq;
     using Castle.Core.Logging;
     using EyeInTheSky.Extensions;
+    using EyeInTheSky.Helpers;
     using EyeInTheSky.Helpers.Interfaces;
     using EyeInTheSky.Model;
     using EyeInTheSky.StalkNodes;
@@ -89,6 +90,11 @@
                     return this.AndMode(tokenList, stalkName);
                 case "or":
                     return this.OrMode(tokenList, stalkName);
+                // Aliases:
+                case "enable":
+                    return this.EnabledMode(new List<string> {"true"}, stalkName);
+                case "disable":
+                    return this.EnabledMode(new List<string> {"false"}, stalkName);
                 default:
                     throw new CommandInvocationException();
             }
@@ -159,7 +165,7 @@
             
             bool enabled;
             var possibleBoolean = tokenList.PopFromFront();
-            if (!bool.TryParse(possibleBoolean, out enabled))
+            if (!BooleanParser.TryParse(possibleBoolean, out enabled))
             {
                 throw new CommandErrorException(
                     string.Format(
@@ -232,7 +238,7 @@
 
             bool mail;
             var possibleBoolean = tokenList.PopFromFront();
-            if (!bool.TryParse(possibleBoolean, out mail))
+            if (!BooleanParser.TryParse(possibleBoolean, out mail))
             {
                 throw new CommandErrorException(
                     string.Format(
