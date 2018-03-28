@@ -76,7 +76,11 @@ namespace EyeInTheSky.Model
         public string DateFormat { get; private set; }
         public string MediaWikiApiEndpoint { get; private set; }
         public string UserAgent { get; private set; }
+        
+        // These properties are optional, and set by Castle
+        // ReSharper disable UnusedAutoPropertyAccessor.Global
         public EmailConfiguration EmailConfiguration { get; set; }
         public int MonitoringPort { get; set; }
-    }
+        // ReSharper restore UnusedAutoPropertyAccessor.Global
+    }    
 }

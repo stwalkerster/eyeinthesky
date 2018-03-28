@@ -27,6 +27,10 @@
         <appender-ref ref="ConsoleAppender" />
     </root>
 
+    <logger name="Stwalkerster.Bot.CommandLib.Services.CommandParser">
+        <level value="INFO" />
+    </logger>
+
     <logger name="Stwalkerster.IrcClient.IrcClient.Wikimedia">
         <level value="OFF" />
     </logger>
