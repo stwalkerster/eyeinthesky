@@ -75,6 +75,7 @@
     <Compile Include="Model\StalkNodes\TrueNodeTest.cs" />
     <Compile Include="Model\StalkNodes\UserGroupStalkNodeTest.cs" />
     <Compile Include="Model\StalkNodes\UserStalkNodeTest.cs" />
+    <Compile Include="Model\StalkNodes\XOfStalkNodeTests.cs" />
     <Compile Include="Model\StalkNodes\XorNodeTest.cs" />
     <Compile Include="RecentChangeTest.cs" />
     <Compile Include="Services\BooleanParserTests.cs" />

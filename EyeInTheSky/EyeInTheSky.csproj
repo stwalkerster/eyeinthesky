@@ -113,6 +113,7 @@
     <Compile Include="Model\StalkNodes\TrueNode.cs" />
     <Compile Include="Model\StalkNodes\UserGroupStalkNode.cs" />
     <Compile Include="Model\StalkNodes\UserStalkNode.cs" />
+    <Compile Include="Model\StalkNodes\XOfStalkNode.cs" />
     <Compile Include="Model\StalkNodes\XorNode.cs" />
     <Compile Include="Services\BooleanParser.cs" />
     <Compile Include="Services\ConfigurationProvider.cs" />

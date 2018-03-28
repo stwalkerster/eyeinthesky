@@ -199,6 +199,74 @@
             Assert.IsInstanceOf<TrueNode>(mcln.ChildNodes[0]);
             Assert.IsInstanceOf<FalseNode>(mcln.ChildNodes[1]);
         }
+        
+        [Test]
+        public void ShouldCreateBasicXOfNode()
+        {
+            // arrange
+            var snf = new StalkNodeFactory();
+            var doc = new XmlDocument();
+            doc.LoadXml("<x-of><true /><false /></x-of>");
+
+            // act
+            var result = snf.NewFromXmlFragment(doc.DocumentElement);
+
+            // assert
+            Assert.IsInstanceOf<XOfStalkNode>(result);
+            
+            var mcln = (XOfStalkNode)result;
+            Assert.IsNull(mcln.Minimum);
+            Assert.IsNull(mcln.Maximum);
+            Assert.AreEqual(2, mcln.ChildNodes.Count);
+            Assert.IsInstanceOf<TrueNode>(mcln.ChildNodes[0]);
+            Assert.IsInstanceOf<FalseNode>(mcln.ChildNodes[1]);
+        }
+        
+        [Test]
+        public void ShouldCreateMinXOfNode()
+        {
+            // arrange
+            var snf = new StalkNodeFactory();
+            var doc = new XmlDocument();
+            doc.LoadXml("<x-of minimum=\"5\"><true /><false /></x-of>");
+
+            // act
+            var result = snf.NewFromXmlFragment(doc.DocumentElement);
+
+            // assert
+            Assert.IsInstanceOf<XOfStalkNode>(result);
+            
+            var mcln = (XOfStalkNode)result;
+            Assert.AreEqual(5, mcln.Minimum);
+            Assert.IsNull(mcln.Maximum);
+                       
+            Assert.AreEqual(2, mcln.ChildNodes.Count);
+            Assert.IsInstanceOf<TrueNode>(mcln.ChildNodes[0]);
+            Assert.IsInstanceOf<FalseNode>(mcln.ChildNodes[1]);
+        }
+        
+        [Test]
+        public void ShouldCreateMaxXOfNode()
+        {
+            // arrange
+            var snf = new StalkNodeFactory();
+            var doc = new XmlDocument();
+            doc.LoadXml("<x-of maximum=\"5\"><true /><false /></x-of>");
+
+            // act
+            var result = snf.NewFromXmlFragment(doc.DocumentElement);
+
+            // assert
+            Assert.IsInstanceOf<XOfStalkNode>(result);
+            
+            var mcln = (XOfStalkNode)result;
+            Assert.AreEqual(5, mcln.Maximum);
+            Assert.IsNull(mcln.Minimum);
+                       
+            Assert.AreEqual(2, mcln.ChildNodes.Count);
+            Assert.IsInstanceOf<TrueNode>(mcln.ChildNodes[0]);
+            Assert.IsInstanceOf<FalseNode>(mcln.ChildNodes[1]);
+        }
         #endregion
         
         #region XML tests
@@ -423,7 +491,111 @@
 
             // assert
             Assert.AreEqual("<not><true /></not>", result.OuterXml);
-        } 
+        }
+        
+        [Test]
+        public void ShouldSerialiseBasicXOfCorrectly()
+        {
+            // arrange 
+            var node = new XOfStalkNode
+            {
+                ChildNodes = new List<IStalkNode>
+                {
+                    new TrueNode(),
+                    new FalseNode()
+                }
+            };
+
+            var doc = new XmlDocument();
+            var ns = string.Empty;
+            
+            var snf = new StalkNodeFactory(); 
+            
+            // act
+            var result = snf.ToXml(doc, ns, node);
+
+            // assert
+            Assert.AreEqual("<x-of><true /><false /></x-of>", result.OuterXml);
+        }
+        
+        [Test]
+        public void ShouldSerialiseMinXOfCorrectly()
+        {
+            // arrange 
+            var node = new XOfStalkNode
+            {
+                ChildNodes = new List<IStalkNode>
+                {
+                    new TrueNode(),
+                    new FalseNode()
+                },
+                Minimum = 5
+            };
+
+            var doc = new XmlDocument();
+            var ns = string.Empty;
+            
+            var snf = new StalkNodeFactory(); 
+            
+            // act
+            var result = snf.ToXml(doc, ns, node);
+
+            // assert
+            Assert.AreEqual("<x-of minimum=\"5\"><true /><false /></x-of>", result.OuterXml);
+        }
+        
+        [Test]
+        public void ShouldSerialiseMaxXOfCorrectly()
+        {
+            // arrange 
+            var node = new XOfStalkNode
+            {
+                ChildNodes = new List<IStalkNode>
+                {
+                    new TrueNode(),
+                    new FalseNode()
+                },
+                Maximum = 5
+            };
+
+            var doc = new XmlDocument();
+            var ns = string.Empty;
+            
+            var snf = new StalkNodeFactory(); 
+            
+            // act
+            var result = snf.ToXml(doc, ns, node);
+
+            // assert
+            Assert.AreEqual("<x-of maximum=\"5\"><true /><false /></x-of>", result.OuterXml);
+        }
+        
+        [Test]
+        public void ShouldSerialiseBothXOfCorrectly()
+        {
+            // arrange 
+            var node = new XOfStalkNode
+            {
+                ChildNodes = new List<IStalkNode>
+                {
+                    new TrueNode(),
+                    new FalseNode()
+                },
+                Maximum = 5,
+                Minimum = 2
+            };
+
+            var doc = new XmlDocument();
+            var ns = string.Empty;
+            
+            var snf = new StalkNodeFactory(); 
+            
+            // act
+            var result = snf.ToXml(doc, ns, node);
+
+            // assert
+            Assert.AreEqual("<x-of minimum=\"2\" maximum=\"5\"><true /><false /></x-of>", result.OuterXml);
+        }
         
         #endregion
     }

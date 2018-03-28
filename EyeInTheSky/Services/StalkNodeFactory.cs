@@ -16,6 +16,7 @@
             {
                 case "and":
                 case "or":
+                case "x-of":
                     return this.NewMultiChildNode(fragment);
                 case "xor":
                     return this.NewDoubleChildNode(fragment);
@@ -91,6 +92,22 @@
                     break;
                 case "or":
                     node = new OrNode();
+                    break;
+                case "x-of":
+                    var xofnode = new XOfStalkNode();
+                    var minAttr = fragment.Attributes["minimum"];
+                    if (minAttr != null)
+                    {
+                        xofnode.Minimum = XmlConvert.ToInt32(minAttr.Value);
+                    }
+
+                    var maxAttr = fragment.Attributes["maximum"];
+                    if (maxAttr != null)
+                    {
+                        xofnode.Maximum = XmlConvert.ToInt32(maxAttr.Value);
+                    }
+
+                    node = xofnode;
                     break;
                 default:
                     throw new XmlException();
@@ -248,6 +265,12 @@
 
         private XmlElement MultiChildToXml(XmlDocument doc, string xmlns, MultiChildLogicalNode node)
         {
+            var xofNode = node as XOfStalkNode;
+            if (xofNode != null)
+            {
+                return this.XOfToXml(doc, xmlns, xofNode);
+            }
+           
             var elem = this.CreateElement(doc, xmlns, node);
 
             foreach (var childNode in node.ChildNodes)
@@ -255,6 +278,31 @@
                 elem.AppendChild(this.ToXml(doc, xmlns, childNode));    
             }
             
+            return elem;
+        }
+
+        private XmlElement XOfToXml(XmlDocument doc,
+            string xmlns,
+            XOfStalkNode
+                node)
+        {
+            var elem = this.CreateElement(doc, xmlns, node);
+
+            if (node.Minimum.HasValue)
+            {
+                elem.SetAttribute("minimum", XmlConvert.ToString(node.Minimum.Value));
+            }
+
+            if (node.Maximum.HasValue)
+            {
+                elem.SetAttribute("maximum", XmlConvert.ToString(node.Maximum.Value));
+            }
+            
+            foreach (var childNode in node.ChildNodes)
+            {
+                elem.AppendChild(this.ToXml(doc, xmlns, childNode));
+            }
+
             return elem;
         }
     }
