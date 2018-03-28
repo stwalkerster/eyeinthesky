@@ -2,7 +2,6 @@
 {
     using System;
     using System.Globalization;
-    using System.Runtime.InteropServices.WindowsRuntime;
     using System.Text;
     using EyeInTheSky.Attributes;
     using EyeInTheSky.Model.Interfaces;
