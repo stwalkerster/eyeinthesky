@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Xml;
     using Castle.Core.Logging;
     using EyeInTheSky.Extensions;
     using EyeInTheSky.Model;
@@ -82,6 +83,8 @@
             {
                 case "del":
                     return this.DeleteMode(stalkName);
+                case "export":
+                    return this.ExportMode(stalkName);
                 case "set":
                     return this.SetMode(tokenList, stalkName);
                 case "mail":
@@ -381,6 +384,20 @@
             this.StalkConfig.Save();
         }
 
+        private IEnumerable<CommandResponse> ExportMode(string stalkName)
+        {
+            var searchTree = this.StalkConfig[stalkName].SearchTree;
+
+            yield return new CommandResponse
+            {
+                Message = string.Format(
+                    "{0}: {1}",
+                    stalkName,
+                    this.StalkNodeFactory.ToXml(new XmlDocument(), "", searchTree).OuterXml
+                )
+            };
+        }
+
         private IEnumerable<CommandResponse> AddMode(List<string> tokenList)
         {
             if (tokenList.Count < 1)
@@ -424,10 +441,16 @@
                         "del <Flag>",
                         "Deletes a stalk")
                 },{
+                    "export",
+                    new HelpMessage(
+                        this.CommandName,
+                        "export <Flag>",
+                        "Retrieves the XML search tree of a specific stalk")
+                },{
                     "enabled",
                     new HelpMessage(
                         this.CommandName,
-                        "enabled <Flag> <true|false>",
+                        new[]{"enabled <Flag> <true|false>", "enable <Flag>", "disable <Flag>"},
                         "Marks a stalk as enabled or disabled")
                 },{
                     "mail",

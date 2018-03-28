@@ -16,7 +16,7 @@
     public abstract class StalkCommandBase : CommandBase
     {
         protected IStalkConfiguration StalkConfig { get; private set; }
-        private IStalkNodeFactory StalkNodeFactory { get; set; }
+        protected IStalkNodeFactory StalkNodeFactory { get; set; }
 
         protected StalkCommandBase(string commandSource,
             IUser user,

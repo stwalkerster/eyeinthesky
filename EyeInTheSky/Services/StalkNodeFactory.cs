@@ -18,6 +18,7 @@
                 case "or":
                 case "x-of":
                     return this.NewMultiChildNode(fragment);
+                
                 case "xor":
                     return this.NewDoubleChildNode(fragment);
 
@@ -281,10 +282,7 @@
             return elem;
         }
 
-        private XmlElement XOfToXml(XmlDocument doc,
-            string xmlns,
-            XOfStalkNode
-                node)
+        private XmlElement XOfToXml(XmlDocument doc, string xmlns, XOfStalkNode node)
         {
             var elem = this.CreateElement(doc, xmlns, node);
 
