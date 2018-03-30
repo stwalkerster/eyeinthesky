@@ -145,9 +145,9 @@
             return s;
         }
 
-        public XmlElement ToXmlElement(IStalk stalk, XmlDocument doc, string xmlns)
+        public XmlElement ToXmlElement(IStalk stalk, XmlDocument doc)
         {
-            var e = doc.CreateElement("complexstalk", xmlns);
+            var e = doc.CreateElement("complexstalk");
             
             e.SetAttribute("flag", stalk.Flag);
             
@@ -186,8 +186,8 @@
 
             e.SetAttribute("triggercount", XmlConvert.ToString(stalk.TriggerCount));
 
-            var searchTreeParentElement = doc.CreateElement("searchtree", xmlns);
-            searchTreeParentElement.AppendChild(this.stalkNodeFactory.ToXml(doc, xmlns, stalk.SearchTree));
+            var searchTreeParentElement = doc.CreateElement("searchtree");
+            searchTreeParentElement.AppendChild(this.stalkNodeFactory.ToXml(doc, stalk.SearchTree));
             
             e.AppendChild(searchTreeParentElement);
             

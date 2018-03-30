@@ -182,24 +182,24 @@
             return node;
         }
 
-        public XmlElement ToXml(XmlDocument doc, string xmlns, IStalkNode node)
+        public XmlElement ToXml(XmlDocument doc, IStalkNode node)
         {
             var logicalNode = node as LogicalNode;
             if (logicalNode != null)
             {
-                return this.LogicalToXml(doc, xmlns, logicalNode);
+                return this.LogicalToXml(doc, logicalNode);
             }
 
             var leafNode = node as LeafNode;
             if (leafNode != null)
             {
-                return this.LeafToXml(doc, xmlns, leafNode);
+                return this.LeafToXml(doc, leafNode);
             }
 
             throw new XmlException();
         }
 
-        private XmlElement CreateElement(XmlDocument doc, string xmlns, IStalkNode node)
+        private XmlElement CreateElement(XmlDocument doc, IStalkNode node)
         {
             var attr =
                 node.GetType().GetCustomAttributes(typeof(StalkNodeTypeAttribute), false).FirstOrDefault() as
@@ -210,81 +210,81 @@
                 throw new XmlException("Unable to find XML element type during serialisation");
             }
 
-            var elem = doc.CreateElement(attr.ElementName, xmlns);
+            var elem = doc.CreateElement(attr.ElementName);
             return elem;
         }
 
-        private XmlElement LeafToXml(XmlDocument doc, string xmlns, LeafNode node)
+        private XmlElement LeafToXml(XmlDocument doc, LeafNode node)
         {
-            var elem = this.CreateElement(doc, xmlns, node);
+            var elem = this.CreateElement(doc, node);
             elem.SetAttribute("value", node.GetMatchExpression());
 
             return elem;
         }
 
-        private XmlElement LogicalToXml(XmlDocument doc, string xmlns, LogicalNode node)
+        private XmlElement LogicalToXml(XmlDocument doc, LogicalNode node)
         {
             var doubleChildLogicalNode = node as DoubleChildLogicalNode;
             if (doubleChildLogicalNode != null)
             {
-                return this.DoubleChildToXml(doc, xmlns, doubleChildLogicalNode);
+                return this.DoubleChildToXml(doc, doubleChildLogicalNode);
             }
             
             var multiChildLogicalNode = node as MultiChildLogicalNode;
             if (multiChildLogicalNode != null)
             {
-                return this.MultiChildToXml(doc, xmlns, multiChildLogicalNode);
+                return this.MultiChildToXml(doc, multiChildLogicalNode);
             }
 
             var singleChildLogicalNode = node as SingleChildLogicalNode;
             if (singleChildLogicalNode != null)
             {
-                return this.SingleChildToXml(doc, xmlns, singleChildLogicalNode);
+                return this.SingleChildToXml(doc, singleChildLogicalNode);
             }   
 
-            return this.CreateElement(doc, xmlns, node);
+            return this.CreateElement(doc, node);
         }
 
-        private XmlElement SingleChildToXml(XmlDocument doc, string xmlns, SingleChildLogicalNode node)
+        private XmlElement SingleChildToXml(XmlDocument doc, SingleChildLogicalNode node)
         {
-            var elem = this.CreateElement(doc, xmlns, node);
+            var elem = this.CreateElement(doc, node);
 
-            elem.AppendChild(this.ToXml(doc, xmlns, node.ChildNode));
+            elem.AppendChild(this.ToXml(doc, node.ChildNode));
 
             return elem;
         }
 
-        private XmlElement DoubleChildToXml(XmlDocument doc, string xmlns, DoubleChildLogicalNode node)
+        private XmlElement DoubleChildToXml(XmlDocument doc, DoubleChildLogicalNode node)
         {
-            var elem = this.CreateElement(doc, xmlns, node);
+            var elem = this.CreateElement(doc, node);
 
-            elem.AppendChild(this.ToXml(doc, xmlns, node.LeftChildNode));
-            elem.AppendChild(this.ToXml(doc, xmlns, node.RightChildNode));
+            elem.AppendChild(this.ToXml(doc, node.LeftChildNode));
+            elem.AppendChild(this.ToXml(doc, node.RightChildNode));
 
             return elem;
         }
 
-        private XmlElement MultiChildToXml(XmlDocument doc, string xmlns, MultiChildLogicalNode node)
+        private XmlElement MultiChildToXml(XmlDocument doc, MultiChildLogicalNode node)
         {
             var xofNode = node as XOfStalkNode;
             if (xofNode != null)
             {
-                return this.XOfToXml(doc, xmlns, xofNode);
+                return this.XOfToXml(doc, xofNode);
             }
            
-            var elem = this.CreateElement(doc, xmlns, node);
+            var elem = this.CreateElement(doc, node);
 
             foreach (var childNode in node.ChildNodes)
             {
-                elem.AppendChild(this.ToXml(doc, xmlns, childNode));    
+                elem.AppendChild(this.ToXml(doc, childNode));    
             }
             
             return elem;
         }
 
-        private XmlElement XOfToXml(XmlDocument doc, string xmlns, XOfStalkNode node)
+        private XmlElement XOfToXml(XmlDocument doc, XOfStalkNode node)
         {
-            var elem = this.CreateElement(doc, xmlns, node);
+            var elem = this.CreateElement(doc, node);
 
             if (node.Minimum.HasValue)
             {
@@ -298,7 +298,7 @@
             
             foreach (var childNode in node.ChildNodes)
             {
-                elem.AppendChild(this.ToXml(doc, xmlns, childNode));
+                elem.AppendChild(this.ToXml(doc, childNode));
             }
 
             return elem;

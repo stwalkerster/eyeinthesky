@@ -301,7 +301,7 @@
 
         private IEnumerable<CommandResponse> ListMode()
         {
-            var activeStalks = this.StalkConfig.StalkList.Where(x => x.IsActive()).ToList();
+            var activeStalks = this.StalkConfig.Items.Where(x => x.IsActive()).ToList();
 
             if (!activeStalks.Any())
             {
@@ -393,7 +393,7 @@
                 Message = string.Format(
                     "{0}: {1}",
                     stalkName,
-                    this.StalkNodeFactory.ToXml(new XmlDocument(), "", searchTree).OuterXml
+                    this.StalkNodeFactory.ToXml(new XmlDocument(), searchTree).OuterXml
                 )
             };
         }

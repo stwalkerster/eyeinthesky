@@ -4,9 +4,8 @@
     using System.Xml;
     using EyeInTheSky.Model.StalkNodes.BaseNodes;
 
-    public interface IStalk
+    public interface IStalk : INamedItem
     {
-        string Flag { get; }
         DateTime? LastUpdateTime { get; }
         DateTime? LastTriggerTime { get; set; }
         bool IsEnabled { get; set; }

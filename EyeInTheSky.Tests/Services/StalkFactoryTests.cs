@@ -70,7 +70,7 @@
             var doc = new XmlDocument();
             var ns = string.Empty;
             var snf = new Mock<IStalkNodeFactory>();
-            snf.Setup(x => x.ToXml(doc, ns, It.IsAny<IStalkNode>())).Returns(doc.CreateElement("false", ns));
+            snf.Setup(x => x.ToXml(doc, It.IsAny<IStalkNode>())).Returns(doc.CreateElement("false", ns));
             
             var node = new Mock<IStalkNode>();
             
@@ -85,7 +85,7 @@
             var sf = new StalkFactory(this.LoggerMock.Object, snf.Object);
 
             // act
-            var xmlElement = sf.ToXmlElement(stalk.Object, doc, "");
+            var xmlElement = sf.ToXmlElement(stalk.Object, doc);
             
             // assert
             Assert.AreEqual("<complexstalk flag=\"testflag\" immediatemail=\"true\" enabled=\"true\" triggercount=\"4\"><searchtree><false /></searchtree></complexstalk>", xmlElement.OuterXml);
@@ -96,13 +96,12 @@
         {
             // arrange
             var doc = new XmlDocument();
-            var ns = String.Empty;
             var snf = new Mock<IStalkNodeFactory>();
             
             doc.LoadXml("<or><true /><false /></or>");
             
             var node = new Mock<IStalkNode>();
-            snf.Setup(x => x.ToXml(doc, ns, It.IsAny<IStalkNode>())).Returns(doc.DocumentElement);
+            snf.Setup(x => x.ToXml(doc, It.IsAny<IStalkNode>())).Returns(doc.DocumentElement);
             
             var stalk = new Mock<IStalk>();
             stalk.Setup(x => x.SearchTree).Returns(node.Object);
@@ -114,7 +113,7 @@
             var sf = new StalkFactory(this.LoggerMock.Object, snf.Object);
 
             // act
-            var xmlElement = sf.ToXmlElement(stalk.Object, doc, "");
+            var xmlElement = sf.ToXmlElement(stalk.Object, doc);
             
             // assert
             Assert.AreEqual("<complexstalk flag=\"testflag\" immediatemail=\"true\" enabled=\"true\" triggercount=\"0\"><searchtree><or><true /><false /></or></searchtree></complexstalk>", xmlElement.OuterXml);
@@ -125,11 +124,10 @@
         {
             // arrange
             var doc = new XmlDocument();
-            var ns = String.Empty;
             var snf = new Mock<IStalkNodeFactory>();
             
             var node = new Mock<IStalkNode>();
-            snf.Setup(x => x.ToXml(doc, ns, It.IsAny<IStalkNode>())).Returns(doc.CreateElement("false", ns));
+            snf.Setup(x => x.ToXml(doc, It.IsAny<IStalkNode>())).Returns(doc.CreateElement("false"));
            
             
             var stalk = new Mock<IStalk>();
@@ -147,7 +145,7 @@
             var sf = new StalkFactory(this.LoggerMock.Object, snf.Object);
 
             // act
-            var xmlElement = sf.ToXmlElement(stalk.Object, doc, "");
+            var xmlElement = sf.ToXmlElement(stalk.Object, doc);
             
             // assert
             Assert.AreEqual("<complexstalk flag=\"testflag\" lastupdate=\"2018-03-14T01:02:03Z\" lasttrigger=\"0001-01-01T00:00:00Z\" immediatemail=\"true\" description=\"my description here\" lastmessageid=\"foobar\" enabled=\"true\" expiry=\"9999-12-31T23:59:59.9999999Z\" triggercount=\"3334\"><searchtree><false /></searchtree></complexstalk>", xmlElement.OuterXml);

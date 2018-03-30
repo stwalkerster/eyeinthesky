@@ -277,12 +277,11 @@
             // arrange 
             var node = new TrueNode();
             var doc = new XmlDocument();
-            var ns = string.Empty;
             
             var snf = new StalkNodeFactory(); 
             
             // act
-            var result = snf.ToXml(doc, ns, node);
+            var result = snf.ToXml(doc, node);
 
             // assert
             Assert.AreEqual("<true />", result.OuterXml);
@@ -294,12 +293,11 @@
             // arrange 
             var node = new FalseNode();
             var doc = new XmlDocument();
-            var ns = string.Empty;
             
             var snf = new StalkNodeFactory(); 
             
             // act
-            var result = snf.ToXml(doc, ns, node);
+            var result = snf.ToXml(doc, node);
 
             // assert
             Assert.AreEqual("<false />", result.OuterXml);
@@ -313,12 +311,11 @@
             node.SetMatchExpression("abc");
             
             var doc = new XmlDocument();
-            var ns = string.Empty;
             
             var snf = new StalkNodeFactory(); 
             
             // act
-            var result = snf.ToXml(doc, ns, node);
+            var result = snf.ToXml(doc, node);
 
             // assert
             Assert.AreEqual("<user value=\"abc\" />", result.OuterXml);
@@ -332,12 +329,11 @@
             node.SetMatchExpression("abc");
             
             var doc = new XmlDocument();
-            var ns = string.Empty;
             
             var snf = new StalkNodeFactory(); 
             
             // act
-            var result = snf.ToXml(doc, ns, node);
+            var result = snf.ToXml(doc, node);
 
             // assert
             Assert.AreEqual("<page value=\"abc\" />", result.OuterXml);
@@ -351,12 +347,11 @@
             node.SetMatchExpression("abc");
             
             var doc = new XmlDocument();
-            var ns = string.Empty;
             
             var snf = new StalkNodeFactory(); 
             
             // act
-            var result = snf.ToXml(doc, ns, node);
+            var result = snf.ToXml(doc, node);
 
             // assert
             Assert.AreEqual("<summary value=\"abc\" />", result.OuterXml);
@@ -370,12 +365,11 @@
             node.SetMatchExpression("abc");
             
             var doc = new XmlDocument();
-            var ns = string.Empty;
             
             var snf = new StalkNodeFactory(); 
             
             // act
-            var result = snf.ToXml(doc, ns, node);
+            var result = snf.ToXml(doc, node);
 
             // assert
             Assert.AreEqual("<flag value=\"abc\" />", result.OuterXml);
@@ -389,12 +383,11 @@
             node.SetMatchExpression("abc");
             
             var doc = new XmlDocument();
-            var ns = string.Empty;
             
             var snf = new StalkNodeFactory(); 
             
             // act
-            var result = snf.ToXml(doc, ns, node);
+            var result = snf.ToXml(doc, node);
 
             // assert
             Assert.AreEqual("<usergroup value=\"abc\" />", result.OuterXml);
@@ -414,12 +407,11 @@
             };
 
             var doc = new XmlDocument();
-            var ns = string.Empty;
             
             var snf = new StalkNodeFactory(); 
             
             // act
-            var result = snf.ToXml(doc, ns, node);
+            var result = snf.ToXml(doc, node);
 
             // assert
             Assert.AreEqual("<and><true /><false /></and>", result.OuterXml);
@@ -439,12 +431,11 @@
             };
 
             var doc = new XmlDocument();
-            var ns = string.Empty;
             
             var snf = new StalkNodeFactory(); 
             
             // act
-            var result = snf.ToXml(doc, ns, node);
+            var result = snf.ToXml(doc, node);
 
             // assert
             Assert.AreEqual("<or><true /><false /></or>", result.OuterXml);
@@ -461,12 +452,11 @@
             };
 
             var doc = new XmlDocument();
-            var ns = string.Empty;
             
             var snf = new StalkNodeFactory(); 
             
             // act
-            var result = snf.ToXml(doc, ns, node);
+            var result = snf.ToXml(doc, node);
 
             // assert
             Assert.AreEqual("<xor><true /><false /></xor>", result.OuterXml);
@@ -482,12 +472,11 @@
             };
 
             var doc = new XmlDocument();
-            var ns = string.Empty;
             
             var snf = new StalkNodeFactory(); 
             
             // act
-            var result = snf.ToXml(doc, ns, node);
+            var result = snf.ToXml(doc, node);
 
             // assert
             Assert.AreEqual("<not><true /></not>", result.OuterXml);
@@ -507,12 +496,11 @@
             };
 
             var doc = new XmlDocument();
-            var ns = string.Empty;
             
             var snf = new StalkNodeFactory(); 
             
             // act
-            var result = snf.ToXml(doc, ns, node);
+            var result = snf.ToXml(doc, node);
 
             // assert
             Assert.AreEqual("<x-of><true /><false /></x-of>", result.OuterXml);
@@ -533,12 +521,11 @@
             };
 
             var doc = new XmlDocument();
-            var ns = string.Empty;
             
             var snf = new StalkNodeFactory(); 
             
             // act
-            var result = snf.ToXml(doc, ns, node);
+            var result = snf.ToXml(doc, node);
 
             // assert
             Assert.AreEqual("<x-of minimum=\"5\"><true /><false /></x-of>", result.OuterXml);
@@ -559,12 +546,11 @@
             };
 
             var doc = new XmlDocument();
-            var ns = string.Empty;
             
             var snf = new StalkNodeFactory(); 
             
             // act
-            var result = snf.ToXml(doc, ns, node);
+            var result = snf.ToXml(doc, node);
 
             // assert
             Assert.AreEqual("<x-of maximum=\"5\"><true /><false /></x-of>", result.OuterXml);
@@ -586,12 +572,11 @@
             };
 
             var doc = new XmlDocument();
-            var ns = string.Empty;
             
             var snf = new StalkNodeFactory(); 
             
             // act
-            var result = snf.ToXml(doc, ns, node);
+            var result = snf.ToXml(doc, node);
 
             // assert
             Assert.AreEqual("<x-of minimum=\"2\" maximum=\"5\"><true /><false /></x-of>", result.OuterXml);

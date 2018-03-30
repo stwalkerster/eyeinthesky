@@ -84,11 +84,13 @@
     <Compile Include="Commands\QuickCommand.cs" />
     <Compile Include="Commands\StalkCommandBase.cs" />
     <Compile Include="Commands\StalkReportCommand.cs" />
+    <Compile Include="Exceptions\ConfigurationException.cs" />
     <Compile Include="Extensions\ListExtensions.cs" />
     <Compile Include="Model\AppConfiguration.cs" />
     <Compile Include="Model\ComplexStalk.cs" />
     <Compile Include="Model\EmailConfiguration.cs" />
     <Compile Include="Model\Interfaces\IAppConfiguration.cs" />
+    <Compile Include="Model\Interfaces\INamedItem.cs" />
     <Compile Include="Model\Interfaces\INotificationTemplates.cs" />
     <Compile Include="Model\Interfaces\IRecentChange.cs" />
     <Compile Include="Model\Interfaces\IStalk.cs" />
@@ -116,10 +118,12 @@
     <Compile Include="Model\StalkNodes\XOfStalkNode.cs" />
     <Compile Include="Model\StalkNodes\XorNode.cs" />
     <Compile Include="Services\BooleanParser.cs" />
+    <Compile Include="Services\ConfigFileBase.cs" />
     <Compile Include="Services\ConfigurationProvider.cs" />
     <Compile Include="Services\BasicFlagService.cs" />
     <Compile Include="Services\EmailHelper.cs" />
     <Compile Include="Services\EmailSender.cs" />
+    <Compile Include="Services\Interfaces\IConfigurationBase.cs" />
     <Compile Include="Services\Interfaces\IEmailHelper.cs" />
     <Compile Include="Services\Interfaces\IEmailSender.cs" />
     <Compile Include="Services\Interfaces\IMediaWikiApi.cs" />

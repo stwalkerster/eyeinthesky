@@ -6,6 +6,6 @@
     public interface IStalkNodeFactory
     {
         IStalkNode NewFromXmlFragment(XmlElement fragment);
-        XmlElement ToXml(XmlDocument doc, string xmlns, IStalkNode node);
+        XmlElement ToXml(XmlDocument doc, IStalkNode node);
     }
 }
