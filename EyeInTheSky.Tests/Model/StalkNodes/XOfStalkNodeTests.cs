@@ -24,9 +24,9 @@
             node.Maximum = max;
 
             TestContext.Out.Write("Nodelist: " + string.Join(",", nodes));
-            
+
             // act, assert
-            return node.Match(new RecentChange("", "", "", "", "", 0), false);
+            return node.Match(new RecentChange(""), false);
         }
 
         public static IEnumerable MatchCorrectlyTestData

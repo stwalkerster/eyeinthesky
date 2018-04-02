@@ -164,6 +164,13 @@
                 stalkTags.Append(s.Flag);
             }
 
+            var sizeDiff = "N/A";
+            if (rc.SizeDiff.HasValue)
+            {
+                sizeDiff = (rc.SizeDiff.Value > 0 ? "+" : string.Empty) +
+                           rc.SizeDiff.Value.ToString(CultureInfo.InvariantCulture);
+            }
+
             return string.Format(
                 this.templates.IrcAlertFormat,
                 stalkTags,
@@ -171,7 +178,7 @@
                 rc.Page,
                 rc.User,
                 rc.EditSummary,
-                (rc.SizeDifference > 0 ? "+" : string.Empty) + rc.SizeDifference.ToString(CultureInfo.InvariantCulture),
+                sizeDiff,
                 rc.EditFlags,
                 DateTime.Now.ToString(this.appConfig.DateFormat)
             );
@@ -181,6 +188,13 @@
         {
             var stalksFormatted = this.FormatStalkListForEmail(stalks);
 
+            var sizeDiff = "N/A";
+            if (rc.SizeDiff.HasValue)
+            {
+                sizeDiff = (rc.SizeDiff.Value > 0 ? "+" : string.Empty) +
+                           rc.SizeDiff.Value.ToString(CultureInfo.InvariantCulture);
+            }
+
             return string.Format(
                 this.templates.EmailRcTemplate,
                 stalksFormatted,
@@ -188,7 +202,7 @@
                 rc.Page,
                 rc.User,
                 rc.EditSummary,
-                (rc.SizeDifference > 0 ? "+" : string.Empty) + rc.SizeDifference.ToString(CultureInfo.InvariantCulture),
+                sizeDiff,
                 rc.EditFlags,
                 DateTime.Now.ToString(this.appConfig.DateFormat)
             );

@@ -1,7 +1,6 @@
 ﻿namespace EyeInTheSky.Tests.Model.StalkNodes
 {
     using System.Collections;
-    using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Model.StalkNodes;
     using EyeInTheSky.Model.StalkNodes.BaseNodes;
@@ -16,9 +15,9 @@
         [SetUp]
         public void LocalSetup()
         {
-            this.rc = new RecentChange("abc", "def", "ghi", "jkl", "mno", 123);
+            this.rc = this.RecentChangeBuilder().Object;
         }
-        
+
         [Test, TestCaseSource(typeof(UserStalkNodeTest), "TestCases")]
         public bool TestMatch(StalkNode node)
         {

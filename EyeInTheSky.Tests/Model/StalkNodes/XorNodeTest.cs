@@ -19,7 +19,7 @@
             node.LeftChildNode = a;
             node.RightChildNode = b;
 
-            return node.Match(new RecentChange("", "", "", "", "", 0), false);
+            return node.Match(new RecentChange(""), false);
         }
 
         private static IEnumerable TestCases

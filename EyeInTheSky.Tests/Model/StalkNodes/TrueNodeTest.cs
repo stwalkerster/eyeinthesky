@@ -12,9 +12,9 @@
         public void ShouldMatchEverything()
         {
             var node = new TrueNode();
-            
-            Assert.True(node.Match(new RecentChange("", "", "", "", "", 0)));
-            Assert.That(node.Match(new RecentChange("a", "a", "a", "a", "a", 1)));
+
+            Assert.True(node.Match(new RecentChange("")));
+            Assert.That(node.Match(this.RecentChangeBuilder().Object));
         }
     }
 }

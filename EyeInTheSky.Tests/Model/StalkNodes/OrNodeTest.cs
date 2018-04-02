@@ -6,7 +6,6 @@
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Model.StalkNodes;
     using EyeInTheSky.Model.StalkNodes.BaseNodes;
-    using EyeInTheSky.Services.Interfaces;
     using EyeInTheSky.Tests.Model.StalkNodes.BaseNodes;
     using Moq;
     using NUnit.Framework;
@@ -20,7 +19,7 @@
             var node = new OrNode();
             node.ChildNodes.AddRange(a);
 
-            return node.Match(new RecentChange("", "", "", "", "", 0), false);
+            return node.Match(new RecentChange(""), false);
         }
 
         private static IEnumerable TestCases
@@ -54,84 +53,72 @@
         public void LazyEvaluationSkipTest()
         {
             // arrange
-            var mwApi = new Mock<IMediaWikiApi>();
-            mwApi.Setup(x => x.GetUserGroups(It.IsAny<string>())).Returns(new List<string> {"user", "*"});
-            
-            var rc = new RecentChange("a", "b", "c", "d", "e", 0);
-            rc.MediaWikiApi = mwApi.Object;
-            
+            var rc = this.RecentChangeBuilder();
+            rc.Setup(x => x.GetUserGroups()).Returns(new List<string> {"user", "*"});
+
             var node = new OrNode();
             node.ChildNodes.Add(new TrueNode());
             
             var lazyNode = new UserGroupStalkNode();
             lazyNode.SetMatchExpression("sysop");
             node.ChildNodes.Add(lazyNode);
-            
+
             // act
-            node.Match(rc);
+            node.Match(rc.Object);
 
             // assert
-            mwApi.Verify(x => x.GetUserGroups(It.IsAny<string>()), Times.Never);
+            rc.Verify(x => x.GetUserGroups(), Times.Never);
         }
-        
+
         [Test]
         public void LazyEvaluationInverseSkipTest()
         {
             // arrange
-            var mwApi = new Mock<IMediaWikiApi>();
-            mwApi.Setup(x => x.GetUserGroups(It.IsAny<string>())).Returns(new List<string> {"user", "*"});
-            
-            var rc = new RecentChange("a", "b", "c", "d", "e", 0);
-            rc.MediaWikiApi = mwApi.Object;
-            
+            var rc = this.RecentChangeBuilder();
+            rc.Setup(x => x.GetUserGroups()).Returns(new List<string> {"user", "*"});
+
             var node = new OrNode();
             var lazyNode = new UserGroupStalkNode();
             lazyNode.SetMatchExpression("sysop");
             node.ChildNodes.Add(lazyNode);
             
             node.ChildNodes.Add(new TrueNode());
-            
+
             // act
-            node.Match(rc);
+            node.Match(rc.Object);
 
             // assert
-            mwApi.Verify(x => x.GetUserGroups(It.IsAny<string>()), Times.Never);
+            rc.Verify(x => x.GetUserGroups(), Times.Never);
         }
 
         [Test]
         public void LazyEvaluationForceTest()
         {
             // arrange
-            var mwApi = new Mock<IMediaWikiApi>();
-            mwApi.Setup(x => x.GetUserGroups(It.IsAny<string>())).Returns(new List<string> {"user", "*"});
-            
-            var rc = new RecentChange("a", "b", "c", "d", "e", 0);
-            rc.MediaWikiApi = mwApi.Object;
-            
+            var rc = this.RecentChangeBuilder();
+            rc.Setup(x => x.GetUserGroups()).Returns(new List<string> {"user", "*"});
+
             var node = new OrNode();
             node.ChildNodes.Add(new FalseNode());
             
             var lazyNode = new UserGroupStalkNode();
             lazyNode.SetMatchExpression("sysop");
             node.ChildNodes.Add(lazyNode);
-            
+
             // act
-            node.Match(rc);
+            node.Match(rc.Object);
 
             // assert
-            mwApi.Verify(x => x.GetUserGroups(It.IsAny<string>()), Times.Once);
+            rc.Verify(x => x.GetUserGroups(), Times.Once);
         }
 
         [Test]
         public void LazyEvaluationInverseForceTest()
         {
             // arrange
-            var mwApi = new Mock<IMediaWikiApi>();
-            mwApi.Setup(x => x.GetUserGroups(It.IsAny<string>())).Returns(new List<string> {"user", "*"});
-            
-            var rc = new RecentChange("a", "b", "c", "d", "e", 0);
-            rc.MediaWikiApi = mwApi.Object;
-            
+            var rc = this.RecentChangeBuilder();
+            rc.Setup(x => x.GetUserGroups()).Returns(new List<string> {"user", "*"});
+
             var node = new OrNode();
             var lazyNode = new UserGroupStalkNode();
             lazyNode.SetMatchExpression("sysop");
@@ -140,10 +127,10 @@
             node.ChildNodes.Add(new FalseNode());
 
             // act
-            node.Match(rc);
+            node.Match(rc.Object);
 
             // assert
-            mwApi.Verify(x => x.GetUserGroups(It.IsAny<string>()), Times.Once);
+            rc.Verify(x => x.GetUserGroups(), Times.Once);
         }
     }
 }

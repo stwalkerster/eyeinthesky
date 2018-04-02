@@ -31,7 +31,7 @@
             this.rcMock.Setup(s => s.Page).Returns("Foo");
             this.rcMock.Setup(s => s.User).Returns("Me");
             this.rcMock.Setup(s => s.EditSummary).Returns("test");
-            this.rcMock.Setup(s => s.SizeDifference).Returns(4);
+            this.rcMock.Setup(s => s.SizeDiff).Returns(4);
             this.rcMock.Setup(s => s.EditFlags).Returns("Minor");
         }
 

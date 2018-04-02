@@ -1,23 +1,31 @@
-﻿using NUnit.Framework;
-
-namespace EyeInTheSky.Tests
+﻿namespace EyeInTheSky.Tests
 {
     using EyeInTheSky.Model;
-
+    using NUnit.Framework;
+    
     [TestFixture]
     public class RecentChangeTest
     {
         [Test]
         public void ShouldConstructObjectCorrectly()
         {
-            var foo = new RecentChange("a", "b", "c", "d", "e", 2);
-            
-            Assert.AreEqual("a", foo.Page);
-            Assert.AreEqual("b", foo.User);
-            Assert.AreEqual("c", foo.Url);
-            Assert.AreEqual("d", foo.EditSummary);
-            Assert.AreEqual("e", foo.EditFlags);
-            Assert.AreEqual(2, foo.SizeDifference);
+            var foo = new RecentChange("def")
+            {
+                Page = "abc",
+                Url = "ghi",
+                EditSummary = "jkl",
+                EditFlags = "mno",
+                SizeDiff = 123,
+                Log = "pqr"
+            };
+
+            Assert.AreEqual("abc", foo.Page);
+            Assert.AreEqual("def", foo.User);
+            Assert.AreEqual("ghi", foo.Url);
+            Assert.AreEqual("jkl", foo.EditSummary);
+            Assert.AreEqual("mno", foo.EditFlags);
+            Assert.AreEqual(123, foo.SizeDiff);
+            Assert.AreEqual("pqr", foo.Log);
         }
     }
 }

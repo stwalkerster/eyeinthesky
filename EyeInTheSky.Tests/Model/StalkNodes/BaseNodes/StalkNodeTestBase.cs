@@ -14,16 +14,16 @@
         public void ShouldRejectNullNodeMatch()
         {
             var node = new T {ChildNodes = null};
-            var rc = new Mock<IRecentChange> {DefaultValueProvider = new ValueProvider()};
+            var rc = this.RecentChangeBuilder();
 
             Assert.Catch(typeof(InvalidOperationException), () => node.Match(rc.Object));
         }
         
         [Test]
         public void ShouldRejectEmptyNodeListMatch()
-        {    
+        {
             var node = new T {ChildNodes = new List<IStalkNode>()};
-            var rc = new Mock<IRecentChange> {DefaultValueProvider = new ValueProvider()};
+            var rc = this.RecentChangeBuilder();
 
             Assert.Catch(typeof(InvalidOperationException), () => node.Match(rc.Object));
         }
@@ -35,7 +35,7 @@
         public void ShouldRejectSingleLeftNodeMatch()
         {
             var node = new T {LeftChildNode = new TrueNode()};
-            var rc = new Mock<IRecentChange> {DefaultValueProvider = new ValueProvider()};
+            var rc = this.RecentChangeBuilder();
 
             Assert.Catch(typeof(InvalidOperationException), () => node.Match(rc.Object));
         }
@@ -44,7 +44,7 @@
         public void ShouldRejectSingleRightNodeMatch()
         {
             var node = new T {RightChildNode = new TrueNode()};
-            var rc = new Mock<IRecentChange> {DefaultValueProvider = new ValueProvider()};
+            var rc = this.RecentChangeBuilder();
 
             Assert.Catch(typeof(InvalidOperationException), () => node.Match(rc.Object));
         }
@@ -56,7 +56,7 @@
         public void ShouldRejectSingleRightNodeMatch()
         {
             var node = new T();
-            var rc = new Mock<IRecentChange> {DefaultValueProvider = new ValueProvider()};
+            var rc = this.RecentChangeBuilder();
 
             Assert.Catch(typeof(InvalidOperationException), () => node.Match(rc.Object));
         }
@@ -76,7 +76,7 @@
         public void ShouldRejectNoDefinitionMatch()
         {
             var node = new T();
-            var rc = new Mock<IRecentChange> {DefaultValueProvider = new ValueProvider()};
+            var rc = this.RecentChangeBuilder();
 
             Assert.Catch(typeof(InvalidOperationException), () => node.Match(rc.Object));
         }
@@ -101,6 +101,21 @@
             
             Assert.AreEqual("(", result.Substring(0, 1));
             Assert.AreEqual(")", result.Substring(result.Length - 1, 1));
+        }
+
+        public Mock<IRecentChange> RecentChangeBuilder()
+        {
+            var rc = new Mock<IRecentChange>();
+            rc.Setup(x => x.EditFlags).Returns("mno");
+            rc.Setup(x => x.EditSummary).Returns("jkl");
+            rc.Setup(x => x.Log).Returns("pqr");
+            rc.Setup(x => x.Page).Returns("abc");
+            rc.Setup(x => x.SizeDiff).Returns(123);
+            rc.Setup(x => x.Url).Returns("ghi");
+            rc.Setup(x => x.User).Returns("def");
+            rc.Setup(x => x.PageIsInCategory(It.IsAny<string>())).Returns(true);
+
+            return rc;
         }
     }
 }

@@ -2,11 +2,9 @@
 {
     using System.Collections;
     using System.Collections.Generic;
-    using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Model.StalkNodes;
     using EyeInTheSky.Model.StalkNodes.BaseNodes;
-    using EyeInTheSky.Services.Interfaces;
     using EyeInTheSky.Tests.Model.StalkNodes.BaseNodes;
     using Moq;
     using NUnit.Framework;
@@ -14,25 +12,22 @@
     [TestFixture]
     public class UserGroupStalkNodeTest : LeafNodeTestBase<UserGroupStalkNode>
     {
-        private IRecentChange rc;
-        private Mock<IMediaWikiApi> mwApi;
+        private Mock<IRecentChange> rc;
 
         [SetUp]
         public void LocalSetup()
         {
-            this.rc = new RecentChange("abc", "def", "ghi", "jkl", "mno", 123);
-            this.mwApi = new Mock<IMediaWikiApi>();
-            this.rc.MediaWikiApi = this.mwApi.Object;
+            this.rc = this.RecentChangeBuilder();
         }
-        
+
         [Test, TestCaseSource(typeof(UserGroupStalkNodeTest), "TestCases")]
         public bool TestMatch(StalkNode node, List<string> groups)
         {
-            this.mwApi.Setup(x => x.GetUserGroups(It.IsAny<string>())).Returns(groups);
-            
-            return node.Match(this.rc);
+            this.rc.Setup(x => x.GetUserGroups()).Returns(groups);
+
+            return node.Match(this.rc.Object);
         }
-        
+
         private static IEnumerable TestCases
         {
             get

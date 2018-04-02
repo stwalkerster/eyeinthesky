@@ -1,6 +1,5 @@
 ﻿namespace EyeInTheSky.Tests
 {
-    using System;
     using Castle.Core.Logging;
     using EyeInTheSky.Model.Interfaces;
     using Moq;
@@ -20,29 +19,6 @@
             this.NotificationTemplatesMock = new Mock<INotificationTemplates>();
 
             this.AppConfigMock.Setup(s => s.DateFormat).Returns("u");
-        }
-
-        public class ValueProvider : DefaultValueProvider
-        {
-            protected override object GetDefaultValue(Type type, Mock mock)
-            {
-                if (type == typeof(string))
-                {
-                    return "abc";
-                }
-                
-                if (type == typeof(int))
-                {
-                    return 123;
-                }
-                
-                if (type == typeof(bool))
-                {
-                    return true;
-                }
-
-                return mock.Object;
-            }
         }
     }
 }

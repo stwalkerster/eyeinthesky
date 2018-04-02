@@ -8,31 +8,34 @@
     public class RecentChange : IRecentChange
     {
         private IEnumerable<string> usergroups;
-        
-        public RecentChange(string page, string user, string url, string editsummary, string flags, int sizediff)
+
+        public RecentChange(string user)
         {
-            this.Page = page;
             this.User = user;
-            this.Url = url;
-            this.EditSummary = editsummary;
-            this.EditFlags = flags;
-            this.SizeDifference = sizediff;
         }
 
-        public string Page { get; private set; }
+        public string Page { get; set; }
 
-        public string User { get; private set; }
+        public string TargetPage { get; set; }
 
-        public string Url { get; private set; }
+        public string User { get; set; }
 
-        public string EditSummary { get; private set; }
+        public string TargetUser { get; set; }
 
-        public string EditFlags { get; private set; }
+        public string Url { get; set; }
 
-        public int SizeDifference { get; private set; }
-        
+        public string EditSummary { get; set; }
+
+        public string EditFlags { get; set; }
+
+        public int? SizeDiff { get; set; }
+
+        public string Log { get; set; }
+
+        public TimeSpan? Expiry { get; set; }
+
         public IMediaWikiApi MediaWikiApi { get; set; }
-        
+
         public IEnumerable<string> GetUserGroups()
         {
             if (this.MediaWikiApi == null)
@@ -65,11 +68,11 @@
 
         protected bool Equals(RecentChange other)
         {
-            return string.Equals(this.Page, other.Page) && string.Equals(this.User, other.User)
-                                                        && string.Equals(this.Url, other.Url)
-                                                        && string.Equals(this.EditSummary, other.EditSummary)
-                                                        && string.Equals(this.EditFlags, other.EditFlags)
-                                                        && this.SizeDifference == other.SizeDifference;
+            return string.Equals(this.Page, other.Page) && string.Equals(this.TargetPage, other.TargetPage) &&
+                   string.Equals(this.User, other.User) && string.Equals(this.TargetUser, other.TargetUser) &&
+                   string.Equals(this.Url, other.Url) && string.Equals(this.EditSummary, other.EditSummary) &&
+                   string.Equals(this.EditFlags, other.EditFlags) && this.SizeDiff == other.SizeDiff &&
+                   string.Equals(this.Log, other.Log);
         }
 
         public override bool Equals(object obj)
@@ -85,11 +88,14 @@
             unchecked
             {
                 var hashCode = (this.Page != null ? this.Page.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (this.TargetPage != null ? this.TargetPage.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (this.User != null ? this.User.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (this.TargetUser != null ? this.TargetUser.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (this.Url != null ? this.Url.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (this.EditSummary != null ? this.EditSummary.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (this.EditFlags != null ? this.EditFlags.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ this.SizeDifference;
+                hashCode = (hashCode * 397) ^ this.SizeDiff.GetHashCode();
+                hashCode = (hashCode * 397) ^ (this.Log != null ? this.Log.GetHashCode() : 0);
                 return hashCode;
             }
         }
