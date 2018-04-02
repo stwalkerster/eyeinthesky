@@ -31,7 +31,7 @@
         public IRecentChange ShouldParseLogCorrectly(string data)
         {
             var shouldParseLogCorrectly = this.rcparser.Parse(data);
-            this.LoggerMock.Verify(x => x.ErrorFormat(It.IsAny<string>(), It.IsAny<object[]>()), Times.Never);
+            this.LoggerMock.Verify(x => x.ErrorFormat(It.IsAny<string>(), It.IsAny<object[]>()), Times.Never, "Failed to parse log entry");
             return shouldParseLogCorrectly;
         }
 
@@ -126,6 +126,29 @@
                             EditSummary = "[[WP:Edit warring|Edit warring]]",
                             EditFlags = "block, account creation blocked"
                         });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/block14]]4 reblock10 02 5* 03SQL 5*  10changed block settings for [[02User:188.29.165.18910]] (anon. only, account creation blocked, cannot edit own talk page) with an expiry time of 11:18, June 29, 2018: see also 86.28.94.117")
+                    .Returns(
+                        new RecentChange("SQL")
+                        {
+                            Log = "block",
+                            TargetUser = "188.29.165.189",
+                            Expiry = TimeSpan.FromHours(31),
+                            EditSummary = "see also 86.28.94.117",
+                            EditFlags = "reblock, anon. only, account creation blocked, cannot edit own talk page"
+                        });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/block14]]4 unblock10 02 5* 03PhilKnight 5*  10unblocked User:NHBuchanan: following request")
+                    .Returns(
+                        new RecentChange("PhilKnight")
+                        {
+                            Log = "block",
+                            TargetUser = "NHBuchanan",
+                            EditSummary = "following request",
+                            EditFlags = "unblock"
+                        });
 
                 yield return new TestCaseData(
                         "14[[07Special:Log/delete14]]4 revision10 02 5* 03Hut 8.5 5*  10Hut 8.5 changed visibility of 5 revisions on page [[02Humza Yousaf10]]: content hidden: [[WP:RD1|RD1]]: Copyright violations: https://inews.co.uk/news/politics/humza-yousaf-scottish-transport-minister-facing-5000-fine-driving-uninsured/")
@@ -136,7 +159,18 @@
                             Page = "Humza Yousaf",
                             EditFlags = "revision",
                             EditSummary = "[[WP:RD1|RD1]]: Copyright violations: https://inews.co.uk/news/politics/humza-yousaf-scottish-transport-minister-facing-5000-fine-driving-uninsured/"
-                        }).Ignore("Number of revisions?");
+                        });
+
+                yield return new TestCaseData(
+                        "14[[07Special:Log/delete14]]4 revision10 02 5* 03Mz7 5*  10Mz7 changed visibility of a revision on page [[02Footlights10]]: edit summary hidden and content unhidden: [[WP:RD2|RD2]]: Serious [[WP:BLP|BLP]] violations: violation is in the edit summary")
+                    .Returns(
+                        new RecentChange("Mz7")
+                        {
+                            Log = "delete",
+                            Page = "Footlights",
+                            EditFlags = "revision",
+                            EditSummary = "[[WP:RD2|RD2]]: Serious [[WP:BLP|BLP]] violations: violation is in the edit summary"
+                        });
 
                 yield return new TestCaseData(
                         "14[[07Special:Log/delete14]]4 delete10 02 5* 03Maile66 5*  10deleted \"[[02Talk:How to possible 50 Mbps speed in Just Rs.5000 per Year10]]\": [[WP:CSD#G8|G8]]: Page dependent on a deleted or nonexistent page")
@@ -158,6 +192,27 @@
                             Page = "David Carr (American football)",
                             EditSummary = "[[WP:CSD#G6|G6]]: Deleted to make way for move",
                             EditFlags = "delete_redir"
+                        });
+
+                yield return new TestCaseData(
+                        "14[[07Special:Log/delete14]]4 restore10 02 5* 03Graeme Bartlett 5*  10restored \"[[02Draft:June Beverly Bonesteel10]]\": requested by FlyladyAZ")
+                    .Returns(
+                        new RecentChange("Graeme Bartlett")
+                        {
+                            Log = "delete",
+                            Page = "Draft:June Beverly Bonesteel",
+                            EditSummary = "requested by FlyladyAZ",
+                            EditFlags = "restore"
+                        });
+
+                yield return new TestCaseData(
+                        "14[[07Special:Log/delete14]]4 restore10 02 5* 03Anthony Appleyard 5*  10restored \"[[02Talk:Hakea exul10]]\"")
+                    .Returns(
+                        new RecentChange("Anthony Appleyard")
+                        {
+                            Log = "delete",
+                            Page = "Talk:Hakea exul",
+                            EditFlags = "restore"
                         });
 
                 yield return new TestCaseData(
@@ -183,6 +238,18 @@
                         });
 
                 yield return new TestCaseData(
+                        "14[[07Special:Log/move14]]4 move10 02 5* 03SamgeeGamwise 5*  10moved [[02Convents burning10]] to [[Convent burning]]: moving page due to incorrect pluralisation in title")
+                    .Returns(
+                        new RecentChange("SamgeeGamwise")
+                        {
+                            Log = "move",
+                            Page = "Convents burning",
+                            TargetPage = "Convent burning",
+                            EditFlags = "move",
+                            EditSummary = "moving page due to incorrect pluralisation in title"
+                        });
+
+                yield return new TestCaseData(
                         "14[[07Special:Log/move14]]4 move_redir10 02 5* 03WikiOriginal-9 5*  10moved [[02David Carr (quarterback)10]] to [[David Carr (American football)]] over redirect: no other American football player named David Carr")
                     .Returns(
                         new RecentChange("WikiOriginal-9")
@@ -192,6 +259,18 @@
                             Page = "David Carr (quarterback)",
                             TargetPage = "David Carr (American football)",
                             EditSummary = "no other American football player named David Carr"
+                        });
+
+                // faked
+                yield return new TestCaseData(
+                        "14[[07Special:Log/move14]]4 move_redir10 02 5* 03sdfsdf 5*  10moved [[02David Carr (quarterback)10]] to [[David Carr (American football)]] over redirect")
+                    .Returns(
+                        new RecentChange("sdfsdf")
+                        {
+                            Log = "move",
+                            EditFlags = "move_redir",
+                            Page = "David Carr (quarterback)",
+                            TargetPage = "David Carr (American football)"
                         });
 
                 yield return new TestCaseData(
@@ -215,6 +294,16 @@
                         });
 
                 yield return new TestCaseData(
+                        "14[[07Special:Log/newusers14]]4 byemail10 02 5* 03Ryder5656 5*  10created new account User:Ryder9997")
+                    .Returns(
+                        new RecentChange("Ryder5656")
+                        {
+                            Log = "newusers",
+                            TargetUser = "Ryder9997",
+                            EditFlags = "byemail"
+                        });
+
+                yield return new TestCaseData(
                         "14[[07Special:Log/pagetriage-curation14]]4 reviewed10 02 5* 03Natureium 5*  10Natureium marked [[02John Thomas (Republican advertising)10]] as reviewed")
                     .Returns(
                         new RecentChange("Natureium")
@@ -225,6 +314,100 @@
                         });
 
                 yield return new TestCaseData(
+                        "14[[07Special:Log/pagetriage-curation14]]4 unreviewed10 02 5* 03SamHolt6 5*  10SamHolt6 marked [[02Veronica Cool10]] as unreviewed")
+                    .Returns(
+                        new RecentChange("SamHolt6")
+                        {
+                            Log = "pagetriage-curation",
+                            Page = "Veronica Cool",
+                            EditFlags = "unreviewed"
+                        });
+
+                yield return new TestCaseData(
+                        "14[[07Special:Log/pagetriage-curation14]]4 delete10 02 5* 03SamHolt6 5*  10SamHolt6 marked [[02Ak husky10]] for deletion with db-band tag")
+                    .Returns(
+                        new RecentChange("SamHolt6")
+                        {
+                            Log = "pagetriage-curation",
+                            Page = "Ak husky",
+                            EditFlags = "delete"
+                        });
+
+                yield return new TestCaseData(
+                        "14[[07Special:Log/pagetriage-curation14]]4 tag10 02 5* 03Anaxial 5*  10Anaxial tagged [[02Farley, Staffordshire10]] with stub, uncategorised and unreferenced tags")
+                    .Returns(
+                        new RecentChange("Anaxial")
+                        {
+                            Log = "pagetriage-curation",
+                            Page = "Farley, Staffordshire",
+                            EditFlags = "tag"
+                        });
+
+                yield return new TestCaseData(
+                        "14[[07Special:Log/pagetriage-deletion14]]4 delete10 02 5* 03SamHolt6 5*  10SamHolt6 marked [[02Ak husky10]] for deletion with db-band tag")
+                    .Returns(
+                        new RecentChange("SamHolt6")
+                        {
+                            Log = "pagetriage-deletion",
+                            Page = "Ak husky",
+                            EditFlags = "delete"
+                        });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/patrol14]]4 patrol10 02 5* 03SshibumXZ 5*  10marked revision 833886654 of [[02Sekyiwa Shakur10]] patrolled ")
+                    .Returns(
+                        new RecentChange("SshibumXZ")
+                        {
+                            Log = "patrol",
+                            Page = "Sekyiwa Shakur",
+                            EditFlags = "patrol"
+                        });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/protect14]]4 protect10 02 5* 03Ohnoitsjamie 5*  10protected \"[[Alison Brie ‎[edit=autoconfirmed] (expires 20:56, 2 October 2018 (UTC))‎[move=autoconfirmed] (expires 20:56, 2 October 2018 (UTC))]]\": Persistent [[WP:Vandalism|vandalism]]")
+                    .Returns(
+                        new RecentChange("Ohnoitsjamie")
+                        {
+                            Log = "protect",
+                            Page = "Alison Brie",
+                            EditFlags = "protect",
+                            EditSummary = "Persistent [[WP:Vandalism|vandalism]]"
+                        }).Ignore("Doesn't work");
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/protect14]]4 modify10 02 5* 03Ohnoitsjamie 5*  10changed protection level of Tom Kenny filmography ‎[edit=autoconfirmed] (expires 20:59, 2 October 2018 (UTC))‎[move=autoconfirmed] (expires 20:59, 2 October 2018 (UTC)): Persistent [[WP:Vandalism|vandalism]]: IP hopping crap")
+                    .Returns(
+                        new RecentChange("Ohnoitsjamie")
+                        {
+                            Log = "protect",
+                            Page = "Tom Kenny filmography",
+                            EditFlags = "modify",
+                            EditSummary = "Persistent [[WP:Vandalism|vandalism]]: IP hopping crap"
+                        }).Ignore("Doesn't work");
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/renameuser14]]4 renameuser10 02 5* 03Céréales Killer 5*  10Céréales Killer renamed user [[02User:SujaiRamPrasathC10]] (0 edits) to [[User:ZszasdojcqSsadaS]]: per [[m:Special:GlobalRenameQueue/request/41529|request]]")
+                    .Returns(
+                        new RecentChange("Céréales Killer")
+                        {
+                            Log = "renameuser",
+                            TargetUser = "ZszasdojcqSsadaS",
+                            EditFlags = "renameuser",
+                            EditSummary = "per [[m:Special:GlobalRenameQueue/request/41529|request]]"
+                        }).Ignore("Three users here...");
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/review14]]4 approve10 02 5* 03GB fan 5*  10GB fan reviewed a version of [[02Electronic harassment10]]: ([[WP:TW|TW]])")
+                    .Returns(
+                        new RecentChange("GB fan")
+                        {
+                            Log = "review",
+                            Page = "Electronic harassment",
+                            EditFlags = "approve",
+                            EditSummary = "([[WP:TW|TW]])"
+                        });
+
+                yield return new TestCaseData(
                         "14[[07Special:Log/thanks14]]4 thank10 02 5* 03AuH2ORepublican 5*  10AuH2ORepublican thanked Eagleash")
                     .Returns(
                         new RecentChange("AuH2ORepublican")
@@ -232,6 +415,51 @@
                             Log = "thanks",
                             EditFlags = "thank",
                             TargetUser = "Eagleash"
+                        });
+
+                yield return new TestCaseData(
+                        "14[[07Special:Log/upload14]]4 overwrite10 02 5* 03In Memoriam A.H.H. 5*  10uploaded a new version of \"[[02File:Columbia logo, from Concerto in B Flat Minor, circa 1942.png10]]\": Cropped")
+                    .Returns(
+                        new RecentChange("In Memoriam A.H.H.")
+                        {
+                            Log = "upload",
+                            EditFlags = "overwrite",
+                            Page = "File:Columbia logo, from Concerto in B Flat Minor, circa 1942.png",
+                            EditSummary = "Cropped"
+                        });
+                
+                // faked
+                yield return new TestCaseData(
+                        "14[[07Special:Log/upload14]]4 overwrite10 02 5* 03In Memoria 5*  10uploaded a new version of \"[[02File:Columbia logo, from Concerto in B Flat Minor, circa 1942.png10]]\"")
+                    .Returns(
+                        new RecentChange("In Memoria")
+                        {
+                            Log = "upload",
+                            EditFlags = "overwrite",
+                            Page = "File:Columbia logo, from Concerto in B Flat Minor, circa 1942.png"
+                        });
+                
+                // faked
+                yield return new TestCaseData(
+                        "14[[07Special:Log/upload14]]4 upload10 02 5* 03I Memoriam A.H.H. 5*  10uploaded \"[[02File:Columbia logo, from Concerto in B Flat Minor, circa 1942.png10]]\": Cropped")
+                    .Returns(
+                        new RecentChange("I Memoriam A.H.H.")
+                        {
+                            Log = "upload",
+                            EditFlags = "upload",
+                            Page = "File:Columbia logo, from Concerto in B Flat Minor, circa 1942.png",
+                            EditSummary = "Cropped"
+                        });
+                
+                // faked
+                yield return new TestCaseData(
+                        "14[[07Special:Log/upload14]]4 upload10 02 5* 03I Memoria 5*  10uploaded \"[[02File:Columbia logo, from Concerto in B Flat Minor, circa 1942.png10]]\"")
+                    .Returns(
+                        new RecentChange("I Memoria")
+                        {
+                            Log = "upload",
+                            EditFlags = "upload",
+                            Page = "File:Columbia logo, from Concerto in B Flat Minor, circa 1942.png"
                         });
             }
         }

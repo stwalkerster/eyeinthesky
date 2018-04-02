@@ -102,28 +102,90 @@
 
                     if (rc.EditFlags == "block")
                     {
-                        var match = new Regex("^blocked User:(?<targetUser>.*?) \\((?<flags>.*?)\\) with an expiry time of (?<expiry>.*?): (?<comment>.*)$");
+                        var match = new Regex("^blocked User:(?<targetUser>.*?) \\((?<flags>.*?)\\) with an expiry time of (?<expiry>.*?)(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
                             rc.TargetUser = result.Groups["targetUser"].Value;
-                            rc.EditSummary = result.Groups["comment"].Value;
+
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+                            
                             rc.EditFlags += ", " + result.Groups["flags"].Value;
 
+                            handled = true;
+                        }
+                    }
+                    
+                    if (rc.EditFlags == "reblock")
+                    {
+                        var match = new Regex("^changed block settings for \\[\\[User:(?<targetUser>.*?)\\]\\] \\((?<flags>.*?)\\) with an expiry time of (?<expiry>.*?)(?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.TargetUser = result.Groups["targetUser"].Value;
+
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+                            
+                            rc.EditFlags += ", " + result.Groups["flags"].Value;
+
+                            handled = true;
+                        }
+                    }
+                    
+                    if (rc.EditFlags == "unblock")
+                    {
+                        var match = new Regex("^unblocked User:(?<targetUser>.*?)(?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.TargetUser = result.Groups["targetUser"].Value;
+
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+                            
                             handled = true;
                         }
                     }
 
                     break;
                 case "delete":
+                    // TODO: delete / revision
                     if (rc.EditFlags == "delete")
                     {
-                        var match = new Regex("^deleted \"\\[\\[(?<pageName>.*?)\\]\\]\": (?<comment>.*)$");
+                        var match = new Regex("^deleted \"\\[\\[(?<pageName>.*?)\\]\\]\"(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
                             rc.Page = result.Groups["pageName"].Value;
-                            rc.EditSummary = result.Groups["comment"].Value;
+
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+
+                            handled = true;
+                        }
+                    }
+                    if (rc.EditFlags == "restore")
+                    {
+                        var match = new Regex("^restored \"\\[\\[(?<pageName>.*?)\\]\\]\"(?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["pageName"].Value;
+
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
 
                             handled = true;
                         }
@@ -131,12 +193,33 @@
 
                     if (rc.EditFlags == "delete_redir")
                     {
-                        var match = new Regex(@"deleted redirect \[\[(?<pageName>.*?)\]\] by overwriting: (?<comment>.*)$");
+                        var match = new Regex(@"deleted redirect \[\[(?<pageName>.*?)\]\] by overwriting(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
                             rc.Page = result.Groups["pageName"].Value;
-                            rc.EditSummary = result.Groups["comment"].Value;
+
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+
+                            handled = true;
+                        }
+                    }
+
+                    if (rc.EditFlags == "revision")
+                    {
+                        var match = new Regex(@"changed visibility of (?:[0-9]+ revisions|a revision) on page \[\[(?<pageName>.*?)\]\]: (?:[a-z, ]*)hidden(?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["pageName"].Value;
+
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
 
                             handled = true;
                         }
@@ -145,27 +228,34 @@
                 case "move":
                     if (rc.EditFlags == "move")
                     {
-                        // TODO: move with comment
-                        var match = new Regex("^moved \\[\\[(?<page>.*?)\\]\\] to \\[\\[(?<newpage>.*?)\\]\\]$");
+                        var match = new Regex("^moved \\[\\[(?<page>.*?)\\]\\] to \\[\\[(?<newpage>.*?)\\]\\](?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
                             rc.Page = result.Groups["page"].Value;
                             rc.TargetPage = result.Groups["newpage"].Value;
 
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+
                             handled = true;
                         }
                     }
                     if (rc.EditFlags == "move_redir")
                     {
-                        // TODO: move without comment
-                        var match = new Regex("^moved \\[\\[(?<page>.*?)\\]\\] to \\[\\[(?<newpage>.*?)\\]\\] over redirect: (?<comment>.*)$");
+                        var match = new Regex("^moved \\[\\[(?<page>.*?)\\]\\] to \\[\\[(?<newpage>.*?)\\]\\] over redirect(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
                             rc.Page = result.Groups["page"].Value;
                             rc.TargetPage = result.Groups["newpage"].Value;
-                            rc.EditSummary = result.Groups["comment"].Value;
+
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
 
                             handled = true;
                         }
@@ -193,10 +283,21 @@
                         handled = true;
                     }
 
-                    if (rc.EditFlags == "create2")
+                    if (rc.EditFlags == "create2" || rc.EditFlags == "byemail")
                     {
-                        rc.TargetUser = comment.Substring("created new account User:".Length);
-                        handled = true;
+                        var match = new Regex("^created new account User:(?<targetuser>.*?)(?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+                            
+                            rc.TargetUser = result.Groups["targetuser"].Value;
+
+                            handled = true;
+                        }
                     }
                     break;
                 case "pagetriage-curation":
@@ -211,6 +312,121 @@
                         }
                     }
                     
+                    if (rc.EditFlags == "unreviewed")
+                    {
+                        var match = new Regex("marked \\[\\[(?<page>.*?)\\]\\] as unreviewed$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["page"].Value;
+                            handled = true;
+                        }
+                    }
+                    
+                    if (rc.EditFlags == "delete")
+                    {
+                        var match = new Regex("marked \\[\\[(?<page>.*?)\\]\\] for deletion");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["page"].Value;
+                            handled = true;
+                        }
+                    }
+                    
+                    if (rc.EditFlags == "tag")
+                    {
+                        var match = new Regex("tagged \\[\\[(?<page>.*?)\\]\\] with");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["page"].Value;
+                            handled = true;
+                        }
+                    }
+                    
+                    break;
+                case "pagetriage-deletion":
+                    if (rc.EditFlags == "delete")
+                    {
+                        var match = new Regex("marked \\[\\[(?<page>.*?)\\]\\] for deletion");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["page"].Value;
+                            handled = true;
+                        }
+                    }
+                    
+                    break;
+                
+                case "patrol":
+                    if (rc.EditFlags == "patrol")
+                    {
+                        var match = new Regex("marked revision [0-9]+ of \\[\\[(?<page>.*)\\]\\] patrolled $");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["page"].Value;
+                            handled = true;
+                        }
+                    }
+                    
+                    break;
+                
+                case "protect":
+                    if (rc.EditFlags == "protect")
+                    {
+                        var match = new Regex("^protected \\[\\[(?<page>.*?) \\[(?:edit|move|create)=.*?\\]\\](?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+                            
+                            rc.Page = result.Groups["page"].Value;
+                            handled = true;
+                        }
+                    }
+                    
+                    if (rc.EditFlags == "modify")
+                    {
+                        var match = new Regex("^changed protection level of (?<page>.*?) \\[(?:edit|move|create)=.*?(?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+                            
+                            rc.Page = result.Groups["page"].Value;
+                            handled = true;
+                        }
+                    }
+                    
+                    break;
+                
+                case "review":
+                    if (rc.EditFlags == "approve")
+                    {
+                        var match = new Regex("reviewed a version of \\[\\[(?<page>.*?)\\]\\](?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["page"].Value;
+                            
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+                            
+                            handled = true;
+                        }
+                    }
+                    
                     break;
                 
                 case "thanks":
@@ -221,6 +437,26 @@
                         if (result.Success)
                         {
                             rc.TargetUser = result.Groups["user"].Value;
+                            handled = true;
+                        }
+                    }
+                    
+                    break;
+                
+                case "upload":
+                    if (rc.EditFlags == "overwrite" || rc.EditFlags == "upload")
+                    {
+                        var match = new Regex("uploaded(?: a new version of)? \"\\[\\[(?<page>.*?)\\]\\]\"(?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["page"].Value;
+                            
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+                            
                             handled = true;
                         }
                     }
