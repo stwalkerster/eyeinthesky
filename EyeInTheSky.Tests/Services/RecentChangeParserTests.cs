@@ -105,14 +105,28 @@
             get
             {
                 yield return new TestCaseData(
+                        "14[[07Special:Log/abusefilter14]]4 hit10 02 5* 03GriffinMorganHuff 5*  10GriffinMorganHuff triggered [[Special:AbuseFilter/550|filter 550]], performing the action \"edit\" on [[02The Boy in Blue (1986 film)10]]. Actions taken: Tag ([[Special:AbuseLog/20813489|details]])")
+                    .Returns(
+                        new RecentChange("GriffinMorganHuff")
+                        {
+                            Page = "Special:AbuseFilter/550",
+                            TargetPage = "The Boy in Blue (1986 film)",
+                            EditFlags = "hit; edit",
+                            Log = "abusefilter",
+                            AdditionalData = "Tag"
+                        });
+                
+                yield return new TestCaseData(
                         "14[[07Special:Log/abusefilter14]]4 hit10 02 5* 03Ceanneisenhammer 5*  10Ceanneisenhammer triggered [[Special:AbuseFilter/527|filter 527]], performing the action \"createaccount\" on [[02Special:UserLogin10]]. Actions taken: none ([[Special:AbuseLog/20724740|details]])")
                     .Returns(
                         new RecentChange("Ceanneisenhammer")
                         {
-                            Page = "Special:Log/abusefilter",
-                            EditFlags = "hit",
+                            
+                            Page = "Special:AbuseFilter/527",
+                            TargetPage = "Special:UserLogin",
+                            EditFlags = "hit; createaccount",
                             Log = "abusefilter",
-                            EditSummary = "Ceanneisenhammer triggered [[Special:AbuseFilter/527|filter 527]], performing the action \"createaccount\" on [[Special:UserLogin]]. Actions taken: none ([[Special:AbuseLog/20724740|details]])"
+                            AdditionalData = "none"
                         }).Ignore("Not sure what to do with this, as it embeds a different action within");
 
                 yield return new TestCaseData(
@@ -314,6 +328,17 @@
                         });
 
                 yield return new TestCaseData(
+                        "14[[07Special:Log/pagetriage-curation14]]4 reviewed10 02 5* 03Cwmhiraeth 5*  10Cwmhiraeth marked [[02Franco-German University10]] as reviewed: A well-written article and a useful addition to Wikipedia.")
+                    .Returns(
+                        new RecentChange("Cwmhiraeth")
+                        {
+                            Log = "pagetriage-curation",
+                            Page = "Franco-German University",
+                            EditFlags = "reviewed",
+                            EditSummary = "A well-written article and a useful addition to Wikipedia."
+                        });
+
+                yield return new TestCaseData(
                         "14[[07Special:Log/pagetriage-curation14]]4 unreviewed10 02 5* 03SamHolt6 5*  10SamHolt6 marked [[02Veronica Cool10]] as unreviewed")
                     .Returns(
                         new RecentChange("SamHolt6")
@@ -372,7 +397,7 @@
                             Page = "Alison Brie",
                             EditFlags = "protect",
                             EditSummary = "Persistent [[WP:Vandalism|vandalism]]"
-                        }).Ignore("Doesn't work");
+                        });
                 
                 yield return new TestCaseData(
                         "14[[07Special:Log/protect14]]4 modify10 02 5* 03Ohnoitsjamie 5*  10changed protection level of Tom Kenny filmography ‎[edit=autoconfirmed] (expires 20:59, 2 October 2018 (UTC))‎[move=autoconfirmed] (expires 20:59, 2 October 2018 (UTC)): Persistent [[WP:Vandalism|vandalism]]: IP hopping crap")
@@ -383,7 +408,7 @@
                             Page = "Tom Kenny filmography",
                             EditFlags = "modify",
                             EditSummary = "Persistent [[WP:Vandalism|vandalism]]: IP hopping crap"
-                        }).Ignore("Doesn't work");
+                        });
                 
                 yield return new TestCaseData(
                         "14[[07Special:Log/renameuser14]]4 renameuser10 02 5* 03Céréales Killer 5*  10Céréales Killer renamed user [[02User:SujaiRamPrasathC10]] (0 edits) to [[User:ZszasdojcqSsadaS]]: per [[m:Special:GlobalRenameQueue/request/41529|request]]")
@@ -391,10 +416,23 @@
                         new RecentChange("Céréales Killer")
                         {
                             Log = "renameuser",
-                            TargetUser = "ZszasdojcqSsadaS",
+                            TargetUser = "SujaiRamPrasathC",
+                            AdditionalData = "ZszasdojcqSsadaS",
                             EditFlags = "renameuser",
                             EditSummary = "per [[m:Special:GlobalRenameQueue/request/41529|request]]"
-                        }).Ignore("Three users here...");
+                        });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/renameuser14]]4 renameuser10 02 5* 03Taketa 5*  10Taketa renamed user [[02User:Light2310]] (1 edit) to [[User:Herr.el]]: Per [[:w:en:Special:Permalink/833977985|en:WP:CHUS]]")
+                    .Returns(
+                        new RecentChange("Taketa")
+                        {
+                            Log = "renameuser",
+                            TargetUser = "Light23",
+                            AdditionalData = "Herr.el",
+                            EditFlags = "renameuser",
+                            EditSummary = "Per [[:w:en:Special:Permalink/833977985|en:WP:CHUS]]"
+                        });
                 
                 yield return new TestCaseData(
                         "14[[07Special:Log/review14]]4 approve10 02 5* 03GB fan 5*  10GB fan reviewed a version of [[02Electronic harassment10]]: ([[WP:TW|TW]])")
@@ -405,6 +443,38 @@
                             Page = "Electronic harassment",
                             EditFlags = "approve",
                             EditSummary = "([[WP:TW|TW]])"
+                        });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/review14]]4 unapprove10 02 5* 03Zyc1174 5*  10Zyc1174 deprecated a version of [[02April 310]]")
+                    .Returns(
+                        new RecentChange("Zyc1174")
+                        {
+                            Log = "review",
+                            Page = "April 3",
+                            EditFlags = "unapprove"
+                        });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/rights14]]4 autopromote10 02 5* 03Popcrate 5*  10was automatically updated from (none) to extendedconfirmed")
+                    .Returns(
+                        new RecentChange("Popcrate")
+                        {
+                            Log = "rights",
+                            EditFlags = "autopromote",
+                            AdditionalData = "from (none) to extendedconfirmed"
+                        });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/rights14]]4 rights10 02 5* 03CambridgeBayWeather 5*  10changed group membership for User:Outriggr from autoreviewer, extendedconfirmed, reviewer to autoreviewer, extendedconfirmed, reviewer, templateeditor: Needed")
+                    .Returns(
+                        new RecentChange("CambridgeBayWeather")
+                        {
+                            Log = "rights",
+                            TargetUser = "Outriggr",
+                            EditFlags = "rights",
+                            EditSummary = "Needed",
+                            AdditionalData = "from autoreviewer, extendedconfirmed, reviewer to autoreviewer, extendedconfirmed, reviewer, templateeditor"
                         });
 
                 yield return new TestCaseData(

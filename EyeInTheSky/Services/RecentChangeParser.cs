@@ -94,12 +94,25 @@
 
             switch (rc.Log)
             {
-                case "block":
-                    // TODO: capture indefinite block
-                    // TODO: capture multiple block flags
-                    // TODO: unblock
-                    // TODO: parse expiry
+                case "abusefilter":
+                
+                    if (rc.EditFlags == "hit")
+                    {
+                        var match = new Regex(" triggered \\[\\[(?<page>Special:AbuseFilter/(?<filter>[0-9]+))\\|filter \\k<filter>\\]\\], performing the action \"(?<action>.*?)\" on \\[\\[(?<targetpage>.*?)\\]\\]. Actions taken: (?<actions>.*?) \\(\\[\\[Special:AbuseLog/[0-9]+\\|details\\]\\]\\)$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["page"].Value;
+                            rc.TargetPage = result.Groups["targetpage"].Value;
+                            rc.EditFlags += "; " + result.Groups["action"].Value;
+                            rc.AdditionalData = result.Groups["actions"].Value;
 
+                            handled = true;
+                        }
+                    }
+
+                    break;
+                case "block":
                     if (rc.EditFlags == "block")
                     {
                         var match = new Regex("^blocked User:(?<targetUser>.*?) \\((?<flags>.*?)\\) with an expiry time of (?<expiry>.*?)(?:: (?<comment>.*))?$");
@@ -157,7 +170,6 @@
 
                     break;
                 case "delete":
-                    // TODO: delete / revision
                     if (rc.EditFlags == "delete")
                     {
                         var match = new Regex("^deleted \"\\[\\[(?<pageName>.*?)\\]\\]\"(?:: (?<comment>.*))?$");
@@ -303,11 +315,16 @@
                 case "pagetriage-curation":
                     if (rc.EditFlags == "reviewed")
                     {
-                        var match = new Regex("marked \\[\\[(?<page>.*?)\\]\\] as reviewed$");
+                        var match = new Regex("marked \\[\\[(?<page>.*?)\\]\\] as reviewed(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
                             rc.Page = result.Groups["page"].Value;
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+                            
                             handled = true;
                         }
                     }
@@ -377,7 +394,7 @@
                 case "protect":
                     if (rc.EditFlags == "protect")
                     {
-                        var match = new Regex("^protected \\[\\[(?<page>.*?) \\[(?:edit|move|create)=.*?\\]\\](?:: (?<comment>.*))?$");
+                        var match = new Regex("^protected \"\\[\\[(?<page>.*?) .(?:\\[(?:edit|move|create)=[a-z-]+\\] \\(expires .*?\\(UTC\\)\\))+\\]\\]\"(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
@@ -393,7 +410,7 @@
                     
                     if (rc.EditFlags == "modify")
                     {
-                        var match = new Regex("^changed protection level of (?<page>.*?) \\[(?:edit|move|create)=.*?(?:: (?<comment>.*))?$");
+                        var match = new Regex("^changed protection level of (?<page>.*?) .(?:\\[(?:edit|move|create)=[a-z-]+\\] \\(expires .*?\\(UTC\\)\\))+(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
@@ -409,14 +426,72 @@
                     
                     break;
                 
-                case "review":
-                    if (rc.EditFlags == "approve")
+                case "renameuser":
+                    if (rc.EditFlags == "renameuser")
                     {
-                        var match = new Regex("reviewed a version of \\[\\[(?<page>.*?)\\]\\](?:: (?<comment>.*))?$");
+                        var match = new Regex(" renamed user \\[\\[User:(?<oldname>.*?)\\]\\] \\([0-9]+ edit(?:s?)\\) to \\[\\[User:(?<newname>.*?)\\]\\](?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.TargetUser = result.Groups["oldname"].Value;
+                            rc.AdditionalData = result.Groups["newname"].Value;
+                            
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+                            
+                            handled = true;
+                        }
+                    }
+                    
+                    break;
+                
+                case "review":
+                    if (rc.EditFlags == "approve" || rc.EditFlags == "unapprove")
+                    {
+                        var match = new Regex(" (?:reviewed|deprecated) a version of \\[\\[(?<page>.*?)\\]\\](?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
                             rc.Page = result.Groups["page"].Value;
+                            
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+                            
+                            handled = true;
+                        }
+                    }
+                    
+                    break;
+                
+                case "rights":
+                    if (rc.EditFlags == "autopromote")
+                    {
+                        var match = new Regex("was automatically updated (?<changes>from [a-z-, ()]+ to [a-z-, ()]+)(?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.AdditionalData = result.Groups["changes"].Value;
+                            
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+                            
+                            handled = true;
+                        }
+                    }
+                    if (rc.EditFlags == "rights")
+                    {
+                        var match = new Regex("changed group membership for User:(?<user>.*?) (?<changes>from [a-z-, ()]+ to [a-z-, ()]+)(?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.TargetUser = result.Groups["user"].Value;
+                            rc.AdditionalData = result.Groups["changes"].Value;
                             
                             if (result.Groups["comment"].Success)
                             {

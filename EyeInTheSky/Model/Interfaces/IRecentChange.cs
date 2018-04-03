@@ -1,4 +1,4 @@
-﻿namespace EyeInTheSky.Model.Interfaces
+namespace EyeInTheSky.Model.Interfaces
 {
     using System.Collections.Generic;
     using EyeInTheSky.Services.Interfaces;
@@ -15,6 +15,7 @@
         string TargetPage { get; set; }
         string TargetUser { get; set; }
         int? SizeDiff { get; set; }
+        string AdditionalData { get; set; }
 
         IEnumerable<string> GetUserGroups();
         bool PageIsInCategory(string category);

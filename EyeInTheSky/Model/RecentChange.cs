@@ -34,6 +34,8 @@
 
         public TimeSpan? Expiry { get; set; }
 
+        public string AdditionalData { get; set; }
+
         public IMediaWikiApi MediaWikiApi { get; set; }
 
         public IEnumerable<string> GetUserGroups()
@@ -72,7 +74,7 @@
                    string.Equals(this.User, other.User) && string.Equals(this.TargetUser, other.TargetUser) &&
                    string.Equals(this.Url, other.Url) && string.Equals(this.EditSummary, other.EditSummary) &&
                    string.Equals(this.EditFlags, other.EditFlags) && this.SizeDiff == other.SizeDiff &&
-                   string.Equals(this.Log, other.Log);
+                   string.Equals(this.Log, other.Log) && string.Equals(this.AdditionalData, other.AdditionalData);
         }
 
         public override bool Equals(object obj)
@@ -96,6 +98,7 @@
                 hashCode = (hashCode * 397) ^ (this.EditFlags != null ? this.EditFlags.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ this.SizeDiff.GetHashCode();
                 hashCode = (hashCode * 397) ^ (this.Log != null ? this.Log.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (this.AdditionalData != null ? this.AdditionalData.GetHashCode() : 0);
                 return hashCode;
             }
         }
