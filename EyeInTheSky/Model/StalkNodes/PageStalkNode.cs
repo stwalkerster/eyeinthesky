@@ -11,7 +11,7 @@
 
         protected override bool? DoMatch(IRecentChange rc, bool forceMatch)
         {
-            return this.RegexExpression.Match(rc.Page).Success;
+            return this.RegexExpression.Match(rc.Page).Success || this.RegexExpression.Match(rc.TargetPage).Success;
         }
 
         public override string ToString()

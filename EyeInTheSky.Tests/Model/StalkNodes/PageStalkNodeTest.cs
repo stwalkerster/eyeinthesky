@@ -5,6 +5,7 @@
     using EyeInTheSky.Model.StalkNodes;
     using EyeInTheSky.Model.StalkNodes.BaseNodes;
     using EyeInTheSky.Tests.Model.StalkNodes.BaseNodes;
+    using Moq;
     using NUnit.Framework;
 
     [TestFixture]
@@ -22,6 +23,48 @@
         public bool TestMatch(StalkNode node)
         {
             return node.Match(this.rc);
+        }
+
+        [Test]
+        public void ShouldMatchMoveLogOutbound()
+        {
+            // arrange
+            var pageNode = new PageStalkNode();
+            pageNode.SetMatchExpression("foo");
+
+            var l = new Mock<IRecentChange>();
+            l.Setup(x => x.Log).Returns("move");
+            l.Setup(x => x.User).Returns("user");
+            l.Setup(x => x.EditFlags).Returns("move");
+            l.Setup(x => x.Page).Returns("foo");
+            l.Setup(x => x.TargetPage).Returns("bar");
+
+            // act
+            var result = pageNode.Match(l.Object);
+
+            // assert
+            Assert.IsTrue(result);
+        }
+
+        [Test]
+        public void ShouldMatchMoveLogInbound()
+        {
+            // arrange
+            var pageNode = new PageStalkNode();
+            pageNode.SetMatchExpression("bar");
+
+            var l = new Mock<IRecentChange>();
+            l.Setup(x => x.Log).Returns("move");
+            l.Setup(x => x.User).Returns("user");
+            l.Setup(x => x.EditFlags).Returns("move");
+            l.Setup(x => x.Page).Returns("foo");
+            l.Setup(x => x.TargetPage).Returns("bar");
+
+            // act
+            var result = pageNode.Match(l.Object);
+
+            // assert
+            Assert.IsTrue(result);
         }
         
         private static IEnumerable TestCases
