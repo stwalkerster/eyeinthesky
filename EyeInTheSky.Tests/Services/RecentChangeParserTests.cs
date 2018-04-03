@@ -127,7 +127,7 @@
                             EditFlags = "hit; createaccount",
                             Log = "abusefilter",
                             AdditionalData = "none"
-                        }).Ignore("Not sure what to do with this, as it embeds a different action within");
+                        });
 
                 yield return new TestCaseData(
                         "14[[07Special:Log/block14]]4 block10 02 5* 03MSGJ 5*  10blocked User:142.196.0.207 (account creation blocked) with an expiry time of 31 hours: [[WP:Edit warring|Edit warring]]")
