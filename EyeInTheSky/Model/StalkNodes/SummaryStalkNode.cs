@@ -11,7 +11,12 @@
 
         protected override bool? DoMatch(IRecentChange rc, bool forceMatch)
         {
-            return this.RegexExpression.Match(rc.EditSummary).Success;
+            if (rc.EditSummary != null)
+            {
+                return this.RegexExpression.Match(rc.EditSummary).Success;
+            }
+
+            return false;
         }
         
         public override string ToString()

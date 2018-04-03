@@ -59,6 +59,11 @@
             {
                 throw new InvalidOperationException("API helper not available");
             }
+            
+            if (this.Page == null)
+            {
+                return false;
+            }
 
             if (!category.StartsWith("Category:"))
             {

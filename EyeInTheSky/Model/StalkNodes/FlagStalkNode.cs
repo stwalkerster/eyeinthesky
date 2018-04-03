@@ -1,5 +1,6 @@
 ﻿namespace EyeInTheSky.Model.StalkNodes
 {
+    using Castle.Components.DictionaryAdapter;
     using EyeInTheSky.Attributes;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Model.StalkNodes.BaseNodes;
@@ -11,7 +12,12 @@
 
         protected override bool? DoMatch(IRecentChange rc, bool forceMatch)
         {
-            return this.RegexExpression.Match(rc.EditFlags).Success;
+            if (rc.EditFlags != null)
+            {
+                return this.RegexExpression.Match(rc.EditFlags).Success;
+            }
+
+            return false;
         }
         
         public override string ToString()

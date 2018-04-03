@@ -17,6 +17,7 @@
             {
                 result |= this.RegexExpression.Match(rc.User).Success;
             }
+            
             if (rc.TargetUser != null)
             {
                 result |= this.RegexExpression.Match(rc.TargetUser).Success;
