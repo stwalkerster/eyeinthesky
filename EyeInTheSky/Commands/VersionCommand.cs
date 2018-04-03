@@ -1,6 +1,7 @@
 ﻿namespace EyeInTheSky.Commands
 {
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Reflection;
     using Castle.Core.Logging;
     using Stwalkerster.Bot.CommandLib.Attributes;
@@ -35,9 +36,9 @@
 
         protected override IEnumerable<CommandResponse> Execute()
         {
-            var assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version;
-            var ircVersion = Assembly.GetAssembly(typeof(IrcClient)).GetName().Version;
-            var botLibVersion = Assembly.GetAssembly(typeof(CommandBase)).GetName().Version;
+            var assemblyVersion = this.GetFileVersion(Assembly.GetExecutingAssembly());
+            var ircVersion = this.GetFileVersion(Assembly.GetAssembly(typeof(IrcClient)));
+            var botLibVersion = this.GetFileVersion(Assembly.GetAssembly(typeof(CommandBase)));
 
             yield return new CommandResponse
             {
@@ -47,6 +48,11 @@
                     ircVersion,
                     botLibVersion)
             };
+        }
+
+        private string GetFileVersion(Assembly assembly)
+        {
+            return FileVersionInfo.GetVersionInfo(assembly.Location).FileVersion;
         }
 
         protected override IDictionary<string, HelpMessage> Help()
