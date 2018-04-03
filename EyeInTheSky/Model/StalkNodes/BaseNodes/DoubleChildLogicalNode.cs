@@ -22,5 +22,12 @@
                 throw new InvalidOperationException("No right child node defined!");
             }
         }
+
+        protected override void PopulateClone(IStalkNode node)
+        {
+            var dcln = (DoubleChildLogicalNode) node;
+            dcln.LeftChildNode = (IStalkNode) this.LeftChildNode.Clone();
+            dcln.RightChildNode = (IStalkNode) this.RightChildNode.Clone();
+        }
     }
 }

@@ -8,6 +8,7 @@
         string WikimediaChannel { get; }
         string CommandPrefix { get; }
         string StalkConfigFile { get; }
+        string TemplateConfigFile { get; }
         IrcUser RcUser { get; }
         string DateFormat { get; }
         string MediaWikiApiEndpoint { get; }

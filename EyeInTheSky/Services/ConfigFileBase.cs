@@ -196,7 +196,11 @@
                 this.Logger.Error("Configuration file is invalid", ex);
                 throw;
             }
+
+            this.LocalInitialise();
         }
+        
+        protected virtual void LocalInitialise(){}
 
         public void Save()
         {

@@ -94,6 +94,7 @@
     <Compile Include="Model\Interfaces\INotificationTemplates.cs" />
     <Compile Include="Model\Interfaces\IRecentChange.cs" />
     <Compile Include="Model\Interfaces\IStalk.cs" />
+    <Compile Include="Model\Interfaces\ITemplate.cs" />
     <Compile Include="Model\RecentChange.cs" />
     <Compile Include="Model\NotificationTemplates.cs" />
     <Compile Include="Model\StalkNodes\AndNode.cs" />
@@ -117,12 +118,15 @@
     <Compile Include="Model\StalkNodes\UserStalkNode.cs" />
     <Compile Include="Model\StalkNodes\XOfStalkNode.cs" />
     <Compile Include="Model\StalkNodes\XorNode.cs" />
+    <Compile Include="Model\Template.cs" />
     <Compile Include="Services\BooleanParser.cs" />
+    <Compile Include="Services\ConfigFactoryBase.cs" />
     <Compile Include="Services\ConfigFileBase.cs" />
     <Compile Include="Services\ConfigurationProvider.cs" />
     <Compile Include="Services\BasicFlagService.cs" />
     <Compile Include="Services\EmailHelper.cs" />
     <Compile Include="Services\EmailSender.cs" />
+    <Compile Include="Services\Interfaces\IConfigFactory.cs" />
     <Compile Include="Services\Interfaces\IConfigurationBase.cs" />
     <Compile Include="Services\Interfaces\IEmailHelper.cs" />
     <Compile Include="Services\Interfaces\IEmailSender.cs" />
@@ -131,6 +135,8 @@
     <Compile Include="Services\Interfaces\IStalkConfiguration.cs" />
     <Compile Include="Services\Interfaces\IStalkFactory.cs" />
     <Compile Include="Services\Interfaces\IStalkNodeFactory.cs" />
+    <Compile Include="Services\Interfaces\ITemplateConfiguration.cs" />
+    <Compile Include="Services\Interfaces\ITemplateFactory.cs" />
     <Compile Include="Services\Interfaces\IWebServiceClient.cs" />
     <Compile Include="Services\MediaWikiApi.cs" />
     <Compile Include="Services\RecentChangeHandler.cs" />
@@ -138,6 +144,8 @@
     <Compile Include="Services\StalkConfiguration.cs" />
     <Compile Include="Services\StalkFactory.cs" />
     <Compile Include="Services\StalkNodeFactory.cs" />
+    <Compile Include="Services\TemplateConfiguration.cs" />
+    <Compile Include="Services\TemplateFactory.cs" />
     <Compile Include="Services\WebServiceClient.cs" />
     <Compile Include="Commands\StalkCommand.cs" />
     <Compile Include="Commands\VersionCommand.cs" />

@@ -29,5 +29,11 @@
                 throw new InvalidOperationException("No child nodes present");
             }
         }
+
+        protected override void PopulateClone(IStalkNode node)
+        {
+            var mcln = (MultiChildLogicalNode) node;
+            mcln.ChildNodes = mcln.ChildNodes.Select(x => (IStalkNode)x.Clone()).ToList();
+        }
     }
 }

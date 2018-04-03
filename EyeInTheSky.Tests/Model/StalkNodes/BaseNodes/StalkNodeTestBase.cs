@@ -27,6 +27,26 @@
 
             Assert.Catch(typeof(InvalidOperationException), () => node.Match(rc.Object));
         }
+
+        [Test]
+        public void ShouldCloneSuccessfully()
+        {
+            // arrange
+            var orig = new T();
+            orig.ChildNodes.Add(new TrueNode());
+            orig.ChildNodes.Add(new FalseNode());
+            orig.ChildNodes.Add(new TrueNode());
+
+            // act
+            var cloned = (MultiChildLogicalNode) orig.Clone();
+
+            // assert
+            Assert.AreNotSame(orig, cloned);
+            Assert.AreNotSame(orig.ChildNodes[0], cloned.ChildNodes[0]);
+            Assert.AreNotSame(orig.ChildNodes[1], cloned.ChildNodes[1]);
+            Assert.AreNotSame(orig.ChildNodes[2], cloned.ChildNodes[2]);
+            Assert.AreEqual(orig.ToString(), cloned.ToString());
+        }
     }
     
     public abstract class DoubleChildNodeTestBase<T> : LogicalNodeTestBase<T> where T : DoubleChildLogicalNode, new()
@@ -48,6 +68,24 @@
 
             Assert.Catch(typeof(InvalidOperationException), () => node.Match(rc.Object));
         }
+        
+        [Test]
+        public void ShouldCloneSuccessfully()
+        {
+            // arrange
+            var orig = new T();
+            orig.LeftChildNode = new TrueNode();
+            orig.RightChildNode = new FalseNode();
+
+            // act
+            var cloned = (DoubleChildLogicalNode) orig.Clone();
+
+            // assert
+            Assert.AreNotSame(orig, cloned);
+            Assert.AreNotSame(orig.LeftChildNode, cloned.LeftChildNode);
+            Assert.AreNotSame(orig.RightChildNode, cloned.RightChildNode);
+            Assert.AreEqual(orig.ToString(), cloned.ToString());
+        }
     }
     
     public abstract class SingleChildNodeTestBase<T> : LogicalNodeTestBase<T> where T : SingleChildLogicalNode, new()
@@ -60,6 +98,22 @@
 
             Assert.Catch(typeof(InvalidOperationException), () => node.Match(rc.Object));
         }
+        
+        [Test]
+        public void ShouldCloneSuccessfully()
+        {
+            // arrange
+            var orig = new T();
+            orig.ChildNode = new TrueNode();
+
+            // act
+            var cloned = (SingleChildLogicalNode) orig.Clone();
+
+            // assert
+            Assert.AreNotSame(orig, cloned);
+            Assert.AreNotSame(orig.ChildNode, cloned.ChildNode);
+            Assert.AreEqual(orig.ToString(), cloned.ToString());
+        }
     }
     
     public abstract class LogicalNodeTestBase<T> : StalkNodeTestBase<T> where T : LogicalNode, new()
@@ -68,6 +122,21 @@
 
     public abstract class LeafNodeTestBase<T> : StalkNodeTestBase<T> where T : LeafNode, new()
     {
+        
+        [Test]
+        public void ShouldCloneSuccessfully()
+        {
+            // arrange
+            var orig = new T();
+            orig.SetMatchExpression("fooo");
+
+            // act
+            var cloned = (IStalkNode) orig.Clone();
+
+            // assert
+            Assert.AreNotSame(orig, cloned);
+            Assert.AreEqual(orig.ToString(), cloned.ToString());
+        }
     }
     
     public abstract class RegexLeafNodeTestBase<T> : LeafNodeTestBase<T> where T : RegexLeafNode, new()

@@ -10,6 +10,7 @@ namespace EyeInTheSky.Model
             string wikimediaChannel,
             string commandPrefix,
             string stalkConfigFile,
+            string templateConfigFile,
             string rcUser,
             string dateFormat,
             string owner,
@@ -36,6 +37,11 @@ namespace EyeInTheSky.Model
                 throw new ArgumentNullException("stalkConfigFile");
             }
 
+            if (templateConfigFile == null)
+            {
+                throw new ArgumentNullException("templateConfigFile");
+            }
+
             if (rcUser == null)
             {
                 throw new ArgumentNullException("rcUser");
@@ -60,6 +66,7 @@ namespace EyeInTheSky.Model
             this.WikimediaChannel = wikimediaChannel;
             this.CommandPrefix = commandPrefix;
             this.StalkConfigFile = stalkConfigFile;
+            this.TemplateConfigFile = templateConfigFile;
             this.RcUser = IrcUser.FromPrefix(rcUser);
             this.Owner = IrcUser.FromPrefix(owner);
             this.DateFormat = dateFormat;
@@ -71,6 +78,7 @@ namespace EyeInTheSky.Model
         public string WikimediaChannel { get; private set; }
         public string CommandPrefix { get; private set; }
         public string StalkConfigFile { get; private set; }
+        public string TemplateConfigFile { get; private set; }
         public IrcUser RcUser { get; private set; }
         public IrcUser Owner { get; private set; }
         public string DateFormat { get; private set; }

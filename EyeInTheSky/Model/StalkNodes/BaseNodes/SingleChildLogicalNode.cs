@@ -16,5 +16,11 @@
                 throw new InvalidOperationException("No child node defined!");
             }
         }
+
+        protected override void PopulateClone(IStalkNode node)
+        {
+            var scln = (SingleChildLogicalNode) node;
+            scln.ChildNode = (IStalkNode) this.ChildNode.Clone();
+        }
     }
 }

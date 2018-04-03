@@ -85,6 +85,7 @@
     <Compile Include="Services\StalkFactoryTests.cs" />
     <Compile Include="Services\StalkNodeFactoryTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\TemplateFactoryTests.cs" />
     <Compile Include="TestBase.cs" />
   </ItemGroup>
   <ItemGroup>

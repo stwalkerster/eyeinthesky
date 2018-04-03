@@ -34,7 +34,18 @@
             this.SanityCheck(rc);
             return this.DoMatch(rc, forceMatch);
         }
+
+        public object Clone()
+        {
+            var clone = this.MemberwiseClone();
+            this.PopulateClone((IStalkNode) clone);
+            return clone;
+        }
         
         protected abstract bool? DoMatch(IRecentChange rc, bool forceMatch);
+
+        protected virtual void PopulateClone(IStalkNode node)
+        {
+        }
     }
 }

@@ -15,7 +15,8 @@
             this.baseNode = new FalseNode();
         }
 
-        internal ComplexStalk(string flag,
+        internal ComplexStalk(
+            string flag,
             DateTime? lastUpdateTime,
             DateTime? lastTriggerTime,
             string description,

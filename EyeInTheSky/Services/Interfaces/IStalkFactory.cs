@@ -1,11 +1,8 @@
 ﻿namespace EyeInTheSky.Services.Interfaces
 {
-    using System.Xml;
     using EyeInTheSky.Model.Interfaces;
 
-    public interface IStalkFactory
+    public interface IStalkFactory : IConfigFactory<IStalk>
     {
-        IStalk NewFromXmlElement(XmlElement element);
-        XmlElement ToXmlElement(IStalk stalk, XmlDocument doc);
     }
 }
