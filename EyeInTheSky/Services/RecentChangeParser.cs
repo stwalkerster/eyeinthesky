@@ -126,7 +126,7 @@
                 case "block":
                     if (rc.EditFlags == "block")
                     {
-                        var match = new Regex("^blocked User:(?<targetUser>.*?) \\((?<flags>.*?)\\) with an expiry time of (?<expiry>.*?)(?:: (?<comment>.*))?$");
+                        var match = new Regex("^blocked User:(?<targetUser>.*?) (?:\\((?<flags>.*?)\\))? with an expiry time of (?<expiry>.*?)(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
@@ -136,8 +136,11 @@
                             {
                                 rc.EditSummary = result.Groups["comment"].Value;
                             }
-                            
-                            rc.EditFlags += ", " + result.Groups["flags"].Value;
+
+                            if (result.Groups["flags"].Success)
+                            {
+                                rc.EditFlags += ", " + result.Groups["flags"].Value;   
+                            }
 
                             handled = true;
                         }
