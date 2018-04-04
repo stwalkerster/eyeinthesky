@@ -110,6 +110,17 @@
                             handled = true;
                         }
                     }
+                    
+                    if (rc.EditFlags == "create" || rc.EditFlags == "modify")
+                    {
+                        var match = new Regex(" (?:created|modified) \\[\\[(?<page>Special:AbuseFilter/[0-9]+)\\]\\] \\(\\[\\[Special:AbuseFilter/history/[0-9]+/diff/prev/[0-9]+\\]\\]\\)$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["page"].Value;
+                            handled = true;
+                        }
+                    }
 
                     break;
                 case "block":
@@ -274,9 +285,9 @@
                     }
                     break;
                 case "massmessage":
-                    if (rc.EditFlags == "skipnouser")
+                    if (rc.EditFlags == "skipnouser" || rc.EditFlags == "skipoptout")
                     {
-                        var match = new Regex("^Delivery of \"(?<page>.*?)\" to \\[\\[User talk:(?<targetuser>.*?)\\]\\] was skipped because the user account does not exist$");
+                        var match = new Regex("^Delivery of \"(?<page>.*?)\" to \\[\\[User talk:(?<targetuser>.*?)\\]\\] was skipped because .*$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
@@ -394,7 +405,7 @@
                 case "protect":
                     if (rc.EditFlags == "protect")
                     {
-                        var match = new Regex("^protected \"\\[\\[(?<page>.*?) .(?:\\[(?:edit|move|create)=[a-z-]+\\] \\(expires .*?\\(UTC\\)\\))+\\]\\]\"(?:: (?<comment>.*))?$");
+                        var match = new Regex(@"^protected ""\[\[(?<page>.*?) .(?:\[(?:edit|move|create)=[a-z-]+\] \((?:(?:expires .*?\(UTC\))|indefinite)\).?)+\]\]""(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
@@ -410,7 +421,7 @@
                     
                     if (rc.EditFlags == "modify")
                     {
-                        var match = new Regex("^changed protection level of (?<page>.*?) .(?:\\[(?:edit|move|create)=[a-z-]+\\] \\(expires .*?\\(UTC\\)\\))+(?:: (?<comment>.*))?$");
+                        var match = new Regex(@"^changed protection level of (?<page>.*?) .(?:\[(?:edit|move|create)=[a-z-]+\] \((?:(?:expires .*?\(UTC\))|indefinite)\).?)+(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
@@ -420,6 +431,40 @@
                             }
                             
                             rc.Page = result.Groups["page"].Value;
+                            handled = true;
+                        }
+                    }
+                    
+                    if (rc.EditFlags == "unprotect")
+                    {
+                        var match = new Regex(@"^removed protection from ""\[\[(?<page>.*?)\]\]""(?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+                            
+                            rc.Page = result.Groups["page"].Value;
+                            handled = true;
+                        }
+                    }
+                    
+                    if (rc.EditFlags == "move_prot")
+                    {
+                        var match = new Regex(@"^moved protection settings from ""\[\[(?<page>.*?)\]\]"" to ""\[\[(?<newpage>.*?)\]\]"": \[\[\k<page>\]\] moved to \[\[\k<newpage>\]\](?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["page"].Value;
+                            rc.TargetPage = result.Groups["newpage"].Value;
+
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+
                             handled = true;
                         }
                     }
@@ -498,6 +543,25 @@
                                 rc.EditSummary = result.Groups["comment"].Value;
                             }
                             
+                            handled = true;
+                        }
+                    }
+                    
+                    break;
+                
+                case "stable":
+                    if (rc.EditFlags == "config")
+                    {
+                        var match = new Regex(@" configured pending changes settings for \[\[(?<page>.*?)\]\] \[Auto-accept: .*?\] \((?:(?:expires .*?\(UTC\))|indefinite)\)(?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["page"].Value;
+                            
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
                             handled = true;
                         }
                     }

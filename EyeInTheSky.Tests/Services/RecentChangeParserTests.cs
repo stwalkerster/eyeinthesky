@@ -121,12 +121,33 @@
                     .Returns(
                         new RecentChange("Ceanneisenhammer")
                         {
-                            
                             Page = "Special:AbuseFilter/527",
                             TargetPage = "Special:UserLogin",
                             EditFlags = "hit; createaccount",
                             Log = "abusefilter",
                             AdditionalData = "none"
+                        });
+                
+                // faked
+                yield return new TestCaseData(
+                        "14[[07Special:Log/abusefilter14]]4 create10 02 5* 03Beetstra 5*  10Beetstra created [[Special:AbuseFilter/910]] ([[Special:AbuseFilter/history/910/diff/prev/18570]])")
+                    .Returns(
+                        new RecentChange("Beetstra")
+                        {
+                            Page = "Special:AbuseFilter/910",
+                            EditFlags = "create",
+                            Log = "abusefilter"
+                        });
+                
+                // faked
+                yield return new TestCaseData(
+                        "14[[07Special:Log/abusefilter14]]4 modify10 02 5* 03Cyp 5*  10Cyp modified [[Special:AbuseFilter/898]] ([[Special:AbuseFilter/history/898/diff/prev/18571]])")
+                    .Returns(
+                        new RecentChange("Cyp")
+                        {
+                            Page = "Special:AbuseFilter/898",
+                            EditFlags = "modify",
+                            Log = "abusefilter"
                         });
 
                 yield return new TestCaseData(
@@ -238,6 +259,18 @@
                             Page = "Project Tiger Writing Contest",
                             TargetUser = "TiruTiruTiru",
                             EditFlags = "skipnouser"
+                        });
+
+                // faked
+                yield return new TestCaseData(
+                        "14[[07Special:Log/massmessage14]]4 skipoptout10 02 5* 03MediaWiki message delivery 5*  10Delivery of \"This Month in Education: March 2018\" to [[User talk:Dcoetzee]] was skipped because the target has opted-out of message delivery")
+                    .Returns(
+                        new RecentChange("MediaWiki message delivery")
+                        {
+                            Log = "massmessage",
+                            Page = "This Month in Education: March 2018",
+                            TargetUser = "Dcoetzee",
+                            EditFlags = "skipoptout"
                         });
 
                 yield return new TestCaseData(
@@ -399,6 +432,31 @@
                             EditSummary = "Persistent [[WP:Vandalism|vandalism]]"
                         });
                 
+                // faked
+                yield return new TestCaseData(
+                        "14[[07Special:Log/protect14]]4 protect10 02 5* 03Ohnoitsjamie 5*  10protected \"[[20th Century Fox ‎[edit=autoconfirmed] (indefinite)‎[move=autoconfirmed] (indefinite)]]\": Persistent [[WP:Vandalism|vandalism]]")
+                    .Returns(
+                        new RecentChange("Ohnoitsjamie")
+                        {
+                            Log = "protect",
+                            Page = "20th Century Fox",
+                            EditFlags = "protect",
+                            EditSummary = "Persistent [[WP:Vandalism|vandalism]]"
+                        });
+                
+                // faked
+                yield return new TestCaseData(
+                        "14[[07Special:Log/protect14]]4 move_prot10 02 5* 03Ohnoitsjamie 5*  10moved protection settings from \"[[2018 YouTube headquarters shooting]]\" to \"[[YouTube headquarters shooting]]\": [[2018 YouTube headquarters shooting]] moved to [[YouTube headquarters shooting]]: Date is not necessary for disambiguation")
+                    .Returns(
+                        new RecentChange("Ohnoitsjamie")
+                        {
+                            Log = "protect",
+                            Page = "2018 YouTube headquarters shooting",
+                            TargetPage = "YouTube headquarters shooting",
+                            EditFlags = "move_prot",
+                            EditSummary = "Date is not necessary for disambiguation"
+                        });
+                
                 yield return new TestCaseData(
                         "14[[07Special:Log/protect14]]4 modify10 02 5* 03Ohnoitsjamie 5*  10changed protection level of Tom Kenny filmography ‎[edit=autoconfirmed] (expires 20:59, 2 October 2018 (UTC))‎[move=autoconfirmed] (expires 20:59, 2 October 2018 (UTC)): Persistent [[WP:Vandalism|vandalism]]: IP hopping crap")
                     .Returns(
@@ -408,6 +466,30 @@
                             Page = "Tom Kenny filmography",
                             EditFlags = "modify",
                             EditSummary = "Persistent [[WP:Vandalism|vandalism]]: IP hopping crap"
+                        });
+                
+                // faked
+                yield return new TestCaseData(
+                        "14[[07Special:Log/protect14]]4 modify10 02 5* 03Ohnoitsjamie 5*  10changed protection level of Tom Kenny filmography ‎[edit=autoconfirmed] (indefinite)‎[move=autoconfirmed] (expires 20:59, 2 October 2018 (UTC)): Persistent [[WP:Vandalism|vandalism]]: IP hopping crap")
+                    .Returns(
+                        new RecentChange("Ohnoitsjamie")
+                        {
+                            Log = "protect",
+                            Page = "Tom Kenny filmography",
+                            EditFlags = "modify",
+                            EditSummary = "Persistent [[WP:Vandalism|vandalism]]: IP hopping crap"
+                        });
+                
+                // faked
+                yield return new TestCaseData(
+                        "14[[07Special:Log/protect14]]4 unprotect10 02 5* 03Ohnoitsjamie 5*  10removed protection from \"[[Keymon Ache]]\": Deprotecting to allow different draft to be accepted")
+                    .Returns(
+                        new RecentChange("Ohnoitsjamie")
+                        {
+                            Log = "protect",
+                            Page = "Keymon Ache",
+                            EditFlags = "unprotect",
+                            EditSummary = "Deprotecting to allow different draft to be accepted"
                         });
                 
                 yield return new TestCaseData(
@@ -475,6 +557,18 @@
                             EditFlags = "rights",
                             EditSummary = "Needed",
                             AdditionalData = "from autoreviewer, extendedconfirmed, reviewer to autoreviewer, extendedconfirmed, reviewer, templateeditor"
+                        });
+                
+                // faked
+                yield return new TestCaseData(
+                        "14[[07Special:Log/stable14]]4 config10 02 5* 03MelanieN 5*  10MelanieN configured pending changes settings for [[Gabriel Batistuta]] [Auto-accept: require \"autoconfirmed\" permission] (expires 00:10, 4 July 2018 (UTC)): Persistent addition of [[WP:INTREF|unsourced or poorly sourced content]]")
+                    .Returns(
+                        new RecentChange("MelanieN")
+                        {
+                            Log = "stable",
+                            Page = "Gabriel Batistuta",
+                            EditFlags = "config",
+                            EditSummary = "Persistent addition of [[WP:INTREF|unsourced or poorly sourced content]]"
                         });
 
                 yield return new TestCaseData(
