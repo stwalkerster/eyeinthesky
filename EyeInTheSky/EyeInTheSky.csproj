@@ -109,6 +109,7 @@
     <Compile Include="Model\StalkNodes\FalseNode.cs" />
     <Compile Include="Model\StalkNodes\FlagStalkNode.cs" />
     <Compile Include="Model\StalkNodes\InCategoryNode.cs" />
+    <Compile Include="Model\StalkNodes\LogStalkNode.cs" />
     <Compile Include="Model\StalkNodes\NotNode.cs" />
     <Compile Include="Model\StalkNodes\OrNode.cs" />
     <Compile Include="Model\StalkNodes\PageStalkNode.cs" />

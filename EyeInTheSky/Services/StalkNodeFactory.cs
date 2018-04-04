@@ -31,6 +31,7 @@
                 case "flag":
                 case "usergroup":
                 case "incategory":
+                case "log":
                     return this.NewLeafNode(fragment);
 
                 case "true":
@@ -140,6 +141,7 @@
                 case "page":
                 case "summary":
                 case "flag":
+                case "log":
                     return this.NewRegexLeafNode(fragment);
                 case "usergroup":
                     node = new UserGroupStalkNode();
@@ -172,6 +174,9 @@
                     break;
                 case "flag":
                     node = new FlagStalkNode();
+                    break;
+                case "log":
+                    node = new LogStalkNode();
                     break;
                 default:
                     throw new XmlException();
