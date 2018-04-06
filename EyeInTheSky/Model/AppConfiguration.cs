@@ -52,6 +52,11 @@ namespace EyeInTheSky.Model
                 throw new ArgumentNullException("dateFormat");
             }
 
+            if (owner == null)
+            {
+                throw new ArgumentNullException("owner");
+            }
+
             if (mediaWikiApiEndpoint == null)
             {
                 throw new ArgumentNullException("mediaWikiApiEndpoint");

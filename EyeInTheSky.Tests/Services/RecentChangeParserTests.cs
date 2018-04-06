@@ -418,7 +418,7 @@
                             TargetUser = "EstheniaOG",
                             EditFlags = "create2"
                         });
-
+                
                 yield return new TestCaseData(
                         "14[[07Special:Log/newusers14]]4 byemail10 02 5* 03Ryder5656 5*  10created new account User:Ryder9997")
                     .Returns(
@@ -427,6 +427,19 @@
                             Log = "newusers",
                             TargetUser = "Ryder9997",
                             EditFlags = "byemail"
+                        });
+
+                // faked
+                yield return new TestCaseData(
+                        "14[[07Special:Log/newusers14]]4 byemail10 02 5* 03Ryder5656 5*  10created new account User:Ryder9997: Requested at ACC")
+                    .Returns(
+                        new RecentChange("Ryder5656")
+                        {
+                            Log = "newusers",
+                            TargetUser = "Ryder9997",
+                            EditFlags = "byemail",
+                            EditSummary = "Requested at ACC",
+                            
                         });
                 #endregion
                 #region pagetriage

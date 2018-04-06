@@ -63,6 +63,11 @@
       <Link>Properties/GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Extensions\ListExtensionsTests.cs" />
+    <Compile Include="Model\AppConfigurationTests.cs" />
+    <Compile Include="Model\ComplexStalkTests.cs" />
+    <Compile Include="Model\EmailConfigurationTests.cs" />
+    <Compile Include="Model\NotificationTemplateTests.cs" />
+    <Compile Include="Model\RecentChangeTests.cs" />
     <Compile Include="Model\StalkNodes\AndNodeTest.cs" />
     <Compile Include="Model\StalkNodes\BaseNodes\StalkNodeTestBase.cs" />
     <Compile Include="Model\StalkNodes\FalseNodeTest.cs" />
@@ -77,6 +82,7 @@
     <Compile Include="Model\StalkNodes\UserStalkNodeTest.cs" />
     <Compile Include="Model\StalkNodes\XOfStalkNodeTests.cs" />
     <Compile Include="Model\StalkNodes\XorNodeTest.cs" />
+    <Compile Include="Model\TemplateTests.cs" />
     <Compile Include="RecentChangeTest.cs" />
     <Compile Include="Services\BooleanParserTests.cs" />
     <Compile Include="Services\MediaWikiApiTests.cs" />
@@ -97,9 +103,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Model" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
          Other similar extension points exist, see Microsoft.Common.targets.
