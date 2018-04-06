@@ -104,6 +104,7 @@
         {
             get
             {
+                #region abusefilter
                 yield return new TestCaseData(
                         "14[[07Special:Log/abusefilter14]]4 hit10 02 5* 03GriffinMorganHuff 5*  10GriffinMorganHuff triggered [[Special:AbuseFilter/550|filter 550]], performing the action \"edit\" on [[02The Boy in Blue (1986 film)10]]. Actions taken: Tag ([[Special:AbuseLog/20813489|details]])")
                     .Returns(
@@ -147,7 +148,8 @@
                             EditFlags = "modify",
                             Log = "abusefilter"
                         });
-
+                #endregion
+                #region block
                 yield return new TestCaseData(
                         "14[[07Special:Log/block14]]4 block10 02 5* 03MSGJ 5*  10blocked User:142.196.0.207 (account creation blocked) with an expiry time of 31 hours: [[WP:Edit warring|Edit warring]]")
                     .Returns(
@@ -193,7 +195,20 @@
                             EditSummary = "following request",
                             EditFlags = "unblock"
                         });
-
+                #endregion
+                #region contentmodel
+                //faked
+                yield return new TestCaseData(
+                        "14[[07Special:Log/contentmodel14]]4 change10 02 5* 03TheDJ 5*  10TheDJ changed the content model of the page [[Wikipedia:WikiProject User scripts/Scripts/Get user name]] from \"wikitext\" to \"JavaScript\"")
+                    .Returns(
+                        new RecentChange("TheDJ")
+                        {
+                            Log = "contentmodel",
+                            Page = "Wikipedia:WikiProject User scripts/Scripts/Get user name",
+                            EditFlags = "change"
+                        });
+                #endregion
+                #region delete
                 yield return new TestCaseData(
                         "14[[07Special:Log/delete14]]4 revision10 02 5* 03Hut 8.5 5*  10Hut 8.5 changed visibility of 5 revisions on page [[02Humza Yousaf10]]: content hidden: [[WP:RD1|RD1]]: Copyright violations: https://inews.co.uk/news/politics/humza-yousaf-scottish-transport-minister-facing-5000-fine-driving-uninsured/")
                     .Returns(
@@ -258,7 +273,35 @@
                             Page = "Talk:Hakea exul",
                             EditFlags = "restore"
                         });
-
+                #endregion
+                #region import
+                // faked
+                yield return new TestCaseData(
+                        "14[[07Special:Log/import14]]4 interwiki10 02 5* 03Graham87 5*  10transwikied Tasmanian tiger: import old edit, see [[User:Graham87/Import]]")
+                    .Returns(
+                        new RecentChange("Graham87")
+                        {
+                            Log = "import",
+                            Page = "Tasmanian tiger",
+                            EditSummary = "import old edit, see [[User:Graham87/Import]]",
+                            EditFlags = "interwiki"
+                        });
+                
+                #endregion
+                #region managetags
+                //faked
+                yield return new TestCaseData(
+                        "14[[07Special:Log/managetags14]]4 create10 02 5* 03West.andrew.g 5*  10West.andrew.g created the tag \"STiki\": Tracking edits made by the [[WP:STiki]] tool")
+                    .Returns(
+                        new RecentChange("West.andrew.g")
+                        {
+                            Log = "managetags",
+                            Page = "STiki",
+                            EditFlags = "create",
+                            EditSummary = "Tracking edits made by the [[WP:STiki]] tool"
+                        });
+                #endregion
+                #region massmessage
                 yield return new TestCaseData(
                         "14[[07Special:Log/massmessage14]]4 skipnouser10 02 5* 03MediaWiki message delivery 5*  10Delivery of \"Project Tiger Writing Contest\" to [[02User talk:TiruTiruTiru10]] was skipped because the user account does not exist")
                     .Returns(
@@ -281,6 +324,33 @@
                             EditFlags = "skipoptout"
                         });
 
+                //faked
+                yield return new TestCaseData(
+                        "14[[07Special:Log/massmessage14]]4 send10 02 5* 03Another Believer 5*  10Another Believer sent a message to [[Special:PermanentLink/830385617]]: Art+Feminism Wikipedia Edit-a-thon (April 13, University of Oregon)")
+                    .Returns(
+                        new RecentChange("Another Believer")
+                        {
+                            Log = "massmessage",
+                            Page = "Special:PermanentLink/830385617",
+                            EditSummary = "Art+Feminism Wikipedia Edit-a-thon (April 13, University of Oregon)",
+                            EditFlags = "send"
+                        });
+                #endregion
+                #region merge
+                //faked
+                yield return new TestCaseData(
+                        "14[[07Special:Log/merge14]]4 merge10 02 5* 03West.andrew.g 5*  10merged [[User:Webmaster at Kentucky Today/sandbox]] into [[User:DESiegel/Kentucky Today]] (revisions up to 20180405191938): Merged [[:User:Webmaster at Kentucky Today/sandbox]] into [[:User:DESiegel/Kentucky Today]]: restore history for proper attribution and copyright")
+                    .Returns(
+                        new RecentChange("West.andrew.g")
+                        {
+                            Log = "merge",
+                            Page = "User:Webmaster at Kentucky Today/sandbox",
+                            TargetPage = "User:DESiegel/Kentucky Today",
+                            EditFlags = "merge",
+                            EditSummary = "restore history for proper attribution and copyright"
+                        });
+                #endregion
+                #region move
                 yield return new TestCaseData(
                         "14[[07Special:Log/move14]]4 move10 02 5* 03JaJaWa 5*  10moved [[02Yuanling Station10]] to [[Yuanling station]]")
                     .Returns(
@@ -327,7 +397,8 @@
                             Page = "David Carr (quarterback)",
                             TargetPage = "David Carr (American football)"
                         });
-
+                #endregion
+                #region newusers
                 yield return new TestCaseData(
                         "14[[07Special:Log/newusers14]]4 create10 02 5* 03PiliPili Alex 5*  10New user account")
                     .Returns(
@@ -357,7 +428,8 @@
                             TargetUser = "Ryder9997",
                             EditFlags = "byemail"
                         });
-
+                #endregion
+                #region pagetriage
                 yield return new TestCaseData(
                         "14[[07Special:Log/pagetriage-curation14]]4 reviewed10 02 5* 03Natureium 5*  10Natureium marked [[02John Thomas (Republican advertising)10]] as reviewed")
                     .Returns(
@@ -418,7 +490,8 @@
                             Page = "Ak husky",
                             EditFlags = "delete"
                         });
-                
+                #endregion
+                #region patrol
                 yield return new TestCaseData(
                         "14[[07Special:Log/patrol14]]4 patrol10 02 5* 03SshibumXZ 5*  10marked revision 833886654 of [[02Sekyiwa Shakur10]] patrolled ")
                     .Returns(
@@ -428,7 +501,8 @@
                             Page = "Sekyiwa Shakur",
                             EditFlags = "patrol"
                         });
-                
+                #endregion
+                #region protect
                 yield return new TestCaseData(
                         "14[[07Special:Log/protect14]]4 protect10 02 5* 03Ohnoitsjamie 5*  10protected \"[[Alison Brie ‎[edit=autoconfirmed] (expires 20:56, 2 October 2018 (UTC))‎[move=autoconfirmed] (expires 20:56, 2 October 2018 (UTC))]]\": Persistent [[WP:Vandalism|vandalism]]")
                     .Returns(
@@ -497,7 +571,8 @@
                             EditFlags = "unprotect",
                             EditSummary = "Deprotecting to allow different draft to be accepted"
                         });
-                
+                #endregion
+                #region renameuser
                 yield return new TestCaseData(
                         "14[[07Special:Log/renameuser14]]4 renameuser10 02 5* 03Céréales Killer 5*  10Céréales Killer renamed user [[02User:SujaiRamPrasathC10]] (0 edits) to [[User:ZszasdojcqSsadaS]]: per [[m:Special:GlobalRenameQueue/request/41529|request]]")
                     .Returns(
@@ -521,7 +596,8 @@
                             EditFlags = "renameuser",
                             EditSummary = "Per [[:w:en:Special:Permalink/833977985|en:WP:CHUS]]"
                         });
-                
+                #endregion
+                #region review
                 yield return new TestCaseData(
                         "14[[07Special:Log/review14]]4 approve10 02 5* 03GB fan 5*  10GB fan reviewed a version of [[02Electronic harassment10]]: ([[WP:TW|TW]])")
                     .Returns(
@@ -542,7 +618,8 @@
                             Page = "April 3",
                             EditFlags = "unapprove"
                         });
-                
+                #endregion
+                #region rights
                 yield return new TestCaseData(
                         "14[[07Special:Log/rights14]]4 autopromote10 02 5* 03Popcrate 5*  10was automatically updated from (none) to extendedconfirmed")
                     .Returns(
@@ -564,7 +641,8 @@
                             EditSummary = "Needed",
                             AdditionalData = "from autoreviewer, extendedconfirmed, reviewer to autoreviewer, extendedconfirmed, reviewer, templateeditor"
                         });
-                
+                #endregion
+                #region stable
                 yield return new TestCaseData(
                         "14[[07Special:Log/stable14]]4 config10 02 5* 03MelanieN 5*  10MelanieN configured pending changes settings for [[02Gabriel Batistuta10]] [Auto-accept: require \"autoconfirmed\" permission] (expires 00:10, 4 July 2018 (UTC)): Persistent addition of [[WP:INTREF|unsourced or poorly sourced content]]")
                     .Returns(
@@ -575,7 +653,20 @@
                             EditFlags = "config",
                             EditSummary = "Persistent addition of [[WP:INTREF|unsourced or poorly sourced content]]"
                         });
-
+                
+                // faked
+                yield return new TestCaseData(
+                        "14[[07Special:Log/stable14]]4 reset10 02 5* 03Swarm 5*  10Swarm reset pending changes settings for [[Doug Ford Jr.]] (expires 20:03, 4 May 2018 (UTC)): Persistent [[WP:Sock puppetry|sock puppetry]] - increasing to longer-term semi-protection")
+                    .Returns(
+                        new RecentChange("Swarm")
+                        {
+                            Log = "stable",
+                            Page = "Doug Ford Jr.",
+                            EditFlags = "reset",
+                            EditSummary = "Persistent [[WP:Sock puppetry|sock puppetry]] - increasing to longer-term semi-protection"
+                        });
+                #endregion
+                #region thanks
                 yield return new TestCaseData(
                         "14[[07Special:Log/thanks14]]4 thank10 02 5* 03AuH2ORepublican 5*  10AuH2ORepublican thanked Eagleash")
                     .Returns(
@@ -585,7 +676,8 @@
                             EditFlags = "thank",
                             TargetUser = "Eagleash"
                         });
-
+                #endregion
+                #region upload
                 yield return new TestCaseData(
                         "14[[07Special:Log/upload14]]4 overwrite10 02 5* 03In Memoriam A.H.H. 5*  10uploaded a new version of \"[[02File:Columbia logo, from Concerto in B Flat Minor, circa 1942.png10]]\": Cropped")
                     .Returns(
@@ -630,6 +722,7 @@
                             EditFlags = "upload",
                             Page = "File:Columbia logo, from Concerto in B Flat Minor, circa 1942.png"
                         });
+                #endregion
             }
         }
     }

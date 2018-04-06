@@ -183,6 +183,20 @@
                     }
 
                     break;
+                case "contentmodel":
+                    if (rc.EditFlags == "change")
+                    {
+                        var match = new Regex(" changed the content model of the page \\[\\[(?<pageName>.*?)\\]\\] from \"(?<oldContentmodel>.*?)\" to \"(?<newContentmodel>.*?)\"$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["pageName"].Value;
+
+                            handled = true;
+                        }
+                    }
+                    
+                    break;
                 case "delete":
                     if (rc.EditFlags == "delete")
                     {
@@ -251,6 +265,95 @@
                         }
                     }
                     break;
+                case "import":
+                    if (rc.EditFlags == "interwiki")
+                    {
+                        var match = new Regex(@"^transwikied (?<pageName>.*?)(?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["pageName"].Value;
+
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+
+                            handled = true;
+                        }
+                    }
+                    
+                    break;
+                case "managetags":
+                    if (rc.EditFlags == "create")
+                    {
+                        var match = new Regex(@" created the tag ""(?<pageName>.*?)""(?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["pageName"].Value;
+
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+
+                            handled = true;
+                        }
+                    }
+                    
+                    break;
+                case "massmessage":
+                    if (rc.EditFlags == "skipnouser" || rc.EditFlags == "skipoptout")
+                    {
+                        var match = new Regex("^Delivery of \"(?<page>.*?)\" to \\[\\[User talk:(?<targetuser>.*?)\\]\\] was skipped because .*$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["page"].Value;
+                            rc.TargetUser = result.Groups["targetuser"].Value;
+
+                            handled = true;
+                        }
+                    }
+                    
+                    if (rc.EditFlags == "send")
+                    {
+                        var match = new Regex(" sent a message to \\[\\[(?<page>.*?)\\]\\](?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["page"].Value;
+
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+
+                            handled = true;
+                        }
+                    }
+                    break;
+                case "merge":
+                    if (rc.EditFlags == "merge")
+                    {
+                        var match = new Regex(@"^merged \[\[(?<oldPage>.*?)\]\] into \[\[(?<newPage>.*?)\]\] \(revisions up to [0-9]+\): Merged \[\[:\k<oldPage>\]\] into \[\[:\k<newPage>\]\](?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["oldPage"].Value;
+                            rc.TargetPage = result.Groups["newPage"].Value;
+
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+
+                            handled = true;
+                        }
+                    }
+                    
+                    break;
                 case "move":
                     if (rc.EditFlags == "move")
                     {
@@ -282,20 +385,6 @@
                             {
                                 rc.EditSummary = result.Groups["comment"].Value;
                             }
-
-                            handled = true;
-                        }
-                    }
-                    break;
-                case "massmessage":
-                    if (rc.EditFlags == "skipnouser" || rc.EditFlags == "skipoptout")
-                    {
-                        var match = new Regex("^Delivery of \"(?<page>.*?)\" to \\[\\[User talk:(?<targetuser>.*?)\\]\\] was skipped because .*$");
-                        var result = match.Match(comment);
-                        if (result.Success)
-                        {
-                            rc.Page = result.Groups["page"].Value;
-                            rc.TargetUser = result.Groups["targetuser"].Value;
 
                             handled = true;
                         }
@@ -553,9 +642,9 @@
                     break;
                 
                 case "stable":
-                    if (rc.EditFlags == "config")
+                    if (rc.EditFlags == "config" || rc.EditFlags == "reset")
                     {
-                        var match = new Regex(@" configured pending changes settings for \[\[(?<page>.*?)\]\] \[Auto-accept: .*?\] \((?:(?:expires .*?\(UTC\))|indefinite)\)(?:: (?<comment>.*))?$");
+                        var match = new Regex(@" (?:configured|reset) pending changes settings for \[\[(?<page>.*?)\]\] (?:\[Auto-accept: .*?\] )?\((?:(?:expires .*?\(UTC\))|indefinite)\)(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
