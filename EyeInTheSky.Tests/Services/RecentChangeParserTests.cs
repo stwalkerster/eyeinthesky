@@ -207,6 +207,17 @@
                             Page = "Wikipedia:WikiProject User scripts/Scripts/Get user name",
                             EditFlags = "change"
                         });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/contentmodel14]]4 new10 02 5* 03Xaosflux 5*  10Xaosflux created the page [[02Wikipedia:WikiProject Christianity/Outreach/Full content delivery/210]] using a non-default content model \"MassMessageListContent\": Create mass message delivery list")
+                    .Returns(
+                        new RecentChange("Xaosflux")
+                        {
+                            Log = "contentmodel",
+                            Page = "Wikipedia:WikiProject Christianity/Outreach/Full content delivery/2",
+                            EditFlags = "new",
+                            EditSummary = "Create mass message delivery list"
+                        });
                 #endregion
                 #region delete
                 yield return new TestCaseData(
@@ -335,6 +346,17 @@
                             EditSummary = "Art+Feminism Wikipedia Edit-a-thon (April 13, University of Oregon)",
                             EditFlags = "send"
                         });
+
+                yield return new TestCaseData(
+                        "14[[07Special:Log/massmessage14]]4 failure10 02 5* 03MediaWiki message delivery 5*  10Delivery of \"Ichthus April 2018\" to [[02User talk:Sam Korn10]] failed with an error code of <code>protectedpage</code>")
+                    .Returns(
+                        new RecentChange("MediaWiki message delivery")
+                        {
+                            Log = "massmessage",
+                            Page = "User talk:Sam Korn",
+                            EditSummary = "Ichthus April 2018",
+                            EditFlags = "failure"
+                        });
                 #endregion
                 #region merge
                 //faked
@@ -348,6 +370,18 @@
                             TargetPage = "User:DESiegel/Kentucky Today",
                             EditFlags = "merge",
                             EditSummary = "restore history for proper attribution and copyright"
+                        });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/merge14]]4 merge10 02 5* 03Oshwah 5*  10merged [[02Draft:Bandringa10]] into [[Bandringa]] (revisions up to 20180405074950): [[WP:HISTMERGE]] - Fixing cut and paste page move.")
+                    .Returns(
+                        new RecentChange("Oshwah")
+                        {
+                            Log = "merge",
+                            Page = "Draft:Bandringa",
+                            TargetPage = "Bandringa",
+                            EditFlags = "merge",
+                            EditSummary = "[[WP:HISTMERGE]] - Fixing cut and paste page move."
                         });
                 #endregion
                 #region move
@@ -667,6 +701,17 @@
                             EditSummary = "Persistent addition of [[WP:INTREF|unsourced or poorly sourced content]]"
                         });
                 
+                yield return new TestCaseData(
+                        "14[[07Special:Log/stable14]]4 config10 02 5* 03Vanamonde93 5*  10Vanamonde93 configured pending changes settings for [[02Brandon Victor Dixon10]] [Auto-accept: require \"autoconfirmed\" permission]: Reducing protection level per request on my talk page.")
+                    .Returns(
+                        new RecentChange("Vanamonde93")
+                        {
+                            Log = "stable",
+                            Page = "Brandon Victor Dixon",
+                            EditFlags = "config",
+                            EditSummary = "Reducing protection level per request on my talk page."
+                        });
+                
                 // faked
                 yield return new TestCaseData(
                         "14[[07Special:Log/stable14]]4 reset10 02 5* 03Swarm 5*  10Swarm reset pending changes settings for [[Doug Ford Jr.]] (expires 20:03, 4 May 2018 (UTC)): Persistent [[WP:Sock puppetry|sock puppetry]] - increasing to longer-term semi-protection")
@@ -677,6 +722,18 @@
                             Page = "Doug Ford Jr.",
                             EditFlags = "reset",
                             EditSummary = "Persistent [[WP:Sock puppetry|sock puppetry]] - increasing to longer-term semi-protection"
+                        });
+                #endregion
+                #region tag
+                yield return new TestCaseData(
+                        "14[[07Special:Log/tag14]]4 update10 02 5* 03Xaosflux 5*  10Xaosflux added the tag AWB to log entry 90109097 of page [[02Special:Log/patrol10]]: tag test")
+                    .Returns(
+                        new RecentChange("Xaosflux")
+                        {
+                            Log = "tag",
+                            EditFlags = "update",
+                            Page = "Special:Log/patrol",
+                            EditSummary = "tag test"
                         });
                 #endregion
                 #region thanks

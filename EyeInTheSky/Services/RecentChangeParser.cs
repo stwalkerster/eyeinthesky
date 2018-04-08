@@ -196,6 +196,23 @@
                         }
                     }
                     
+                    if (rc.EditFlags == "new")
+                    {
+                        var match = new Regex(" created the page \\[\\[(?<pageName>.*?)\\]\\] using a non-default content model \"(?<contentModel>.*?)\"(?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["pageName"].Value;
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+
+
+                            handled = true;
+                        }
+                    }
+                    
                     break;
                 case "delete":
                     if (rc.EditFlags == "delete")
@@ -333,11 +350,28 @@
                             handled = true;
                         }
                     }
+                    
+                    if (rc.EditFlags == "failure")
+                    {
+                        var match = new Regex("^Delivery of \"(?<comment>.*?)\" to \\[\\[(?<page>.*?)\\]\\] failed with an error code of .*$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["page"].Value;
+
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+
+                            handled = true;
+                        }
+                    }
                     break;
                 case "merge":
                     if (rc.EditFlags == "merge")
                     {
-                        var match = new Regex(@"^merged \[\[(?<oldPage>.*?)\]\] into \[\[(?<newPage>.*?)\]\] \(revisions up to [0-9]+\): Merged \[\[:\k<oldPage>\]\] into \[\[:\k<newPage>\]\](?:: (?<comment>.*))?$");
+                        var match = new Regex(@"^merged \[\[(?<oldPage>.*?)\]\] into \[\[(?<newPage>.*?)\]\] \(revisions up to [0-9]+\)(?:: Merged \[\[:\k<oldPage>\]\] into \[\[:\k<newPage>\]\])?(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
@@ -639,7 +673,26 @@
                 case "stable":
                     if (rc.EditFlags == "config" || rc.EditFlags == "reset")
                     {
-                        var match = new Regex(@" (?:configured|reset) pending changes settings for \[\[(?<page>.*?)\]\] (?:\[Auto-accept: .*?\] )?\((?:(?:expires .*?\(UTC\))|indefinite)\)(?:: (?<comment>.*))?$");
+                        var match = new Regex(@" (?:configured|reset) pending changes settings for \[\[(?<page>.*?)\]\] (?:\[Auto-accept: .*?\])?(?: ?)(?:\((?:(?:expires .*?\(UTC\))|indefinite)\))?(?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["page"].Value;
+                            
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+                            handled = true;
+                        }
+                    }
+                    
+                    break;
+                
+                case "tag":
+                    if (rc.EditFlags == "update")
+                    {
+                        var match = new Regex(@" added the tag .*? to log entry [0-9]+ of page \[\[(?<page>.*?)\]\](?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
