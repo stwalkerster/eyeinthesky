@@ -1,4 +1,6 @@
-﻿namespace EyeInTheSky.Services
+﻿using EyeInTheSky.Exceptions;
+
+namespace EyeInTheSky.Services
 {
     using System;
     using System.Collections.Generic;
@@ -21,6 +23,7 @@
         private readonly IRecentChangeParser rcParser;
         private readonly IEmailHelper emailHelper;
         private readonly INotificationTemplates templates;
+        private readonly IBugReporter bugReporter;
 
         public RecentChangeHandler(IAppConfiguration appConfig,
             ILogger logger,
@@ -28,7 +31,8 @@
             IIrcClient freenodeClient,
             IRecentChangeParser rcParser,
             IEmailHelper emailHelper,
-            INotificationTemplates templates)
+            INotificationTemplates templates,
+            IBugReporter bugReporter)
         {
             this.appConfig = appConfig;
             this.logger = logger;
@@ -37,6 +41,7 @@
             this.rcParser = rcParser;
             this.emailHelper = emailHelper;
             this.templates = templates;
+            this.bugReporter = bugReporter;
 
             if (this.appConfig.EmailConfiguration == null)
             {
@@ -71,6 +76,11 @@
             try
             {
                 rc = this.rcParser.Parse(rcMessage);
+            }
+            catch (BugException ex)
+            {
+                this.bugReporter.ReportBug(ex);
+                return;
             }
             catch (FormatException ex)
             {

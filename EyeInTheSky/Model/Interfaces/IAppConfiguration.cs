@@ -16,5 +16,7 @@
         EmailConfiguration EmailConfiguration { get; }
         IrcUser Owner { get; }
         int MonitoringPort { get; set; }
+        string PhabUrl { get; set; }
+        string PhabToken { get; set; }
     }
 }

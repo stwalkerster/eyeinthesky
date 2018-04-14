@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Text.RegularExpressions;
     using Castle.Core.Logging;
+    using EyeInTheSky.Exceptions;
     using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Services.Interfaces;
@@ -74,7 +75,7 @@
 
             if (titleValue.StartsWith("Special:Log/"))
             {
-                this.ConstructLogObject(rc, titleValue, comment, flagValue);
+                this.ConstructLogObject(rc, titleValue, comment, flagValue, data);
             }
             else
             {
@@ -85,7 +86,7 @@
             return rc;
         }
 
-        private void ConstructLogObject(RecentChange rc, string titleValue, string comment, string flagValue)
+        private void ConstructLogObject(RecentChange rc, string titleValue, string comment, string flagValue, string data)
         {
             rc.Log = titleValue.Split('/').Skip(1).First();
             rc.EditFlags = flagValue;
@@ -745,7 +746,9 @@
 
             if (!handled)
             {
-                this.logger.ErrorFormat("Unhandled log entry of type {0} / {1}: {2}", rc.Log, rc.EditFlags, comment);
+                throw new BugException(
+                    string.Format("Unhandled log entry of type {0} / {1}", rc.Log, rc.EditFlags),
+                    string.Format("```\n{0}\n```\n```\n{1}\n```", comment, data));
             }
         }
 

@@ -1,0 +1,55 @@
+﻿namespace EyeInTheSky.Services
+{
+    using System.Collections.Generic;
+    using System.Linq;
+    using EyeInTheSky.Exceptions;
+    using EyeInTheSky.Model.Interfaces;
+    using EyeInTheSky.Services.Interfaces;
+    using Stwalkerster.SharphConduit;
+    using Stwalkerster.SharphConduit.Applications;
+    using Stwalkerster.SharphConduit.Applications.Maniphest;
+
+    public class BugReporter : IBugReporter
+    {
+        private Maniphest maniphest;
+        private string projectPhid;
+
+        public BugReporter(IAppConfiguration appConfig)
+        {
+            string url = appConfig.PhabUrl;
+            string key = appConfig.PhabToken;
+
+            var conduitClient = new ConduitClient(url, key);
+            this.maniphest = new Maniphest(conduitClient);
+
+            var phidLookup = new PHIDLookup(conduitClient);
+            this.projectPhid = phidLookup.GetPHIDForObject("#eits")["#eits"];
+        }
+
+        public void ReportBug(BugException ex)
+        {
+            var fulltext = new ApplicationEditorSearchConstraint("query", ex.Title);
+            var statuses = ManiphestSearchConstraintFactory.Statuses(new List<string> {"open", "stalled"});
+
+            var maniphestTasks = this.maniphest.Search(constraints: new[] {fulltext, statuses});
+
+            var fod = maniphestTasks.FirstOrDefault(x => x.Title == ex.Title);
+            if (fod == null)
+            {
+                fod = new ManiphestTask
+                {
+                    Title = ex.Title,
+                    Description = ex.Description,
+                    Priority = "normal"
+                };
+                fod.AddProjects(this.projectPhid);
+            }
+            else
+            {
+                fod.AddComment(ex.Description);
+            }
+
+            this.maniphest.Edit(fod);
+        }
+    }
+}

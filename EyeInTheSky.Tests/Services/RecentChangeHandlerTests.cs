@@ -4,6 +4,7 @@
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Model.StalkNodes;
     using EyeInTheSky.Services;
+    using EyeInTheSky.Services.Interfaces;
     using Moq;
     using NUnit.Framework;
 
@@ -12,6 +13,7 @@
     {
         private Mock<IStalk> stalkMock;
         private Mock<IRecentChange> rcMock;
+        private Mock<IBugReporter> bugMock;
 
         [SetUp]
         public void LocalSetup()
@@ -20,6 +22,7 @@
 
             this.stalkMock = new Mock<IStalk>();
             this.rcMock = new Mock<IRecentChange>();
+            this.bugMock = new Mock<IBugReporter>();
 
             this.stalkMock.Setup(s => s.Flag).Returns("s1");
             this.stalkMock.Setup(s => s.Description).Returns("test desc");
@@ -53,7 +56,8 @@
                 null,
                 null,
                 null,
-                this.NotificationTemplatesMock.Object);
+                this.NotificationTemplatesMock.Object, 
+                this.bugMock.Object);
 
             // act
             var result = rcHander.FormatMessageForIrc(new[] {this.stalkMock.Object, s2.Object}, this.rcMock.Object);
@@ -80,7 +84,8 @@
                 null,
                 null,
                 null,
-                this.NotificationTemplatesMock.Object);
+                this.NotificationTemplatesMock.Object, 
+                this.bugMock.Object);
 
             // act
             var result = rcHander.FormatMessageForIrc(new[] {this.stalkMock.Object, s2.Object}, this.rcMock.Object);
@@ -104,7 +109,8 @@
                 null,
                 null,
                 null,
-                this.NotificationTemplatesMock.Object);
+                this.NotificationTemplatesMock.Object, 
+                this.bugMock.Object);
 
             // act
             var result = rcHander.FormatMessageForIrc(new[] {this.stalkMock.Object}, this.rcMock.Object);
@@ -128,7 +134,8 @@
                 null,
                 null,
                 null,
-                this.NotificationTemplatesMock.Object);
+                this.NotificationTemplatesMock.Object, 
+                this.bugMock.Object);
 
             // act
             var result = rcHander.FormatMessageForIrc(new[] {this.stalkMock.Object}, this.rcMock.Object);
@@ -151,7 +158,8 @@
                 null,
                 null,
                 null,
-                this.NotificationTemplatesMock.Object);
+                this.NotificationTemplatesMock.Object, 
+                this.bugMock.Object);
 
             // act
             var result = rcHander.FormatMessageForEmail(new[] {this.stalkMock.Object}, this.rcMock.Object);
@@ -176,7 +184,8 @@
                 null,
                 null,
                 null,
-                this.NotificationTemplatesMock.Object);
+                this.NotificationTemplatesMock.Object, 
+                this.bugMock.Object);
 
             var s2 = new Mock<IStalk>();
             s2.Setup(s => s.Flag).Returns("s2");

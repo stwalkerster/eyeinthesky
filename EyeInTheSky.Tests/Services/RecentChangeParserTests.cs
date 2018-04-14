@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using EyeInTheSky.Exceptions;
     using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Services;
@@ -42,10 +43,7 @@
             string data = "14[[07Special:Log/fakelog14]]4 sdfsdf10 02 5* 03Jimbo 5*  10Loggy message";
 
             // act
-            this.rcparser.Parse(data);
-
-            // assert
-            this.LoggerMock.Verify(x => x.ErrorFormat(It.IsAny<string>(), It.IsAny<object[]>()), Times.Once);
+            Assert.Throws<BugException>(() => this.rcparser.Parse(data));
         }
 
         public static IEnumerable<TestCaseData> ParseTestData
