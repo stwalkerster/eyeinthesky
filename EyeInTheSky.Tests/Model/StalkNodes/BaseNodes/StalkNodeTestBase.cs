@@ -1,4 +1,6 @@
-﻿namespace EyeInTheSky.Tests.Model.StalkNodes.BaseNodes
+﻿using Moq.Protected;
+
+namespace EyeInTheSky.Tests.Model.StalkNodes.BaseNodes
 {
     using System;
     using System.Collections.Generic;
@@ -137,10 +139,7 @@
             Assert.AreNotSame(orig, cloned);
             Assert.AreEqual(orig.ToString(), cloned.ToString());
         }
-    }
-    
-    public abstract class RegexLeafNodeTestBase<T> : LeafNodeTestBase<T> where T : RegexLeafNode, new()
-    {
+        
         [Test]
         public void ShouldRejectNoDefinitionMatch()
         {
@@ -149,6 +148,10 @@
 
             Assert.Catch(typeof(InvalidOperationException), () => node.Match(rc.Object));
         }
+    }
+    
+    public abstract class RegexLeafNodeTestBase<T> : LeafNodeTestBase<T> where T : RegexLeafNode, new()
+    {
     }
     
     public abstract class StalkNodeTestBase<T> : TestBase where T : StalkNode, new()

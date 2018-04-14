@@ -18,6 +18,20 @@
             this.rc = this.RecentChangeBuilder().Object;
         }
 
+        [Test]
+        public void ShouldNotMatchNullSummary()
+        {
+            var node = new FlagStalkNode();
+            node.SetMatchExpression("abc");
+
+            var rc = this.RecentChangeBuilder();
+            rc.Setup(x => x.EditFlags).Returns<string>(null);
+
+            var result = node.Match(rc.Object);
+
+            Assert.False(result);
+        }
+
         [Test, TestCaseSource(typeof(FlagStalkNodeTest), "TestCases")]
         public bool TestMatch(StalkNode node)
         {

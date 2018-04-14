@@ -29,11 +29,6 @@
                 {
                     continue;
                 }
-
-                if (forceMatch)
-                {
-                    throw new InvalidOperationException("Child is null despite forced match");
-                }
                     
                 result = null;
             }

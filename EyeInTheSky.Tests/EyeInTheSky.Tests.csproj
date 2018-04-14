@@ -70,9 +70,11 @@
     <Compile Include="Model\RecentChangeTests.cs" />
     <Compile Include="Model\StalkNodes\AndNodeTest.cs" />
     <Compile Include="Model\StalkNodes\BaseNodes\StalkNodeTestBase.cs" />
+    <Compile Include="Model\StalkNodes\BaseNodes\StalkNodeTests.cs" />
     <Compile Include="Model\StalkNodes\FalseNodeTest.cs" />
     <Compile Include="Model\StalkNodes\FlagStalkNodeTest.cs" />
     <Compile Include="Model\StalkNodes\InCategoryNodeTest.cs" />
+    <Compile Include="Model\StalkNodes\LogStalkNodeTest.cs" />
     <Compile Include="Model\StalkNodes\NotNodeTest.cs" />
     <Compile Include="Model\StalkNodes\OrNodeTest.cs" />
     <Compile Include="Model\StalkNodes\PageStalkNodeTest.cs" />

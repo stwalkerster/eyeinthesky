@@ -1,4 +1,6 @@
-﻿namespace EyeInTheSky.Tests.Model.StalkNodes
+﻿using System;
+
+namespace EyeInTheSky.Tests.Model.StalkNodes
 {
     using System.Collections;
     using System.Collections.Generic;
@@ -73,6 +75,15 @@
                 yield return new TestCaseData(2, 3, new List<IStalkNode> {t, n, n, f, f}).Returns(null);
                 yield return new TestCaseData(2, 3, new List<IStalkNode> {t, t, n, f, f}).Returns(true);
             }
+        }
+        
+        [Test]
+        public void ShouldThrowErrorOnNoConditions()
+        {
+            var node = new XOfStalkNode();
+            node.ChildNodes.Add(new FalseNode());
+
+            Assert.Throws<InvalidOperationException>(() => node.Match(this.RecentChangeBuilder().Object));
         }
     }
 }

@@ -18,15 +18,5 @@
         {
             return this.RegexExpression.ToString();
         }
-
-        protected override void SanityCheck(IRecentChange rc)
-        {
-            base.SanityCheck(rc);
-
-            if (this.RegexExpression == null)
-            {
-                throw new InvalidOperationException("No regex match expression has been set!");
-            }
-        }
     }
 }

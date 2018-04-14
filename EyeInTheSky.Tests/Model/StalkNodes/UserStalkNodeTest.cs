@@ -65,6 +65,9 @@
                 n.SetMatchExpression("mno");
                 yield return new TestCaseData(n).Returns(false);
                 n = new UserStalkNode();
+                n.SetMatchExpression("pqr");
+                yield return new TestCaseData(n).Returns(false);
+                n = new UserStalkNode();
                 n.SetMatchExpression("123");
                 yield return new TestCaseData(n).Returns(false);
             }

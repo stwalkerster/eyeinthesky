@@ -19,6 +19,20 @@
             this.rc = this.RecentChangeBuilder().Object;
         }
 
+        [Test]
+        public void ShouldNotMatchNullSummary()
+        {
+            var node = new PageStalkNode();
+            node.SetMatchExpression("abc");
+
+            var rc = this.RecentChangeBuilder();
+            rc.Setup(x => x.Page).Returns<string>(null);
+
+            var result = node.Match(rc.Object);
+
+            Assert.False(result);
+        }
+
         [Test, TestCaseSource(typeof(PageStalkNodeTest), "TestCases")]
         public bool TestMatch(StalkNode node)
         {
@@ -85,6 +99,9 @@
                 yield return new TestCaseData(n).Returns(false);
                 n = new PageStalkNode();
                 n.SetMatchExpression("mno");
+                yield return new TestCaseData(n).Returns(false);
+                n = new PageStalkNode();
+                n.SetMatchExpression("pqr");
                 yield return new TestCaseData(n).Returns(false);
                 n = new PageStalkNode();
                 n.SetMatchExpression("123");

@@ -1,4 +1,6 @@
-﻿namespace EyeInTheSky.Tests.Model.StalkNodes
+﻿using Stwalkerster.IrcClient.Model;
+
+namespace EyeInTheSky.Tests.Model.StalkNodes
 {
     using System.Collections;
     using EyeInTheSky.Model;
@@ -13,13 +15,31 @@
     public class XorNodeTest : DoubleChildNodeTestBase<XorNode>
     {
         [Test, TestCaseSource(typeof(XorNodeTest), "TestCases")]
-        public bool? DualOperatorTest(IStalkNode a, IStalkNode b)
+        public bool? DualOperatorTest(IStalkNode a, IStalkNode b, Mock<IStalkNode> tm, Mock<IStalkNode> fm)
         {
             var node = new XorNode();
             node.LeftChildNode = a;
             node.RightChildNode = b;
 
+            tm.Setup(x => x.Match(It.IsAny<IRecentChange>(), It.IsAny<bool>())).Returns(true);
+            fm.Setup(x => x.Match(It.IsAny<IRecentChange>(), It.IsAny<bool>())).Returns(false);
+            
             return node.Match(new RecentChange(""), false);
+        }
+        
+        [Test, TestCaseSource(typeof(XorNodeTest), "TestCases")]
+        public bool? DualOperatorForceTest(IStalkNode a, IStalkNode b, Mock<IStalkNode> tm, Mock<IStalkNode> fm)
+        {
+            var node = new XorNode();
+            node.LeftChildNode = a;
+            node.RightChildNode = b;
+
+            tm.Setup(x => x.Match(It.IsAny<IRecentChange>(), true)).Returns(true);
+            fm.Setup(x => x.Match(It.IsAny<IRecentChange>(), true)).Returns(false);
+            tm.Setup(x => x.Match(It.IsAny<IRecentChange>(), false)).Returns<bool?>(null);
+            fm.Setup(x => x.Match(It.IsAny<IRecentChange>(), false)).Returns<bool?>(null);
+
+            return node.Match(new RecentChange(""), true);
         }
 
         private static IEnumerable TestCases
@@ -29,16 +49,24 @@
                 var nullNodeMock = new Mock<IStalkNode>();
                 nullNodeMock.Setup(x => x.Match(It.IsAny<IRecentChange>())).Returns(null);
 
-                yield return new TestCaseData(new TrueNode(), new TrueNode()).Returns(false);
-                yield return new TestCaseData(new FalseNode(), new TrueNode()).Returns(true);
-                yield return new TestCaseData(new TrueNode(), new FalseNode()).Returns(true);
-                yield return new TestCaseData(new FalseNode(), new FalseNode()).Returns(false);
+                var tm = new Mock<IStalkNode>();
+                var fm = new Mock<IStalkNode>();
                 
-                yield return new TestCaseData(new TrueNode(), nullNodeMock.Object).Returns(null);
-                yield return new TestCaseData(new FalseNode(), nullNodeMock.Object).Returns(null);
-                yield return new TestCaseData(nullNodeMock.Object, new TrueNode()).Returns(null);
-                yield return new TestCaseData(nullNodeMock.Object, new FalseNode()).Returns(null);
-                yield return new TestCaseData(nullNodeMock.Object, nullNodeMock.Object).Returns(null);
+                var t = tm.Object;
+                var f = fm.Object;
+                var n = nullNodeMock.Object;
+                
+                yield return new TestCaseData(t, t, tm, fm).Returns(false);
+                yield return new TestCaseData(f, t, tm, fm).Returns(true);
+                yield return new TestCaseData(t, f, tm, fm).Returns(true);
+                yield return new TestCaseData(f, f, tm, fm).Returns(false);
+
+                
+                yield return new TestCaseData(t, n, tm, fm).Returns(null);
+                yield return new TestCaseData(f, n, tm, fm).Returns(null);
+                yield return new TestCaseData(n, t, tm, fm).Returns(null);
+                yield return new TestCaseData(n, f, tm, fm).Returns(null);
+                yield return new TestCaseData(n, n, tm, fm).Returns(null);
             }
         }
     }

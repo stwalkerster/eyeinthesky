@@ -35,17 +35,12 @@
             leftResult = leftResult ?? this.LeftChildNode.Match(rc, true);
             rightResult = rightResult ?? this.RightChildNode.Match(rc, true);
 
-            if (!leftResult.HasValue)
+            if (!leftResult.HasValue || !rightResult.HasValue)
             {
-                throw new InvalidOperationException("Left child is null despite forced match");
+                return null;
             }
 
-            if (!rightResult.HasValue)
-            {
-                throw new InvalidOperationException("Left child is null despite forced match");
-            }
-
-            return leftResult.Value && rightResult.Value;
+            return leftResult.Value != rightResult.Value;
         }
 
         public override string ToString()
