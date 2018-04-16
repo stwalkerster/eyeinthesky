@@ -77,8 +77,8 @@
     <Reference Include="PCLStorage.Abstractions, Version=1.0.2.0, Culture=neutral, PublicKeyToken=286fe515a2c35b64">
       <HintPath>..\packages\PCLStorage.1.0.2\lib\net45\PCLStorage.Abstractions.dll</HintPath>
     </Reference>
-    <Reference Include="Stwalkerster.Bot.CommandLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\Stwalkerster.Bot.CommandLib.8.0.11-beta\lib\net45\Stwalkerster.Bot.CommandLib.dll</HintPath>
+    <Reference Include="Stwalkerster.Bot.CommandLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\Stwalkerster.Bot.CommandLib.9.0.13-beta\lib\net45\Stwalkerster.Bot.CommandLib.dll</HintPath>
     </Reference>
     <Reference Include="Stwalkerster.IrcClient, Version=7.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\packages\Stwalkerster.IrcClient.7.0.17-beta\lib\net45\Stwalkerster.IrcClient.dll</HintPath>
@@ -95,13 +95,11 @@
       <Link>Properties/GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Attributes\StalkNodeTypeAttribute.cs" />
-    <Compile Include="Commands\AccCommand.cs" />
-    <Compile Include="Commands\QuickCommand.cs" />
-    <Compile Include="Commands\StalkCommandBase.cs" />
-    <Compile Include="Commands\StalkReportCommand.cs" />
+    <Compile Include="Commands\AddTemplatedStalkCommand.cs" />
     <Compile Include="Exceptions\BugException.cs" />
     <Compile Include="Exceptions\ConfigurationException.cs" />
     <Compile Include="Extensions\ListExtensions.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Model\AppConfiguration.cs" />
     <Compile Include="Model\ComplexStalk.cs" />
     <Compile Include="Model\EmailConfiguration.cs" />

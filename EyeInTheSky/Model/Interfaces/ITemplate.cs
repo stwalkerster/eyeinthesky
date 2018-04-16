@@ -11,6 +11,7 @@
         bool MailEnabled { get; set; }
         string Description { get; set; }
         TimeSpan? ExpiryDuration { get; set; }
-        IStalkNode SearchTree { get; set; }
+        string SearchTree { get; set; }
+        string StalkFlag { get; set; }
     }
 }

@@ -63,6 +63,7 @@
       <Link>Properties/GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Extensions\ListExtensionsTests.cs" />
+    <Compile Include="Extensions\StringExtensionsTests.cs" />
     <Compile Include="Model\AppConfigurationTests.cs" />
     <Compile Include="Model\ComplexStalkTests.cs" />
     <Compile Include="Model\EmailConfigurationTests.cs" />

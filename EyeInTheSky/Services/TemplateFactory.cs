@@ -1,6 +1,8 @@
 ﻿namespace EyeInTheSky.Services
 {
     using System;
+    using System.IO;
+    using System.Runtime.Remoting.Metadata.W3cXsd2001;
     using System.Xml;
     using Castle.Core.Logging;
     using EyeInTheSky.Model;
@@ -66,6 +68,12 @@
             {
                 description = null;
             }
+            
+            var stalkFlag = element.GetAttribute("stalkflag");
+            if (string.IsNullOrWhiteSpace(stalkFlag))
+            {
+                stalkFlag = null;
+            }
 
             var expiryDurationAttribute = element.GetAttribute("expiryduration");
             TimeSpan? expiryDuration = null;
@@ -73,18 +81,23 @@
             {
                 expiryDuration = XmlConvert.ToTimeSpan(expiryDurationAttribute);
             }
-            
-            var baseNode = this.GetStalkTreeFromXml(element, flag);
 
+            var elementChildNode = element.ChildNodes[0];
+            if (elementChildNode.Name != "searchtree")
+            {
+                throw new XmlException("Unable to load template");
+            }
+            
             var t = new Template(
                 flag,
+                stalkFlag,
                 templateEnabled,
                 stalkEnabled,
                 mailEnabled,
                 description,
                 lastUpdateTime,
                 expiryDuration,
-                baseNode);
+                elementChildNode.InnerText);
 
             return t;
         }
@@ -106,6 +119,11 @@
             {
                 e.SetAttribute("description", stalk.Description);
             }
+
+            if (stalk.StalkFlag != null)
+            {
+                e.SetAttribute("stalkflag", stalk.StalkFlag);
+            }
             
             e.SetAttribute("immediatemail", XmlConvert.ToString(stalk.MailEnabled));
             e.SetAttribute("stalkenabled", XmlConvert.ToString(stalk.StalkIsEnabled));
@@ -117,7 +135,7 @@
             }
             
             var searchTreeParentElement = doc.CreateElement("searchtree");
-            searchTreeParentElement.AppendChild(this.StalkNodeFactory.ToXml(doc, stalk.SearchTree));
+            searchTreeParentElement.AppendChild(doc.CreateCDataSection(stalk.SearchTree));
             
             e.AppendChild(searchTreeParentElement);
 

@@ -7,6 +7,7 @@
     using Castle.Windsor;
     using Castle.Windsor.Installer;
     using EyeInTheSky.Model.Interfaces;
+    using EyeInTheSky.Services.Interfaces;
     using Stwalkerster.Bot.CommandLib.Services.Interfaces;
     using Stwalkerster.IrcClient.Interfaces;
 
@@ -44,13 +45,23 @@
             container.Release(app);
             return 0;
         }
-       
-        public Launch(ILogger logger, IIrcClient freenodeClient, IIrcClient wikimediaClient, IAppConfiguration appConfig)
+
+        public Launch(ILogger logger,
+            IIrcClient freenodeClient,
+            IIrcClient wikimediaClient,
+            IAppConfiguration appConfig,
+            IStalkConfiguration stalkConfiguration,
+            ITemplateConfiguration templateConfiguration)
         {
             this.logger = logger;
             this.freenodeClient = freenodeClient;
             this.wikimediaClient = wikimediaClient;
             this.appConfig = appConfig;
+
+            this.logger.InfoFormat(
+                "Tracking {0} stalks and {1} templates.",
+                stalkConfiguration.Items.Count,
+                templateConfiguration.Items.Count);
 
             this.freenodeClient.DisconnectedEvent += this.OnDisconnect;
             this.wikimediaClient.DisconnectedEvent += this.OnDisconnect;

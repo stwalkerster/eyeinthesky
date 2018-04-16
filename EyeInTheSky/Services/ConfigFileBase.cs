@@ -23,6 +23,7 @@
         protected ConfigFileBase(string configurationFileName, string configurationNodeName, ILogger logger, Func<XmlElement, T> objectFactory, Func<T, XmlDocument, XmlElement> xmlFactory)
         {
             this.configurationFileName = configurationFileName;
+            this.configurationNodeName = configurationNodeName;
             this.Logger = logger;
             this.objectFactory = objectFactory;
             this.xmlFactory = xmlFactory;
@@ -30,13 +31,11 @@
             
             if (!new FileInfo(this.configurationFileName).Exists)
             {
-                this.Logger.Warn(
-                    "Can't find stalk configuration file at " + this.configurationFileName
-                                                              + ", using defaults");
+                this.Logger.WarnFormat(
+                    "Can't find stalk configuration file at {0}, using defaults",
+                    this.configurationFileName);
                 this.DoSave();
             }
-
-            this.configurationNodeName = configurationNodeName;
         }
         
         protected SortedDictionary<string, T> ItemList { get; private set; }
@@ -69,8 +68,13 @@
                 
                 lock (this.ItemList)
                 {
-                    return this.ItemList[itemName];
+                    if (this.ItemList.ContainsKey(itemName))
+                    {
+                        return this.ItemList[itemName];
+                    }
                 }
+
+                return null;
             }
         }
 
@@ -85,6 +89,8 @@
             {
                 this.ItemList.Add(key, item);
             }
+            
+            this.OnAdd(item);
         }
 
         public void Remove(string key)
@@ -93,10 +99,21 @@
             {
                 throw new ApplicationException("Cannot mutate configuration when not initialised!");
             }
+
+            T item = null;
             
             lock (this.ItemList)
             {
-                this.ItemList.Remove(key);
+                if (this.ItemList.ContainsKey(key))
+                {
+                    item = this.ItemList[key];
+                    this.ItemList.Remove(key);
+                }
+            }
+
+            if (item != null)
+            {
+                this.OnRemove(item);
             }
         }
 
@@ -201,6 +218,8 @@
         }
         
         protected virtual void LocalInitialise(){}
+        protected virtual void OnAdd(T item){}
+        protected virtual void OnRemove(T item){}
 
         public void Save()
         {

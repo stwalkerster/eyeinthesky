@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text.RegularExpressions;
     using System.Xml;
     using Castle.Core.Logging;
     using EyeInTheSky.Extensions;
@@ -13,6 +14,7 @@
     using EyeInTheSky.Services;
     using EyeInTheSky.Services.Interfaces;
     using Stwalkerster.Bot.CommandLib.Attributes;
+    using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities.Models;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities.Response;
     using Stwalkerster.Bot.CommandLib.Exceptions;
@@ -22,11 +24,17 @@
 
     [CommandInvocation("stalk")]
     [CommandFlag(Stwalkerster.Bot.CommandLib.Model.Flag.Protected)]
-    public class StalkCommand : StalkCommandBase
+    public class StalkCommand : CommandBase
     {
         private readonly IAppConfiguration config;
+        private readonly INotificationTemplates templates;
+        private readonly IEmailHelper emailHelper;
+        private readonly RecentChangeHandler recentChangeHandler;
+        private readonly IStalkNodeFactory stalkNodeFactory;
+        private readonly IStalkConfiguration stalkConfig;
 
-        public StalkCommand(string commandSource,
+        public StalkCommand(
+            string commandSource,
             IUser user,
             IEnumerable<string> arguments,
             ILogger logger,
@@ -35,18 +43,25 @@
             IIrcClient client,
             IStalkConfiguration stalkConfig,
             IStalkNodeFactory stalkNodeFactory,
-            IAppConfiguration config) : base(
+            IAppConfiguration config,
+            INotificationTemplates templates,
+            IEmailHelper emailHelper,
+            RecentChangeHandler recentChangeHandler
+        ) : base(
             commandSource,
             user,
             arguments,
             logger,
             flagService,
             configurationProvider,
-            client,
-            stalkConfig,
-            stalkNodeFactory)
+            client)
         {
             this.config = config;
+            this.templates = templates;
+            this.emailHelper = emailHelper;
+            this.recentChangeHandler = recentChangeHandler;
+            this.stalkNodeFactory = stalkNodeFactory;
+            this.stalkConfig = stalkConfig;
         }
 
         protected override IEnumerable<CommandResponse> Execute()
@@ -66,6 +81,8 @@
                     return this.AddMode(tokenList);
                 case "list":
                     return this.ListMode();
+                case "report":
+                    return this.ReportMode();
             }
 
             if (tokenList.Count < 1)
@@ -74,7 +91,7 @@
             }
             
             var stalkName = tokenList.PopFromFront();
-            if (!this.StalkConfig.ContainsKey(stalkName))
+            if (!this.stalkConfig.ContainsKey(stalkName))
             {
                 throw new CommandErrorException(string.Format("Can't find the stalk '{0}'!", stalkName));
             }
@@ -109,6 +126,31 @@
             }
         }
 
+        private IEnumerable<CommandResponse> ReportMode()
+        {
+            var stalks = this.stalkConfig.Items;
+            
+            var disabled = stalks.Where(x => !x.IsEnabled);
+            var expired = stalks.Where(x => x.ExpiryTime != null && x.ExpiryTime < DateTime.Now);            
+            var active = stalks.Where(x => x.IsActive());
+            
+            var body = string.Format(
+                this.templates.EmailStalkReport,
+                this.recentChangeHandler.FormatStalkListForEmail(active),
+                this.recentChangeHandler.FormatStalkListForEmail(disabled),
+                this.recentChangeHandler.FormatStalkListForEmail(expired)
+            );
+
+            this.emailHelper.SendEmail(body, this.templates.EmailStalkReportSubject, null);
+
+            yield return new CommandResponse
+            {
+                Destination = CommandResponseDestination.PrivateMessage,
+                Type = CommandResponseType.Notice,
+                Message = "Stalk report sent via email"
+            };
+        }
+
         private IEnumerable<CommandResponse> OrMode(List<string> tokenList, string stalkName)
         {
             if (tokenList.Count < 1)
@@ -118,7 +160,7 @@
 
             var newStalkType = tokenList.PopFromFront();
             
-            var stalk = this.StalkConfig[stalkName];
+            var stalk = this.stalkConfig[stalkName];
             var newTarget = string.Join(" ", tokenList);
 
             var newNode = this.CreateNode(newStalkType, newTarget);
@@ -149,7 +191,7 @@
                     stalk.SearchTree)
             };
             
-            this.StalkConfig.Save();
+            this.stalkConfig.Save();
         }
 
         private IEnumerable<CommandResponse> AndMode(List<string> tokenList, string stalkName)
@@ -161,7 +203,7 @@
 
             var newStalkType = tokenList.PopFromFront();
 
-            var stalk = this.StalkConfig[stalkName];
+            var stalk = this.stalkConfig[stalkName];
             var newTarget = string.Join(" ", tokenList);
 
             var newNode = this.CreateNode(newStalkType, newTarget);
@@ -193,7 +235,7 @@
                     stalk.SearchTree)
             };
 
-            this.StalkConfig.Save();
+            this.stalkConfig.Save();
         }
 
         private IEnumerable<CommandResponse> EnabledMode(List<string> tokenList, string stalkName)
@@ -218,9 +260,9 @@
                 Message = string.Format("Set enabled attribute on stalk {0} to {1}", stalkName, enabled)
             };
             
-            this.StalkConfig[stalkName].IsEnabled = enabled;
+            this.stalkConfig[stalkName].IsEnabled = enabled;
             
-            this.StalkConfig.Save();
+            this.stalkConfig.Save();
         }
 
         private IEnumerable<CommandResponse> ExpiryMode(List<string> tokenList, string stalkName)
@@ -233,7 +275,7 @@
             var date = string.Join(" ", tokenList);
 
             var expiryTime = DateTime.Parse(date);
-            this.StalkConfig[stalkName].ExpiryTime = expiryTime;
+            this.stalkConfig[stalkName].ExpiryTime = expiryTime;
 
             yield return new CommandResponse
             {
@@ -243,7 +285,7 @@
                     expiryTime.ToString(this.config.DateFormat))
             };
             
-            this.StalkConfig.Save();
+            this.stalkConfig.Save();
         }
 
         private IEnumerable<CommandResponse> DescriptionMode(List<string> tokenList, string stalkName)
@@ -252,7 +294,7 @@
 
             if (string.IsNullOrWhiteSpace(descr))
             {
-                this.StalkConfig[stalkName].Description = null;
+                this.stalkConfig[stalkName].Description = null;
                 
                 yield return new CommandResponse
                 {
@@ -261,7 +303,7 @@
             }
             else
             {
-                this.StalkConfig[stalkName].Description = descr;
+                this.stalkConfig[stalkName].Description = descr;
 
                 yield return new CommandResponse
                 {
@@ -269,7 +311,7 @@
                 };
             }
 
-            this.StalkConfig.Save();
+            this.stalkConfig.Save();
         }
 
         private IEnumerable<CommandResponse> MailMode(List<string> tokenList, string stalkName)
@@ -294,14 +336,14 @@
                 Message = string.Format("Set immediatemail attribute on stalk {0} to {1}", stalkName, mail)
             };
             
-            this.StalkConfig[stalkName].MailEnabled = mail;
+            this.stalkConfig[stalkName].MailEnabled = mail;
             
-            this.StalkConfig.Save();
+            this.stalkConfig.Save();
         }
 
         private IEnumerable<CommandResponse> ListMode()
         {
-            var activeStalks = this.StalkConfig.Items.Where(x => x.IsActive()).ToList();
+            var activeStalks = this.stalkConfig.Items.Where(x => x.IsActive()).ToList();
 
             if (!activeStalks.Any())
             {
@@ -346,7 +388,7 @@
                 Destination = CommandResponseDestination.PrivateMessage
             };
 
-            this.StalkConfig.Save();
+            this.stalkConfig.Save();
         }
 
         private IEnumerable<CommandResponse> SetMode(List<string> tokenList, string stalkName)
@@ -358,7 +400,7 @@
 
             var newStalkType = tokenList.PopFromFront();
 
-            var stalk = this.StalkConfig[stalkName];
+            var stalk = this.stalkConfig[stalkName];
             var newTarget = string.Join(" ", tokenList);
 
             var newroot = this.CreateNode(newStalkType, newTarget);
@@ -369,31 +411,31 @@
                 Message = string.Format("Set {0} for stalk {1} with CSL value: {2}", newStalkType, stalkName, newroot)
             };
             
-            this.StalkConfig.Save();
+            this.stalkConfig.Save();
         }
 
         private IEnumerable<CommandResponse> DeleteMode(string stalkName)
         {
-            this.StalkConfig.Remove(stalkName);
+            this.stalkConfig.Remove(stalkName);
             
             yield return new CommandResponse
             {
                 Message = string.Format("Deleted stalk {0}", stalkName)
             };
             
-            this.StalkConfig.Save();
+            this.stalkConfig.Save();
         }
 
         private IEnumerable<CommandResponse> ExportMode(string stalkName)
         {
-            var searchTree = this.StalkConfig[stalkName].SearchTree;
+            var searchTree = this.stalkConfig[stalkName].SearchTree;
 
             yield return new CommandResponse
             {
                 Message = string.Format(
                     "{0}: {1}",
                     stalkName,
-                    this.StalkNodeFactory.ToXml(new XmlDocument(), searchTree).OuterXml
+                    this.stalkNodeFactory.ToXml(new XmlDocument(), searchTree).OuterXml
                 )
             };
         }
@@ -408,14 +450,14 @@
             var stalkName = tokenList.First();
             var stalk = new ComplexStalk(stalkName);
 
-            this.StalkConfig.Add(stalkName, stalk);
+            this.stalkConfig.Add(stalkName, stalk);
             
             yield return new CommandResponse
             {
                 Message = string.Format("Added disabled stalk {0} with CSL value: {1}", stalkName, stalk.SearchTree)
             };
             
-            this.StalkConfig.Save();
+            this.stalkConfig.Save();
         }
 
         protected override IDictionary<string, HelpMessage> Help()
@@ -434,6 +476,12 @@
                         this.CommandName,
                         "add <Flag>",
                         "Adds a new unconfigured stalk")
+                },{
+                    "report",
+                    new HelpMessage(
+                        this.CommandName,
+                        "report",
+                        "Sends a report on the status of all stalks via email")
                 },{
                     "del",
                     new HelpMessage(
@@ -490,6 +538,50 @@
                         "Sets the stalk configuration of the specified stalk to the logical OR of the current configuration, and a specified user, page, or edit summary; or XML tree (advanced).")
                 },
             };
+        }
+
+        protected IStalkNode CreateNode(string type, string stalkTarget)
+        {
+            IStalkNode newNode;
+
+            var escapedTarget = Regex.Escape(stalkTarget);
+            
+            switch (type)
+            {
+                case "user":
+                    var usn = new UserStalkNode();
+                    usn.SetMatchExpression(escapedTarget);
+                    newNode = usn;
+                    break;
+                case "page":
+                    var psn = new PageStalkNode();
+                    psn.SetMatchExpression(escapedTarget);
+                    newNode = psn;
+                    break;
+                case "summary":
+                    var ssn = new SummaryStalkNode();
+                    ssn.SetMatchExpression(escapedTarget);
+                    newNode = ssn;
+                    break;
+                case "xml":
+                    try
+                    {
+                        var xd = new XmlDocument();
+                        xd.LoadXml(stalkTarget);
+
+                        newNode = this.stalkNodeFactory.NewFromXmlFragment((XmlElement) xd.FirstChild);
+                    }
+                    catch (XmlException ex)
+                    {
+                        throw new CommandErrorException(ex.Message, ex);
+                    }
+
+                    break;
+                default:
+                    throw new CommandErrorException("Unknown stalk type!");
+            }
+
+            return newNode;
         }
     }
 }
