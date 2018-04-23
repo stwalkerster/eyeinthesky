@@ -3,8 +3,6 @@
     using System;
     using System.Xml;
     using EyeInTheSky.Model.Interfaces;
-    using EyeInTheSky.Model.StalkNodes;
-    using EyeInTheSky.Model.StalkNodes.BaseNodes;
     using EyeInTheSky.Services;
     using EyeInTheSky.Services.Interfaces;
     using Moq;
@@ -94,11 +92,10 @@
         public void ShouldCreateObjectFromXml()
         {
             string xml =
-                "<template flag=\"testytest\" stalkflag=\"bar\" lastupdate=\"2018-03-25T16:42:30.984000Z\" immediatemail=\"true\" templateenabled=\"true\" stalkenabled=\"false\"><searchtree><true /></searchtree></template>";
+                "<template flag=\"testytest\" stalkflag=\"bar\" lastupdate=\"2018-03-25T16:42:30.984000Z\" immediatemail=\"true\" templateenabled=\"true\" stalkenabled=\"false\"><searchtree><![CDATA[<true />]]></searchtree></template>";
             var doc = new XmlDocument();
             doc.LoadXml(xml);
             var snf = new Mock<IStalkNodeFactory>();
-            snf.Setup(x => x.NewFromXmlFragment(It.IsAny<XmlElement>())).Returns(new TrueNode());
             
             // act
             var fact = new TemplateFactory(this.LoggerMock.Object, snf.Object);
@@ -112,11 +109,7 @@
             Assert.IsFalse(template.StalkIsEnabled);
             Assert.IsTrue(template.TemplateIsEnabled);
             Assert.AreEqual(new DateTime(2018,03,25,16,42,30,984), template.LastUpdateTime);
-
-            Assert.IsNotNull(template.SearchTree);
-            Assert.IsInstanceOf<IStalkNode>(template.SearchTree);
-            
-            snf.Verify(x => x.NewFromXmlFragment(It.IsAny<XmlElement>()), Times.Once);
+            Assert.AreEqual(template.SearchTree, "<true />");
         }
     }
 }

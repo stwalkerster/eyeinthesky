@@ -8,6 +8,7 @@
     using Castle.Core.Logging;
     using EyeInTheSky.Exceptions;
     using EyeInTheSky.Model.Interfaces;
+    using EyeInTheSky.Services.Interfaces;
 
     public abstract class ConfigFileBase<T> : IInitializable 
         where T : class, INamedItem
@@ -17,19 +18,27 @@
         private readonly string configurationNodeName;
         private readonly Func<XmlElement, T> objectFactory;
         private readonly Func<T, XmlDocument, XmlElement> xmlFactory;
+        private readonly IFileService fileService;
 
         protected readonly ILogger Logger;
 
-        protected ConfigFileBase(string configurationFileName, string configurationNodeName, ILogger logger, Func<XmlElement, T> objectFactory, Func<T, XmlDocument, XmlElement> xmlFactory)
+        protected ConfigFileBase(
+            string configurationFileName,
+            string configurationNodeName,
+            ILogger logger,
+            Func<XmlElement, T> objectFactory,
+            Func<T, XmlDocument, XmlElement> xmlFactory,
+            IFileService fileService)
         {
             this.configurationFileName = configurationFileName;
             this.configurationNodeName = configurationNodeName;
             this.Logger = logger;
             this.objectFactory = objectFactory;
             this.xmlFactory = xmlFactory;
+            this.fileService = fileService;
             this.ItemList = new SortedDictionary<string, T>();
-            
-            if (!new FileInfo(this.configurationFileName).Exists)
+
+            if (!this.fileService.FileExists(this.configurationFileName))
             {
                 this.Logger.WarnFormat(
                     "Can't find stalk configuration file at {0}, using defaults",
@@ -37,7 +46,7 @@
                 this.DoSave();
             }
         }
-        
+
         protected SortedDictionary<string, T> ItemList { get; private set; }
         protected bool Initialised { get; private set; }
         
@@ -137,10 +146,10 @@
             {
                 this.Initialised = false;
 
-                var sr = new StreamReader(this.configurationFileName);
+                var sr = new StreamReader(this.fileService.GetReadableStream(this.configurationFileName));
 
                 var doc = new XmlDocument();
-                doc.Load(this.configurationFileName);
+                doc.LoadXml(sr.ReadToEnd());
                 var docElement = doc.DocumentElement;
 
                 if (docElement == null)
@@ -256,7 +265,7 @@
 
                 doc.AppendChild(root);
 
-                doc.Save(this.configurationFileName);
+                doc.Save(this.fileService.GetWritableStream(this.configurationFileName));
             }
         }
     }

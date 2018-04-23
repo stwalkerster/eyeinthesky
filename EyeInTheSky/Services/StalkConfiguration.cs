@@ -8,13 +8,18 @@
 
     public class StalkConfiguration : ConfigFileBase<IStalk>, IStalkConfiguration
     {
-        private readonly ILogger logger;
-        
-
-        public StalkConfiguration(IAppConfiguration configuration, ILogger logger, IStalkFactory stalkFactory)
-            : base(configuration.StalkConfigFile, "stalks", logger, stalkFactory.NewFromXmlElement, stalkFactory.ToXmlElement)
+        public StalkConfiguration(
+            IAppConfiguration configuration,
+            ILogger logger,
+            IStalkFactory stalkFactory,
+            IFileService fileService)
+            : base(configuration.StalkConfigFile,
+                "stalks",
+                logger,
+                stalkFactory.NewFromXmlElement,
+                stalkFactory.ToXmlElement,
+                fileService)
         {
-            this.logger = logger;
         }
 
         public IEnumerable<IStalk> MatchStalks(IRecentChange rc)
@@ -40,7 +45,7 @@
                 }
                 catch (InvalidOperationException ex)
                 {
-                    this.logger.ErrorFormat(ex, "Error during evaluation of stalk {0}", s.Key);
+                    this.Logger.ErrorFormat(ex, "Error during evaluation of stalk {0}", s.Key);
                     // skip this stalk, resume with the others
                     continue;
                 }
