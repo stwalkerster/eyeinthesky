@@ -58,15 +58,21 @@
                     string.Format("Template {0} does not exist in configuration!", this.InvokedAs));
             }
 
-            string flag = null;
+            string proposedFlag = null;
             if (template.StalkFlag == null)
             {
-                flag = args.PopFromFront();    
+                proposedFlag = args.PopFromFront();    
             }
             
-            var newStalk = this.templateConfiguration.NewFromTemplate(flag, template, args);
+            var newStalk = this.templateConfiguration.NewFromTemplate(proposedFlag, template, args);
 
-            this.stalkConfig.Add(flag, newStalk);
+            if (this.stalkConfig.ContainsKey(newStalk.Flag))
+            {
+                throw new CommandErrorException(
+                    string.Format("A stalk with flag {0} already exists!", this.InvokedAs));
+            }
+            
+            this.stalkConfig.Add(newStalk.Flag, newStalk);
             this.stalkConfig.Save();
 
             yield return new CommandResponse
@@ -74,7 +80,7 @@
                 Message = string.Format(
                     "Created new stalk {1} using template {0} with CSL value: {2}",
                     this.InvokedAs,
-                    flag,
+                    newStalk.Flag,
                     newStalk.SearchTree)
             };
         }

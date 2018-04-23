@@ -6,6 +6,7 @@
     using System.Xml;
     using Castle.Core.Logging;
     using EyeInTheSky.Commands;
+    using EyeInTheSky.Formatters;
     using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Services.Interfaces;
@@ -36,7 +37,8 @@
 
         public IStalk NewFromTemplate(string flag, ITemplate template, IList<string> parameters)
         {
-            var templateSearchTree = string.Format(template.SearchTree, parameters.ToArray());
+            var formatParameters = parameters.ToArray<object>();
+            var templateSearchTree = string.Format(new StalkConfigFormatter(), template.SearchTree, formatParameters);
 
             var doc = new XmlDocument();
             doc.LoadXml(templateSearchTree);
@@ -50,14 +52,14 @@
                     throw new Exception("Cannot create stalk without defined flag");
                 }
 
-                flag = string.Format(template.StalkFlag, parameters);
+                flag = string.Format(template.StalkFlag, formatParameters);
             }
 
             
             string description = null;
             if (template.Description != null)
             {
-                description = string.Format(template.Description, parameters);
+                description = string.Format(template.Description, formatParameters);
             }
 
             var stalk = new ComplexStalk(flag)

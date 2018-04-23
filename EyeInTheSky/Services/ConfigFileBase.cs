@@ -265,7 +265,12 @@
 
                 doc.AppendChild(root);
 
-                doc.Save(this.fileService.GetWritableStream(this.configurationFileName));
+                using (var writableStream = this.fileService.GetWritableStream(this.configurationFileName))
+                {
+                    doc.Save(writableStream);
+                    writableStream.Flush();
+                    writableStream.Close();
+                }
             }
         }
     }

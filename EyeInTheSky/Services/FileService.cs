@@ -12,12 +12,12 @@
 
         public Stream GetWritableStream(string path)
         {
-            return new FileStream(path, FileMode.Open, FileAccess.Read);
+            return new FileStream(path, FileMode.Create, FileAccess.ReadWrite);
         }
 
         public Stream GetReadableStream(string path)
         {
-            return new FileStream(path, FileMode.Create, FileAccess.ReadWrite);
+            return new FileStream(path, FileMode.Open, FileAccess.Read);
         }
     }
 }

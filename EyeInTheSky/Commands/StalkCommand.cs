@@ -66,7 +66,7 @@
 
         protected override IEnumerable<CommandResponse> Execute()
         {
-            var tokenList = this.Arguments.ToList();
+            var tokenList = this.OriginalArguments.ToParameters().ToList();
             
             if (tokenList.Count < 1)
             {
