@@ -187,11 +187,15 @@
                 case "contentmodel":
                     if (rc.EditFlags == "change")
                     {
-                        var match = new Regex(" changed the content model of the page \\[\\[(?<pageName>.*?)\\]\\] from \"(?<oldContentmodel>.*?)\" to \"(?<newContentmodel>.*?)\"$");
+                        var match = new Regex(" changed the content model of the page \\[\\[(?<pageName>.*?)\\]\\] from \"(?<oldContentmodel>.*?)\" to \"(?<newContentmodel>.*?)\"(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
                             rc.Page = result.Groups["pageName"].Value;
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
 
                             handled = true;
                         }
@@ -282,11 +286,45 @@
                             handled = true;
                         }
                     }
+
+                    if (rc.EditFlags == "event")
+                    {
+                        var match = new Regex(@" changed visibility of a log event on \[\[(?<pageName>.*?)\]\]: (?:[a-z, ]*)hidden(?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["pageName"].Value;
+
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+
+                            handled = true;
+                        }
+                    }
                     break;
                 case "import":
                     if (rc.EditFlags == "interwiki")
                     {
                         var match = new Regex(@"^transwikied (?<pageName>.*?)(?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["pageName"].Value;
+
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+
+                            handled = true;
+                        }
+                    }
+                    
+                    if (rc.EditFlags == "upload")
+                    {
+                        var match = new Regex(@"^imported \[\[(?<pageName>.*?)\]\] by file upload(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
@@ -469,11 +507,17 @@
                     
                     if (rc.EditFlags == "unreviewed")
                     {
-                        var match = new Regex("marked \\[\\[(?<page>.*?)\\]\\] as unreviewed$");
+                        var match = new Regex("marked \\[\\[(?<page>.*?)\\]\\] as unreviewed(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
                             rc.Page = result.Groups["page"].Value;
+                            
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+                            
                             handled = true;
                         }
                     }
@@ -532,7 +576,7 @@
                 case "protect":
                     if (rc.EditFlags == "protect")
                     {
-                        var match = new Regex(@"^protected ""\[\[(?<page>.*?) .(?:\[(?:edit|move|create)=[a-z-]+\] \((?:(?:expires .*?\(UTC\))|indefinite)\).?)+\]\]""(?:: (?<comment>.*))?$");
+                        var match = new Regex(@"^protected ""\[\[(?<page>.*?) .(?:\[(?:edit|move|create|upload)=[a-z-]+\] \((?:(?:expires .*?\(UTC\))|indefinite)\).?)+\]\]""(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
@@ -548,7 +592,7 @@
                     
                     if (rc.EditFlags == "modify")
                     {
-                        var match = new Regex(@"^changed protection level of (?<page>.*?) .(?:\[(?:edit|move|create)=[a-z-]+\] \((?:(?:expires .*?\(UTC\))|indefinite)\).?)+(?:: (?<comment>.*))?$");
+                        var match = new Regex(@"^changed protection level of (?<page>.*?) .(?:\[(?:edit|move|create|upload)=[a-z-]+\] \((?:(?:expires .*?\(UTC\))|indefinite)\).?)+(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
@@ -674,7 +718,7 @@
                 case "stable":
                     if (rc.EditFlags == "config" || rc.EditFlags == "reset")
                     {
-                        var match = new Regex(@" (?:configured|reset) pending changes settings for \[\[(?<page>.*?)\]\] (?:\[Auto-accept: .*?\])?(?: ?)(?:\((?:(?:expires .*?\(UTC\))|indefinite)\))?(?:: (?<comment>.*))?$");
+                        var match = new Regex(@" (?:configured|reset) pending changes settings for \[\[(?<page>.*?)\]\] (?:\[Auto-(?:accept|review): .*?\])?(?: ?)(?:\((?:(?:expires .*?\(UTC\))|indefinite)\))?(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
@@ -684,6 +728,24 @@
                             {
                                 rc.EditSummary = result.Groups["comment"].Value;
                             }
+                            handled = true;
+                        }
+                    }
+                    
+                    if (rc.EditFlags == "move_stable")
+                    {
+                        var match = new Regex(@" moved pending changes settings from \[\[(?<page>.*?)\]\] to \[\[(?<newpage>.*?)\]\]: \[\[\k<page>\]\] moved to \[\[\k<newpage>\]\](?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["page"].Value;
+                            rc.TargetPage = result.Groups["newpage"].Value;
+
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+
                             handled = true;
                         }
                     }

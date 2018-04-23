@@ -207,6 +207,17 @@
                         });
                 
                 yield return new TestCaseData(
+                        "14[[07Special:Log/contentmodel14]]4 change10 02 5* 03Isarra 5*  10Isarra changed the content model of the page [[02User:Isarra/test10]] from \"JSON\" to \"plain text\": Is this even possible?")
+                    .Returns(
+                        new RecentChange("Isarra")
+                        {
+                            Log = "contentmodel",
+                            Page = "User:Isarra/test",
+                            EditFlags = "change",
+                            EditSummary = "Is this even possible?"
+                        });
+                
+                yield return new TestCaseData(
                         "14[[07Special:Log/contentmodel14]]4 new10 02 5* 03Xaosflux 5*  10Xaosflux created the page [[02Wikipedia:WikiProject Christianity/Outreach/Full content delivery/210]] using a non-default content model \"MassMessageListContent\": Create mass message delivery list")
                     .Returns(
                         new RecentChange("Xaosflux")
@@ -282,6 +293,17 @@
                             Page = "Talk:Hakea exul",
                             EditFlags = "restore"
                         });
+
+                yield return new TestCaseData(
+                        "14[[07Special:Log/delete14]]4 event10 02 5* 03Oshwah 5*  10Oshwah changed visibility of a log event on [[02Special:Log/block10]]: content hidden and username hidden: [[WP:RD3|RD3]]: Purely disruptive material")
+                    .Returns(
+                        new RecentChange("Oshwah")
+                        {
+                            Log = "delete",
+                            Page = "Special:Log/block",
+                            EditFlags = "event",
+                            EditSummary = "[[WP:RD3|RD3]]: Purely disruptive material"
+                        });
                 #endregion
                 #region import
                 // faked
@@ -294,6 +316,17 @@
                             Page = "Tasmanian tiger",
                             EditSummary = "import old edit, see [[User:Graham87/Import]]",
                             EditFlags = "interwiki"
+                        });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/import14]]4 upload10 02 5* 03Graham87 5*  10imported [[02Aachen10]] by file upload: import old edit from [[nost:Aachen]], see [[User:Graham87/Import]]")
+                    .Returns(
+                        new RecentChange("Graham87")
+                        {
+                            Log = "import",
+                            Page = "Aachen",
+                            EditSummary = "import old edit from [[nost:Aachen]], see [[User:Graham87/Import]]",
+                            EditFlags = "upload"
                         });
                 
                 #endregion
@@ -507,6 +540,17 @@
                         });
 
                 yield return new TestCaseData(
+                        "14[[07Special:Log/pagetriage-curation14]]4 unreviewed10 02 5* 03SamHolt6 5*  10SamHolt6 marked [[02Carlos Roberto Signorelli10]] as unreviewed: The article as it is contains some content, but in no way passes review")
+                    .Returns(
+                        new RecentChange("SamHolt6")
+                        {
+                            Log = "pagetriage-curation",
+                            Page = "Carlos Roberto Signorelli",
+                            EditFlags = "unreviewed",
+                            EditSummary = "The article as it is contains some content, but in no way passes review"
+                        });
+
+                yield return new TestCaseData(
                         "14[[07Special:Log/pagetriage-curation14]]4 delete10 02 5* 03SamHolt6 5*  10SamHolt6 marked [[02Ak husky10]] for deletion with db-band tag")
                     .Returns(
                         new RecentChange("SamHolt6")
@@ -568,6 +612,17 @@
                             Page = "20th Century Fox",
                             EditFlags = "protect",
                             EditSummary = "Persistent [[WP:Vandalism|vandalism]]"
+                        });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/protect14]]4 protect10 02 5* 03RHaworth 5*  10protected \"[[File:Moazzam Jah Ansari, IGP of Balochistan.jpg ‎[create=sysop] (indefinite)‎[upload=sysop] (indefinite)]]\": [[WP:SALT|Repeatedly recreated]]")
+                    .Returns(
+                        new RecentChange("RHaworth")
+                        {
+                            Log = "protect",
+                            Page = "File:Moazzam Jah Ansari, IGP of Balochistan.jpg",
+                            EditFlags = "protect",
+                            EditSummary = "[[WP:SALT|Repeatedly recreated]]"
                         });
                 
                 yield return new TestCaseData(
@@ -710,6 +765,28 @@
                             EditSummary = "Reducing protection level per request on my talk page."
                         });
                 
+                yield return new TestCaseData(
+                        "14[[07Special:Log/stable14]]4 config10 02 5* 03JzG 5*  10JzG configured pending changes settings for [[02Under Our Skin10]] [Auto-review: requires \"autoconfirmed\" permission]: Persistent [[WP:Disruptive editing|disruptive editing]]. Propaganda film promoting quack diagnosis, not many watchers, an indefinite risk for well-meaning newbies here to [[WP:RGW]]. ")
+                    .Returns(
+                        new RecentChange("JzG")
+                        {
+                            Log = "stable",
+                            Page = "Under Our Skin",
+                            EditFlags = "config",
+                            EditSummary = "Persistent [[WP:Disruptive editing|disruptive editing]]. Propaganda film promoting quack diagnosis, not many watchers, an indefinite risk for well-meaning newbies here to [[WP:RGW]]. "
+                        });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/stable14]]4 config10 02 5* 03Kelapstick 5*  10Kelapstick configured pending changes settings for [[02Get Out10]] [Auto-review: requires \"autoconfirmed\" permission] (expires 21:18, 17 June 2018 (UTC)): Persistent [[WP:Vandalism|vandalism]]")
+                    .Returns(
+                        new RecentChange("Kelapstick")
+                        {
+                            Log = "stable",
+                            Page = "Get Out",
+                            EditFlags = "config",
+                            EditSummary = "Persistent [[WP:Vandalism|vandalism]]"
+                        });
+                
                 // faked
                 yield return new TestCaseData(
                         "14[[07Special:Log/stable14]]4 reset10 02 5* 03Swarm 5*  10Swarm reset pending changes settings for [[Doug Ford Jr.]] (expires 20:03, 4 May 2018 (UTC)): Persistent [[WP:Sock puppetry|sock puppetry]] - increasing to longer-term semi-protection")
@@ -720,6 +797,17 @@
                             Page = "Doug Ford Jr.",
                             EditFlags = "reset",
                             EditSummary = "Persistent [[WP:Sock puppetry|sock puppetry]] - increasing to longer-term semi-protection"
+                        });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/stable14]]4 move_stable10 02 5* 03Ollieinc 5*  10Ollieinc moved pending changes settings from [[Cartoon Network (Australia and New Zealand)]] to [[02Cartoon Network (Australian and New Zealand TV channel)10]]: [[Cartoon Network (Australia and New Zealand)]] moved to [[02Cartoon Network (Australian and New Zealand TV channel)10]]")
+                    .Returns(
+                        new RecentChange("Ollieinc")
+                        {
+                            Log = "stable",
+                            Page = "Cartoon Network (Australia and New Zealand)",
+                            TargetPage = "Cartoon Network (Australian and New Zealand TV channel)",
+                            EditFlags = "move_stable"
                         });
                 #endregion
                 #region tag
