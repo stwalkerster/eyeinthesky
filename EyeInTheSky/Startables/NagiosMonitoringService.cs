@@ -104,7 +104,6 @@
         {
             if (!this.enabled)
             {
-                this.logger.WarnFormat("{0} is disabled and will not function.", this.GetType().Name);
                 return;
             }
 

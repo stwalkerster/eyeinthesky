@@ -43,10 +43,7 @@
                 <mediawikiApiEndpoint>https://en.wikipedia.org/w/api.php</mediawikiApiEndpoint>
                 
                 <!-- The remainder of the settings in this block are for advanced users only. -->
-                <useragent>EyeInTheSkyBot (+mailto:wikimedia@stwalkerster.co.uk; [[User:Stwalkerster]])</useragent>
-                <monitoringPort>62168</monitoringPort>
-                <phabUrl></phabUrl>
-                <phabToken></phabToken>
+                <useragent>EyeInTheSkyBot (https://stwalkerster.co.uk/eits)</useragent>
             </parameters>
         </component>
         

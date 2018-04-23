@@ -11,14 +11,23 @@
 
     public class BugReporter : IBugReporter
     {
-        private Maniphest maniphest;
-        private string projectPhid;
+        private readonly Maniphest maniphest;
+        private readonly string projectPhid;
+        private readonly bool active;
 
         public BugReporter(IAppConfiguration appConfig)
         {
-            string url = appConfig.PhabUrl;
-            string key = appConfig.PhabToken;
+            var url = appConfig.PhabUrl;
+            var key = appConfig.PhabToken;
 
+            if (string.IsNullOrWhiteSpace(url) || string.IsNullOrWhiteSpace(key))
+            {
+                this.active = false;
+                return;
+            }
+            
+            this.active = true;
+            
             var conduitClient = new ConduitClient(url, key);
             this.maniphest = new Maniphest(conduitClient);
 
@@ -28,6 +37,11 @@
 
         public void ReportBug(BugException ex)
         {
+            if (!this.active)
+            {
+                return;
+            }
+
             var fulltext = new ApplicationEditorSearchConstraint("query", ex.Title);
             var statuses = ManiphestSearchConstraintFactory.Statuses(new List<string> {"open", "stalled"});
 
