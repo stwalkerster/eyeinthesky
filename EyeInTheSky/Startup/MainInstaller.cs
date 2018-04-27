@@ -13,7 +13,6 @@
     using EyeInTheSky.Startables;
     using Stwalkerster.Bot.CommandLib.Services;
     using Stwalkerster.Bot.CommandLib.Services.Interfaces;
-    using Stwalkerster.Bot.CommandLib.Startup;
     using Stwalkerster.IrcClient;
     using Stwalkerster.IrcClient.Interfaces;
 
@@ -29,7 +28,8 @@
 
             container.Install(
                 Configuration.FromXmlFile("alert-templates.xml"),
-                new Installer()
+                new Stwalkerster.IrcClient.Installer(),
+                new Stwalkerster.Bot.CommandLib.Startup.Installer()
             );
 
             container.Register(
@@ -42,8 +42,6 @@
                     .ImplementedBy<Launch>()
                     .DependsOn(Dependency.OnComponent("wikimediaClient", "wikimediaClient")),
 
-                // IRC - not using separate installer because we need special configuration here.
-                Component.For<ISupportHelper>().ImplementedBy<SupportHelper>(),
                 Component.For<IIrcClient>()
                     .ImplementedBy<IrcClient>()
                     .IsDefault()
