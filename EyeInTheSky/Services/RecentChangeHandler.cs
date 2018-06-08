@@ -1,6 +1,4 @@
-﻿using EyeInTheSky.Exceptions;
-
-namespace EyeInTheSky.Services
+﻿namespace EyeInTheSky.Services
 {
     using System;
     using System.Collections.Generic;
@@ -8,6 +6,7 @@ namespace EyeInTheSky.Services
     using System.Linq;
     using System.Text;
     using Castle.Core.Logging;
+    using EyeInTheSky.Exceptions;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Services.Interfaces;
     using Stwalkerster.IrcClient.Events;
@@ -24,6 +23,8 @@ namespace EyeInTheSky.Services
         private readonly IEmailHelper emailHelper;
         private readonly INotificationTemplates templates;
         private readonly IBugReporter bugReporter;
+
+        private IrcUserMask rcUserMaskCache;
 
         public RecentChangeHandler(IAppConfiguration appConfig,
             ILogger logger,
@@ -51,24 +52,35 @@ namespace EyeInTheSky.Services
 
         public void OnReceivedMessage(object sender, MessageReceivedEventArgs e)
         {
-            if (e.Message.Command != "PRIVMSG")
+            if (e.IsNotice)
             {
                 return;
             }
 
-            var messagePrefix = e.Message.Prefix;
-            var source = IrcUser.FromPrefix(messagePrefix);
+            var source = e.User;
 
-            if (!source.Equals(this.appConfig.RcUser))
+            // first check is performance-related, second is thread safety related.
+            if (this.rcUserMaskCache == null)
+            {
+                lock (this)
+                {
+                    if (this.rcUserMaskCache == null)
+                    {
+                        this.rcUserMaskCache = new IrcUserMask(this.appConfig.RcUser, e.Client);
+                    }
+                }
+            }
+
+            if (!this.rcUserMaskCache.Matches(source).GetValueOrDefault(false))
             {
                 this.logger.WarnFormat(
                     "Received private message from {0} instead of expected {1}!",
                     source.ToString(),
-                    this.appConfig.RcUser.ToString());
+                    this.appConfig.RcUser);
                 return;
             }
             
-            var rcMessage = e.Message.Parameters.Skip(1).FirstOrDefault();
+            var rcMessage = e.Message;
             
             
             IRecentChange rc;

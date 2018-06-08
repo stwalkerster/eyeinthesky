@@ -48,10 +48,12 @@
       <HintPath>..\packages\NUnit.3.10.1\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="Stwalkerster.Bot.CommandLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\Stwalkerster.Bot.CommandLib.9.0.13-beta\lib\net45\Stwalkerster.Bot.CommandLib.dll</HintPath>
+      <HintPath>..\packages\Stwalkerster.Bot.CommandLib.9.0.14-beta\lib\net45\Stwalkerster.Bot.CommandLib.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Stwalkerster.IrcClient, Version=7.2.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\Stwalkerster.IrcClient.7.2.20-beta\lib\net45\Stwalkerster.IrcClient.dll</HintPath>
+    <Reference Include="Stwalkerster.IrcClient, Version=8.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\Stwalkerster.IrcClient.8.0.27-beta\lib\net45\Stwalkerster.IrcClient.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

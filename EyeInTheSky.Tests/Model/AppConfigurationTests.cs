@@ -4,7 +4,6 @@
     using EyeInTheSky.Model;
     using Moq;
     using NUnit.Framework;
-    using Stwalkerster.IrcClient.Model;
 
     [TestFixture]
     public class AppConfigurationTests
@@ -26,9 +25,9 @@
             Assert.AreEqual("ghi", this.appConfig.CommandPrefix);
             Assert.AreEqual("jkl", this.appConfig.StalkConfigFile);
             Assert.AreEqual("mno", this.appConfig.TemplateConfigFile);
-            Assert.AreEqual(new IrcUser {Hostname = "r", Username = "q", Nickname = "p"}, this.appConfig.RcUser);
+            Assert.AreEqual("p!q@r", this.appConfig.RcUser);
             Assert.AreEqual("stu", this.appConfig.DateFormat);
-            Assert.AreEqual(new IrcUser {Hostname = "x", Username = "w", Nickname = "v"}, this.appConfig.Owner);
+            Assert.AreEqual("v!w@x", this.appConfig.Owner);
             Assert.AreEqual("yza", this.appConfig.MediaWikiApiEndpoint);
             Assert.AreEqual("bcd", this.appConfig.UserAgent);
         }

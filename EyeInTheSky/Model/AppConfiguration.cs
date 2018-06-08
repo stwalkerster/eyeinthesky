@@ -2,7 +2,6 @@ namespace EyeInTheSky.Model
 {
     using System;
     using EyeInTheSky.Model.Interfaces;
-    using Stwalkerster.IrcClient.Model;
 
     public class AppConfiguration : IAppConfiguration
     {
@@ -72,8 +71,8 @@ namespace EyeInTheSky.Model
             this.CommandPrefix = commandPrefix;
             this.StalkConfigFile = stalkConfigFile;
             this.TemplateConfigFile = templateConfigFile;
-            this.RcUser = IrcUser.FromPrefix(rcUser);
-            this.Owner = IrcUser.FromPrefix(owner);
+            this.RcUser = rcUser;
+            this.Owner = owner;
             this.DateFormat = dateFormat;
             this.MediaWikiApiEndpoint = mediaWikiApiEndpoint;
             this.UserAgent = userAgent;
@@ -84,8 +83,8 @@ namespace EyeInTheSky.Model
         public string CommandPrefix { get; private set; }
         public string StalkConfigFile { get; private set; }
         public string TemplateConfigFile { get; private set; }
-        public IrcUser RcUser { get; private set; }
-        public IrcUser Owner { get; private set; }
+        public string RcUser { get; private set; }
+        public string Owner { get; private set; }
         public string DateFormat { get; private set; }
         public string MediaWikiApiEndpoint { get; private set; }
         public string UserAgent { get; private set; }
