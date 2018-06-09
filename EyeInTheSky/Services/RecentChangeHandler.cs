@@ -64,9 +64,17 @@
             {
                 lock (this)
                 {
-                    if (this.rcUserMaskCache == null)
+                    try
                     {
-                        this.rcUserMaskCache = new IrcUserMask(this.appConfig.RcUser, e.Client);
+                        if (this.rcUserMaskCache == null)
+                        {
+                            this.rcUserMaskCache = new IrcUserMask(this.appConfig.RcUser, e.Client);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        this.logger.ErrorFormat(ex, "Encountered error building mask, on receipt of {0}", e.Message);
+                        return;
                     }
                 }
             }
