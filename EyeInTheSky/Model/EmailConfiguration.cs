@@ -35,6 +35,8 @@
         
         // These properties are optional, and set by Castle
         // ReSharper disable UnusedAutoPropertyAccessor.Global
+        public string SubjectPrefix { get; set; }
+        
         public int Port { get; set; }
         
         public string Username { get; set; }

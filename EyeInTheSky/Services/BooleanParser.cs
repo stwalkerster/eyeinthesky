@@ -12,13 +12,13 @@
             
             value = value.ToLowerInvariant().Trim();
             
-            if (value == "true" || value == "1" || value == "yes" || value == "on")
+            if (value == "true" || value == "1" || value == "yes" || value == "on" || value == "enable" || value == "enabled")
             {
                 result = true;
                 return true;
             }
             
-            if (value == "false" || value == "0" || value == "no" || value == "off")
+            if (value == "false" || value == "0" || value == "no" || value == "off" || value == "disable" || value == "disabled")
             {
                 result = false;
                 return true;

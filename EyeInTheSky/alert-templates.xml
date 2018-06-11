@@ -3,7 +3,7 @@
     <components>
         <component type="EyeInTheSky.Model.NotificationTemplates" service="EyeInTheSky.Model.Interfaces.INotificationTemplates">
             <parameters>
-                <emailRcSubject>[EyeInTheSky] Notification: {0} - [[{1}]]</emailRcSubject>
+                <emailRcSubject>Notification: {0} - [[{1}]]</emailRcSubject>
                 <emailRcTemplate><![CDATA[A recent change to Wikipedia has been spotted which you have previously indicated interest in.
 
 Title:        {2}
@@ -57,7 +57,7 @@ Expired:
 {2}
 
 ]]></emailStalkReport>
-                <emailStalkReportSubject>[EyeInTheSky] Stalk Report</emailStalkReportSubject>
+                <emailStalkReportSubject>Stalk Report</emailStalkReportSubject>
 
                 <ircAlertFormat>[&#03;04&#02;{0}&#02;&#03;] Stalked edit {1} to page "&#03;03{2}&#03;" by [[User:{3}]], summary: &#03;07{4}</ircAlertFormat>
                 <ircStalkTagSeparator>&#02;&#03;|&#03;4&#02;</ircStalkTagSeparator>

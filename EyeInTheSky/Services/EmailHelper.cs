@@ -44,11 +44,15 @@
             builder.Append(this.templates.EmailGreeting);
             builder.Append(message);
             builder.Append(this.templates.EmailSignature);
-            
+
+            var subjectPrefix = this.appConfig.EmailConfiguration.SubjectPrefix;
+
+            subjectPrefix = subjectPrefix == null ? string.Empty : subjectPrefix.TrimEnd() + " ";
+
             return this.emailSender.SendEmail(
                 this.appConfig.EmailConfiguration.Sender,
                 this.appConfig.EmailConfiguration.To,
-                subject,
+                string.Format("{0}{1}", subjectPrefix, subject),
                 builder.ToString(),
                 this.appConfig.EmailConfiguration.Hostname,
                 this.appConfig.EmailConfiguration.Port,
