@@ -30,6 +30,7 @@
         private readonly INotificationTemplates templates;
         private readonly IEmailHelper emailHelper;
         private readonly RecentChangeHandler recentChangeHandler;
+        private readonly IXmlCacheService xmlCacheService;
         private readonly IStalkNodeFactory stalkNodeFactory;
         private readonly IStalkConfiguration stalkConfig;
 
@@ -46,7 +47,8 @@
             IAppConfiguration config,
             INotificationTemplates templates,
             IEmailHelper emailHelper,
-            RecentChangeHandler recentChangeHandler
+            RecentChangeHandler recentChangeHandler,
+            IXmlCacheService xmlCacheService
         ) : base(
             commandSource,
             user,
@@ -60,6 +62,7 @@
             this.templates = templates;
             this.emailHelper = emailHelper;
             this.recentChangeHandler = recentChangeHandler;
+            this.xmlCacheService = xmlCacheService;
             this.stalkNodeFactory = stalkNodeFactory;
             this.stalkConfig = stalkConfig;
         }
@@ -566,10 +569,13 @@
                 case "xml":
                     try
                     {
-                        var xd = new XmlDocument();
-                        xd.LoadXml(stalkTarget);
-
-                        newNode = this.stalkNodeFactory.NewFromXmlFragment((XmlElement) xd.FirstChild);
+                        var xml = this.xmlCacheService.RetrieveXml(this.User);
+                        if (xml == null)
+                        {
+                            throw new CommandErrorException("No cached XML. Please use the xml command first.");
+                        }
+                        
+                        newNode = this.stalkNodeFactory.NewFromXmlFragment(xml);
                     }
                     catch (XmlException ex)
                     {
