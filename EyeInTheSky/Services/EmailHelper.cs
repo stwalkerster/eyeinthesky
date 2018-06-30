@@ -20,7 +20,7 @@
             this.emailSender = emailSender;
         }
 
-        public string SendEmail(string message, string subject, string inReplyTo)
+        public string SendEmail(string message, string subject, string inReplyTo, string recipient)
         {
             if (this.appConfig.EmailConfiguration == null)
             {
@@ -51,7 +51,7 @@
 
             return this.emailSender.SendEmail(
                 this.appConfig.EmailConfiguration.Sender,
-                this.appConfig.EmailConfiguration.To,
+                recipient,
                 string.Format("{0}{1}", subjectPrefix, subject),
                 builder.ToString(),
                 this.appConfig.EmailConfiguration.Hostname,

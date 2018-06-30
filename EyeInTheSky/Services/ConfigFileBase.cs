@@ -87,7 +87,7 @@
             }
         }
 
-        public void Add(string key, T item)
+        public void Add(T item)
         {
             if (!this.Initialised)
             {
@@ -96,7 +96,7 @@
             
             lock (this.ItemList)
             {
-                this.ItemList.Add(key, item);
+                this.ItemList.Add(item.Identifier, item);
             }
             
             this.OnAdd(item);
@@ -196,7 +196,7 @@
                     }
 
                     var configItem = this.objectFactory((XmlElement) configChild);
-                    loadedItems.Add(configItem.Flag, configItem);
+                    loadedItems.Add(configItem.Identifier, configItem);
                 }
 
                 lock (this.ItemList)

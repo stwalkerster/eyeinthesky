@@ -13,7 +13,7 @@ namespace EyeInTheSky.Tests.Model
         {
             var stalk = new ComplexStalk("abc");
             
-            Assert.AreEqual("abc", stalk.Flag);
+            Assert.AreEqual("abc", stalk.Identifier);
         }
         
         [Test]

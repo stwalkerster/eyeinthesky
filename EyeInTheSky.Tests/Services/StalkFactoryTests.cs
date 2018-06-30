@@ -76,7 +76,7 @@
             
             var stalk = new Mock<IStalk>();
             stalk.Setup(x => x.SearchTree).Returns(node.Object);
-            stalk.Setup(x => x.Flag).Returns("testflag");
+            stalk.Setup(x => x.Identifier).Returns("testflag");
             stalk.Setup(x => x.IsEnabled).Returns(true);
             stalk.Setup(x => x.MailEnabled).Returns(true);
             stalk.Setup(x => x.TriggerCount).Returns(4);
@@ -105,7 +105,7 @@
             
             var stalk = new Mock<IStalk>();
             stalk.Setup(x => x.SearchTree).Returns(node.Object);
-            stalk.Setup(x => x.Flag).Returns("testflag");
+            stalk.Setup(x => x.Identifier).Returns("testflag");
             stalk.Setup(x => x.IsEnabled).Returns(true);
             stalk.Setup(x => x.MailEnabled).Returns(true);
             
@@ -132,7 +132,7 @@
             
             var stalk = new Mock<IStalk>();
             stalk.Setup(x => x.SearchTree).Returns(node.Object);
-            stalk.Setup(x => x.Flag).Returns("testflag");
+            stalk.Setup(x => x.Identifier).Returns("testflag");
             stalk.Setup(x => x.Description).Returns("my description here");
             stalk.Setup(x => x.IsEnabled).Returns(true);
             stalk.Setup(x => x.MailEnabled).Returns(true);
@@ -168,7 +168,7 @@
             // assert
             Assert.IsNull(stalk.Description);
             Assert.IsNull(stalk.ExpiryTime);
-            Assert.AreEqual("testytest", stalk.Flag);
+            Assert.AreEqual("testytest", stalk.Identifier);
             Assert.IsFalse(stalk.IsEnabled);
             Assert.AreEqual("foobar", stalk.LastMessageId);
             Assert.AreEqual(new DateTime(2018,03,25,16,42,21,878), stalk.LastTriggerTime);
@@ -198,7 +198,7 @@
             // assert
             Assert.IsNull(stalk.Description);
             Assert.IsNull(stalk.ExpiryTime);
-            Assert.AreEqual("testytest", stalk.Flag);
+            Assert.AreEqual("testytest", stalk.Identifier);
             Assert.IsFalse(stalk.IsEnabled);
             Assert.AreEqual("foobar", stalk.LastMessageId);
             Assert.AreEqual(new DateTime(2018,03,25,16,42,21,878), stalk.LastTriggerTime);
@@ -227,7 +227,7 @@
             var stalk = fact.NewFromXmlElement(doc.DocumentElement);
 
             // assert
-            Assert.AreEqual("testytest", stalk.Flag);
+            Assert.AreEqual("testytest", stalk.Identifier);
             Assert.IsFalse(stalk.IsEnabled);
             
             Assert.IsNotNull(stalk.SearchTree);
@@ -260,7 +260,7 @@
             // assert
             Assert.IsNull(stalk.Description);
             Assert.IsNull(stalk.ExpiryTime);
-            Assert.AreEqual("testytest", stalk.Flag);
+            Assert.AreEqual("testytest", stalk.Identifier);
             Assert.IsFalse(stalk.IsEnabled);
             Assert.AreEqual(new DateTime(2018,03,25,16,42,21,878), stalk.LastTriggerTime);
             Assert.AreEqual(new DateTime(2018,03,25,16,42,30,984), stalk.LastUpdateTime);

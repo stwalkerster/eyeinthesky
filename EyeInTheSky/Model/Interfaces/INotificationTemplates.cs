@@ -11,5 +11,9 @@
         string EmailStalkReportSubject { get; }
         string IrcAlertFormat { get; }
         string IrcStalkTagSeparator { get; }
+        string EmailAccountDeletionSubject { get; }
+        string EmailAccountDeletionBody { get; }
+        string EmailAccountConfirmationSubject { get; }
+        string EmailAccountConfirmationBody { get; }
     }
 }

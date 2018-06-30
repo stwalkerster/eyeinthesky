@@ -2,6 +2,6 @@
 {
     public interface INamedItem
     {
-        string Flag { get; }
+        string Identifier { get; }
     }
 }

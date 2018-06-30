@@ -15,7 +15,7 @@
 
         public Template(string flag)
         {
-            this.Flag = flag;
+            this.Identifier = flag;
             this.LastUpdateTime = DateTime.Now;
             this.searchTree = "<false />";
         }
@@ -38,11 +38,11 @@
             this.description = description;
             this.searchTree = searchTree;
             this.expiryDuration = expiryDuration;
-            this.Flag = flag;
+            this.Identifier = flag;
             this.LastUpdateTime = lastUpdateTime;
         }
 
-        public string Flag { get; private set; }
+        public string Identifier { get; private set; }
         public DateTime? LastUpdateTime { get; private set; }
 
         public TimeSpan? ExpiryDuration

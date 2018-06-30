@@ -81,9 +81,9 @@
             foreach (var template in this.ItemList.Where(x => x.Value.TemplateIsEnabled).Select(x => x.Value))
             {
                 
-                if (this.commandParser.GetRegisteredCommand(template.Flag) != null)
+                if (this.commandParser.GetRegisteredCommand(template.Identifier) != null)
                 {
-                    this.Logger.ErrorFormat("{0} is already registered as a command, disabling!", template.Flag);
+                    this.Logger.ErrorFormat("{0} is already registered as a command, disabling!", template.Identifier);
                     template.TemplateIsEnabled = false;
                     dirty = true;
                 }
@@ -100,29 +100,29 @@
             
             foreach (var template in enabled)
             {
-                this.commandParser.RegisterCommand(template.Flag, typeof(AddTemplatedStalkCommand));
+                this.commandParser.RegisterCommand(template.Identifier, typeof(AddTemplatedStalkCommand));
             }
         }
 
         protected override void OnAdd(ITemplate template)
         {
-            if (this.commandParser.GetRegisteredCommand(template.Flag) != null)
+            if (this.commandParser.GetRegisteredCommand(template.Identifier) != null)
             {
-                this.Logger.ErrorFormat("{0} is already registered as a command, disabling!", template.Flag);
+                this.Logger.ErrorFormat("{0} is already registered as a command, disabling!", template.Identifier);
                 template.TemplateIsEnabled = false;
             }
             else
             {
-                this.commandParser.RegisterCommand(template.Flag, typeof(AddTemplatedStalkCommand));
+                this.commandParser.RegisterCommand(template.Identifier, typeof(AddTemplatedStalkCommand));
             }
             
         }
 
         protected override void OnRemove(ITemplate item)
         {
-            if (this.commandParser.GetRegisteredCommand(item.Flag) == typeof(AddTemplatedStalkCommand))
+            if (this.commandParser.GetRegisteredCommand(item.Identifier) == typeof(AddTemplatedStalkCommand))
             {
-                this.commandParser.UnregisterCommand(item.Flag);
+                this.commandParser.UnregisterCommand(item.Identifier);
             }
         }
     }

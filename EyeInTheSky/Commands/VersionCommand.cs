@@ -12,9 +12,10 @@
     using Stwalkerster.IrcClient;
     using Stwalkerster.IrcClient.Interfaces;
     using Stwalkerster.IrcClient.Model.Interfaces;
+    using CLFlag = Stwalkerster.Bot.CommandLib.Model.Flag;
 
     [CommandInvocation("version")]
-    [CommandFlag(Stwalkerster.Bot.CommandLib.Model.Flag.Standard)]
+    [CommandFlag(CLFlag.Standard)]
     public class VersionCommand : CommandBase
     {
         public VersionCommand(string commandSource,

@@ -9,7 +9,7 @@
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Services.Interfaces;
     
-    public class TemplateFactory : ConfigFactoryBase, ITemplateFactory
+    public class TemplateFactory : StalkConfigFactoryBase, ITemplateFactory
     {
         public TemplateFactory(ILogger logger, IStalkNodeFactory stalkNodeFactory) : base(logger, stalkNodeFactory)
         {
@@ -106,7 +106,7 @@
         {
             var e = doc.CreateElement("template");
             
-            e.SetAttribute("flag", stalk.Flag);
+            e.SetAttribute("flag", stalk.Identifier);
             
             if (stalk.LastUpdateTime != null)
             {

@@ -4,6 +4,7 @@
     using System.Linq;
     using Castle.Core.Logging;
     using EyeInTheSky.Extensions;
+    using EyeInTheSky.Model;
     using EyeInTheSky.Services.Interfaces;
     using Stwalkerster.Bot.CommandLib.Attributes;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities;
@@ -14,7 +15,7 @@
     using Stwalkerster.IrcClient.Interfaces;
     using Stwalkerster.IrcClient.Model.Interfaces;
     
-    [CommandFlag(Stwalkerster.Bot.CommandLib.Model.Flag.Protected)]
+    [CommandFlag(AccessFlags.Configuration)]
     public class AddTemplatedStalkCommand : CommandBase
     {
         private readonly ITemplateConfiguration templateConfiguration;
@@ -66,13 +67,13 @@
             
             var newStalk = this.templateConfiguration.NewFromTemplate(proposedFlag, template, args);
 
-            if (this.stalkConfig.ContainsKey(newStalk.Flag))
+            if (this.stalkConfig.ContainsKey(newStalk.Identifier))
             {
                 throw new CommandErrorException(
                     string.Format("A stalk with flag {0} already exists!", this.InvokedAs));
             }
             
-            this.stalkConfig.Add(newStalk.Flag, newStalk);
+            this.stalkConfig.Add(newStalk);
             this.stalkConfig.Save();
 
             yield return new CommandResponse
@@ -80,7 +81,7 @@
                 Message = string.Format(
                     "Created new stalk {1} using template {0} with CSL value: {2}",
                     this.InvokedAs,
-                    newStalk.Flag,
+                    newStalk.Identifier,
                     newStalk.SearchTree)
             };
         }

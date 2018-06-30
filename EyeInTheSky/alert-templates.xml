@@ -58,6 +58,32 @@ Expired:
 
 ]]></emailStalkReport>
                 <emailStalkReportSubject>Stalk Report</emailStalkReportSubject>
+                <emailAccountDeletionSubject>Confirm Account Deletion</emailAccountDeletionSubject>
+                <emailAccountDeletionBody><![CDATA[You have requested your account be permanently deleted.
+                
+This includes all access rights to {0}, and will unsubscribe your email address from all notifications from {0}.
+
+To confirm you wish to do this, please message {0} with the following command:
+
+    {2}account deleteconfirm {1}
+   
+This command will expire at {3}
+                
+]]></emailAccountDeletionBody>
+                <emailAccountConfirmationSubject>Confirm your email address</emailAccountConfirmationSubject>
+                <emailAccountConfirmationBody><![CDATA[Someone has provided your email address to {0}, an IRC recent changes tracking bot.
+                
+If this was you, and you wish to receive email notifications for the stalks you subscribe to, please message {0} with the following command:
+
+    {2}account verify {1}
+   
+This command will expire at {3}.
+
+If you later wish to remove your email address, you can do so by sending a message {0} with the following command:
+
+    {2}account email none
+
+]]></emailAccountConfirmationBody>
 
                 <ircAlertFormat>[&#03;04&#02;{0}&#02;&#03;] Stalked edit {1} to page "&#03;03{2}&#03;" by [[User:{3}]], summary: &#03;07{4}</ircAlertFormat>
                 <ircStalkTagSeparator>&#02;&#03;|&#03;4&#02;</ircStalkTagSeparator>

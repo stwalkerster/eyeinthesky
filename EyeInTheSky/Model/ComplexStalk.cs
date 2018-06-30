@@ -11,7 +11,7 @@
         {
             this.LastTriggerTime = DateTime.MinValue;
             this.LastUpdateTime = DateTime.Now;
-            this.Flag = flag;
+            this.Identifier = flag;
             this.baseNode = new FalseNode();
         }
 
@@ -27,7 +27,7 @@
             string lastMessageId,
             IStalkNode baseNode)
         {
-            this.Flag = flag;
+            this.Identifier = flag;
             this.LastUpdateTime = lastUpdateTime;
             this.LastTriggerTime = lastTriggerTime;
             this.TriggerCount = triggerCount;
@@ -45,7 +45,7 @@
         private bool mailEnabled = true;
         private bool isEnabled;
 
-        public string Flag { get; private set; }
+        public string Identifier { get; private set; }
 
         public DateTime? LastUpdateTime { get; private set; }
 

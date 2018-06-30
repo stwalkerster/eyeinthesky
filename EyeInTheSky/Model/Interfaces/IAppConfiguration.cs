@@ -6,6 +6,7 @@
         string WikimediaChannel { get; }
         string CommandPrefix { get; }
         string StalkConfigFile { get; }
+        string UserConfigFile { get; }
         string TemplateConfigFile { get; }
         string RcUser { get; }
         string DateFormat { get; }

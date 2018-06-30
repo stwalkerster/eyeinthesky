@@ -21,7 +21,7 @@
             
             var template = new Mock<ITemplate>();
             template.Setup(x => x.SearchTree).Returns("<false />");
-            template.Setup(x => x.Flag).Returns("testflag");
+            template.Setup(x => x.Identifier).Returns("testflag");
             template.Setup(x => x.StalkIsEnabled).Returns(true);
             template.Setup(x => x.TemplateIsEnabled).Returns(false);
             template.Setup(x => x.MailEnabled).Returns(true);
@@ -45,7 +45,7 @@
             
             var template = new Mock<ITemplate>();
             template.Setup(x => x.SearchTree).Returns("<or><true /><false /></or>");
-            template.Setup(x => x.Flag).Returns("testflag");
+            template.Setup(x => x.Identifier).Returns("testflag");
             template.Setup(x => x.StalkIsEnabled).Returns(true);
             template.Setup(x => x.TemplateIsEnabled).Returns(false);
             template.Setup(x => x.MailEnabled).Returns(true);
@@ -69,7 +69,7 @@
            
             var template = new Mock<ITemplate>();
             template.Setup(x => x.SearchTree).Returns("<false />");
-            template.Setup(x => x.Flag).Returns("testflag");
+            template.Setup(x => x.Identifier).Returns("testflag");
             template.Setup(x => x.StalkFlag).Returns("bar");
             template.Setup(x => x.Description).Returns("my description here");
             template.Setup(x => x.StalkIsEnabled).Returns(true);
@@ -104,7 +104,7 @@
             // assert
             Assert.IsNull(template.Description);
             Assert.IsNull(template.ExpiryDuration);
-            Assert.AreEqual("testytest", template.Flag);
+            Assert.AreEqual("testytest", template.Identifier);
             Assert.AreEqual("bar", template.StalkFlag);
             Assert.IsFalse(template.StalkIsEnabled);
             Assert.IsTrue(template.TemplateIsEnabled);

@@ -115,7 +115,7 @@
                 return;
             }
 
-            this.logger.InfoFormat("Seen stalked change for stalks: {0}", string.Join(" ", stalks.Select(x => x.Flag)));
+            this.logger.InfoFormat("Seen stalked change for stalks: {0}", string.Join(" ", stalks.Select(x => x.Identifier)));
             
             // send notifications
             this.SendToIrc(stalks, rc);
@@ -145,7 +145,7 @@
                 return;
             }
 
-            var stalkList = string.Join(", ", stalks.Select(x => x.Flag));
+            var stalkList = string.Join(", ", stalks.Select(x => x.Identifier));
             var messageId = stalks.Count(x => x.LastMessageId != null) > 1 ? null : stalks.First().LastMessageId;
 
             try
@@ -153,7 +153,8 @@
                 messageId = this.emailHelper.SendEmail(
                     this.FormatMessageForEmail(stalks, rc),
                     string.Format(this.templates.EmailRcSubject, stalkList, rc.Page),
-                    messageId);
+                    messageId,
+                    this.appConfig.EmailConfiguration.To);
             }
             catch (Exception ex)
             {
@@ -191,7 +192,7 @@
                 
                 first = false;
 
-                stalkTags.Append(s.Flag);
+                stalkTags.Append(s.Identifier);
             }
 
             var sizeDiff = "N/A";
@@ -254,7 +255,7 @@
                 stalkInfo.Append(
                     string.Format(
                         this.templates.EmailStalkTemplate,
-                        stalk.Flag,
+                        stalk.Identifier,
                         stalk.Description,
                         stalk.SearchTree,
                         stalk.MailEnabled,

@@ -13,7 +13,7 @@
         [SetUp]
         public void LocalSetup()
         {
-            this.appConfig = new AppConfiguration("abc", "def", "ghi", "jkl", "mno", "p!q@r", "stu", "v!w@x", "yza", "bcd");
+            this.appConfig = new AppConfiguration("abc", "def", "ghi", "jkl", "efg", "mno", "p!q@r", "stu", "v!w@x", "yza", "bcd");
         }
 
         [Test]
@@ -24,6 +24,7 @@
             Assert.AreEqual("def", this.appConfig.WikimediaChannel);
             Assert.AreEqual("ghi", this.appConfig.CommandPrefix);
             Assert.AreEqual("jkl", this.appConfig.StalkConfigFile);
+            Assert.AreEqual("efg", this.appConfig.UserConfigFile);
             Assert.AreEqual("mno", this.appConfig.TemplateConfigFile);
             Assert.AreEqual("p!q@r", this.appConfig.RcUser);
             Assert.AreEqual("stu", this.appConfig.DateFormat);
@@ -54,7 +55,7 @@
         {
             Assert.Catch<ArgumentNullException>(() =>
             {
-                new AppConfiguration(null, "def", "ghi", "jkl", "mno", "pqr", "stu", "vwx", "yza", "bcd");
+                new AppConfiguration(null, "def", "ghi", "jkl", "efg", "mno", "pqr", "stu", "vwx", "yza", "bcd");
             });
         }
 
@@ -63,7 +64,7 @@
         {
             Assert.Catch<ArgumentNullException>(() =>
             {
-                new AppConfiguration("abc", null, "ghi", "jkl", "mno", "pqr", "stu", "vwx", "yza", "bcd");
+                new AppConfiguration("abc", null, "ghi", "jkl", "efg", "mno", "pqr", "stu", "vwx", "yza", "bcd");
             });
         }
 
@@ -72,7 +73,7 @@
         {
             Assert.Catch<ArgumentNullException>(() =>
             {
-                new AppConfiguration("abc", "def", null, "jkl", "mno", "pqr", "stu", "vwx", "yza", "bcd");
+                new AppConfiguration("abc", "def", null, "jkl", "efg", "mno", "pqr", "stu", "vwx", "yza", "bcd");
             });
         }
 
@@ -81,7 +82,16 @@
         {
             Assert.Catch<ArgumentNullException>(() =>
             {
-                new AppConfiguration("abc", "def", "ghi", null, "mno", "pqr", "stu", "vwx", "yza", "bcd");
+                new AppConfiguration("abc", "def", "ghi", null, "efg", "mno", "pqr", "stu", "vwx", "yza", "bcd");
+            });
+        }
+
+        [Test]
+        public void ShouldThrowNullRefUserConf()
+        {
+            Assert.Catch<ArgumentNullException>(() =>
+            {
+                new AppConfiguration("abc", "def", "ghi", "jkl", null, "mno", "pqr", "stu", "vwx", "yza", "bcd");
             });
         }
 
@@ -90,7 +100,7 @@
         {
             Assert.Catch<ArgumentNullException>(() =>
             {
-                new AppConfiguration("abc", "def", "ghi", "jkl", null, "pqr", "stu", "vwx", "yza", "bcd");
+                new AppConfiguration("abc", "def", "ghi", "jkl", "efg", null, "pqr", "stu", "vwx", "yza", "bcd");
             });
         }
 
@@ -99,7 +109,7 @@
         {
             Assert.Catch<ArgumentNullException>(() =>
             {
-                new AppConfiguration("abc", "def", "ghi", "jkl", "mno", null, "stu", "vwx", "yza", "bcd");
+                new AppConfiguration("abc", "def", "ghi", "jkl", "efg", "mno", null, "stu", "vwx", "yza", "bcd");
             });
         }
 
@@ -108,7 +118,7 @@
         {
             Assert.Catch<ArgumentNullException>(() =>
             {
-                new AppConfiguration("abc", "def", "ghi", "jkl", "mno", "pqr", null, "vwx", "yza", "bcd");
+                new AppConfiguration("abc", "def", "ghi", "jkl", "efg", "mno", "pqr", null, "vwx", "yza", "bcd");
             });
         }
 
@@ -117,7 +127,7 @@
         {
             Assert.Catch<ArgumentNullException>(() =>
             {
-                new AppConfiguration("abc", "def", "ghi", "jkl", "mno", "pqr", "stu", null, "yza", "bcd");
+                new AppConfiguration("abc", "def", "ghi", "jkl", "efg", "mno", "pqr", "stu", null, "yza", "bcd");
             });
         }
 
@@ -126,7 +136,7 @@
         {
             Assert.Catch<ArgumentNullException>(() =>
             {
-                new AppConfiguration("abc", "def", "ghi", "jkl", "mno", "pqr", "stu", "vwx", null, "bcd");
+                new AppConfiguration("abc", "def", "ghi", "jkl", "efg", "mno", "pqr", "stu", "vwx", null, "bcd");
             });
         }
 
@@ -135,7 +145,7 @@
         {
             Assert.Catch<ArgumentNullException>(() =>
             {
-                new AppConfiguration("abc", "def", "ghi", "jkl", "mno", "pqr", "stu", "vwx", "yza", null);
+                new AppConfiguration("abc", "def", "ghi", "jkl", "efg", "mno", "pqr", "stu", "vwx", "yza", null);
             });
         }
     }

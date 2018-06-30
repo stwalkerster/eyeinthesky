@@ -10,9 +10,10 @@
     using Stwalkerster.Bot.CommandLib.Services.Interfaces;
     using Stwalkerster.IrcClient.Interfaces;
     using Stwalkerster.IrcClient.Model.Interfaces;
+    using CLFlag = Stwalkerster.Bot.CommandLib.Model.Flag;
 
     [CommandInvocation("xml")]
-    [CommandFlag(Stwalkerster.Bot.CommandLib.Model.Flag.Standard)]
+    [CommandFlag(CLFlag.Standard)]
     public class XmlCommand : CommandBase
     {
         private readonly IXmlCacheService xmlCacheService;
@@ -41,7 +42,6 @@
             this.xmlCacheService.CacheXml(this.OriginalArguments, this.User);
             yield return new CommandResponse {Message = "Cached requested XML."};
         }
-        
 
         protected override IDictionary<string, HelpMessage> Help()
         {

@@ -24,7 +24,7 @@
             this.rcMock = new Mock<IRecentChange>();
             this.bugMock = new Mock<IBugReporter>();
 
-            this.stalkMock.Setup(s => s.Flag).Returns("s1");
+            this.stalkMock.Setup(s => s.Identifier).Returns("s1");
             this.stalkMock.Setup(s => s.Description).Returns("test desc");
             this.stalkMock.Setup(s => s.MailEnabled).Returns(true);
             this.stalkMock.Setup(s => s.ExpiryTime).Returns(DateTime.MaxValue);
@@ -43,7 +43,7 @@
         {
             // arrange
             var s2 = new Mock<IStalk>();
-            s2.Setup(s => s.Flag).Returns("s2");
+            s2.Setup(s => s.Identifier).Returns("s2");
 
             this.NotificationTemplatesMock.Setup(s => s.IrcStalkTagSeparator).Returns("|");
             this.NotificationTemplatesMock.Setup(s => s.IrcAlertFormat)
@@ -71,7 +71,7 @@
         {
             // arrange
             var s2 = new Mock<IStalk>();
-            s2.Setup(s => s.Flag).Returns("s2");
+            s2.Setup(s => s.Identifier).Returns("s2");
 
             this.NotificationTemplatesMock.Setup(s => s.IrcStalkTagSeparator).Returns("<><>");
             this.NotificationTemplatesMock.Setup(s => s.IrcAlertFormat)
@@ -188,7 +188,7 @@
                 this.bugMock.Object);
 
             var s2 = new Mock<IStalk>();
-            s2.Setup(s => s.Flag).Returns("s2");
+            s2.Setup(s => s.Identifier).Returns("s2");
             s2.Setup(s => s.Description).Returns("descky");
             s2.Setup(s => s.MailEnabled).Returns(false);
             s2.Setup(s => s.ExpiryTime).Returns(DateTime.MaxValue);

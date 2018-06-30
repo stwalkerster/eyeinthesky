@@ -7,7 +7,7 @@
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Services.Interfaces;
 
-    public class StalkFactory : ConfigFactoryBase, IStalkFactory
+    public class StalkFactory : StalkConfigFactoryBase, IStalkFactory
     {
         public StalkFactory(ILogger logger, IStalkNodeFactory stalkNodeFactory) : base(logger, stalkNodeFactory)
         {
@@ -114,7 +114,7 @@
         {
             var e = doc.CreateElement("complexstalk");
             
-            e.SetAttribute("flag", stalk.Flag);
+            e.SetAttribute("flag", stalk.Identifier);
             
             if (stalk.LastUpdateTime != null)
             {

@@ -47,8 +47,8 @@
     <Reference Include="nunit.framework, Version=3.10.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb">
       <HintPath>..\packages\NUnit.3.10.1\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="Stwalkerster.Bot.CommandLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\Stwalkerster.Bot.CommandLib.9.0.16-beta\lib\net45\Stwalkerster.Bot.CommandLib.dll</HintPath>
+    <Reference Include="Stwalkerster.Bot.CommandLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\Stwalkerster.Bot.CommandLib.10.0.19-beta\lib\net45\Stwalkerster.Bot.CommandLib.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Stwalkerster.IrcClient, Version=8.0.0.0, Culture=neutral, PublicKeyToken=null">
@@ -76,6 +76,7 @@
     <Compile Include="Extensions\ListExtensionsTests.cs" />
     <Compile Include="Extensions\StringExtensionsTests.cs" />
     <Compile Include="Model\AppConfigurationTests.cs" />
+    <Compile Include="Model\BotUserTests.cs" />
     <Compile Include="Model\ComplexStalkTests.cs" />
     <Compile Include="Model\EmailConfigurationTests.cs" />
     <Compile Include="Model\NotificationTemplateTests.cs" />

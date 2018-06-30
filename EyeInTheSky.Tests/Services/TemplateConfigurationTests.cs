@@ -65,7 +65,7 @@
             // assert
             Assert.NotNull(result);
             Assert.IsInstanceOf<IStalk>(result);
-            Assert.AreEqual("stalk", result.Flag);
+            Assert.AreEqual("stalk", result.Identifier);
             Assert.IsInstanceOf<TrueNode>(result.SearchTree);
         }
     }

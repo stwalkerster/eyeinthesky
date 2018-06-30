@@ -79,8 +79,8 @@
     <Reference Include="PCLStorage.Abstractions, Version=1.0.2.0, Culture=neutral, PublicKeyToken=286fe515a2c35b64">
       <HintPath>..\packages\PCLStorage.1.0.2\lib\net45\PCLStorage.Abstractions.dll</HintPath>
     </Reference>
-    <Reference Include="Stwalkerster.Bot.CommandLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\Stwalkerster.Bot.CommandLib.9.0.16-beta\lib\net45\Stwalkerster.Bot.CommandLib.dll</HintPath>
+    <Reference Include="Stwalkerster.Bot.CommandLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\Stwalkerster.Bot.CommandLib.10.0.19-beta\lib\net45\Stwalkerster.Bot.CommandLib.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Stwalkerster.IrcClient, Version=8.0.0.0, Culture=neutral, PublicKeyToken=null">
@@ -102,6 +102,7 @@
       <Link>Properties/GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Attributes\StalkNodeTypeAttribute.cs" />
+    <Compile Include="Commands\AccountCommand.cs" />
     <Compile Include="Commands\AddTemplatedStalkCommand.cs" />
     <Compile Include="Commands\XmlCommand.cs" />
     <Compile Include="Exceptions\BugException.cs" />
@@ -109,10 +110,13 @@
     <Compile Include="Extensions\ListExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Formatters\StalkConfigFormatter.cs" />
+    <Compile Include="Model\AccessFlags.cs" />
     <Compile Include="Model\AppConfiguration.cs" />
+    <Compile Include="Model\BotUser.cs" />
     <Compile Include="Model\ComplexStalk.cs" />
     <Compile Include="Model\EmailConfiguration.cs" />
     <Compile Include="Model\Interfaces\IAppConfiguration.cs" />
+    <Compile Include="Model\Interfaces\IBotUser.cs" />
     <Compile Include="Model\Interfaces\INamedItem.cs" />
     <Compile Include="Model\Interfaces\INotificationTemplates.cs" />
     <Compile Include="Model\Interfaces\IRecentChange.cs" />
@@ -144,14 +148,18 @@
     <Compile Include="Model\StalkNodes\XorNode.cs" />
     <Compile Include="Model\Template.cs" />
     <Compile Include="Services\BooleanParser.cs" />
+    <Compile Include="Services\BotUserFactory.cs" />
     <Compile Include="Services\ConfigFactoryBase.cs" />
+    <Compile Include="Services\StalkConfigFactoryBase.cs" />
     <Compile Include="Services\ConfigFileBase.cs" />
     <Compile Include="Services\ConfigurationProvider.cs" />
-    <Compile Include="Services\BasicFlagService.cs" />
+    <Compile Include="Services\UserFlagService.cs" />
     <Compile Include="Services\EmailHelper.cs" />
     <Compile Include="Services\EmailSender.cs" />
     <Compile Include="Services\BugReporter.cs" />
     <Compile Include="Services\FileService.cs" />
+    <Compile Include="Services\Interfaces\IBotUserConfiguration.cs" />
+    <Compile Include="Services\Interfaces\IBotUserFactory.cs" />
     <Compile Include="Services\Interfaces\IBugReporter.cs" />
     <Compile Include="Services\Interfaces\IConfigFactory.cs" />
     <Compile Include="Services\Interfaces\IConfigurationBase.cs" />
@@ -175,6 +183,7 @@
     <Compile Include="Services\StalkNodeFactory.cs" />
     <Compile Include="Services\TemplateConfiguration.cs" />
     <Compile Include="Services\TemplateFactory.cs" />
+    <Compile Include="Services\BotUserConfiguration.cs" />
     <Compile Include="Services\WebServiceClient.cs" />
     <Compile Include="Commands\StalkCommand.cs" />
     <Compile Include="Commands\VersionCommand.cs" />

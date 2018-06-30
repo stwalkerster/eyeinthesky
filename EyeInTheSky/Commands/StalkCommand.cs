@@ -23,7 +23,7 @@
     using Stwalkerster.IrcClient.Model.Interfaces;
 
     [CommandInvocation("stalk")]
-    [CommandFlag(Stwalkerster.Bot.CommandLib.Model.Flag.Protected)]
+    [CommandFlag(AccessFlags.Configuration)]
     public class StalkCommand : CommandBase
     {
         private readonly IAppConfiguration config;
@@ -144,7 +144,11 @@
                 this.recentChangeHandler.FormatStalkListForEmail(expired)
             );
 
-            this.emailHelper.SendEmail(body, this.templates.EmailStalkReportSubject, null);
+            this.emailHelper.SendEmail(
+                body,
+                this.templates.EmailStalkReportSubject,
+                null,
+                this.config.EmailConfiguration.To);
 
             yield return new CommandResponse
             {
@@ -371,8 +375,8 @@
             foreach (var stalk in activeStalks)
             {
                 var message = string.Format(
-                    "Flag: {0}, Last modified: {1}, Type: Complex {2}",
-                    stalk.Flag,
+                    "Identifier: {0}, Last modified: {1}, Type: Complex {2}",
+                    stalk.Identifier,
                     stalk.LastUpdateTime.GetValueOrDefault().ToString(this.config.DateFormat),
                     stalk.SearchTree);
                 
@@ -453,7 +457,7 @@
             var stalkName = tokenList.First();
             var stalk = new ComplexStalk(stalkName);
 
-            this.stalkConfig.Add(stalkName, stalk);
+            this.stalkConfig.Add(stalk);
             
             yield return new CommandResponse
             {
@@ -477,7 +481,7 @@
                     "add",
                     new HelpMessage(
                         this.CommandName,
-                        "add <Flag>",
+                        "add <Identifier>",
                         "Adds a new unconfigured stalk")
                 },{
                     "report",
@@ -489,55 +493,55 @@
                     "del",
                     new HelpMessage(
                         this.CommandName,
-                        "del <Flag>",
+                        "del <Identifier>",
                         "Deletes a stalk")
                 },{
                     "export",
                     new HelpMessage(
                         this.CommandName,
-                        "export <Flag>",
+                        "export <Identifier>",
                         "Retrieves the XML search tree of a specific stalk")
                 },{
                     "enabled",
                     new HelpMessage(
                         this.CommandName,
-                        new[]{"enabled <Flag> <true|false>", "enable <Flag>", "disable <Flag>"},
+                        new[]{"enabled <Identifier> <true|false>", "enable <Identifier>", "disable <Identifier>"},
                         "Marks a stalk as enabled or disabled")
                 },{
                     "mail",
                     new HelpMessage(
                         this.CommandName,
-                        "mail <Flag> <true|false>",
+                        "mail <Identifier> <true|false>",
                         "Enables or disables email notifications for each trigger of the specified stalk")
                 },{
                     "description",
                     new HelpMessage(
                         this.CommandName,
-                        "description <Flag> <Description...>",
+                        "description <Identifier> <Description...>",
                         "Sets the description of the specified stalk")
                 },{
                     "expiry",
                     new HelpMessage(
                         this.CommandName,
-                        "expiry <Flag> <Description...>",
+                        "expiry <Identifier> <Description...>",
                         "Sets the description of the specified stalk")
                 },{
                     "set",
                     new HelpMessage(
                         this.CommandName,
-                        "set <Flag> <user|page|summary|xml> <Match...>",
+                        "set <Identifier> <user|page|summary|xml> <Match...>",
                         "Sets the stalk configuration of the specified stalk to specified user, page, or edit summary. Alternatively, manually specify an XML tree (advanced).")
                 },{
                     "and",
                     new HelpMessage(
                         this.CommandName,
-                        "and <Flag> <user|page|summary|xml> <Match...>",
+                        "and <Identifier> <user|page|summary|xml> <Match...>",
                         "Sets the stalk configuration of the specified stalk to the logical AND of the current configuration, and a specified user, page, or edit summary; or XML tree (advanced).")
                 },{
                     "or",
                     new HelpMessage(
                         this.CommandName,
-                        "or <Flag> <user|page|summary|xml> <Match...>",
+                        "or <Identifier> <user|page|summary|xml> <Match...>",
                         "Sets the stalk configuration of the specified stalk to the logical OR of the current configuration, and a specified user, page, or edit summary; or XML tree (advanced).")
                 },
             };

@@ -12,6 +12,10 @@
             string emailSignature,
             string emailStalkReport,
             string emailStalkReportSubject,
+            string emailAccountDeletionSubject,
+            string emailAccountDeletionBody,
+            string emailAccountConfirmationSubject,
+            string emailAccountConfirmationBody,
             string ircAlertFormat,
             string ircStalkTagSeparator)
         {
@@ -67,6 +71,10 @@
             this.EmailSignature = emailSignature;
             this.EmailStalkReport = emailStalkReport;
             this.EmailStalkReportSubject = emailStalkReportSubject;
+            this.EmailAccountDeletionSubject = emailAccountDeletionSubject;
+            this.EmailAccountDeletionBody = emailAccountDeletionBody;
+            this.EmailAccountConfirmationSubject = emailAccountConfirmationSubject;
+            this.EmailAccountConfirmationBody = emailAccountConfirmationBody;
             this.IrcAlertFormat = ircAlertFormat;
             this.IrcStalkTagSeparator = ircStalkTagSeparator;
         }
@@ -78,7 +86,11 @@
         public string EmailSignature { get; private set; }
         public string EmailStalkReport { get; private set; }
         public string EmailStalkReportSubject { get; private set; }
-        
+        public string EmailAccountDeletionSubject { get; private set; }
+        public string EmailAccountDeletionBody { get; private set; }
+        public string EmailAccountConfirmationSubject { get; private set; }
+        public string EmailAccountConfirmationBody { get; private set; }
+
         public string IrcAlertFormat { get; private set; }
         public string IrcStalkTagSeparator { get; private set; }
     }
