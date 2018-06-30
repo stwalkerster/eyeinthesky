@@ -246,7 +246,7 @@
                 body,
                 this.templates.EmailAccountConfirmationSubject,
                 null,
-                botUser.EmailAddress);
+                botUser);
 
             return new[]
             {
@@ -393,7 +393,7 @@
                     body,
                     this.templates.EmailAccountDeletionSubject,
                     null,
-                    botUser.EmailAddress);
+                    botUser);
 
                 return new[]
                 {
@@ -445,7 +445,15 @@
 
             yield return new CommandResponse
             {
-                Message = "Registered using NickServ account " + this.User.Account,
+                Message = string.Format("Registered using NickServ account {0}.", this.User.Account),
+                Destination = CommandResponseDestination.PrivateMessage
+            };
+            yield return new CommandResponse
+            {
+                Message = string.Format(
+                    "Please note, to receive notifications via email, you need to provide your email address (=account email <address>). By doing so, you agree to the privacy policy: {0}",
+                    this.appConfig.PrivacyPolicy),
+                Destination = CommandResponseDestination.PrivateMessage
             };
         }
 
@@ -458,7 +466,7 @@
                     new HelpMessage(
                         this.CommandName,
                         "register",
-                        "Registers your NickServ account with the bot")
+                        "Registers your NickServ account with the bot.")
                 },
                 {
                     "delete",

@@ -45,6 +45,8 @@
                 <mediawikiApiEndpoint>https://en.wikipedia.org/w/api.php</mediawikiApiEndpoint>
                 <!-- The User Agent to use for the bot. Add your own contact details here. -->
                 <useragent>EyeInTheSkyBot (https://stwalkerster.co.uk/eits; default configuration)</useragent>
+                <!-- Privacy policy wording -->
+                <privacyPolicy>https://example.com/privacy</privacyPolicy>
                 
             </parameters>
         </component>

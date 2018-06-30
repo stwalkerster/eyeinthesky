@@ -7,6 +7,7 @@
     using System.Text;
     using Castle.Core.Logging;
     using EyeInTheSky.Exceptions;
+    using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Services.Interfaces;
     using Stwalkerster.IrcClient.Events;
@@ -150,11 +151,22 @@
 
             try
             {
+                // temp hack
+                var owner = new BotUser(
+                    new IrcUserMask(this.appConfig.Owner, this.freenodeClient),
+                    "OCSA",
+                    this.appConfig.EmailConfiguration.To,
+                    null,
+                    null,
+                    true,
+                    null,
+                    null);
+                
                 messageId = this.emailHelper.SendEmail(
                     this.FormatMessageForEmail(stalks, rc),
                     string.Format(this.templates.EmailRcSubject, stalkList, rc.Page),
                     messageId,
-                    this.appConfig.EmailConfiguration.To);
+                    owner);
             }
             catch (Exception ex)
             {

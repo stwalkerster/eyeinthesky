@@ -20,6 +20,7 @@
     using Stwalkerster.Bot.CommandLib.Exceptions;
     using Stwalkerster.Bot.CommandLib.Services.Interfaces;
     using Stwalkerster.IrcClient.Interfaces;
+    using Stwalkerster.IrcClient.Model;
     using Stwalkerster.IrcClient.Model.Interfaces;
 
     [CommandInvocation("stalk")]
@@ -143,12 +144,23 @@
                 this.recentChangeHandler.FormatStalkListForEmail(disabled),
                 this.recentChangeHandler.FormatStalkListForEmail(expired)
             );
+            
+            // temp hack
+            var owner = new BotUser(
+                new IrcUserMask(this.config.Owner, this.Client),
+                "OCSA",
+                this.config.EmailConfiguration.To,
+                null,
+                null,
+                true,
+                null,
+                null);
 
             this.emailHelper.SendEmail(
                 body,
                 this.templates.EmailStalkReportSubject,
                 null,
-                this.config.EmailConfiguration.To);
+                owner);
 
             yield return new CommandResponse
             {

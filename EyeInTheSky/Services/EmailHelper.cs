@@ -4,23 +4,26 @@
     using Castle.Core.Logging;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Services.Interfaces;
+    using Stwalkerster.IrcClient.Interfaces;
 
     public class EmailHelper : IEmailHelper
     {
         private readonly ILogger logger;
         private readonly INotificationTemplates templates;
+        private readonly IIrcClient freenodeClient;
         private readonly IAppConfiguration appConfig;
         private readonly IEmailSender emailSender;
 
-        public EmailHelper(IAppConfiguration appConfig, IEmailSender emailSender, ILogger logger, INotificationTemplates templates)
+        public EmailHelper(IAppConfiguration appConfig, IEmailSender emailSender, ILogger logger, INotificationTemplates templates, IIrcClient freenodeClient)
         {
             this.logger = logger;
             this.templates = templates;
+            this.freenodeClient = freenodeClient;
             this.appConfig = appConfig;
             this.emailSender = emailSender;
         }
 
-        public string SendEmail(string message, string subject, string inReplyTo, string recipient)
+        public string SendEmail(string message, string subject, string inReplyTo, IBotUser recipient)
         {
             if (this.appConfig.EmailConfiguration == null)
             {
@@ -39,11 +42,24 @@
                 this.logger.Error("No message specified in outbound email!");
                 return null;
             }
+            
+            if (string.IsNullOrWhiteSpace(recipient.EmailAddress))
+            {
+                this.logger.Info("No recipient address provided!");
+                return null;
+            }
+
+            var signaturePattern = string.Format(
+                this.templates.EmailSignature,
+                recipient.Identifier.Substring(3),
+                this.freenodeClient.Nickname,
+                this.appConfig.CommandPrefix,
+                this.appConfig.PrivacyPolicy);
 
             var builder = new StringBuilder();
             builder.Append(this.templates.EmailGreeting);
             builder.Append(message);
-            builder.Append(this.templates.EmailSignature);
+            builder.Append(signaturePattern);
 
             var subjectPrefix = this.appConfig.EmailConfiguration.SubjectPrefix;
 
@@ -51,7 +67,7 @@
 
             return this.emailSender.SendEmail(
                 this.appConfig.EmailConfiguration.Sender,
-                recipient,
+                recipient.EmailAddress,
                 string.Format("{0}{1}", subjectPrefix, subject),
                 builder.ToString(),
                 this.appConfig.EmailConfiguration.Hostname,
