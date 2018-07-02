@@ -14,12 +14,17 @@
     {
         private readonly IAppConfiguration appConfiguration;
         private readonly IBotUserConfiguration userConfiguration;
+        private readonly IChannelConfiguration channelConfiguration;
         private IrcUserMask ownerMask;
 
-        public UserFlagService(IAppConfiguration appConfiguration, IBotUserConfiguration userConfiguration)
+        public UserFlagService(
+            IAppConfiguration appConfiguration,
+            IBotUserConfiguration userConfiguration,
+            IChannelConfiguration channelConfiguration)
         {
             this.appConfiguration = appConfiguration;
             this.userConfiguration = userConfiguration;
+            this.channelConfiguration = channelConfiguration;
         }
 
         public bool UserHasFlag(IUser user, string flag, string locality)
@@ -39,15 +44,38 @@
             var matchingUsers = this.userConfiguration.Items
                 .Where(x => x.Mask.Matches(user).GetValueOrDefault())
                 .ToList();
-            
-            foreach(var u in matchingUsers)
+
+            foreach (var u in matchingUsers)
             {
                 if (u.GlobalFlags == null)
                 {
                     continue;
                 }
-                
+
                 if (u.GlobalFlags.Contains(flag))
+                {
+                    return true;
+                }
+            }
+
+            // must be in a channel for local flags
+            if (!locality.StartsWith("#"))
+            {
+                return false;
+            }
+
+            var matchingChannelUsers = this.channelConfiguration[locality]
+                .Users.Where(x => x.Mask.Matches(user).GetValueOrDefault())
+                .ToList();
+
+            foreach (var u in matchingChannelUsers)
+            {
+                if (u.LocalFlags == null)
+                {
+                    continue;
+                }
+
+                if (u.LocalFlags.Contains(flag))
                 {
                     return true;
                 }
@@ -84,23 +112,21 @@
         public IEnumerable<string> GetFlagsForUser(IUser user, string locality)
         {
             this.PreCacheOwnerMask(user);
+
+            var flags = new HashSet<string>{Flag.Standard};
             
             if (this.ownerMask.Matches(user).GetValueOrDefault(false))
             {
-                return new[]
-                {
-                    Flag.Owner,
-                    AccessFlags.Configuration,
-                    Flag.Standard,
-                    AccessFlags.Admin,
-                }.OrderBy(x => x);
+                flags.Add(Flag.Owner);
+                flags.Add(AccessFlags.Configuration);
+                flags.Add(AccessFlags.Admin);
             }
 
-            var flags = this.userConfiguration.Items
-                .Where(x => x.Mask.Matches(user).GetValueOrDefault())
+            flags = this.userConfiguration.Items
+                .Where(x => x.Mask.Matches(user).GetValueOrDefault() && x.GlobalFlags != null)
                 .Select(x => x.GlobalFlags.ToCharArray())
                 .Aggregate(
-                    new HashSet<string> {Flag.Standard},
+                    flags,
                     (cur, next) =>
                     {
                         foreach (var n in next)
@@ -109,10 +135,27 @@
                         }
 
                         return cur;
-                    })
-                .ToList();
+                    });
 
-            return flags.OrderBy(x => x);
+            if (locality.StartsWith("#"))
+            {
+                flags = this.channelConfiguration[locality]
+                    .Users.Where(x => x.Mask.Matches(user).GetValueOrDefault() && x.LocalFlags != null)
+                    .Select(x => x.LocalFlags.ToCharArray())
+                    .Aggregate(
+                        flags,
+                        (cur, next) =>
+                        {
+                            foreach (var n in next)
+                            {
+                                cur.Add(n.ToString());
+                            }
+
+                            return cur;
+                        });
+            }
+
+            return flags.ToList().OrderBy(x => x);
         }
     }
 }
