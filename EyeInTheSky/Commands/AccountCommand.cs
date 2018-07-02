@@ -25,6 +25,7 @@
     {
         private readonly IAppConfiguration appConfig;
         private readonly INotificationTemplates templates;
+        private readonly IChannelConfiguration channelConfiguration;
         private readonly IBotUserConfiguration botUserConfiguration;
         private readonly IEmailHelper emailHelper;
 
@@ -38,7 +39,8 @@
             IBotUserConfiguration botUserConfiguration,
             IEmailHelper emailHelper,
             IAppConfiguration config,
-            INotificationTemplates templates) : base(
+            INotificationTemplates templates,
+            IChannelConfiguration channelConfiguration) : base(
             commandSource,
             user,
             arguments,
@@ -49,6 +51,7 @@
         {
             this.appConfig = config;
             this.templates = templates;
+            this.channelConfiguration = channelConfiguration;
             this.botUserConfiguration = botUserConfiguration;
             this.emailHelper = emailHelper;
         }
@@ -68,7 +71,7 @@
             {
                 case "forcedelete":
                 case "forcenomail":
-                    return this.FlagService.UserHasFlag(this.User, AccessFlags.Admin, null);
+                    return this.FlagService.UserHasFlag(this.User, AccessFlags.GlobalAdmin, null);
                 case "register":
                 case "delete":
                 case "deleteconfirm":
@@ -271,8 +274,7 @@
             switch (result)
             {
                 case "ok":
-                    this.botUserConfiguration.Remove(botUser.Identifier);
-                    this.botUserConfiguration.Save();
+                    this.RemoveAccount(botUser.Identifier);
 
                     return new[]
                     {
@@ -330,13 +332,25 @@
                 yield break;
             }
             
-            this.botUserConfiguration.Remove(accountKey);
-            this.botUserConfiguration.Save();
-            
+            this.RemoveAccount(accountKey);
+
             yield return new CommandResponse
             {
                 Message = "Deleted user " + accountKey
             };
+        }
+
+        private void RemoveAccount(string accountKey)
+        {
+            this.botUserConfiguration.Remove(accountKey);
+            this.botUserConfiguration.Save();
+
+            foreach (var channel in this.channelConfiguration.Items)
+            {
+                channel.Users.RemoveAll(x => x.Mask.ToString() == accountKey);
+            }
+            
+            this.channelConfiguration.Save();
         }
 
         private IEnumerable<CommandResponse> ForceNoMailMode(List<string> tokenList)
@@ -484,7 +498,7 @@
                 },
             };
 
-            if (this.FlagService.UserHasFlag(this.User, AccessFlags.Admin, null))
+            if (this.FlagService.UserHasFlag(this.User, AccessFlags.GlobalAdmin, null))
             {
                 help.Add(
                     "forcedelete",

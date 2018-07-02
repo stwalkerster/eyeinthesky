@@ -119,7 +119,7 @@
             {
                 flags.Add(Flag.Owner);
                 flags.Add(AccessFlags.Configuration);
-                flags.Add(AccessFlags.Admin);
+                flags.Add(AccessFlags.GlobalAdmin);
             }
 
             flags = this.userConfiguration.Items

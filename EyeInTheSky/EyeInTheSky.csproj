@@ -104,6 +104,8 @@
     <Compile Include="Attributes\StalkNodeTypeAttribute.cs" />
     <Compile Include="Commands\AccountCommand.cs" />
     <Compile Include="Commands\AddTemplatedStalkCommand.cs" />
+    <Compile Include="Commands\ChannelCommand.cs" />
+    <Compile Include="Commands\FlagsCommand.cs" />
     <Compile Include="Commands\XmlCommand.cs" />
     <Compile Include="Exceptions\BugException.cs" />
     <Compile Include="Exceptions\ConfigurationException.cs" />
