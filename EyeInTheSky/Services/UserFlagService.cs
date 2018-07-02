@@ -27,8 +27,15 @@
             this.channelConfiguration = channelConfiguration;
         }
 
-        public bool UserHasFlag(IUser user, string flag, string locality)
+        public bool UserHasFlag(IUser iuser, string flag, string locality)
         {
+            var user = iuser as IrcUser;
+            
+            if (user == null)
+            {
+                return false;
+            }
+            
             this.PreCacheOwnerMask(user);
 
             if (this.ownerMask.Matches(user).GetValueOrDefault(false))
@@ -80,6 +87,15 @@
                     return true;
                 }
             }
+            
+            // chanops
+            if (user.Client.Channels[locality].Users[user.Nickname].Operator)
+            {
+                if (flag == AccessFlags.ChannelAdmin || flag == AccessFlags.Configuration)
+                {
+                    return true;
+                }
+            }
 
             return false;
         }
@@ -109,8 +125,15 @@
             }
         }
 
-        public IEnumerable<string> GetFlagsForUser(IUser user, string locality)
+        public IEnumerable<string> GetFlagsForUser(IUser iuser, string locality)
         {
+            var user = iuser as IrcUser;
+            
+            if (user == null)
+            {
+                return new string[0];
+            }
+            
             this.PreCacheOwnerMask(user);
 
             var flags = new HashSet<string>{Flag.Standard};
@@ -153,6 +176,13 @@
 
                             return cur;
                         });
+                
+                // chanops
+                if (user.Client.Channels[locality].Users[user.Nickname].Operator)
+                {
+                    flags.Add(AccessFlags.ChannelAdmin);
+                    flags.Add(AccessFlags.Configuration);
+                }
             }
 
             return flags.ToList().OrderBy(x => x);
