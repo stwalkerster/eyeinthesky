@@ -27,13 +27,13 @@
     [CommandFlag(AccessFlags.Configuration)]
     public class StalkCommand : CommandBase
     {
+        private readonly IChannelConfiguration channelConfiguration;
         private readonly IAppConfiguration config;
         private readonly INotificationTemplates templates;
         private readonly IEmailHelper emailHelper;
         private readonly RecentChangeHandler recentChangeHandler;
         private readonly IXmlCacheService xmlCacheService;
         private readonly IStalkNodeFactory stalkNodeFactory;
-        private readonly IStalkConfiguration stalkConfig;
 
         public StalkCommand(
             string commandSource,
@@ -43,7 +43,7 @@
             IFlagService flagService,
             IConfigurationProvider configurationProvider,
             IIrcClient client,
-            IStalkConfiguration stalkConfig,
+            IChannelConfiguration channelConfiguration,
             IStalkNodeFactory stalkNodeFactory,
             IAppConfiguration config,
             INotificationTemplates templates,
@@ -59,13 +59,13 @@
             configurationProvider,
             client)
         {
+            this.channelConfiguration = channelConfiguration;
             this.config = config;
             this.templates = templates;
             this.emailHelper = emailHelper;
             this.recentChangeHandler = recentChangeHandler;
             this.xmlCacheService = xmlCacheService;
             this.stalkNodeFactory = stalkNodeFactory;
-            this.stalkConfig = stalkConfig;
         }
 
         protected override IEnumerable<CommandResponse> Execute()
@@ -95,7 +95,7 @@
             }
             
             var stalkName = tokenList.PopFromFront();
-            if (!this.stalkConfig.ContainsKey(stalkName))
+            if (!this.channelConfiguration[this.CommandSource].Stalks.ContainsKey(stalkName))
             {
                 throw new CommandErrorException(string.Format("Can't find the stalk '{0}'!", stalkName));
             }
@@ -132,7 +132,7 @@
 
         private IEnumerable<CommandResponse> ReportMode()
         {
-            var stalks = this.stalkConfig.Items;
+            var stalks = this.channelConfiguration[this.CommandSource].Stalks.Values;
             
             var disabled = stalks.Where(x => !x.IsEnabled);
             var expired = stalks.Where(x => x.ExpiryTime != null && x.ExpiryTime < DateTime.Now);            
@@ -179,7 +179,7 @@
 
             var newStalkType = tokenList.PopFromFront();
             
-            var stalk = this.stalkConfig[stalkName];
+            var stalk = this.channelConfiguration[this.CommandSource].Stalks[stalkName];
             var newTarget = string.Join(" ", tokenList);
 
             var newNode = this.CreateNode(newStalkType, newTarget);
@@ -210,7 +210,7 @@
                     stalk.SearchTree)
             };
             
-            this.stalkConfig.Save();
+            this.channelConfiguration.Save();
         }
 
         private IEnumerable<CommandResponse> AndMode(List<string> tokenList, string stalkName)
@@ -222,7 +222,7 @@
 
             var newStalkType = tokenList.PopFromFront();
 
-            var stalk = this.stalkConfig[stalkName];
+            var stalk = this.channelConfiguration[this.CommandSource].Stalks[stalkName];
             var newTarget = string.Join(" ", tokenList);
 
             var newNode = this.CreateNode(newStalkType, newTarget);
@@ -254,7 +254,7 @@
                     stalk.SearchTree)
             };
 
-            this.stalkConfig.Save();
+            this.channelConfiguration.Save();
         }
 
         private IEnumerable<CommandResponse> EnabledMode(List<string> tokenList, string stalkName)
@@ -279,9 +279,9 @@
                 Message = string.Format("Set enabled attribute on stalk {0} to {1}", stalkName, enabled)
             };
             
-            this.stalkConfig[stalkName].IsEnabled = enabled;
+            this.channelConfiguration[this.CommandSource].Stalks[stalkName].IsEnabled = enabled;
             
-            this.stalkConfig.Save();
+            this.channelConfiguration.Save();
         }
 
         private IEnumerable<CommandResponse> ExpiryMode(List<string> tokenList, string stalkName)
@@ -294,7 +294,7 @@
             var date = string.Join(" ", tokenList);
 
             var expiryTime = DateTime.Parse(date);
-            this.stalkConfig[stalkName].ExpiryTime = expiryTime;
+            this.channelConfiguration[this.CommandSource].Stalks[stalkName].ExpiryTime = expiryTime;
 
             yield return new CommandResponse
             {
@@ -304,7 +304,7 @@
                     expiryTime.ToString(this.config.DateFormat))
             };
             
-            this.stalkConfig.Save();
+            this.channelConfiguration.Save();
         }
 
         private IEnumerable<CommandResponse> DescriptionMode(List<string> tokenList, string stalkName)
@@ -313,7 +313,7 @@
 
             if (string.IsNullOrWhiteSpace(descr))
             {
-                this.stalkConfig[stalkName].Description = null;
+                this.channelConfiguration[this.CommandSource].Stalks[stalkName].Description = null;
                 
                 yield return new CommandResponse
                 {
@@ -322,7 +322,7 @@
             }
             else
             {
-                this.stalkConfig[stalkName].Description = descr;
+                this.channelConfiguration[this.CommandSource].Stalks[stalkName].Description = descr;
 
                 yield return new CommandResponse
                 {
@@ -330,7 +330,7 @@
                 };
             }
 
-            this.stalkConfig.Save();
+            this.channelConfiguration.Save();
         }
 
         private IEnumerable<CommandResponse> MailMode(List<string> tokenList, string stalkName)
@@ -355,14 +355,14 @@
                 Message = string.Format("Set immediatemail attribute on stalk {0} to {1}", stalkName, mail)
             };
             
-            this.stalkConfig[stalkName].MailEnabled = mail;
+            this.channelConfiguration[this.CommandSource].Stalks[stalkName].MailEnabled = mail;
             
-            this.stalkConfig.Save();
+            this.channelConfiguration.Save();
         }
 
         private IEnumerable<CommandResponse> ListMode()
         {
-            var activeStalks = this.stalkConfig.Items.Where(x => x.IsActive()).ToList();
+            var activeStalks = this.channelConfiguration[this.CommandSource].Stalks.Values.Where(x => x.IsActive()).ToList();
 
             if (!activeStalks.Any())
             {
@@ -407,7 +407,7 @@
                 Destination = CommandResponseDestination.PrivateMessage
             };
 
-            this.stalkConfig.Save();
+            this.channelConfiguration.Save();
         }
 
         private IEnumerable<CommandResponse> SetMode(List<string> tokenList, string stalkName)
@@ -419,7 +419,7 @@
 
             var newStalkType = tokenList.PopFromFront();
 
-            var stalk = this.stalkConfig[stalkName];
+            var stalk = this.channelConfiguration[this.CommandSource].Stalks[stalkName];
             var newTarget = string.Join(" ", tokenList);
 
             var newroot = this.CreateNode(newStalkType, newTarget);
@@ -430,24 +430,24 @@
                 Message = string.Format("Set {0} for stalk {1} with CSL value: {2}", newStalkType, stalkName, newroot)
             };
             
-            this.stalkConfig.Save();
+            this.channelConfiguration.Save();
         }
 
         private IEnumerable<CommandResponse> DeleteMode(string stalkName)
         {
-            this.stalkConfig.Remove(stalkName);
+            this.channelConfiguration[this.CommandSource].Stalks.Remove(stalkName);
             
             yield return new CommandResponse
             {
                 Message = string.Format("Deleted stalk {0}", stalkName)
             };
             
-            this.stalkConfig.Save();
+            this.channelConfiguration.Save();
         }
 
         private IEnumerable<CommandResponse> ExportMode(string stalkName)
         {
-            var searchTree = this.stalkConfig[stalkName].SearchTree;
+            var searchTree = this.channelConfiguration[this.CommandSource].Stalks[stalkName].SearchTree;
 
             yield return new CommandResponse
             {
@@ -467,16 +467,16 @@
             }
 
             var stalkName = tokenList.First();
-            var stalk = new ComplexStalk(stalkName);
+            var stalk = new ComplexStalk(stalkName) {Channel = this.CommandSource};
 
-            this.stalkConfig.Add(stalk);
+            this.channelConfiguration[this.CommandSource].Stalks.Add(stalk.Identifier, stalk);
             
             yield return new CommandResponse
             {
                 Message = string.Format("Added disabled stalk {0} with CSL value: {1}", stalkName, stalk.SearchTree)
             };
             
-            this.stalkConfig.Save();
+            this.channelConfiguration.Save();
         }
 
         protected override IDictionary<string, HelpMessage> Help()

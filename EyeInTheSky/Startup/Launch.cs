@@ -2,11 +2,14 @@
 {
     using System;
     using System.IO;
+    using System.Linq;
     using System.Threading;
     using Castle.Core.Logging;
     using Castle.Windsor;
     using Castle.Windsor.Installer;
+    using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
+    using EyeInTheSky.Services;
     using EyeInTheSky.Services.Interfaces;
     using Stwalkerster.Bot.CommandLib.Services.Interfaces;
     using Stwalkerster.IrcClient.Interfaces;
@@ -14,17 +17,18 @@
     public class Launch : IApplication
     {
         private static WindsorContainer container;
-        
+
         private readonly ILogger logger;
         private readonly IIrcClient freenodeClient;
         private readonly IIrcClient wikimediaClient;
         private readonly IAppConfiguration appConfig;
+        private readonly IChannelConfiguration channelConfiguration;
         private bool alive = true;
-        
+
         public static int Main(string[] args)
         {
             string configurationFile = "configuration.xml";
-            
+
             if (args.Length >= 1)
             {
                 configurationFile = args[0];
@@ -35,7 +39,7 @@
                 Console.WriteLine("Configuration file does not exist!");
                 return 1;
             }
-            
+
             container = new WindsorContainer(configurationFile);
             container.Install(FromAssembly.This());
 
@@ -50,18 +54,52 @@
             IIrcClient freenodeClient,
             IIrcClient wikimediaClient,
             IAppConfiguration appConfig,
-            IStalkConfiguration stalkConfiguration,
-            ITemplateConfiguration templateConfiguration)
+            ITemplateConfiguration templateConfiguration,
+            IBotUserConfiguration userConfiguration,
+            IChannelConfiguration channelConfiguration,
+            IStalkFactory stalkFactory,
+            IFileService fileService)
         {
             this.logger = logger;
             this.freenodeClient = freenodeClient;
             this.wikimediaClient = wikimediaClient;
             this.appConfig = appConfig;
+            this.channelConfiguration = channelConfiguration;
 
+            
+            if (!this.channelConfiguration.Items.Any())
+            {
+                this.logger.InfoFormat("Migrating to channel configuration file...");
+                
+                var defaultChannel = new IrcChannel(this.appConfig.FreenodeChannel);
+                this.channelConfiguration.Add(defaultChannel);
+
+                var stalkConfig = new StalkConfiguration(
+                    appConfig,
+                    logger.CreateChildLogger("LegacyStalkConfig"),
+                    stalkFactory,
+                    fileService
+                );
+                
+                foreach (var stalk in stalkConfig.Items)
+                {
+                    stalk.Channel = this.appConfig.FreenodeChannel;
+                    defaultChannel.Stalks.Add(stalk.Identifier, stalk);
+                    stalkConfig.Remove(stalk.Identifier);
+                }
+                
+                this.channelConfiguration.Save();
+                stalkConfig.Save();
+            }
+
+            
             this.logger.InfoFormat(
-                "Tracking {0} stalks and {1} templates.",
-                stalkConfiguration.Items.Count,
-                templateConfiguration.Items.Count);
+                "Tracking {0} stalks, {1} templates, {2} users, and {3} channels.",
+                this.channelConfiguration.Items.Aggregate(0, (i, channel) => i + channel.Stalks.Count),
+                templateConfiguration.Items.Count,
+                userConfiguration.Items.Count,
+                channelConfiguration.Items.Count
+            );
 
             this.freenodeClient.DisconnectedEvent += this.OnDisconnect;
             this.wikimediaClient.DisconnectedEvent += this.OnDisconnect;
@@ -69,12 +107,16 @@
 
         public void Run()
         {
-            this.freenodeClient.JoinChannel(this.appConfig.FreenodeChannel);
-            this.wikimediaClient.JoinChannel(this.appConfig.WikimediaChannel);
+            foreach (var channel in this.channelConfiguration.Items)
+            {
+                this.freenodeClient.JoinChannel(channel.Identifier);
+            }
             
+            this.wikimediaClient.JoinChannel(this.appConfig.WikimediaChannel);
+
             while (this.alive)
             {
-                Thread.Sleep(1000);    
+                Thread.Sleep(1000);
             }
         }
 
@@ -87,6 +129,5 @@
         {
             this.alive = false;
         }
-
     }
 }

@@ -37,7 +37,7 @@
             this.xmlFactory = xmlFactory;
             this.fileService = fileService;
             this.ItemList = new SortedDictionary<string, T>();
-
+            
             if (!this.fileService.FileExists(this.configurationFileName))
             {
                 this.Logger.WarnFormat(

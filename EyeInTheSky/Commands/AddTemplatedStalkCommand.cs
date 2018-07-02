@@ -19,7 +19,8 @@
     public class AddTemplatedStalkCommand : CommandBase
     {
         private readonly ITemplateConfiguration templateConfiguration;
-        private readonly IStalkConfiguration stalkConfig;
+
+        private readonly IChannelConfiguration channelConfiguration;
 
         public AddTemplatedStalkCommand(
             string commandSource,
@@ -29,8 +30,8 @@
             IFlagService flagService,
             IConfigurationProvider configurationProvider,
             IIrcClient client,
-            IStalkConfiguration stalkConfig,
-            ITemplateConfiguration templateConfiguration)
+            ITemplateConfiguration templateConfiguration,
+            IChannelConfiguration channelConfiguration)
             : base(commandSource,
                 user,
                 arguments,
@@ -40,7 +41,7 @@
                 client)
         {
             this.templateConfiguration = templateConfiguration;
-            this.stalkConfig = stalkConfig;
+            this.channelConfiguration = channelConfiguration;
         }
 
         protected override IEnumerable<CommandResponse> Execute()
@@ -66,15 +67,16 @@
             }
             
             var newStalk = this.templateConfiguration.NewFromTemplate(proposedFlag, template, args);
+            newStalk.Channel = this.CommandSource;
 
-            if (this.stalkConfig.ContainsKey(newStalk.Identifier))
+            if (this.channelConfiguration[this.CommandSource].Stalks.ContainsKey(newStalk.Identifier))
             {
                 throw new CommandErrorException(
                     string.Format("A stalk with flag {0} already exists!", this.InvokedAs));
             }
             
-            this.stalkConfig.Add(newStalk);
-            this.stalkConfig.Save();
+            this.channelConfiguration[this.CommandSource].Stalks.Add(newStalk.Identifier, newStalk);
+            this.channelConfiguration.Save();
 
             yield return new CommandResponse
             {

@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using EyeInTheSky.Model.Interfaces;
 
-    public interface IStalkConfiguration : IConfigurationBase<IStalk>
+    public interface IChannelConfiguration : IConfigurationBase<IIrcChannel>
     {
         IEnumerable<IStalk> MatchStalks(IRecentChange rc);
     }

@@ -1,6 +1,7 @@
 ﻿namespace EyeInTheSky.Services
 {
     using System;
+    using System.Threading;
     using System.Xml;
     using Castle.Core.Logging;
     using EyeInTheSky.Model;
@@ -72,8 +73,16 @@
                 emailTimestamp = this.ParseDate(mask, timeAttribute.Value, "email confirmation timestamp");
             }
 
+            // TODO: Hack in a delay for stored $a masks until T1236 is fixed
+            if (this.freenodeClient.ExtBanTypes == null || this.freenodeClient.ExtBanDelimiter == null)
+            {
+                Thread.Sleep(5000);
+            }
+            
+            var userMask = new IrcUserMask(mask, this.freenodeClient);
+            
             var u = new BotUser(
-                new IrcUserMask(mask, this.freenodeClient),
+                userMask,
                 globalflags,
                 email,
                 confirmationHash,

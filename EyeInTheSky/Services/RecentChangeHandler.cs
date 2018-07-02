@@ -18,7 +18,7 @@
     {
         private readonly IAppConfiguration appConfig;
         private readonly ILogger logger;
-        private readonly IStalkConfiguration stalkConfig;
+        private readonly IChannelConfiguration channelConfig;
         private readonly IIrcClient freenodeClient;
         private readonly IRecentChangeParser rcParser;
         private readonly IEmailHelper emailHelper;
@@ -29,7 +29,7 @@
 
         public RecentChangeHandler(IAppConfiguration appConfig,
             ILogger logger,
-            IStalkConfiguration stalkConfig,
+            IChannelConfiguration channelConfig,
             IIrcClient freenodeClient,
             IRecentChangeParser rcParser,
             IEmailHelper emailHelper,
@@ -38,7 +38,7 @@
         {
             this.appConfig = appConfig;
             this.logger = logger;
-            this.stalkConfig = stalkConfig;
+            this.channelConfig = channelConfig;
             this.freenodeClient = freenodeClient;
             this.rcParser = rcParser;
             this.emailHelper = emailHelper;
@@ -88,10 +88,9 @@
                     this.appConfig.RcUser);
                 return;
             }
-            
+
             var rcMessage = e.Message;
-            
-            
+
             IRecentChange rc;
 
             try
@@ -108,28 +107,30 @@
                 this.logger.ErrorFormat(ex, "Error processing received message: {0}", e.Message);
                 return;
             }
-            
-            var stalks = this.stalkConfig.MatchStalks(rc).ToList();
+
+            var stalks = this.channelConfig.MatchStalks(rc).ToList();
 
             if (stalks.Count == 0)
             {
                 return;
             }
 
-            this.logger.InfoFormat("Seen stalked change for stalks: {0}", string.Join(" ", stalks.Select(x => x.Identifier)));
-            
+            this.logger.InfoFormat(
+                "Seen stalked change for stalks: {0}",
+                string.Join(" ", stalks.Select(x => x.Identifier)));
+
             // send notifications
             this.SendToIrc(stalks, rc);
             this.SendEmail(stalks, rc);
-                
+
             // touch update flag
             foreach (var stalk in stalks)
             {
                 stalk.LastTriggerTime = DateTime.Now;
                 stalk.TriggerCount++;
             }
-            
-            this.stalkConfig.Save();
+
+            this.channelConfig.Save();
         }
 
         private void SendEmail(IList<IStalk> stalks, IRecentChange rc)
@@ -139,7 +140,7 @@
                 this.logger.Debug("Not sending email; no matched stalks support it.");
                 return;
             }
-            
+
             if (this.appConfig.EmailConfiguration == null)
             {
                 this.logger.Debug("Not sending email; email configuration is disabled");
@@ -161,7 +162,7 @@
                     true,
                     null,
                     null);
-                
+
                 messageId = this.emailHelper.SendEmail(
                     this.FormatMessageForEmail(stalks, rc),
                     string.Format(this.templates.EmailRcSubject, stalkList, rc.Page),
@@ -181,9 +182,24 @@
 
         private void SendToIrc(IEnumerable<IStalk> stalks, IRecentChange rc)
         {
+            var splitStalks = new Dictionary<string, List<IStalk>>();
+
+            foreach (var stalk in stalks)
+            {
+                if (!splitStalks.ContainsKey(stalk.Channel))
+                {
+                    splitStalks.Add(stalk.Channel, new List<IStalk>());
+                }
+
+                splitStalks[stalk.Channel].Add(stalk);
+            }
+
             try
             {
-                this.freenodeClient.SendMessage(this.appConfig.FreenodeChannel, this.FormatMessageForIrc(stalks, rc));
+                foreach (var stalkList in splitStalks)
+                {
+                    this.freenodeClient.SendMessage(stalkList.Key, this.FormatMessageForIrc(stalkList.Value, rc));
+                }
             }
             catch (Exception ex)
             {
@@ -201,7 +217,7 @@
                 {
                     stalkTags.Append(this.templates.IrcStalkTagSeparator);
                 }
-                
+
                 first = false;
 
                 stalkTags.Append(s.Identifier);
@@ -259,7 +275,7 @@
                 var expiry = stalk.ExpiryTime.HasValue
                     ? stalk.ExpiryTime.Value.ToString(this.appConfig.DateFormat)
                     : "never";
-                
+
                 var lastTrigger = stalk.LastTriggerTime.HasValue
                     ? stalk.LastTriggerTime.Value.ToString(this.appConfig.DateFormat)
                     : "never";

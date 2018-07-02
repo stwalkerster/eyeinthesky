@@ -54,6 +54,8 @@
         public int TriggerCount { get; set; }
         
         public string LastMessageId { get; set; }
+        
+        public string Channel { get; set; }
 
         public bool IsEnabled
         {

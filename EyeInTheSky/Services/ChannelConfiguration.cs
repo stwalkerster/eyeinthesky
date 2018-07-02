@@ -2,26 +2,28 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
+    using System.Xml;
     using Castle.Core.Logging;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Services.Interfaces;
 
-    public class StalkConfiguration : ConfigFileBase<IStalk>
+    public class ChannelConfiguration : ConfigFileBase<IIrcChannel>, IChannelConfiguration
     {
-        public StalkConfiguration(
+        public ChannelConfiguration(
             IAppConfiguration configuration,
             ILogger logger,
-            IStalkFactory stalkFactory,
-            IFileService fileService)
-            : base(configuration.StalkConfigFile,
-                "stalks",
-                logger,
-                stalkFactory.NewFromXmlElement,
-                stalkFactory.ToXmlElement,
-                fileService)
+            IChannelFactory channelFactory,
+            IFileService fileService) : base(
+            configuration.ChannelConfigFile,
+            "channels",
+            logger,
+            channelFactory.NewFromXmlElement,
+            channelFactory.ToXmlElement,
+            fileService)
         {
         }
-
+        
         public IEnumerable<IStalk> MatchStalks(IRecentChange rc)
         {
             if (!this.Initialised)
@@ -32,7 +34,9 @@
             SortedList<string, IStalk> stalkListClone;
             lock (this.ItemList)
             {
-                stalkListClone = new SortedList<string, IStalk>(this.ItemList);
+                stalkListClone = new SortedList<string, IStalk>(
+                    this.ItemList.SelectMany(x => x.Value.Stalks.Values)
+                        .ToDictionary(x => x.Identifier + "@" + x.Channel));
             }
             
             foreach (var s in stalkListClone)

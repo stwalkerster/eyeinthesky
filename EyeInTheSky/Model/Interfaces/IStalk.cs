@@ -15,6 +15,7 @@
         IStalkNode SearchTree { get; set; }
         int TriggerCount { get; set; }
         string LastMessageId { get; set; }
+        string Channel { get; set; }
         bool IsActive();
         bool Match(IRecentChange rc);
     }

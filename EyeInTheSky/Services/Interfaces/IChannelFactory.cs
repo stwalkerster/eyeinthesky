@@ -2,7 +2,7 @@
 {
     using EyeInTheSky.Model.Interfaces;
 
-    public interface IBotUserConfiguration : IConfigurationBase<IBotUser>
+    public interface IChannelFactory : IConfigFactory<IIrcChannel>
     {
     }
 }

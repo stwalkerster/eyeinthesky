@@ -7,6 +7,7 @@
         string CommandPrefix { get; }
         string StalkConfigFile { get; }
         string UserConfigFile { get; }
+        string ChannelConfigFile { get; }
         string TemplateConfigFile { get; }
         string RcUser { get; }
         string DateFormat { get; }

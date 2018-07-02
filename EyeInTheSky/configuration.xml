@@ -29,10 +29,10 @@
                 <wikimediaChannel>#en.wikipedia</wikimediaChannel>
                 <!-- The prefix for all commands the bot recognises -->
                 <commandPrefix>!</commandPrefix>
-                <!-- The file in which to store the stalk configurations -->
-                <stalkConfigFile>stalks.xml</stalkConfigFile>
                 <!-- The file in which to store the users -->
                 <userConfigFile>users.xml</userConfigFile>
+                <!-- The file in which to store the channel configurations -->
+                <channelConfigFile>channels.xml</channelConfigFile>
                 <!-- The file in which to store the stalk template configurations -->
                 <templateConfigFile>stalk-templates.xml</templateConfigFile>
                 <!-- The full mask of the RC bot on the Wikimedia network -->
