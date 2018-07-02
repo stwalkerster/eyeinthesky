@@ -100,6 +100,11 @@
 
         private IEnumerable<CommandResponse> LocalMode(string userMask, string flagChanges, string accountName)
         {
+            if (!this.CommandSource.StartsWith("#"))
+            {
+                throw new CommandErrorException("This command must be executed in-channel!");
+            }
+            
             var user = this.channelConfiguration[this.CommandSource]
                 .Users.FirstOrDefault(x => x.Mask.ToString() == userMask);
             if (user == null)

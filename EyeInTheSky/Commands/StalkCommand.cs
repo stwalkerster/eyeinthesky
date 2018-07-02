@@ -73,6 +73,11 @@
 
         protected override IEnumerable<CommandResponse> Execute()
         {
+            if (!this.CommandSource.StartsWith("#"))
+            {
+                throw new CommandErrorException("This command must be executed in-channel!");
+            }
+            
             var tokenList = this.OriginalArguments.ToParameters().ToList();
             
             if (tokenList.Count < 1)
