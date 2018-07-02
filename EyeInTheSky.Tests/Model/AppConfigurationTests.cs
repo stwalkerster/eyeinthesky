@@ -23,8 +23,8 @@
             Assert.AreEqual("abc", this.appConfig.FreenodeChannel);
             Assert.AreEqual("def", this.appConfig.WikimediaChannel);
             Assert.AreEqual("ghi", this.appConfig.CommandPrefix);
-            Assert.AreEqual("jkl", this.appConfig.StalkConfigFile);
-            Assert.AreEqual("efg", this.appConfig.UserConfigFile);
+            Assert.AreEqual("jkl", this.appConfig.UserConfigFile);
+            Assert.AreEqual("efg", this.appConfig.ChannelConfigFile);
             Assert.AreEqual("mno", this.appConfig.TemplateConfigFile);
             Assert.AreEqual("p!q@r", this.appConfig.RcUser);
             Assert.AreEqual("stu", this.appConfig.DateFormat);

@@ -5,7 +5,8 @@ namespace EyeInTheSky.Model
 
     public class AppConfiguration : IAppConfiguration
     {
-        public AppConfiguration(string freenodeChannel,
+        public AppConfiguration(
+            string freenodeChannel,
             string wikimediaChannel,
             string commandPrefix,
             string userConfigFile,
@@ -96,20 +97,21 @@ namespace EyeInTheSky.Model
         public string DateFormat { get; private set; }
         public string MediaWikiApiEndpoint { get; private set; }
         public string UserAgent { get; private set; }
-        
+
         // These properties are optional, and set by Castle
         // ReSharper disable UnusedAutoPropertyAccessor.Global
         public EmailConfiguration EmailConfiguration { get; set; }
         public int MonitoringPort { get; set; }
         public string PhabUrl { get; set; }
         public string PhabToken { get; set; }
+
         public string PrivacyPolicy { get; set; }
         // ReSharper restore UnusedAutoPropertyAccessor.Global
-        
+
         // These properties are deprecated and used only by migrations.
         // They are also optional, and also set by Castle
         // ReSharper disable UnusedAutoPropertyAccessor.Global
         public string StalkConfigFile { get; set; }
         // ReSharper restore UnusedAutoPropertyAccessor.Global
-    }    
+    }
 }

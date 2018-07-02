@@ -10,7 +10,7 @@
         [Test]
         public void ShouldConstructCorrectly()
         {
-            var nt = new NotificationTemplates("abc", "def", "ghi", "jkl", "mno", "pqr", "stu", "vwx", "yza");
+            var nt = new NotificationTemplates("abc", "def", "ghi", "jkl", "mno", "pqr", "stu", "bcd", "efg", "hij", "klm", "vwx", "yza");
 
             // assert
             Assert.AreEqual("abc", nt.EmailRcSubject);
@@ -20,6 +20,7 @@
             Assert.AreEqual("mno", nt.EmailSignature);
             Assert.AreEqual("pqr", nt.EmailStalkReport);
             Assert.AreEqual("stu", nt.EmailStalkReportSubject);
+            
             Assert.AreEqual("vwx", nt.IrcAlertFormat);
             Assert.AreEqual("yza", nt.IrcStalkTagSeparator);
         }
@@ -29,7 +30,7 @@
         {
             Assert.Catch<ArgumentNullException>(() =>
             {
-                new NotificationTemplates(null, "def", "ghi", "jkl", "mno", "pqr", "stu", "vwx", "yza");
+                new NotificationTemplates(null, "def", "ghi", "jkl", "mno", "pqr", "stu", "bcd", "efg", "hij", "klm", "vwx", "yza");
             });
         }
 
@@ -38,7 +39,7 @@
         {
             Assert.Catch<ArgumentNullException>(() =>
             {
-                new NotificationTemplates("abc", null, "ghi", "jkl", "mno", "pqr", "stu", "vwx", "yza");
+                new NotificationTemplates("abc", null, "ghi", "jkl", "mno", "pqr", "stu", "bcd", "efg", "hij", "klm", "vwx", "yza");
             });
         }
 
@@ -47,7 +48,7 @@
         {
             Assert.Catch<ArgumentNullException>(() =>
             {
-                new NotificationTemplates("abc", "def", null, "jkl", "mno", "pqr", "stu", "vwx", "yza");
+                new NotificationTemplates("abc", "def", null, "jkl", "mno", "pqr", "stu", "bcd", "efg", "hij", "klm", "vwx", "yza");
             });
         }
 
@@ -56,7 +57,7 @@
         {
             Assert.Catch<ArgumentNullException>(() =>
             {
-                new NotificationTemplates("abc", "def", "ghi", null, "mno", "pqr", "stu", "vwx", "yza");
+                new NotificationTemplates("abc", "def", "ghi", null, "mno", "pqr", "stu", "bcd", "efg", "hij", "klm", "vwx", "yza");
             });
         }
 
@@ -65,7 +66,7 @@
         {
             Assert.Catch<ArgumentNullException>(() =>
             {
-                new NotificationTemplates("abc", "def", "ghi", "jkl", null, "pqr", "stu", "vwx", "yza");
+                new NotificationTemplates("abc", "def", "ghi", "jkl", null, "pqr", "stu", "bcd", "efg", "hij", "klm", "vwx", "yza");
             });
         }
 
@@ -74,7 +75,7 @@
         {
             Assert.Catch<ArgumentNullException>(() =>
             {
-                new NotificationTemplates("abc", "def", "ghi", "jkl", "mno", null, "stu", "vwx", "yza");
+                new NotificationTemplates("abc", "def", "ghi", "jkl", "mno", null, "stu", "bcd", "efg", "hij", "klm", "vwx", "yza");
             });
         }
 
@@ -83,7 +84,7 @@
         {
             Assert.Catch<ArgumentNullException>(() =>
             {
-                new NotificationTemplates("abc", "def", "ghi", "jkl", "mno", "pqr", null, "vwx", "yza");
+                new NotificationTemplates("abc", "def", "ghi", "jkl", "mno", "pqr", null, "bcd", "efg", "hij", "klm", "vwx", "yza");
             });
         }
 
@@ -92,7 +93,7 @@
         {
             Assert.Catch<ArgumentNullException>(() =>
             {
-                new NotificationTemplates("abc", "def", "ghi", "jkl", "mno", "pqr", "stu", null, "yza");
+                new NotificationTemplates("abc", "def", "ghi", "jkl", "mno", "pqr", "stu", "bcd", "efg", "hij", "klm", null, "yza");
             });
         }
 
@@ -101,7 +102,7 @@
         {
             Assert.Catch<ArgumentNullException>(() =>
             {
-                new NotificationTemplates("abc", "def", "ghi", "jkl", "mno", "pqr", "stu", "vwx", null);
+                new NotificationTemplates("abc", "def", "ghi", "jkl", "mno", "pqr", "stu", "bcd", "efg", "hij", "klm", "vwx", null);
             });
         }
     }

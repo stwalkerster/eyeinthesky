@@ -2,10 +2,11 @@
 {
     using System;
     using EyeInTheSky.Model.Interfaces;
-    
+
     public class NotificationTemplates : INotificationTemplates
     {
-        public NotificationTemplates(string emailRcSubject,
+        public NotificationTemplates(
+            string emailRcSubject,
             string emailRcTemplate,
             string emailStalkTemplate,
             string emailGreeting,
