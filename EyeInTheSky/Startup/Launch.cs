@@ -50,7 +50,8 @@
             return 0;
         }
 
-        public Launch(ILogger logger,
+        public Launch(
+            ILogger logger,
             IIrcClient freenodeClient,
             IIrcClient wikimediaClient,
             IAppConfiguration appConfig,
@@ -66,33 +67,36 @@
             this.appConfig = appConfig;
             this.channelConfiguration = channelConfiguration;
 
-            
             if (!this.channelConfiguration.Items.Any())
             {
                 this.logger.InfoFormat("Migrating to channel configuration file...");
-                
+
                 var defaultChannel = new IrcChannel(this.appConfig.FreenodeChannel);
                 this.channelConfiguration.Add(defaultChannel);
 
-                var stalkConfig = new StalkConfiguration(
-                    appConfig,
-                    logger.CreateChildLogger("LegacyStalkConfig"),
-                    stalkFactory,
-                    fileService
-                );
-                
-                foreach (var stalk in stalkConfig.Items)
+                if (appConfig.StalkConfigFile != null)
                 {
-                    stalk.Channel = this.appConfig.FreenodeChannel;
-                    defaultChannel.Stalks.Add(stalk.Identifier, stalk);
-                    stalkConfig.Remove(stalk.Identifier);
+                    var stalkConfig = new StalkConfiguration(
+                        appConfig,
+                        logger.CreateChildLogger("LegacyStalkConfig"),
+                        stalkFactory,
+                        fileService
+                    );
+                    stalkConfig.Initialize();
+
+                    foreach (var stalk in stalkConfig.Items)
+                    {
+                        stalk.Channel = this.appConfig.FreenodeChannel;
+                        defaultChannel.Stalks.Add(stalk.Identifier, stalk);
+                        stalkConfig.Remove(stalk.Identifier);
+                    }
+
+                    stalkConfig.Save();
                 }
-                
+
                 this.channelConfiguration.Save();
-                stalkConfig.Save();
             }
 
-            
             this.logger.InfoFormat(
                 "Tracking {0} stalks, {1} templates, {2} users, and {3} channels.",
                 this.channelConfiguration.Items.Aggregate(0, (i, channel) => i + channel.Stalks.Count),
@@ -111,7 +115,7 @@
             {
                 this.freenodeClient.JoinChannel(channel.Identifier);
             }
-            
+
             this.wikimediaClient.JoinChannel(this.appConfig.WikimediaChannel);
 
             while (this.alive)

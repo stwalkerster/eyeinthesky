@@ -25,7 +25,7 @@
         public IIrcChannel NewFromXmlElement(XmlElement element)
         {
             var name = element.Attributes["name"].Value;
-            
+
             var ircChannel = new IrcChannel(name);
 
             this.ChildrenFromXml(element, name, ircChannel);
@@ -53,7 +53,7 @@
                 if (xmlElement.Name == "users")
                 {
                     ircChannel.Users.Clear();
-                    
+
                     foreach (var childNode in xmlElement.ChildNodes)
                     {
                         var childElement = childNode as XmlElement;
@@ -67,7 +67,7 @@
 
                     continue;
                 }
-                
+
                 if (xmlElement.Name == "stalks")
                 {
                     ircChannel.Stalks.Clear();
@@ -115,9 +115,9 @@
             {
                 Thread.Sleep(5000);
             }
-            
+
             var userMask = new IrcUserMask(mask, this.freenodeClient);
-            
+
             return new ChannelUser(userMask)
             {
                 LocalFlags = localFlags,
@@ -139,18 +139,24 @@
             {
                 var u = doc.CreateElement("user");
                 u.SetAttribute("mask", channelUser.Mask.ToString());
-                
-                if (channelUser.LocalFlags != null)
+                bool saveable = false;
+
+                if (!string.IsNullOrEmpty(channelUser.LocalFlags))
                 {
                     u.SetAttribute("localflags", channelUser.LocalFlags);
+                    saveable = true;
                 }
 
                 if (channelUser.Subscribed)
                 {
                     u.SetAttribute("subscribed", XmlConvert.ToString(channelUser.Subscribed));
+                    saveable = true;
                 }
 
-                usersElement.AppendChild(u);
+                if (saveable)
+                {
+                    usersElement.AppendChild(u);
+                }
             }
 
             foreach (var stalk in item.Stalks)

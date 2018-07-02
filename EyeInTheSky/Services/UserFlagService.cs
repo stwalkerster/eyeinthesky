@@ -59,7 +59,7 @@
             }
 
             // must be in a channel for local flags
-            if (!locality.StartsWith("#"))
+            if (locality == null || !locality.StartsWith("#"))
             {
                 return false;
             }

@@ -2,14 +2,10 @@
 {
     using System.Collections.Generic;
     using System.Linq;
-    using System.Security.Policy;
-
     using Castle.Core.Logging;
-
     using EyeInTheSky.Extensions;
     using EyeInTheSky.Model;
     using EyeInTheSky.Services.Interfaces;
-
     using Stwalkerster.Bot.CommandLib.Attributes;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities.Models;
@@ -19,6 +15,7 @@
     using Stwalkerster.IrcClient.Interfaces;
     using Stwalkerster.IrcClient.Model;
     using Stwalkerster.IrcClient.Model.Interfaces;
+    using CLFlag = Stwalkerster.Bot.CommandLib.Model.Flag;
 
     [CommandInvocation("flags")]
     public class FlagsCommand : CommandBase
@@ -75,7 +72,8 @@
             }
 
             var mode = tokenList.PopFromFront();
-            var userMask = tokenList.PopFromFront();
+            var accountName = tokenList.PopFromFront();
+            var userMask = "$a:" + accountName;
             var flagChanges = tokenList.PopFromFront();
 
             if (!this.botUserConfiguration.ContainsKey(userMask))
@@ -84,76 +82,132 @@
                 {
                     new CommandResponse
                     {
-                        Message = "No such user is currently registered",
-                        Destination = CommandResponseDestination.PrivateMessage
+                        Message = "No such user is currently registered"
                     }
                 };
             }
-            
+
             switch (mode)
             {
                 case "global":
-                    return this.GlobalMode(userMask, flagChanges);
+                    return this.GlobalMode(userMask, flagChanges, accountName);
                 case "local":
-                    return this.LocalMode(userMask, flagChanges);
+                    return this.LocalMode(userMask, flagChanges, accountName);
                 default:
                     throw new CommandInvocationException();
             }
         }
 
-        private IEnumerable<CommandResponse> LocalMode(string userMask, string flagChanges)
+        private IEnumerable<CommandResponse> LocalMode(string userMask, string flagChanges, string accountName)
         {
-            var user = this.channelConfiguration[this.CommandSource].Users.FirstOrDefault(x => x.Mask.ToString() == userMask);
+            var user = this.channelConfiguration[this.CommandSource]
+                .Users.FirstOrDefault(x => x.Mask.ToString() == userMask);
             if (user == null)
             {
                 user = new ChannelUser(new IrcUserMask(userMask, this.Client));
                 this.channelConfiguration[this.CommandSource].Users.Add(user);
             }
-            
-            var currentFlags = user.LocalFlags.ToCharArray()
-                .Aggregate(new HashSet<string>(), (s, i) =>
-                {
-                    s.Add(i.ToString());
-                    return s;
-                });
 
-            var updatedFlags = this.ApplyFlagChanges(flagChanges, currentFlags);
+            var currentFlags = new HashSet<string>();
+            if (user.LocalFlags != null)
+            {
+                currentFlags = user.LocalFlags.ToCharArray()
+                    .Aggregate(
+                        new HashSet<string>(),
+                        (s, i) =>
+                        {
+                            s.Add(i.ToString());
+                            return s;
+                        });
+            }
 
-            var newFlagString = string.Join(string.Empty, updatedFlags);
+            // GlobalAdmin and Owner should never be granted locally - too much power.
+            // Standard is granted by default, so no sense to remove it.
+            var preventedChanges = new[] {AccessFlags.GlobalAdmin, CLFlag.Owner, CLFlag.Standard};
             
+            var updatedFlags = this.ApplyFlagChanges(ref flagChanges, currentFlags, preventedChanges);
+
+            var newFlagString = string.Join(string.Empty, updatedFlags.OrderBy(x => x));
+
             user.LocalFlags = newFlagString;
             this.channelConfiguration.Save();
-            
-            yield return new CommandResponse
+
+            if (string.IsNullOrEmpty(flagChanges))
             {
-                Message = string.Format(
-                    "Updated local flags for {0}, using these changes: {1}. New locally-held flags are {2}",
-                    userMask, flagChanges, newFlagString)
-            };
+                yield return new CommandResponse
+                {
+                    Message = string.Format(
+                        "No valid changes to local flags in {1} for {0} proposed.",
+                        accountName,
+                        this.CommandSource)
+                };
+            }
+            else
+            {
+                yield return new CommandResponse
+                {
+                    Message = string.Format(
+                        "Updated local flags in {3} for {0}, using these changes: {1}. New locally-held flags are {2}",
+                        accountName,
+                        flagChanges,
+                        newFlagString,
+                        this.CommandSource)
+                };
+            }
         }
 
-        private IEnumerable<CommandResponse> GlobalMode(string userMask, string flagChanges)
+        private IEnumerable<CommandResponse> GlobalMode(string userMask, string flagChanges, string accountName)
         {
-            var currentFlags = this.botUserConfiguration[userMask].GlobalFlags.ToCharArray()
-                .Aggregate(new HashSet<string>(), (s, i) =>
-                {
-                    s.Add(i.ToString());
-                    return s;
-                });
+            var currentFlags = new HashSet<string>();
 
-            var updatedFlags = this.ApplyFlagChanges(flagChanges, currentFlags);
-
-            var newFlagString = string.Join(string.Empty, updatedFlags);
-            
-            this.botUserConfiguration[userMask].GlobalFlags = newFlagString;
-            this.botUserConfiguration.Save();
-            
-            yield return new CommandResponse
+            if (this.botUserConfiguration[userMask].GlobalFlags != null)
             {
-                Message = string.Format(
-                    "Updated global flags for {0}, using these changes: {1}. New globally-held flags are {2}",
-                    userMask, flagChanges, newFlagString)
-            };
+                currentFlags = this.botUserConfiguration[userMask]
+                    .GlobalFlags.ToCharArray()
+                    .Aggregate(
+                        currentFlags,
+                        (s, i) =>
+                        {
+                            s.Add(i.ToString());
+                            return s;
+                        });
+            }
+
+            // Standard is granted by default, so no sense to remove it.
+            var preventedChanges = new List<string> {CLFlag.Standard};
+
+            if (!this.FlagService.UserHasFlag(this.User, CLFlag.Owner, null))
+            {
+                preventedChanges.Add(CLFlag.Owner);
+            }
+            
+            var updatedFlags = this.ApplyFlagChanges(ref flagChanges, currentFlags, preventedChanges);
+
+            this.botUserConfiguration[userMask].GlobalFlags = string.Join(string.Empty, updatedFlags);
+            this.botUserConfiguration.Save();
+
+            updatedFlags.Add("S");
+
+            if (string.IsNullOrEmpty(flagChanges))
+            {
+                yield return new CommandResponse
+                {
+                    Message = string.Format(
+                        "No valid changes to global flags for {0} proposed.",
+                        accountName)
+                };
+            }
+            else
+            {
+                yield return new CommandResponse
+                {
+                    Message = string.Format(
+                        "Updated global flags for {0}, using these changes: {1}. New globally-held flags are {2}",
+                        accountName,
+                        flagChanges,
+                        string.Join(string.Empty, updatedFlags.OrderBy(x => x)))
+                };
+            }
         }
 
         protected override IDictionary<string, HelpMessage> Help()
@@ -166,7 +220,7 @@
                     "flags",
                     new HelpMessage(
                         this.CommandName,
-                        "flags <global|local> <usermask> <changes>",
+                        "flags <global|local> <account> <changes>",
                         "Modifies the flags granted to the usermask in either a global scope or in the local channel"));
             }
             else if (this.FlagService.UserHasFlag(this.User, AccessFlags.ChannelAdmin, this.CommandSource))
@@ -175,53 +229,96 @@
                     "flags",
                     new HelpMessage(
                         this.CommandName,
-                        "flags local <usermask> <changes>",
+                        "flags local <usermask> <account`1>",
                         "Modifies the flags granted to the usermask in the local channel"));
             }
 
             return help;
         }
-        
-        private IEnumerable<string> ApplyFlagChanges(string changes, IEnumerable<string> original)
+
+        private HashSet<string> ApplyFlagChanges(ref string changes, IEnumerable<string> original, IList<string> preventedChanges)
         {
             var result = new HashSet<string>(original);
             bool addMode = true;
+
+            string newChanges = "";
             
-            foreach (var c in changes)
+            foreach (var changeChar in changes)
             {
-                if (c == '-')
+                var c = changeChar.ToString();
+                
+                if (c == "-")
                 {
                     addMode = false;
+                    newChanges += c;
                     continue;
                 }
 
-                if (c == '+')
+                if (c == "+")
                 {
                     addMode = true;
+                    newChanges += c;
                     continue;
                 }
 
-                if (c == '*' && !addMode)
+                if (c == "*" && !addMode)
                 {
-                    result.Clear();
-                    continue;
-                }
-
-                if (!AccessFlags.ValidFlags.Contains(c.ToString()))
-                {
+                    foreach (var i in new List<string>(result))
+                    {
+                        if (preventedChanges.Contains(c))
+                        {
+                            continue;
+                        }
+                        
+                        result.Remove(i);
+                        newChanges += i;    
+                    }
+                    
                     continue;
                 }
 
                 if (addMode)
                 {
-                    result.Add(c.ToString());
+                    if (!AccessFlags.ValidFlags.Contains(c))
+                    {
+                        continue;
+                    }
+
+                    if (preventedChanges.Contains(c))
+                    {
+                        continue;
+                    }
+
+                    if (result.Contains(c))
+                    {
+                        // no-op
+                        continue;
+                    }
+                    
+                    newChanges += c;
+                    result.Add(c);
                 }
                 else
                 {
-                    result.Remove(c.ToString());
+                    if (preventedChanges.Contains(c))
+                    {
+                        continue;
+                    }
+
+                    if (!result.Contains(c))
+                    {
+                        // no-op
+                        continue;
+                    }
+                    
+                    newChanges += c;
+                    result.Remove(c);
                 }
             }
 
+            newChanges = newChanges.TrimEnd('+', '-');
+            
+            changes = newChanges;
             return result;
         }
     }

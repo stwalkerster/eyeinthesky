@@ -2,14 +2,11 @@
 {
     using System.Collections.Generic;
     using System.Linq;
-
     using Castle.Core.Logging;
-
     using EyeInTheSky.Extensions;
     using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Services.Interfaces;
-
     using Stwalkerster.Bot.CommandLib.Attributes;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities.Models;
@@ -18,7 +15,6 @@
     using Stwalkerster.Bot.CommandLib.Services.Interfaces;
     using Stwalkerster.IrcClient.Interfaces;
     using Stwalkerster.IrcClient.Model.Interfaces;
-
     using CLFlag = Stwalkerster.Bot.CommandLib.Model.Flag;
 
     [CommandInvocation("channel")]
@@ -53,6 +49,7 @@
             }
 
             var mode = tokenList.PopFromFront();
+            var channel = tokenList.PopFromFront();
 
             switch (mode)
             {
@@ -60,7 +57,7 @@
                     return this.FlagService.UserHasFlag(this.User, AccessFlags.GlobalAdmin, null);
                 case "part":
                     return this.FlagService.UserHasFlag(this.User, AccessFlags.GlobalAdmin, null) ||
-                           this.FlagService.UserHasFlag(this.User, AccessFlags.ChannelAdmin, this.CommandSource);
+                           this.FlagService.UserHasFlag(this.User, AccessFlags.ChannelAdmin, channel);
                 default:
                     return false;
             }
@@ -93,22 +90,16 @@
         {
             if (this.appConfig.FreenodeChannel == channel)
             {
-                yield return new CommandResponse
+                return new[]
                 {
-                    Message = "Cannot leave default channel",
-                    Destination = CommandResponseDestination.PrivateMessage
+                    new CommandResponse
+                    {
+                        Message = "Cannot leave default channel"
+                    }
                 };
             }
-            
-            if (!this.channelConfiguration.ContainsKey(channel))
-            {
-                yield return new CommandResponse
-                {
-                    Message = string.Format("I don't appear to have {0} in my configuration.", channel),
-                    Destination = CommandResponseDestination.PrivateMessage
-                };
-            }
-            else
+
+            if (this.channelConfiguration.ContainsKey(channel))
             {
                 this.channelConfiguration.Remove(channel);
                 this.channelConfiguration.Save();
@@ -118,6 +109,8 @@
             {
                 this.Client.PartChannel(channel, string.Format("requested by {0}", this.User.Nickname));
             }
+
+            return null;
         }
 
         private IEnumerable<CommandResponse> JoinMode(string channel)
@@ -125,9 +118,10 @@
             this.channelConfiguration.Add(new IrcChannel(channel));
             this.channelConfiguration.Save();
             this.Client.JoinChannel(channel);
-            this.Client.SendMessage(channel,
+            this.Client.SendMessage(
+                channel,
                 string.Format("My presence in {0} was requested by {1}.", channel, this.User));
-            
+
             yield break;
         }
 
