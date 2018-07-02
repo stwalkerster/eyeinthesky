@@ -45,7 +45,7 @@ This email was sent to Freenode user {0}, who has previously registered with {1}
     {2}account email none
 The privacy policy can be found here: {3}
 ]]></emailSignature>
-                <emailStalkReport><![CDATA[You have requested a report of all of the configured stalks.
+                <emailStalkReport><![CDATA[You have requested a report of all of the configured stalks for channel {3}.
 
 ----
 Active:
@@ -63,7 +63,7 @@ Expired:
 {2}
 
 ]]></emailStalkReport>
-                <emailStalkReportSubject>Stalk Report</emailStalkReportSubject>
+                <emailStalkReportSubject>Stalk Report - {0}</emailStalkReportSubject>
                 <emailAccountDeletionSubject>Confirm Account Deletion</emailAccountDeletionSubject>
                 <emailAccountDeletionBody><![CDATA[You have requested your account be permanently deleted.
                 

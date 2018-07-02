@@ -33,6 +33,7 @@
         private readonly IEmailHelper emailHelper;
         private readonly RecentChangeHandler recentChangeHandler;
         private readonly IXmlCacheService xmlCacheService;
+        private readonly IBotUserConfiguration botUserConfiguration;
         private readonly IStalkNodeFactory stalkNodeFactory;
 
         public StalkCommand(
@@ -49,7 +50,8 @@
             INotificationTemplates templates,
             IEmailHelper emailHelper,
             RecentChangeHandler recentChangeHandler,
-            IXmlCacheService xmlCacheService
+            IXmlCacheService xmlCacheService,
+            IBotUserConfiguration botUserConfiguration
         ) : base(
             commandSource,
             user,
@@ -65,6 +67,7 @@
             this.emailHelper = emailHelper;
             this.recentChangeHandler = recentChangeHandler;
             this.xmlCacheService = xmlCacheService;
+            this.botUserConfiguration = botUserConfiguration;
             this.stalkNodeFactory = stalkNodeFactory;
         }
 
@@ -132,6 +135,29 @@
 
         private IEnumerable<CommandResponse> ReportMode()
         {
+            var accountKey = string.Format("$a:{0}", this.User.Account);
+            var botUser = this.botUserConfiguration[accountKey];
+
+            if (botUser == null)
+            {
+                yield return new CommandResponse
+                {
+                    Message = "You must be a registered user with a confirmed email address to use this command."
+                };
+                
+                yield break;
+            }
+            
+            if (!botUser.EmailAddressConfirmed)
+            {
+                yield return new CommandResponse
+                {
+                    Message = "You must have a confirmed email address to use this command."
+                };
+                
+                yield break;
+            }
+            
             var stalks = this.channelConfiguration[this.CommandSource].Stalks.Values;
             
             var disabled = stalks.Where(x => !x.IsEnabled);
@@ -142,30 +168,18 @@
                 this.templates.EmailStalkReport,
                 this.recentChangeHandler.FormatStalkListForEmail(active),
                 this.recentChangeHandler.FormatStalkListForEmail(disabled),
-                this.recentChangeHandler.FormatStalkListForEmail(expired)
+                this.recentChangeHandler.FormatStalkListForEmail(expired),
+                this.CommandSource
             );
-            
-            // temp hack
-            var owner = new BotUser(
-                new IrcUserMask(this.config.Owner, this.Client),
-                "OCSA",
-                this.config.EmailConfiguration.To,
-                null,
-                null,
-                true,
-                null,
-                null);
 
             this.emailHelper.SendEmail(
                 body,
-                this.templates.EmailStalkReportSubject,
+                string.Format(this.templates.EmailStalkReportSubject, this.CommandSource),
                 null,
-                owner);
+                botUser);
 
             yield return new CommandResponse
             {
-                Destination = CommandResponseDestination.PrivateMessage,
-                Type = CommandResponseType.Notice,
                 Message = "Stalk report sent via email"
             };
         }
