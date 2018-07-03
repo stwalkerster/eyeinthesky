@@ -155,7 +155,7 @@
                         "Updated local flags in {3} for {0}, using these changes: {1}. New locally-held flags are {2}",
                         accountName,
                         flagChanges,
-                        newFlagString,
+                        string.IsNullOrWhiteSpace(newFlagString) ? "(none)" : newFlagString,
                         this.CommandSource)
                 };
             }

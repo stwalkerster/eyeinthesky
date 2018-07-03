@@ -9,7 +9,7 @@
 Title:        {2}
 User:         {3}
 Summary:      {4}
-Flags:        {6}
+Edit flags:   {6}
 Trigger time: {7}
 Link:         {1}
 
@@ -21,12 +21,13 @@ This alert was triggered because the following stalks were triggered, and at lea
 
 ]]></emailRcTemplate>
                 <emailStalkTemplate><![CDATA[Flag:                 {0}
+Channel:              {3}
 Description:          {1}
 Configuration:        {2}
-Email notifications:  {3}
 Expiry:               {4}
 Last trigger:         {5}
 Previously triggered: {6} times
+Subscribed:           {7}
 
 ]]></emailStalkTemplate>
                 <emailGreeting><![CDATA[Hi there!

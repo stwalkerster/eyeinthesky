@@ -277,9 +277,9 @@
 
             var body = string.Format(
                 this.templates.EmailStalkReport,
-                this.recentChangeHandler.FormatStalkListForEmail(active),
-                this.recentChangeHandler.FormatStalkListForEmail(disabled),
-                this.recentChangeHandler.FormatStalkListForEmail(expired),
+                this.recentChangeHandler.FormatStalkListForEmail(active, botUser),
+                this.recentChangeHandler.FormatStalkListForEmail(disabled, botUser),
+                this.recentChangeHandler.FormatStalkListForEmail(expired, botUser),
                 this.CommandSource
             );
 

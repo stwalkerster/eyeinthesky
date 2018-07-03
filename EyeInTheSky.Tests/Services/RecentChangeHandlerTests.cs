@@ -1,12 +1,17 @@
 ﻿namespace EyeInTheSky.Tests.Services
 {
     using System;
+    using System.Collections.Generic;
+    using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Model.StalkNodes;
     using EyeInTheSky.Services;
     using EyeInTheSky.Services.Interfaces;
     using Moq;
     using NUnit.Framework;
+    using Stwalkerster.IrcClient.Interfaces;
+    using Stwalkerster.IrcClient.Model;
+    using IrcChannel = EyeInTheSky.Model.IrcChannel;
 
     [TestFixture]
     public class RecentChangeHandlerTests : TestBase
@@ -14,6 +19,8 @@
         private Mock<IStalk> stalkMock;
         private Mock<IRecentChange> rcMock;
         private Mock<IBugReporter> bugMock;
+        private Mock<IBotUser> botUser;
+        private Mock<IChannelConfiguration> channelConfig;
 
         [SetUp]
         public void LocalSetup()
@@ -23,11 +30,22 @@
             this.stalkMock = new Mock<IStalk>();
             this.rcMock = new Mock<IRecentChange>();
             this.bugMock = new Mock<IBugReporter>();
+            this.botUser = new Mock<IBotUser>();
+            this.channelConfig = new Mock<IChannelConfiguration>();
+            
+            var client = new Mock<IIrcClient>();
+            client.Setup(x => x.ExtBanDelimiter).Returns("$");
+            client.Setup(x => x.ExtBanTypes).Returns("a");
+            var mask = new IrcUserMask("$a:abc", client.Object);
+            this.botUser.Setup(x => x.Mask).Returns(mask);
+
+            this.channelConfig.Setup(x => x[It.IsAny<string>()]).Returns(new IrcChannel("foo"));
 
             this.stalkMock.Setup(s => s.Identifier).Returns("s1");
             this.stalkMock.Setup(s => s.Description).Returns("test desc");
             this.stalkMock.Setup(s => s.ExpiryTime).Returns(DateTime.MaxValue);
             this.stalkMock.Setup(s => s.SearchTree).Returns(new TrueNode());
+            this.stalkMock.Setup(s => s.Subscribers).Returns(new List<StalkUser>());
 
             this.rcMock.Setup(s => s.Url).Returns("http://enwp.org");
             this.rcMock.Setup(s => s.Page).Returns("Foo");
@@ -145,66 +163,6 @@
 
             // assert
             Assert.AreEqual("[s1] url http://enwp.org page Foo by Me summ test end", result);
-        }
-
-        [Test]
-        public void TestSingleFormatAllParamsForEmail()
-        {
-            // arrange
-            this.NotificationTemplatesMock.Setup(s => s.EmailRcTemplate).Returns("{1} {2} {3} {4} {5} {6} | {0}");
-            this.NotificationTemplatesMock.Setup(s => s.EmailStalkTemplate).Returns("> {0} {1} {2} {3} {4}");
-
-            var rcHander = new RecentChangeHandler(
-                this.AppConfigMock.Object,
-                this.LoggerMock.Object,
-                null,
-                null,
-                null,
-                null,
-                null,
-                this.NotificationTemplatesMock.Object, 
-                this.bugMock.Object);
-
-            // act
-            var result = rcHander.FormatMessageForEmail(new[] {this.stalkMock.Object}, this.rcMock.Object);
-
-            // assert
-            Assert.AreEqual(
-                "http://enwp.org Foo Me test +4 Minor | > s1 test desc (true) False 9999-12-31 23:59:59Z",
-                result);
-        }
-
-        [Test]
-        public void TestMultiFormatAllParamsForEmail()
-        {
-            // arrange
-            this.NotificationTemplatesMock.Setup(s => s.EmailRcTemplate).Returns("{1} {2} {3} {4} {5} {6} | {0}");
-            this.NotificationTemplatesMock.Setup(s => s.EmailStalkTemplate).Returns("> {0} {1} {2} {3} {4}");
-
-            var rcHander = new RecentChangeHandler(
-                this.AppConfigMock.Object,
-                this.LoggerMock.Object,
-                null,
-                null,
-                null,
-                null,
-                null,
-                this.NotificationTemplatesMock.Object, 
-                this.bugMock.Object);
-
-            var s2 = new Mock<IStalk>();
-            s2.Setup(s => s.Identifier).Returns("s2");
-            s2.Setup(s => s.Description).Returns("descky");
-            s2.Setup(s => s.ExpiryTime).Returns(DateTime.MaxValue);
-            s2.Setup(s => s.SearchTree).Returns(new FalseNode());
-
-            // act
-            var result = rcHander.FormatMessageForEmail(new[] {this.stalkMock.Object, s2.Object}, this.rcMock.Object);
-
-            // assert
-            Assert.AreEqual(
-                "http://enwp.org Foo Me test +4 Minor | > s1 test desc (true) False 9999-12-31 23:59:59Z> s2 descky (false) False 9999-12-31 23:59:59Z",
-                result);
         }
     }
 }

@@ -7,7 +7,6 @@
     using System.Text;
     using Castle.Core.Logging;
     using EyeInTheSky.Exceptions;
-    using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Services.Interfaces;
     using Stwalkerster.IrcClient.Events;
@@ -28,7 +27,8 @@
 
         private IrcUserMask rcUserMaskCache;
 
-        public RecentChangeHandler(IAppConfiguration appConfig,
+        public RecentChangeHandler(
+            IAppConfiguration appConfig,
             ILogger logger,
             IChannelConfiguration channelConfig,
             IBotUserConfiguration botUserConfiguration,
@@ -136,7 +136,7 @@
             this.channelConfig.Save();
         }
 
-        private void SendEmail(IList<IStalk> stalks, IRecentChange rc)
+        private void SendEmail(IEnumerable<IStalk> stalks, IRecentChange rc)
         {
             if (this.appConfig.EmailConfiguration == null)
             {
@@ -144,36 +144,62 @@
                 return;
             }
 
+            var stalkSplit = this.botUserConfiguration.Items.ToDictionary(x => x, y => new HashSet<IStalk>());
+
+            foreach (var stalk in stalks)
+            {
+                // channel subscribers
+                foreach (var channelUser in this.channelConfig[stalk.Channel].Users.Where(x => x.Subscribed))
+                {
+                    stalkSplit[this.botUserConfiguration[channelUser.Mask.ToString()]].Add(stalk);
+                }
+
+                // stalk subscribers
+                foreach (var stalkUser in stalk.Subscribers)
+                {
+                    stalkSplit[this.botUserConfiguration[stalkUser.Mask.ToString()]].Add(stalk);
+                }
+            }
+
+            foreach (var kvp in stalkSplit)
+            {
+                var stalkList = kvp.Value;
+                var botUser = kvp.Key;
+
+                if (!stalkList.Any())
+                {
+                    continue;
+                }
+
+                if (!botUser.EmailAddressConfirmed)
+                {
+                    continue;
+                }
+
+                this.SendIndividualEmail(stalkList.ToList(), rc, botUser);
+            }
+        }
+
+        private void SendIndividualEmail(IList<IStalk> stalks, IRecentChange rc, IBotUser botUser)
+        {
+            if (!botUser.EmailAddressConfirmed)
+            {
+                return;
+            }
+
             var stalkList = string.Join(", ", stalks.Select(x => x.Identifier));
-            var messageId = stalks.Count(x => x.LastMessageId != null) > 1 ? null : stalks.First().LastMessageId;
 
             try
             {
-                // temp hack
-                var owner = new BotUser(
-                    new IrcUserMask(this.appConfig.Owner, this.freenodeClient),
-                    "OCSA",
-                    this.appConfig.EmailConfiguration.To,
-                    null,
-                    null,
-                    true,
-                    null,
-                    null);
-
-                messageId = this.emailHelper.SendEmail(
-                    this.FormatMessageForEmail(stalks, rc),
+                this.emailHelper.SendEmail(
+                    this.FormatMessageForEmail(stalks, rc, botUser),
                     string.Format(this.templates.EmailRcSubject, stalkList, rc.Page),
-                    messageId,
-                    owner);
+                    null,
+                    botUser);
             }
             catch (Exception ex)
             {
                 this.logger.ErrorFormat(ex, "Failed to send notification email for RC {0}", rc);
-            }
-
-            foreach (var stalk in stalks)
-            {
-                stalk.LastMessageId = messageId;
             }
         }
 
@@ -240,9 +266,9 @@
             );
         }
 
-        public string FormatMessageForEmail(IEnumerable<IStalk> stalks, IRecentChange rc)
+        public string FormatMessageForEmail(IEnumerable<IStalk> stalks, IRecentChange rc, IBotUser botUser)
         {
-            var stalksFormatted = this.FormatStalkListForEmail(stalks);
+            var stalksFormatted = this.FormatStalkListForEmail(stalks, botUser);
 
             var sizeDiff = "N/A";
             if (rc.SizeDiff.HasValue)
@@ -264,7 +290,7 @@
             );
         }
 
-        public string FormatStalkListForEmail(IEnumerable<IStalk> stalks)
+        public string FormatStalkListForEmail(IEnumerable<IStalk> stalks, IBotUser botUser)
         {
             var stalkInfo = new StringBuilder();
             foreach (var stalk in stalks)
@@ -277,16 +303,36 @@
                     ? stalk.LastTriggerTime.Value.ToString(this.appConfig.DateFormat)
                     : "never";
 
+                var subList = new List<string>();
+                if (stalk.Subscribers.Any(x => x.Mask.ToString() == botUser.Mask.ToString()))
+                {
+                    subList.Add("via stalk");
+                }
+
+                if (this.channelConfig[stalk.Channel]
+                    .Users
+                    .Any(x => x.Mask.ToString() == botUser.Mask.ToString() && x.Subscribed))
+                {
+                    subList.Add("via channel");
+                }
+
+                var subscription = string.Join(", ", subList);
+                if (string.IsNullOrWhiteSpace(subscription))
+                {
+                    subscription = "none";
+                }
+
                 stalkInfo.Append(
                     string.Format(
                         this.templates.EmailStalkTemplate,
                         stalk.Identifier,
                         stalk.Description,
                         stalk.SearchTree,
-                        false,
+                        stalk.Channel,
                         expiry,
                         lastTrigger,
-                        stalk.TriggerCount
+                        stalk.TriggerCount,
+                        subscription
                     ));
             }
 
