@@ -1,8 +1,6 @@
 ﻿namespace EyeInTheSky.Services
 {
     using System;
-    using System.IO;
-    using System.Runtime.Remoting.Metadata.W3cXsd2001;
     using System.Xml;
     using Castle.Core.Logging;
     using EyeInTheSky.Model;
@@ -25,18 +23,6 @@
             if (timeAttribute != null)
             {
                 lastUpdateTime = this.ParseDate(flag, timeAttribute.Value, "last update time");
-            }
-
-            // Email attribute
-            var immediateMailText = element.GetAttribute("immediatemail");
-            bool mailEnabled;
-            if (!bool.TryParse(immediateMailText, out mailEnabled))
-            {
-                this.Logger.WarnFormat(
-                    "Unable to parse immediatemail attribute value '{1}' for stalk {0}. Defaulting to enabled.",
-                    flag,
-                    immediateMailText);
-                mailEnabled = true;
             }
 
             // Enabled attribute
@@ -93,7 +79,6 @@
                 stalkFlag,
                 templateEnabled,
                 stalkEnabled,
-                mailEnabled,
                 description,
                 lastUpdateTime,
                 expiryDuration,
@@ -125,7 +110,6 @@
                 e.SetAttribute("stalkflag", stalk.StalkFlag);
             }
             
-            e.SetAttribute("immediatemail", XmlConvert.ToString(stalk.MailEnabled));
             e.SetAttribute("stalkenabled", XmlConvert.ToString(stalk.StalkIsEnabled));
             e.SetAttribute("templateenabled", XmlConvert.ToString(stalk.TemplateIsEnabled));
 

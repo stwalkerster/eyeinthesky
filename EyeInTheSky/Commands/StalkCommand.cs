@@ -137,8 +137,6 @@
                     return this.ExportMode(stalkName);
                 case "set":
                     return this.SetMode(tokenList, stalkName);
-                case "mail":
-                    return this.MailMode(tokenList, stalkName);
                 case "description":
                     return this.DescriptionMode(tokenList, stalkName);
                 case "expiry":
@@ -460,33 +458,6 @@
             this.channelConfiguration.Save();
         }
 
-        private IEnumerable<CommandResponse> MailMode(List<string> tokenList, string stalkName)
-        {
-            if (tokenList.Count < 1)
-            {
-                throw new ArgumentCountException(3, this.Arguments.Count(), "mail");
-            }
-
-            bool mail;
-            var possibleBoolean = tokenList.PopFromFront();
-            if (!BooleanParser.TryParse(possibleBoolean, out mail))
-            {
-                throw new CommandErrorException(
-                    string.Format(
-                        "{0} is not a value of boolean I recognise. Try 'true', 'false' or ERR_FILE_NOT_FOUND.",
-                        possibleBoolean));
-            }
-
-            yield return new CommandResponse
-            {
-                Message = string.Format("Set immediatemail attribute on stalk {0} to {1}", stalkName, mail)
-            };
-
-            this.channelConfiguration[this.CommandSource].Stalks[stalkName].MailEnabled = mail;
-
-            this.channelConfiguration.Save();
-        }
-
         private IEnumerable<CommandResponse> ListMode()
         {
             var activeStalks = this.channelConfiguration[this.CommandSource]
@@ -666,13 +637,6 @@
                         this.CommandName,
                         new[] {"enabled <Identifier> <true|false>", "enable <Identifier>", "disable <Identifier>"},
                         "Marks a stalk as enabled or disabled")
-                },
-                {
-                    "mail",
-                    new HelpMessage(
-                        this.CommandName,
-                        "mail <Identifier> <true|false>",
-                        "Enables or disables email notifications for each trigger of the specified stalk")
                 },
                 {
                     "description",

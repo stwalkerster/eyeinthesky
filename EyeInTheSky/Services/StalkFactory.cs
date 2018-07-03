@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading;
     using System.Xml;
     using Castle.Core.Logging;
@@ -61,18 +60,6 @@
                 }
             }
 
-            // Email attribute
-            var immediateMailText = element.GetAttribute("immediatemail");
-            bool mailEnabled;
-            if (!bool.TryParse(immediateMailText, out mailEnabled))
-            {
-                this.Logger.WarnFormat(
-                    "Unable to parse immediatemail attribute value '{1}' for stalk {0}. Defaulting to enabled.",
-                    flag,
-                    immediateMailText);
-                mailEnabled = true;
-            }
-
             // Enabled attribute
             var enabledText = element.GetAttribute("enabled");
             bool enabled;
@@ -107,7 +94,6 @@
                 lastTriggerTime,
                 description,
                 expiryTime,
-                mailEnabled,
                 enabled,
                 triggerCount,
                 lastMessageId);
@@ -136,8 +122,6 @@
                     "lasttrigger",
                     XmlConvert.ToString(stalk.LastTriggerTime.Value, XmlDateTimeSerializationMode.Utc));
             }
-
-            e.SetAttribute("immediatemail", XmlConvert.ToString(stalk.MailEnabled));
             
             if (stalk.Description != null)
             {

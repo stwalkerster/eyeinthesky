@@ -67,7 +67,6 @@
                 Description = description,
                 IsEnabled = template.StalkIsEnabled,
                 ExpiryTime = template.ExpiryDuration.HasValue ? DateTime.Now + template.ExpiryDuration : null,
-                MailEnabled = template.MailEnabled,
                 SearchTree = stalkNode
             };
 

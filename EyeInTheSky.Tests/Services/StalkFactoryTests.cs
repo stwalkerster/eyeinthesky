@@ -83,7 +83,6 @@
             stalk.Setup(x => x.SearchTree).Returns(node.Object);
             stalk.Setup(x => x.Identifier).Returns("testflag");
             stalk.Setup(x => x.IsEnabled).Returns(true);
-            stalk.Setup(x => x.MailEnabled).Returns(true);
             stalk.Setup(x => x.TriggerCount).Returns(4);
             
             
@@ -93,7 +92,7 @@
             var xmlElement = sf.ToXmlElement(stalk.Object, doc);
             
             // assert
-            Assert.AreEqual("<complexstalk flag=\"testflag\" immediatemail=\"true\" enabled=\"true\" triggercount=\"4\"><searchtree><false /></searchtree><subscribers /></complexstalk>", xmlElement.OuterXml);
+            Assert.AreEqual("<complexstalk flag=\"testflag\" enabled=\"true\" triggercount=\"4\"><searchtree><false /></searchtree><subscribers /></complexstalk>", xmlElement.OuterXml);
         }
 
         [Test]
@@ -114,7 +113,6 @@
             stalk.Setup(x => x.SearchTree).Returns(node.Object);
             stalk.Setup(x => x.Identifier).Returns("testflag");
             stalk.Setup(x => x.IsEnabled).Returns(true);
-            stalk.Setup(x => x.MailEnabled).Returns(true);
             
             
             var sf = new StalkFactory(this.LoggerMock.Object, snf.Object, irc.Object);
@@ -123,7 +121,7 @@
             var xmlElement = sf.ToXmlElement(stalk.Object, doc);
             
             // assert
-            Assert.AreEqual("<complexstalk flag=\"testflag\" immediatemail=\"true\" enabled=\"true\" triggercount=\"0\"><searchtree><or><true /><false /></or></searchtree><subscribers /></complexstalk>", xmlElement.OuterXml);
+            Assert.AreEqual("<complexstalk flag=\"testflag\" enabled=\"true\" triggercount=\"0\"><searchtree><or><true /><false /></or></searchtree><subscribers /></complexstalk>", xmlElement.OuterXml);
         }
 
         [Test]
@@ -144,7 +142,6 @@
             stalk.Setup(x => x.Identifier).Returns("testflag");
             stalk.Setup(x => x.Description).Returns("my description here");
             stalk.Setup(x => x.IsEnabled).Returns(true);
-            stalk.Setup(x => x.MailEnabled).Returns(true);
             stalk.Setup(x => x.LastUpdateTime).Returns(new DateTime(2018, 3, 14, 1, 2, 3));
             stalk.Setup(x => x.LastTriggerTime).Returns(DateTime.MinValue);
             stalk.Setup(x => x.ExpiryTime).Returns(DateTime.MaxValue);
@@ -157,7 +154,7 @@
             var xmlElement = sf.ToXmlElement(stalk.Object, doc);
             
             // assert
-            Assert.AreEqual("<complexstalk flag=\"testflag\" lastupdate=\"2018-03-14T01:02:03Z\" lasttrigger=\"0001-01-01T00:00:00Z\" immediatemail=\"true\" description=\"my description here\" lastmessageid=\"foobar\" enabled=\"true\" expiry=\"9999-12-31T23:59:59.9999999Z\" triggercount=\"3334\"><searchtree><false /></searchtree><subscribers /></complexstalk>", xmlElement.OuterXml);
+            Assert.AreEqual("<complexstalk flag=\"testflag\" lastupdate=\"2018-03-14T01:02:03Z\" lasttrigger=\"0001-01-01T00:00:00Z\" description=\"my description here\" lastmessageid=\"foobar\" enabled=\"true\" expiry=\"9999-12-31T23:59:59.9999999Z\" triggercount=\"3334\"><searchtree><false /></searchtree><subscribers /></complexstalk>", xmlElement.OuterXml);
         }
 
         [Test]

@@ -23,7 +23,6 @@
             DateTime? lastTriggerTime,
             string description,
             DateTime? expiryTime,
-            bool mailEnabled,
             bool isEnabled,
             int triggerCount,
             string lastMessageId)
@@ -35,7 +34,6 @@
             this.LastMessageId = lastMessageId;
             this.description = description;
             this.expiryTime = expiryTime;
-            this.mailEnabled = mailEnabled;
             this.isEnabled = isEnabled;
             this.Subscribers = new List<StalkUser>();
         }
@@ -43,7 +41,6 @@
         private IStalkNode baseNode;
         private string description;
         private DateTime? expiryTime;
-        private bool mailEnabled = true;
         private bool isEnabled;
 
         public List<StalkUser> Subscribers { get; private set; }
@@ -68,13 +65,6 @@
                 this.isEnabled = value;
                 this.LastUpdateTime = DateTime.Now;
             }
-        }
-
-        public bool MailEnabled
-        {
-            get { return this.mailEnabled; }
-            set { this.mailEnabled = value; 
-                this.LastUpdateTime = DateTime.Now;}
         }
 
         public string Description

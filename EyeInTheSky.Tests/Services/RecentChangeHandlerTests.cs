@@ -26,7 +26,6 @@
 
             this.stalkMock.Setup(s => s.Identifier).Returns("s1");
             this.stalkMock.Setup(s => s.Description).Returns("test desc");
-            this.stalkMock.Setup(s => s.MailEnabled).Returns(true);
             this.stalkMock.Setup(s => s.ExpiryTime).Returns(DateTime.MaxValue);
             this.stalkMock.Setup(s => s.SearchTree).Returns(new TrueNode());
 
@@ -171,7 +170,7 @@
 
             // assert
             Assert.AreEqual(
-                "http://enwp.org Foo Me test +4 Minor | > s1 test desc (true) True 9999-12-31 23:59:59Z",
+                "http://enwp.org Foo Me test +4 Minor | > s1 test desc (true) False 9999-12-31 23:59:59Z",
                 result);
         }
 
@@ -196,7 +195,6 @@
             var s2 = new Mock<IStalk>();
             s2.Setup(s => s.Identifier).Returns("s2");
             s2.Setup(s => s.Description).Returns("descky");
-            s2.Setup(s => s.MailEnabled).Returns(false);
             s2.Setup(s => s.ExpiryTime).Returns(DateTime.MaxValue);
             s2.Setup(s => s.SearchTree).Returns(new FalseNode());
 
@@ -205,7 +203,7 @@
 
             // assert
             Assert.AreEqual(
-                "http://enwp.org Foo Me test +4 Minor | > s1 test desc (true) True 9999-12-31 23:59:59Z> s2 descky (false) False 9999-12-31 23:59:59Z",
+                "http://enwp.org Foo Me test +4 Minor | > s1 test desc (true) False 9999-12-31 23:59:59Z> s2 descky (false) False 9999-12-31 23:59:59Z",
                 result);
         }
     }

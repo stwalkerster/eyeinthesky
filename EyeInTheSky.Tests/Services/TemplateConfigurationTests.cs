@@ -45,7 +45,7 @@
             this.fileService.Setup(x => x.GetReadableStream(It.IsAny<string>()))
                 .Returns(new MemoryStream(Encoding.UTF8.GetBytes(data)));
 
-            var tpl = new Template("flag", null, true, true, true, null, DateTime.MinValue, null, "<true />");
+            var tpl = new Template("flag", null, true, true, null, DateTime.MinValue, null, "<true />");
             this.templateFact.Setup(x => x.NewFromXmlElement(It.IsAny<XmlElement>())).Returns(tpl);
             this.stalkNodeFact.Setup(x => x.NewFromXmlFragment(It.IsAny<XmlElement>())).Returns(new TrueNode());
             

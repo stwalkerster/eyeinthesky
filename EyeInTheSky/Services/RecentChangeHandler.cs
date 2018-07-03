@@ -138,12 +138,6 @@
 
         private void SendEmail(IList<IStalk> stalks, IRecentChange rc)
         {
-            if (!stalks.Any(x => x.MailEnabled))
-            {
-                this.logger.Debug("Not sending email; no matched stalks support it.");
-                return;
-            }
-
             if (this.appConfig.EmailConfiguration == null)
             {
                 this.logger.Debug("Not sending email; email configuration is disabled");
@@ -289,7 +283,7 @@
                         stalk.Identifier,
                         stalk.Description,
                         stalk.SearchTree,
-                        stalk.MailEnabled,
+                        false,
                         expiry,
                         lastTrigger,
                         stalk.TriggerCount

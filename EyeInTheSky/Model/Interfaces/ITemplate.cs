@@ -8,7 +8,6 @@
         DateTime? LastUpdateTime { get; }
         bool TemplateIsEnabled { get; set; }
         bool StalkIsEnabled { get; set; }
-        bool MailEnabled { get; set; }
         string Description { get; set; }
         TimeSpan? ExpiryDuration { get; set; }
         string SearchTree { get; set; }

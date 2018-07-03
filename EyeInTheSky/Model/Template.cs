@@ -8,7 +8,6 @@
         private string stalkFlag;
         private bool templateIsEnabled;
         private bool stalkIsEnabled;
-        private bool mailEnabled;
         private string description;
         private string searchTree;
         private TimeSpan? expiryDuration;
@@ -25,7 +24,6 @@
             string stalkFlag,
             bool templateIsEnabled,
             bool stalkIsEnabled,
-            bool mailEnabled,
             string description,
             DateTime? lastUpdateTime,
             TimeSpan? expiryDuration,
@@ -34,7 +32,6 @@
             this.stalkFlag = stalkFlag;
             this.templateIsEnabled = templateIsEnabled;
             this.stalkIsEnabled = stalkIsEnabled;
-            this.mailEnabled = mailEnabled;
             this.description = description;
             this.searchTree = searchTree;
             this.expiryDuration = expiryDuration;
@@ -84,17 +81,7 @@
                 this.LastUpdateTime = DateTime.Now;
             }
         }
-        
-        public bool MailEnabled
-        {
-            get { return this.mailEnabled; }
-            set
-            {
-                this.mailEnabled = value;
-                this.LastUpdateTime = DateTime.Now;
-            }
-        }
-        
+
         public string Description
         {
             get { return this.description; }
