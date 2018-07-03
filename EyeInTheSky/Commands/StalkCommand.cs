@@ -20,8 +20,8 @@
     using Stwalkerster.Bot.CommandLib.Exceptions;
     using Stwalkerster.Bot.CommandLib.Services.Interfaces;
     using Stwalkerster.IrcClient.Interfaces;
-    using Stwalkerster.IrcClient.Model;
     using Stwalkerster.IrcClient.Model.Interfaces;
+    using CLFlag = Stwalkerster.Bot.CommandLib.Model.Flag;
 
     [CommandInvocation("stalk")]
     [CommandFlag(AccessFlags.Configuration)]
@@ -71,15 +71,36 @@
             this.stalkNodeFactory = stalkNodeFactory;
         }
 
+        public override bool CanExecute()
+        {
+            var tokenList = this.OriginalArguments.ToParameters().ToList();
+
+            if (tokenList.Count < 1)
+            {
+                return base.CanExecute();
+            }
+
+            var mode = tokenList.PopFromFront();
+
+            switch (mode)
+            {
+                case "subscribe":
+                case "unsubscribe":
+                    return this.FlagService.UserHasFlag(this.User, CLFlag.Standard, this.CommandSource);
+                default:
+                    return this.FlagService.UserHasFlag(this.User, AccessFlags.Configuration, this.CommandSource);
+            }
+        }
+
         protected override IEnumerable<CommandResponse> Execute()
         {
             if (!this.CommandSource.StartsWith("#"))
             {
                 throw new CommandErrorException("This command must be executed in-channel!");
             }
-            
+
             var tokenList = this.OriginalArguments.ToParameters().ToList();
-            
+
             if (tokenList.Count < 1)
             {
                 throw new ArgumentCountException(1, this.Arguments.Count());
@@ -101,13 +122,13 @@
             {
                 throw new ArgumentCountException(2, this.Arguments.Count(), mode);
             }
-            
+
             var stalkName = tokenList.PopFromFront();
             if (!this.channelConfiguration[this.CommandSource].Stalks.ContainsKey(stalkName))
             {
                 throw new CommandErrorException(string.Format("Can't find the stalk '{0}'!", stalkName));
             }
-            
+
             switch (mode)
             {
                 case "del":
@@ -128,6 +149,10 @@
                     return this.AndMode(tokenList, stalkName);
                 case "or":
                     return this.OrMode(tokenList, stalkName);
+                case "subscribe":
+                    return this.SubscribeMode(stalkName);
+                case "unsubscribe":
+                    return this.UnsubscribeMode(stalkName);
                 // Aliases:
                 case "enable":
                     return this.EnabledMode(new List<string> {"true"}, stalkName);
@@ -136,6 +161,89 @@
                 default:
                     throw new CommandInvocationException();
             }
+        }
+
+        private IEnumerable<CommandResponse> UnsubscribeMode(string stalkName)
+        {
+            var accountKey = string.Format("$a:{0}", this.User.Account);
+            var botUser = this.botUserConfiguration[accountKey];
+
+            if (botUser == null)
+            {
+                yield return new CommandResponse
+                {
+                    Message = "You must be a registered user to use this command."
+                };
+
+                yield break;
+            }
+            
+            var stalk = this.channelConfiguration[this.CommandSource].Stalks[stalkName];
+
+            if (stalk.Subscribers.All(x => x.Mask.ToString() != botUser.Mask.ToString()))
+            {
+                yield return new CommandResponse
+                {
+                    Message = string.Format("You are not subscribed to notifications for stalk {0}", stalkName)
+                };
+                
+                yield break;
+            }
+
+            var item = stalk.Subscribers.FirstOrDefault(x => x.Mask.ToString() == botUser.Mask.ToString());
+            stalk.Subscribers.Remove(item);
+            this.channelConfiguration.Save();
+            
+            yield return new CommandResponse
+            {
+                Message = string.Format("Unsubscribed from notifications for stalk {0}", stalkName)
+            };
+        }
+
+        private IEnumerable<CommandResponse> SubscribeMode(string stalkName)
+        {
+            var accountKey = string.Format("$a:{0}", this.User.Account);
+            var botUser = this.botUserConfiguration[accountKey];
+
+            if (botUser == null)
+            {
+                yield return new CommandResponse
+                {
+                    Message = "You must be a registered user with a confirmed email address to use this command."
+                };
+
+                yield break;
+            }
+
+            if (!botUser.EmailAddressConfirmed)
+            {
+                yield return new CommandResponse
+                {
+                    Message = "You must have a confirmed email address to use this command."
+                };
+
+                yield break;
+            }
+            
+            var stalk = this.channelConfiguration[this.CommandSource].Stalks[stalkName];
+
+            if (stalk.Subscribers.Any(x => x.Mask == botUser.Mask))
+            {
+                yield return new CommandResponse
+                {
+                    Message = string.Format("You are already subscribed to notifications for stalk {0}", stalkName)
+                };
+                
+                yield break;
+            }
+            
+            stalk.Subscribers.Add(new StalkUser(botUser.Mask));
+            this.channelConfiguration.Save();
+            
+            yield return new CommandResponse
+            {
+                Message = string.Format("Subscribed to notifications for stalk {0}", stalkName)
+            };
         }
 
         private IEnumerable<CommandResponse> ReportMode()
@@ -149,26 +257,26 @@
                 {
                     Message = "You must be a registered user with a confirmed email address to use this command."
                 };
-                
+
                 yield break;
             }
-            
+
             if (!botUser.EmailAddressConfirmed)
             {
                 yield return new CommandResponse
                 {
                     Message = "You must have a confirmed email address to use this command."
                 };
-                
+
                 yield break;
             }
-            
+
             var stalks = this.channelConfiguration[this.CommandSource].Stalks.Values;
-            
+
             var disabled = stalks.Where(x => !x.IsEnabled);
-            var expired = stalks.Where(x => x.ExpiryTime != null && x.ExpiryTime < DateTime.Now);            
+            var expired = stalks.Where(x => x.ExpiryTime != null && x.ExpiryTime < DateTime.Now);
             var active = stalks.Where(x => x.IsActive());
-            
+
             var body = string.Format(
                 this.templates.EmailStalkReport,
                 this.recentChangeHandler.FormatStalkListForEmail(active),
@@ -197,14 +305,14 @@
             }
 
             var newStalkType = tokenList.PopFromFront();
-            
+
             var stalk = this.channelConfiguration[this.CommandSource].Stalks[stalkName];
             var newTarget = string.Join(" ", tokenList);
 
             var newNode = this.CreateNode(newStalkType, newTarget);
             if (stalk.SearchTree.GetType() == typeof(OrNode))
             {
-                ((OrNode)stalk.SearchTree).ChildNodes.Add(newNode);
+                ((OrNode) stalk.SearchTree).ChildNodes.Add(newNode);
             }
             else
             {
@@ -216,7 +324,7 @@
                         newNode
                     }
                 };
-                
+
                 stalk.SearchTree = newroot;
             }
 
@@ -228,7 +336,7 @@
                     stalkName,
                     stalk.SearchTree)
             };
-            
+
             this.channelConfiguration.Save();
         }
 
@@ -245,10 +353,10 @@
             var newTarget = string.Join(" ", tokenList);
 
             var newNode = this.CreateNode(newStalkType, newTarget);
-            
+
             if (stalk.SearchTree.GetType() == typeof(AndNode))
             {
-                ((AndNode)stalk.SearchTree).ChildNodes.Add(newNode);
+                ((AndNode) stalk.SearchTree).ChildNodes.Add(newNode);
             }
             else
             {
@@ -260,7 +368,7 @@
                         newNode
                     }
                 };
-                
+
                 stalk.SearchTree = newroot;
             }
 
@@ -282,7 +390,7 @@
             {
                 throw new ArgumentCountException(3, this.Arguments.Count(), "enabled");
             }
-            
+
             bool enabled;
             var possibleBoolean = tokenList.PopFromFront();
             if (!BooleanParser.TryParse(possibleBoolean, out enabled))
@@ -292,14 +400,14 @@
                         "{0} is not a value of boolean I recognise. Try 'true', 'false' or ERR_FILE_NOT_FOUND.",
                         possibleBoolean));
             }
-            
+
             yield return new CommandResponse
             {
                 Message = string.Format("Set enabled attribute on stalk {0} to {1}", stalkName, enabled)
             };
-            
+
             this.channelConfiguration[this.CommandSource].Stalks[stalkName].IsEnabled = enabled;
-            
+
             this.channelConfiguration.Save();
         }
 
@@ -322,7 +430,7 @@
                     stalkName,
                     expiryTime.ToString(this.config.DateFormat))
             };
-            
+
             this.channelConfiguration.Save();
         }
 
@@ -333,7 +441,7 @@
             if (string.IsNullOrWhiteSpace(descr))
             {
                 this.channelConfiguration[this.CommandSource].Stalks[stalkName].Description = null;
-                
+
                 yield return new CommandResponse
                 {
                     Message = string.Format("Cleared description attribute on stalk {0}", stalkName)
@@ -373,15 +481,17 @@
             {
                 Message = string.Format("Set immediatemail attribute on stalk {0} to {1}", stalkName, mail)
             };
-            
+
             this.channelConfiguration[this.CommandSource].Stalks[stalkName].MailEnabled = mail;
-            
+
             this.channelConfiguration.Save();
         }
 
         private IEnumerable<CommandResponse> ListMode()
         {
-            var activeStalks = this.channelConfiguration[this.CommandSource].Stalks.Values.Where(x => x.IsActive()).ToList();
+            var activeStalks = this.channelConfiguration[this.CommandSource]
+                .Stalks.Values.Where(x => x.IsActive())
+                .ToList();
 
             if (!activeStalks.Any())
             {
@@ -391,10 +501,10 @@
                     Type = CommandResponseType.Notice,
                     Destination = CommandResponseDestination.PrivateMessage
                 };
-                
+
                 yield break;
             }
-            
+
             yield return new CommandResponse
             {
                 Message = "Active stalk list:",
@@ -402,7 +512,6 @@
                 Destination = CommandResponseDestination.PrivateMessage
             };
 
-            
             foreach (var stalk in activeStalks)
             {
                 var message = string.Format(
@@ -410,7 +519,7 @@
                     stalk.Identifier,
                     stalk.LastUpdateTime.GetValueOrDefault().ToString(this.config.DateFormat),
                     stalk.SearchTree);
-                
+
                 yield return new CommandResponse
                 {
                     Message = message,
@@ -448,19 +557,19 @@
             {
                 Message = string.Format("Set {0} for stalk {1} with CSL value: {2}", newStalkType, stalkName, newroot)
             };
-            
+
             this.channelConfiguration.Save();
         }
 
         private IEnumerable<CommandResponse> DeleteMode(string stalkName)
         {
             this.channelConfiguration[this.CommandSource].Stalks.Remove(stalkName);
-            
+
             yield return new CommandResponse
             {
                 Message = string.Format("Deleted stalk {0}", stalkName)
             };
-            
+
             this.channelConfiguration.Save();
         }
 
@@ -489,12 +598,12 @@
             var stalk = new ComplexStalk(stalkName) {Channel = this.CommandSource};
 
             this.channelConfiguration[this.CommandSource].Stalks.Add(stalk.Identifier, stalk);
-            
+
             yield return new CommandResponse
             {
                 Message = string.Format("Added disabled stalk {0} with CSL value: {1}", stalkName, stalk.SearchTree)
             };
-            
+
             this.channelConfiguration.Save();
         }
 
@@ -508,67 +617,92 @@
                         this.CommandName,
                         "list",
                         "Lists all active stalks")
-                },{
+                },
+                {
+                    "subscribe",
+                    new HelpMessage(
+                        this.CommandName,
+                        "subscribe <Identifier>",
+                        "Subscribes to email notifications for this stalk")
+                },
+                {
+                    "unsubscribe",
+                    new HelpMessage(
+                        this.CommandName,
+                        "unsubscribe <Identifier>",
+                        "Unsubscribes from email notifications for this stalk")
+                },
+                {
                     "add",
                     new HelpMessage(
                         this.CommandName,
                         "add <Identifier>",
                         "Adds a new unconfigured stalk")
-                },{
+                },
+                {
                     "report",
                     new HelpMessage(
                         this.CommandName,
                         "report",
                         "Sends a report on the status of all stalks via email")
-                },{
+                },
+                {
                     "del",
                     new HelpMessage(
                         this.CommandName,
                         "del <Identifier>",
                         "Deletes a stalk")
-                },{
+                },
+                {
                     "export",
                     new HelpMessage(
                         this.CommandName,
                         "export <Identifier>",
                         "Retrieves the XML search tree of a specific stalk")
-                },{
+                },
+                {
                     "enabled",
                     new HelpMessage(
                         this.CommandName,
-                        new[]{"enabled <Identifier> <true|false>", "enable <Identifier>", "disable <Identifier>"},
+                        new[] {"enabled <Identifier> <true|false>", "enable <Identifier>", "disable <Identifier>"},
                         "Marks a stalk as enabled or disabled")
-                },{
+                },
+                {
                     "mail",
                     new HelpMessage(
                         this.CommandName,
                         "mail <Identifier> <true|false>",
                         "Enables or disables email notifications for each trigger of the specified stalk")
-                },{
+                },
+                {
                     "description",
                     new HelpMessage(
                         this.CommandName,
                         "description <Identifier> <Description...>",
                         "Sets the description of the specified stalk")
-                },{
+                },
+                {
                     "expiry",
                     new HelpMessage(
                         this.CommandName,
                         "expiry <Identifier> <Description...>",
                         "Sets the description of the specified stalk")
-                },{
+                },
+                {
                     "set",
                     new HelpMessage(
                         this.CommandName,
                         "set <Identifier> <user|page|summary|xml> <Match...>",
                         "Sets the stalk configuration of the specified stalk to specified user, page, or edit summary. Alternatively, manually specify an XML tree (advanced).")
-                },{
+                },
+                {
                     "and",
                     new HelpMessage(
                         this.CommandName,
                         "and <Identifier> <user|page|summary|xml> <Match...>",
                         "Sets the stalk configuration of the specified stalk to the logical AND of the current configuration, and a specified user, page, or edit summary; or XML tree (advanced).")
-                },{
+                },
+                {
                     "or",
                     new HelpMessage(
                         this.CommandName,
@@ -583,7 +717,7 @@
             IStalkNode newNode;
 
             var escapedTarget = Regex.Escape(stalkTarget);
-            
+
             switch (type)
             {
                 case "user":
@@ -609,7 +743,7 @@
                         {
                             throw new CommandErrorException("No cached XML. Please use the xml command first.");
                         }
-                        
+
                         newNode = this.stalkNodeFactory.NewFromXmlFragment(xml);
                     }
                     catch (XmlException ex)

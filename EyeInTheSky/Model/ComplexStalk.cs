@@ -1,6 +1,7 @@
 ﻿namespace EyeInTheSky.Model
 {
     using System;
+    using System.Collections.Generic;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Model.StalkNodes;
     using EyeInTheSky.Model.StalkNodes.BaseNodes;
@@ -13,6 +14,7 @@
             this.LastUpdateTime = DateTime.Now;
             this.Identifier = flag;
             this.baseNode = new FalseNode();
+            this.Subscribers = new List<StalkUser>();
         }
 
         internal ComplexStalk(
@@ -24,8 +26,7 @@
             bool mailEnabled,
             bool isEnabled,
             int triggerCount,
-            string lastMessageId,
-            IStalkNode baseNode)
+            string lastMessageId)
         {
             this.Identifier = flag;
             this.LastUpdateTime = lastUpdateTime;
@@ -36,7 +37,7 @@
             this.expiryTime = expiryTime;
             this.mailEnabled = mailEnabled;
             this.isEnabled = isEnabled;
-            this.baseNode = baseNode;
+            this.Subscribers = new List<StalkUser>();
         }
 
         private IStalkNode baseNode;
@@ -45,6 +46,8 @@
         private bool mailEnabled = true;
         private bool isEnabled;
 
+        public List<StalkUser> Subscribers { get; private set; }
+        
         public string Identifier { get; private set; }
 
         public DateTime? LastUpdateTime { get; private set; }
@@ -123,6 +126,11 @@
             }
 
             return this.baseNode.Match(rc);
+        }
+
+        internal void SetStalkTree(IStalkNode tree)
+        {
+            this.baseNode = tree;
         }
     }
 }

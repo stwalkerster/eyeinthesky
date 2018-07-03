@@ -21,6 +21,7 @@
     public class ChannelCommand : CommandBase
     {
         private readonly IChannelConfiguration channelConfiguration;
+        private readonly IBotUserConfiguration botUserConfiguration;
         private readonly IAppConfiguration appConfig;
 
         public ChannelCommand(
@@ -32,10 +33,12 @@
             IConfigurationProvider configurationProvider,
             IIrcClient client,
             IChannelConfiguration channelConfiguration,
+            IBotUserConfiguration botUserConfiguration,
             IAppConfiguration appConfig)
             : base(commandSource, user, arguments, logger, flagService, configurationProvider, client)
         {
             this.channelConfiguration = channelConfiguration;
+            this.botUserConfiguration = botUserConfiguration;
             this.appConfig = appConfig;
         }
 
@@ -49,6 +52,19 @@
             }
 
             var mode = tokenList.PopFromFront();
+            
+            switch (mode)
+            {
+                case "subscribe":
+                case "unsubscribe":
+                    return this.FlagService.UserHasFlag(this.User, CLFlag.Standard, this.CommandSource);
+            }
+            
+            if (tokenList.Count < 1)
+            {
+                return base.CanExecute();
+            }
+            
             var channel = tokenList.PopFromFront();
 
             switch (mode)
@@ -69,10 +85,24 @@
 
             if (tokenList.Count < 1)
             {
-                throw new ArgumentCountException(2, this.Arguments.Count());
+                throw new ArgumentCountException(1, this.Arguments.Count());
             }
 
             var mode = tokenList.PopFromFront();
+            
+            switch (mode)
+            {
+                case "subscribe":
+                    return this.SubscribeMode();
+                case "unsubscribe":
+                    return this.UnsubscribeMode();
+            }
+            
+            if (tokenList.Count < 1)
+            {
+                throw new ArgumentCountException(2, this.Arguments.Count());
+            }
+
             var channel = tokenList.PopFromFront();
 
             switch (mode)
@@ -84,6 +114,105 @@
                 default:
                     throw new CommandInvocationException();
             }
+        }
+
+        private IEnumerable<CommandResponse> UnsubscribeMode()
+        {
+            if (!this.CommandSource.StartsWith("#"))
+            {
+                throw new CommandErrorException("This command must be executed in-channel!");
+            }
+            
+            var accountKey = string.Format("$a:{0}", this.User.Account);
+            var botUser = this.botUserConfiguration[accountKey];
+
+            if (botUser == null)
+            {
+                yield return new CommandResponse
+                {
+                    Message = "You must be a registered user to use this command."
+                };
+                
+                yield break;
+            }
+            
+            var channelUser = this.channelConfiguration[this.CommandSource]
+                .Users.FirstOrDefault(x => x.Mask.ToString() == botUser.Identifier);
+            
+            if (channelUser == null)
+            {
+                yield return new CommandResponse
+                {
+                    Message = string.Format("You are not subscribed to notifications for {0}", this.CommandSource)
+                };
+                
+                yield break;
+            }
+            
+            channelUser.Subscribed = false;
+            this.channelConfiguration.Save();
+            
+            yield return new CommandResponse
+            {
+                Message = string.Format("Unsubscribed from all notifications for {0}", this.CommandSource)
+            };
+        }
+
+        private IEnumerable<CommandResponse> SubscribeMode()
+        {
+            if (!this.CommandSource.StartsWith("#"))
+            {
+                throw new CommandErrorException("This command must be executed in-channel!");
+            }
+            
+            var accountKey = string.Format("$a:{0}", this.User.Account);
+            var botUser = this.botUserConfiguration[accountKey];
+
+            if (botUser == null)
+            {
+                yield return new CommandResponse
+                {
+                    Message = "You must be a registered user with a confirmed email address to use this command."
+                };
+                
+                yield break;
+            }
+            
+            if (!botUser.EmailAddressConfirmed)
+            {
+                yield return new CommandResponse
+                {
+                    Message = "You must have a confirmed email address to use this command."
+                };
+                
+                yield break;
+            }
+
+            var channelUser = this.channelConfiguration[this.CommandSource]
+                .Users.FirstOrDefault(x => x.Mask.ToString() == botUser.Identifier);
+            if (channelUser == null)
+            {
+                channelUser = new ChannelUser(botUser.Mask);
+                this.channelConfiguration[this.CommandSource].Users.Add(channelUser);
+            }
+
+            if (channelUser.Subscribed)
+            {
+                yield return new CommandResponse
+                {
+                    Message = string.Format("You are already subscribed to notifications for {0}", this.CommandSource)
+                };
+                
+                yield break;
+            }
+            
+            channelUser.Subscribed = true;
+            this.channelConfiguration.Save();
+            
+            yield return new CommandResponse
+            {
+                Message = string.Format("Subscribed to all notifications for {0}", this.CommandSource)
+            };
         }
 
         private IEnumerable<CommandResponse> PartMode(string channel)
@@ -127,8 +256,25 @@
 
         protected override IDictionary<string, HelpMessage> Help()
         {
-            var help = new Dictionary<string, HelpMessage>();
+            var help = new Dictionary<string, HelpMessage>
+            {
+                {
+                    "subscribe",
+                    new HelpMessage(
+                        this.CommandName,
+                        "subscribe",
+                        "Subscribe to email notifications from all stalks in this channel")
+                },
+                {
+                    "unsubscribe",
+                    new HelpMessage(
+                        this.CommandName,
+                        "unsubscribe",
+                        "Unsubscribe from email notifications from all stalks in this channel")
+                }
+            };
 
+            
             if (this.FlagService.UserHasFlag(this.User, AccessFlags.GlobalAdmin, null))
             {
                 help.Add(

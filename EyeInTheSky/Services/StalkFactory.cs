@@ -1,16 +1,24 @@
 ﻿namespace EyeInTheSky.Services
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading;
     using System.Xml;
     using Castle.Core.Logging;
     using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Services.Interfaces;
+    using Stwalkerster.IrcClient.Interfaces;
+    using Stwalkerster.IrcClient.Model;
 
     public class StalkFactory : StalkConfigFactoryBase, IStalkFactory
     {
-        public StalkFactory(ILogger logger, IStalkNodeFactory stalkNodeFactory) : base(logger, stalkNodeFactory)
+        private readonly IIrcClient freenodeClient;
+
+        public StalkFactory(ILogger logger, IStalkNodeFactory stalkNodeFactory, IIrcClient freenodeClient) : base(logger, stalkNodeFactory)
         {
+            this.freenodeClient = freenodeClient;
         }
 
         public IStalk NewFromXmlElement(XmlElement element)
@@ -93,8 +101,6 @@
                 lastMessageId = null;
             }
 
-            var baseNode = this.GetStalkTreeFromXml(element, flag);
-
             var s = new ComplexStalk(
                 flag,
                 lastUpdateTime,
@@ -104,8 +110,9 @@
                 mailEnabled,
                 enabled,
                 triggerCount,
-                lastMessageId,
-                baseNode);
+                lastMessageId);
+            
+            this.ProcessStalkChildren(element, flag, s);
 
             return s;
         }
@@ -153,10 +160,87 @@
 
             var searchTreeParentElement = doc.CreateElement("searchtree");
             searchTreeParentElement.AppendChild(this.StalkNodeFactory.ToXml(doc, stalk.SearchTree));
-            
             e.AppendChild(searchTreeParentElement);
+
+            var subsElement = doc.CreateElement("subscribers");
+            e.AppendChild(subsElement);
+
+            foreach (var user in stalk.Subscribers)
+            {
+                var u = doc.CreateElement("user");
+                u.SetAttribute("mask", user.Mask.ToString());
+                subsElement.AppendChild(u);
+            }
             
             return e;
+        }
+
+        protected void ProcessStalkChildren(XmlElement element, string flag, ComplexStalk complexStalk)
+        {
+            var foundSearchTree = false;
+
+            if (element.HasChildNodes)
+            {
+                var childNodeCollection = element.ChildNodes;
+
+                foreach (XmlNode node in childNodeCollection)
+                {
+                    var xmlElement = node as XmlElement;
+                    if (xmlElement == null)
+                    {
+                        continue;
+                    }
+
+                    if (xmlElement.Name == "searchtree")
+                    {
+                        complexStalk.SetStalkTree(
+                            this.StalkNodeFactory.NewFromXmlFragment((XmlElement) xmlElement.FirstChild));
+                        foundSearchTree = true;
+                        
+                        continue;
+                    }
+                    
+                    if (xmlElement.Name == "subscribers")
+                    {
+                        complexStalk.Subscribers.AddRange(
+                            this.PopulateSubscribers(xmlElement.ChildNodes));
+                        
+                        continue;
+                    }
+
+                    this.Logger.DebugFormat("Unrecognised child {0} of stalk {1}", xmlElement.Name, flag);
+                }
+
+                if (!foundSearchTree)
+                {
+                    this.Logger.InfoFormat("Assuming stalk {0} is legacy", flag);
+                    complexStalk.SetStalkTree(this.StalkNodeFactory.NewFromXmlFragment((XmlElement) element.FirstChild));
+                }
+            }
+        }
+
+        private IEnumerable<StalkUser> PopulateSubscribers(XmlNodeList xmlElementChildNodes)
+        {
+            foreach (var elementChildNode in xmlElementChildNodes)
+            {
+                var e = elementChildNode as XmlElement;
+                if (e == null || e.Name != "user")
+                {
+                    continue;
+                }
+                
+                var mask = e.Attributes["mask"].Value;
+                
+                // TODO: Hack in a delay for stored $a masks until T1236 is fixed
+                if (this.freenodeClient.ExtBanTypes == null)
+                {
+                    Thread.Sleep(5000);
+                }
+                
+                var ircmask = new IrcUserMask(mask, this.freenodeClient);
+
+                yield return new StalkUser(ircmask);
+            }            
         }
     }
 }

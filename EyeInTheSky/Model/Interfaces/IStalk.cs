@@ -1,6 +1,7 @@
 ﻿namespace EyeInTheSky.Model.Interfaces
 {
     using System;
+    using System.Collections.Generic;
     using System.Xml;
     using EyeInTheSky.Model.StalkNodes.BaseNodes;
 
@@ -18,5 +19,6 @@
         string Channel { get; set; }
         bool IsActive();
         bool Match(IRecentChange rc);
+        List<StalkUser> Subscribers { get; }
     }
 }

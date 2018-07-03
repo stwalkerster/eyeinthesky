@@ -151,6 +151,7 @@
     <Compile Include="Model\StalkNodes\UserStalkNode.cs" />
     <Compile Include="Model\StalkNodes\XOfStalkNode.cs" />
     <Compile Include="Model\StalkNodes\XorNode.cs" />
+    <Compile Include="Model\StalkUser.cs" />
     <Compile Include="Model\Template.cs" />
     <Compile Include="Services\BooleanParser.cs" />
     <Compile Include="Services\BotUserFactory.cs" />
