@@ -19,6 +19,7 @@
         private readonly IAppConfiguration appConfig;
         private readonly ILogger logger;
         private readonly IChannelConfiguration channelConfig;
+        private readonly IBotUserConfiguration botUserConfiguration;
         private readonly IIrcClient freenodeClient;
         private readonly IRecentChangeParser rcParser;
         private readonly IEmailHelper emailHelper;
@@ -30,6 +31,7 @@
         public RecentChangeHandler(IAppConfiguration appConfig,
             ILogger logger,
             IChannelConfiguration channelConfig,
+            IBotUserConfiguration botUserConfiguration,
             IIrcClient freenodeClient,
             IRecentChangeParser rcParser,
             IEmailHelper emailHelper,
@@ -39,6 +41,7 @@
             this.appConfig = appConfig;
             this.logger = logger;
             this.channelConfig = channelConfig;
+            this.botUserConfiguration = botUserConfiguration;
             this.freenodeClient = freenodeClient;
             this.rcParser = rcParser;
             this.emailHelper = emailHelper;

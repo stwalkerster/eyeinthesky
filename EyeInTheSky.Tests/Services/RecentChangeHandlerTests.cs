@@ -56,6 +56,7 @@
                 null,
                 null,
                 null,
+                null,
                 this.NotificationTemplatesMock.Object, 
                 this.bugMock.Object);
 
@@ -80,6 +81,7 @@
             var rcHander = new RecentChangeHandler(
                 this.AppConfigMock.Object,
                 this.LoggerMock.Object,
+                null,
                 null,
                 null,
                 null,
@@ -109,6 +111,7 @@
                 null,
                 null,
                 null,
+                null,
                 this.NotificationTemplatesMock.Object, 
                 this.bugMock.Object);
 
@@ -130,6 +133,7 @@
             var rcHander = new RecentChangeHandler(
                 this.AppConfigMock.Object,
                 this.LoggerMock.Object,
+                null,
                 null,
                 null,
                 null,
@@ -158,6 +162,7 @@
                 null,
                 null,
                 null,
+                null,
                 this.NotificationTemplatesMock.Object, 
                 this.bugMock.Object);
 
@@ -180,6 +185,7 @@
             var rcHander = new RecentChangeHandler(
                 this.AppConfigMock.Object,
                 this.LoggerMock.Object,
+                null,
                 null,
                 null,
                 null,
