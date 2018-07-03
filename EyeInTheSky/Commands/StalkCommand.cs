@@ -86,6 +86,8 @@
             {
                 case "subscribe":
                 case "unsubscribe":
+                case "list":
+                case "report":
                     return this.FlagService.UserHasFlag(this.User, CLFlag.Standard, this.CommandSource);
                 default:
                     return this.FlagService.UserHasFlag(this.User, AccessFlags.Configuration, this.CommandSource);

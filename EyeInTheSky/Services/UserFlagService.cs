@@ -91,7 +91,7 @@
             // chanops
             if (user.Client.Channels[locality].Users[user.Nickname].Operator)
             {
-                if (flag == AccessFlags.ChannelAdmin || flag == AccessFlags.Configuration)
+                if (flag == AccessFlags.LocalAdmin || flag == AccessFlags.Configuration)
                 {
                     return true;
                 }
@@ -180,7 +180,7 @@
                 // chanops
                 if (user.Client.Channels[locality].Users[user.Nickname].Operator)
                 {
-                    flags.Add(AccessFlags.ChannelAdmin);
+                    flags.Add(AccessFlags.LocalAdmin);
                     flags.Add(AccessFlags.Configuration);
                 }
             }

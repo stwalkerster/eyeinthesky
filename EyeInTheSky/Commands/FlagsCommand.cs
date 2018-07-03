@@ -56,7 +56,7 @@
                     return this.FlagService.UserHasFlag(this.User, AccessFlags.GlobalAdmin, null);
                 case "local":
                     return this.FlagService.UserHasFlag(this.User, AccessFlags.GlobalAdmin, null) ||
-                           this.FlagService.UserHasFlag(this.User, AccessFlags.ChannelAdmin, this.CommandSource);
+                           this.FlagService.UserHasFlag(this.User, AccessFlags.LocalAdmin, this.CommandSource);
                 default:
                     return false;
             }
@@ -228,7 +228,7 @@
                         "flags <global|local> <account> <changes>",
                         "Modifies the flags granted to the usermask in either a global scope or in the local channel"));
             }
-            else if (this.FlagService.UserHasFlag(this.User, AccessFlags.ChannelAdmin, this.CommandSource))
+            else if (this.FlagService.UserHasFlag(this.User, AccessFlags.LocalAdmin, this.CommandSource))
             {
                 help.Add(
                     "flags",

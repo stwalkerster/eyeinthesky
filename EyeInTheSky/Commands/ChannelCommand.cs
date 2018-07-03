@@ -73,7 +73,7 @@
                     return this.FlagService.UserHasFlag(this.User, AccessFlags.GlobalAdmin, null);
                 case "part":
                     return this.FlagService.UserHasFlag(this.User, AccessFlags.GlobalAdmin, null) ||
-                           this.FlagService.UserHasFlag(this.User, AccessFlags.ChannelAdmin, channel);
+                           this.FlagService.UserHasFlag(this.User, AccessFlags.LocalAdmin, channel);
                 default:
                     return false;
             }
@@ -292,7 +292,7 @@
                         "Requests the bot leaves a channel, removing all configuration for that channel."));
             }
 
-            if (this.FlagService.UserHasFlag(this.User, AccessFlags.ChannelAdmin, this.CommandSource))
+            if (this.FlagService.UserHasFlag(this.User, AccessFlags.LocalAdmin, this.CommandSource))
             {
                 if (!help.ContainsKey("part"))
                 {
