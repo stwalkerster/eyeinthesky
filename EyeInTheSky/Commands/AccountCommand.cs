@@ -465,7 +465,7 @@
             yield return new CommandResponse
             {
                 Message = string.Format(
-                    "Please note, to receive notifications via email, you need to provide your email address (=account email <address>). By doing so, you agree to the privacy policy: {0}",
+                    "Please note, to receive notifications via email, you need to provide your email address (=account email <address>). By providing your email address, you agree to the privacy policy: {0}",
                     this.appConfig.PrivacyPolicy),
                 Destination = CommandResponseDestination.PrivateMessage
             };
