@@ -42,9 +42,11 @@ https://stwalkerster.co.uk/eits/
 
 ----
 
-This email was sent to Freenode user {0}, who has previously registered with {1}. To unsubscribe from all emails, please message {1} with the following command:
+This email was sent to Freenode user {0}, who has previously registered with {1}.
+To unsubscribe from all emails, please message {1} with the following command:
     {2}account email none
-The privacy policy can be found here: {3}
+For more help, please refer to the documentation at https://phabricator.stwalkerster.co.uk/w/eyeinthesky/faq/
+Privacy Policy: {3}
 ]]></emailSignature>
                 <emailStalkReport><![CDATA[You have requested a report of all of the configured stalks for channel {3}.
 
