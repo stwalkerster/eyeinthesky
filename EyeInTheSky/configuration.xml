@@ -60,8 +60,6 @@
                 <!--<port></port>-->
                 <!-- The From: header of the email -->
                 <sender></sender>
-                <!-- The recipient of email notifications -->
-                <to></to>
                 <!-- Prefix to add to the subject line -->
                 <subjectPrefix>[EyeInTheSky]</subjectPrefix>
                 <!-- If authentication is required, authenticate as this user -->

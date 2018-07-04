@@ -13,7 +13,7 @@ namespace EyeInTheSky.Tests.Model
         [SetUp]
         public void LocalSetup()
         {
-            this.appConfig = new EmailConfiguration("abc", "def", "ghi");
+            this.appConfig = new EmailConfiguration("abc", "def");
         }
 
         [Test]
@@ -22,25 +22,18 @@ namespace EyeInTheSky.Tests.Model
             // assert
             Assert.AreEqual("abc", this.appConfig.Hostname);
             Assert.AreEqual("def", this.appConfig.Sender);
-            Assert.AreEqual("ghi", this.appConfig.To);
         }
 
         [Test]
         public void ShouldThrowNullRefOnHostname()
         {
-            Assert.Catch<ArgumentNullException>(() => { new EmailConfiguration(null, "def", "ghi"); });
+            Assert.Catch<ArgumentNullException>(() => { new EmailConfiguration(null, "def"); });
         }
 
         [Test]
         public void ShouldThrowNullRefSender()
         {
-            Assert.Catch<ArgumentNullException>(() => { new EmailConfiguration("abc", null, "ghi"); });
-        }
-
-        [Test]
-        public void ShouldThrowNullRefTo()
-        {
-            Assert.Catch<ArgumentNullException>(() => { new EmailConfiguration("abc", "def", null); });
+            Assert.Catch<ArgumentNullException>(() => { new EmailConfiguration("abc", null); });
         }
 
         [Test]
