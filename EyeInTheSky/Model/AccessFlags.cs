@@ -20,7 +20,7 @@
 
         /// <summary>
         /// Local administrative access to the bot. This should be automatically granted to chanops, otherwise granted
-        /// globally only. This manages administrativia which affects one channel only, like parting a channel
+        /// locally only. This manages administrativia which affects one channel only, like parting a channel
         /// </summary>
         public const string LocalAdmin = "a";
 
