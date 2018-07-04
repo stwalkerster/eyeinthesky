@@ -52,19 +52,20 @@
             }
 
             var mode = tokenList.PopFromFront();
-            
+
             switch (mode)
             {
                 case "subscribe":
                 case "unsubscribe":
+                case "list":
                     return this.FlagService.UserHasFlag(this.User, CLFlag.Standard, this.CommandSource);
             }
-            
+
             if (tokenList.Count < 1)
             {
                 return base.CanExecute();
             }
-            
+
             var channel = tokenList.PopFromFront();
 
             switch (mode)
@@ -89,15 +90,17 @@
             }
 
             var mode = tokenList.PopFromFront();
-            
+
             switch (mode)
             {
                 case "subscribe":
                     return this.SubscribeMode();
                 case "unsubscribe":
                     return this.UnsubscribeMode();
+                case "list":
+                    return this.ListMode();
             }
-            
+
             if (tokenList.Count < 1)
             {
                 throw new ArgumentCountException(2, this.Arguments.Count());
@@ -116,13 +119,8 @@
             }
         }
 
-        private IEnumerable<CommandResponse> UnsubscribeMode()
+        private IEnumerable<CommandResponse> ListMode()
         {
-            if (!this.CommandSource.StartsWith("#"))
-            {
-                throw new CommandErrorException("This command must be executed in-channel!");
-            }
-            
             var accountKey = string.Format("$a:{0}", this.User.Account);
             var botUser = this.botUserConfiguration[accountKey];
 
@@ -132,26 +130,92 @@
                 {
                     Message = "You must be a registered user to use this command."
                 };
-                
+
                 yield break;
             }
+
+            bool responded = false;
             
+            foreach (var channel in this.channelConfiguration.Items)
+            {
+                // check for channel subscription
+                var items = new List<string>();
+                if (channel.Users.Any(x => x.Mask.ToString() == botUser.Identifier && x.Subscribed))
+                {
+                    items.Add("subscribed to channel");
+                }
+
+                var stalkKeys = string.Join(
+                    ", ",
+                    channel.Stalks
+                        .Where(
+                            x => x.Value.Subscribers
+                                .Any(s => s.Mask.ToString() == botUser.Identifier))
+                        .Select(x => x.Key));
+                
+                // check for individual stalk subscriptions
+                if (!string.IsNullOrWhiteSpace(stalkKeys))
+                {
+                    items.Add("subscribed to stalks (" + stalkKeys + ")");
+                }
+
+                if (items.Any())
+                {
+                    yield return new CommandResponse
+                    {
+                        Message = string.Format("{0}: {1}", channel.Identifier, string.Join("; ", items)),
+                        Destination = CommandResponseDestination.PrivateMessage
+                    };
+                    responded = true;
+                }
+            }
+
+            if (!responded)
+            {
+                yield return new CommandResponse
+                {
+                    Message = "No subscriptions found",
+                    Destination = CommandResponseDestination.PrivateMessage
+                };
+            }
+        }
+
+        private IEnumerable<CommandResponse> UnsubscribeMode()
+        {
+            if (!this.CommandSource.StartsWith("#"))
+            {
+                throw new CommandErrorException("This command must be executed in-channel!");
+            }
+
+            var accountKey = string.Format("$a:{0}", this.User.Account);
+            var botUser = this.botUserConfiguration[accountKey];
+
+            if (botUser == null)
+            {
+                yield return new CommandResponse
+                {
+                    Message = "You must be a registered user to use this command."
+                };
+
+                yield break;
+            }
+
             var channelUser = this.channelConfiguration[this.CommandSource]
                 .Users.FirstOrDefault(x => x.Mask.ToString() == botUser.Identifier);
-            
+
             if (channelUser == null)
             {
                 yield return new CommandResponse
                 {
                     Message = string.Format("You are not subscribed to notifications for {0}", this.CommandSource)
                 };
-                
+
                 yield break;
             }
-            
+
             channelUser.Subscribed = false;
             this.channelConfiguration.Save();
-            
+
             yield return new CommandResponse
             {
                 Message = string.Format("Unsubscribed from all notifications for {0}", this.CommandSource)
@@ -164,7 +228,7 @@
             {
                 throw new CommandErrorException("This command must be executed in-channel!");
             }
-            
+
             var accountKey = string.Format("$a:{0}", this.User.Account);
             var botUser = this.botUserConfiguration[accountKey];
 
@@ -174,17 +238,17 @@
                 {
                     Message = "You must be a registered user with a confirmed email address to use this command."
                 };
-                
+
                 yield break;
             }
-            
+
             if (!botUser.EmailAddressConfirmed)
             {
                 yield return new CommandResponse
                 {
                     Message = "You must have a confirmed email address to use this command."
                 };
-                
+
                 yield break;
             }
 
@@ -202,13 +266,13 @@
                 {
                     Message = string.Format("You are already subscribed to notifications for {0}", this.CommandSource)
                 };
-                
+
                 yield break;
             }
-            
+
             channelUser.Subscribed = true;
             this.channelConfiguration.Save();
-            
+
             yield return new CommandResponse
             {
                 Message = string.Format("Subscribed to all notifications for {0}", this.CommandSource)
@@ -271,10 +335,16 @@
                         this.CommandName,
                         "unsubscribe",
                         "Unsubscribe from email notifications from all stalks in this channel")
+                },
+                {
+                    "list",
+                    new HelpMessage(
+                        this.CommandName,
+                        "list",
+                        "Retrieve a list of channels in which you have active subscriptions")
                 }
             };
 
-            
             if (this.FlagService.UserHasFlag(this.User, AccessFlags.GlobalAdmin, null))
             {
                 help.Add(
