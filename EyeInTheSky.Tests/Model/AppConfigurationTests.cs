@@ -36,7 +36,7 @@
         [Test]
         public void ShouldSetEmailConfig()
         {
-            var ec = new Mock<EmailConfiguration>("a", "b", "c");
+            var ec = new Mock<EmailConfiguration>("a", "b");
 
             this.appConfig.EmailConfiguration = ec.Object;
 
