@@ -12,6 +12,8 @@
 
         protected override bool? DoMatch(IRecentChange rc, bool forceMatch)
         {
+            this.Compile();
+            
             if (rc.EditFlags != null)
             {
                 return this.RegexExpression.Match(rc.EditFlags).Success;
@@ -22,7 +24,7 @@
         
         public override string ToString()
         {
-            return "(flag:\"" + this.RegexExpression + "\")";
+            return "(flag:\"" + this.rawRegexExpression + "\")";
         }
         #endregion
     }

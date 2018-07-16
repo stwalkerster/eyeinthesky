@@ -182,6 +182,11 @@
                     throw new XmlException();
             }
 
+            if (fragment.Attributes["caseinsensitive"] != null)
+            {
+                node.CaseInsensitive = XmlConvert.ToBoolean(fragment.Attributes["caseinsensitive"].Value);
+            }
+            
             node.SetMatchExpression(fragment.Attributes["value"].Value);
 
             return node;
@@ -223,7 +228,16 @@
         {
             var elem = this.CreateElement(doc, node);
             elem.SetAttribute("value", node.GetMatchExpression());
-
+            
+            var regexLeafNode = node as RegexLeafNode;
+            if (regexLeafNode != null)
+            {
+                if (regexLeafNode.CaseInsensitive)
+                {
+                    elem.SetAttribute("caseinsensitive", XmlConvert.ToString(regexLeafNode.CaseInsensitive));
+                }
+            }
+            
             return elem;
         }
 

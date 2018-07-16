@@ -340,6 +340,25 @@
         }
         
         [Test]
+        public void ShouldSerialiseInsensitivePageCorrectly()
+        {
+            // arrange 
+            var node = new PageStalkNode();
+            node.SetMatchExpression("abc");
+            node.CaseInsensitive = true;
+            
+            var doc = new XmlDocument();
+            
+            var snf = new StalkNodeFactory(); 
+            
+            // act
+            var result = snf.ToXml(doc, node);
+
+            // assert
+            Assert.AreEqual("<page value=\"abc\" caseinsensitive=\"true\" />", result.OuterXml);
+        }
+        
+        [Test]
         public void ShouldSerialiseSummaryCorrectly()
         {
             // arrange 

@@ -11,6 +11,8 @@
 
         protected override bool? DoMatch(IRecentChange rc, bool forceMatch)
         {
+            this.Compile();
+            
             if (rc.EditSummary != null)
             {
                 return this.RegexExpression.Match(rc.EditSummary).Success;
@@ -21,7 +23,7 @@
         
         public override string ToString()
         {
-            return "(summary:\"" + this.RegexExpression + "\")";
+            return "(summary:\"" + this.rawRegexExpression + "\")";
         }
         #endregion
     }

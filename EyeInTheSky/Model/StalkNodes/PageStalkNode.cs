@@ -11,6 +11,8 @@
 
         protected override bool? DoMatch(IRecentChange rc, bool forceMatch)
         {
+            this.Compile();
+            
             var result = false;
             
             if (rc.Page != null)
@@ -27,7 +29,7 @@
 
         public override string ToString()
         {
-            return "(page:\"" + this.RegexExpression + "\")";
+            return "(page:\"" + this.rawRegexExpression + "\")";
         }
 
         #endregion

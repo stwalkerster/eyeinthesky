@@ -9,6 +9,8 @@ namespace EyeInTheSky.Model.StalkNodes
     {
         protected override bool? DoMatch(IRecentChange rc, bool forceMatch)
         {
+            this.Compile();
+            
             if (rc.Log != null)
             {
                 return this.RegexExpression.Match(rc.Log).Success;
@@ -19,7 +21,7 @@ namespace EyeInTheSky.Model.StalkNodes
         
         public override string ToString()
         {
-            return "(log:\"" + this.RegexExpression + "\")";
+            return "(log:\"" + this.rawRegexExpression + "\")";
         }
     }
 }
