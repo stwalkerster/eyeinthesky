@@ -3,14 +3,12 @@
     using System.Collections.Generic;
     using System.Linq;
     using Castle.Core.Logging;
-    using EyeInTheSky.Extensions;
     using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Services.Interfaces;
     using MimeKit;
     using Stwalkerster.Bot.CommandLib.Attributes;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities;
-    using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities.Models;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities.Response;
     using Stwalkerster.Bot.CommandLib.Exceptions;
     using Stwalkerster.Bot.CommandLib.Services.Interfaces;
@@ -31,7 +29,7 @@
 
         public AccountCommand(string commandSource,
             IUser user,
-            IEnumerable<string> arguments,
+            IList<string> arguments,
             ILogger logger,
             IFlagService flagService,
             IConfigurationProvider configurationProvider,
@@ -56,76 +54,12 @@
             this.emailHelper = emailHelper;
         }
 
-        public override bool CanExecute()
+        [SubcommandInvocation("verify")]
+        [RequiredArguments(1)]
+        // ReSharper disable once UnusedMember.Global
+        protected IEnumerable<CommandResponse> VerifyMode()
         {
-            var tokenList = this.OriginalArguments.ToParameters().ToList();
-
-            if (tokenList.Count < 1)
-            {
-                return base.CanExecute();
-            }
-
-            var mode = tokenList.PopFromFront();
-
-            switch (mode)
-            {
-                case "forcedelete":
-                case "forcenomail":
-                    return this.FlagService.UserHasFlag(this.User, AccessFlags.GlobalAdmin, null);
-                case "register":
-                case "delete":
-                case "deleteconfirm":
-                case "email":
-                case "verify":
-                    return base.CanExecute();
-                default:
-                    return false;
-            }
-        }
-
-        protected override IEnumerable<CommandResponse> Execute()
-        {
-            var tokenList = this.OriginalArguments.ToParameters().ToList();
-
-            if (tokenList.Count < 1)
-            {
-                throw new ArgumentCountException(1, this.Arguments.Count());
-            }
-
-            string mode = tokenList.PopFromFront();
-
-            switch (mode)
-            {
-                case "register":
-                    return this.RegisterMode();
-                case "delete":
-                    return this.DeleteMode();
-            }
-
-            if (tokenList.Count < 1)
-            {
-                throw new ArgumentCountException(2, this.Arguments.Count(), mode);
-            }
-
-            switch (mode)
-            {
-                case "forcedelete":
-                    return this.ForceDeleteMode(tokenList);
-                case "forcenomail":
-                    return this.ForceNoMailMode(tokenList);
-                case "deleteconfirm":
-                    return this.DeleteConfirmMode(tokenList);
-                case "email":
-                    return this.EmailMode(tokenList);
-                case "verify":
-                    return this.VerifyMode(tokenList);
-                default:
-                    throw new CommandInvocationException();
-            }
-        }
-
-        private IEnumerable<CommandResponse> VerifyMode(List<string> tokenList)
-        {
+            var tokenList = this.Arguments;
             IBotUser botUser;
             var resp = this.GetBotUser(out botUser);
             if (resp != null)
@@ -185,9 +119,14 @@
                     throw new CommandErrorException("Unknown response from account verification validity check");
             }
         }
-
-        private IEnumerable<CommandResponse> EmailMode(List<string> tokenList)
+        
+        [SubcommandInvocation("email")]
+        [RequiredArguments(1)]
+        [Help(new[] {"<address>", "none"}, "Sets or removes your email address")]
+        // ReSharper disable once UnusedMember.Global
+        protected IEnumerable<CommandResponse> EmailMode()
         {
+            IList<string> tokenList = this.Arguments;
             IBotUser botUser;
             var resp = this.GetBotUser(out botUser);
             if (resp != null)
@@ -261,8 +200,12 @@
             };
         }
 
-        private IEnumerable<CommandResponse> DeleteConfirmMode(List<string> tokenList)
+        [SubcommandInvocation("deleteconfirm")]
+        [RequiredArguments(1)]
+        // ReSharper disable once UnusedMember.Global
+        protected IEnumerable<CommandResponse> DeleteConfirmMode()
         {
+            IList<string> tokenList = this.Arguments;
             IBotUser botUser;
             var resp = this.GetBotUser(out botUser);
             if (resp != null)
@@ -317,8 +260,14 @@
             }
         }
 
-        private IEnumerable<CommandResponse> ForceDeleteMode(List<string> tokenList)
+        [SubcommandInvocation("forcedelete")]
+        [RequiredArguments(1)]
+        [CommandFlag(AccessFlags.GlobalAdmin)]
+        [Help("<account>", "Forcibly deletes a user's account")]
+        // ReSharper disable once UnusedMember.Global
+        protected IEnumerable<CommandResponse> ForceDeleteMode()
         {
+            IList<string> tokenList = this.Arguments;
             var accountKey = string.Format("$a:{0}", tokenList.FirstOrDefault());
             var botUser = this.botUserConfiguration[accountKey];
 
@@ -339,22 +288,15 @@
                 Message = "Deleted user " + accountKey
             };
         }
-
-        private void RemoveAccount(string accountKey)
+   
+        [SubcommandInvocation("forcenomail")]
+        [RequiredArguments(1)]
+        [CommandFlag(AccessFlags.GlobalAdmin)]
+        [Help("<account>", "Forcibly removes a user's email address")]
+        // ReSharper disable once UnusedMember.Global
+        protected IEnumerable<CommandResponse> ForceNoMailMode()
         {
-            this.botUserConfiguration.Remove(accountKey);
-            this.botUserConfiguration.Save();
-
-            foreach (var channel in this.channelConfiguration.Items)
-            {
-                channel.Users.RemoveAll(x => x.Mask.ToString() == accountKey);
-            }
-            
-            this.channelConfiguration.Save();
-        }
-
-        private IEnumerable<CommandResponse> ForceNoMailMode(List<string> tokenList)
-        {
+            IList<string> tokenList = this.Arguments;
             var accountKey = string.Format("$a:{0}", tokenList.FirstOrDefault());
             var botUser = this.botUserConfiguration[accountKey];
 
@@ -378,7 +320,10 @@
             };        
         }
 
-        private IEnumerable<CommandResponse> DeleteMode()
+        [SubcommandInvocation("delete")]
+        [Help("", "Deletes your account with the bot")]
+        // ReSharper disable once UnusedMember.Global
+        protected IEnumerable<CommandResponse> DeleteMode()
         {
             IBotUser botUser;
             var resp = this.GetBotUser(out botUser);
@@ -440,7 +385,10 @@
             };
         }
 
-        private IEnumerable<CommandResponse> RegisterMode()
+        [SubcommandInvocation("register")]
+        [Help("", "Registers your NickServ account with the bot.")]
+        // ReSharper disable once UnusedMember.Global
+        protected IEnumerable<CommandResponse> RegisterMode()
         {
             if (this.User.Account == null)
             {
@@ -471,51 +419,9 @@
             };
         }
 
-        protected override IDictionary<string, HelpMessage> Help()
+        protected override IEnumerable<CommandResponse> Execute()
         {
-            var help = new Dictionary<string, HelpMessage>
-            {
-                {
-                    "register",
-                    new HelpMessage(
-                        this.CommandName,
-                        "register",
-                        "Registers your NickServ account with the bot.")
-                },
-                {
-                    "delete",
-                    new HelpMessage(
-                        this.CommandName,
-                        "delete",
-                        "Deletes your account with the bot")
-                },
-                {
-                    "email",
-                    new HelpMessage(
-                        this.CommandName,
-                        new[] {"email <address>", "email none"},
-                        "Sets or removes your email address")
-                },
-            };
-
-            if (this.FlagService.UserHasFlag(this.User, AccessFlags.GlobalAdmin, null))
-            {
-                help.Add(
-                    "forcedelete",
-                    new HelpMessage(
-                        this.CommandName,
-                        "forcedelete <account>",
-                        "Forcibly deletes a user's account"));
-
-                help.Add(
-                    "forcenomail",
-                    new HelpMessage(
-                        this.CommandName,
-                        "forcenomail <account>",
-                        "Forcibly removes a user's email address"));
-            }
-
-            return help;
+            throw new CommandInvocationException();
         }
 
         private IEnumerable<CommandResponse> GetBotUser(out IBotUser botUser)
@@ -551,6 +457,19 @@
             }
 
             return null;
+        }
+        
+        private void RemoveAccount(string accountKey)
+        {
+            this.botUserConfiguration.Remove(accountKey);
+            this.botUserConfiguration.Save();
+
+            foreach (var channel in this.channelConfiguration.Items)
+            {
+                channel.Users.RemoveAll(x => x.Mask.ToString() == accountKey);
+            }
+            
+            this.channelConfiguration.Save();
         }
     }
 }

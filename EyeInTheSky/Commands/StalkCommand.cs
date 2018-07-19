@@ -15,7 +15,6 @@
     using EyeInTheSky.Services.Interfaces;
     using Stwalkerster.Bot.CommandLib.Attributes;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities;
-    using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities.Models;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities.Response;
     using Stwalkerster.Bot.CommandLib.Exceptions;
     using Stwalkerster.Bot.CommandLib.Services.Interfaces;
@@ -24,7 +23,7 @@
     using CLFlag = Stwalkerster.Bot.CommandLib.Model.Flag;
 
     [CommandInvocation("stalk")]
-    [CommandFlag(AccessFlags.Configuration)]
+    [CommandFlag(CLFlag.Standard)]
     public class StalkCommand : CommandBase
     {
         private readonly IChannelConfiguration channelConfiguration;
@@ -39,7 +38,7 @@
         public StalkCommand(
             string commandSource,
             IUser user,
-            IEnumerable<string> arguments,
+            IList<string> arguments,
             ILogger logger,
             IFlagService flagService,
             IConfigurationProvider configurationProvider,
@@ -71,100 +70,28 @@
             this.stalkNodeFactory = stalkNodeFactory;
         }
 
-        public override bool CanExecute()
-        {
-            var tokenList = this.OriginalArguments.ToParameters().ToList();
-
-            if (tokenList.Count < 1)
-            {
-                return base.CanExecute();
-            }
-
-            var mode = tokenList.PopFromFront();
-
-            switch (mode)
-            {
-                case "subscribe":
-                case "unsubscribe":
-                case "list":
-                case "report":
-                    return this.FlagService.UserHasFlag(this.User, CLFlag.Standard, this.CommandSource);
-                default:
-                    return this.FlagService.UserHasFlag(this.User, AccessFlags.Configuration, this.CommandSource);
-            }
-        }
-
-        protected override IEnumerable<CommandResponse> Execute()
+        protected override void OnPreRun()
         {
             if (!this.CommandSource.StartsWith("#"))
             {
                 throw new CommandErrorException("This command must be executed in-channel!");
             }
+        }
 
-            var tokenList = this.OriginalArguments.ToParameters().ToList();
-
-            if (tokenList.Count < 1)
-            {
-                throw new ArgumentCountException(1, this.Arguments.Count());
-            }
-
-            string mode = tokenList.PopFromFront();
-
-            switch (mode)
-            {
-                case "add":
-                    return this.AddMode(tokenList);
-                case "list":
-                    return this.ListMode();
-                case "report":
-                    return this.ReportMode();
-            }
-
-            if (tokenList.Count < 1)
-            {
-                throw new ArgumentCountException(2, this.Arguments.Count(), mode);
-            }
-
+        [SubcommandInvocation("unsubscribe")]
+        [CommandFlag(CLFlag.Standard)]
+        [RequiredArguments(1)]
+        [Help("<Identifier>", "Unsubscribes from email notifications for this stalk")]
+        // ReSharper disable once UnusedMember.Global
+        protected IEnumerable<CommandResponse> UnsubscribeMode()
+        {
+            var tokenList = (List<string>) this.Arguments;
             var stalkName = tokenList.PopFromFront();
             if (!this.channelConfiguration[this.CommandSource].Stalks.ContainsKey(stalkName))
             {
                 throw new CommandErrorException(string.Format("Can't find the stalk '{0}'!", stalkName));
             }
 
-            switch (mode)
-            {
-                case "del":
-                    return this.DeleteMode(stalkName);
-                case "export":
-                    return this.ExportMode(stalkName);
-                case "set":
-                    return this.SetMode(tokenList, stalkName);
-                case "description":
-                    return this.DescriptionMode(tokenList, stalkName);
-                case "expiry":
-                    return this.ExpiryMode(tokenList, stalkName);
-                case "enabled":
-                    return this.EnabledMode(tokenList, stalkName);
-                case "and":
-                    return this.AndMode(tokenList, stalkName);
-                case "or":
-                    return this.OrMode(tokenList, stalkName);
-                case "subscribe":
-                    return this.SubscribeMode(stalkName);
-                case "unsubscribe":
-                    return this.UnsubscribeMode(stalkName);
-                // Aliases:
-                case "enable":
-                    return this.EnabledMode(new List<string> {"true"}, stalkName);
-                case "disable":
-                    return this.EnabledMode(new List<string> {"false"}, stalkName);
-                default:
-                    throw new CommandInvocationException();
-            }
-        }
-
-        private IEnumerable<CommandResponse> UnsubscribeMode(string stalkName)
-        {
             var accountKey = string.Format("$a:{0}", this.User.Account);
             var botUser = this.botUserConfiguration[accountKey];
 
@@ -177,7 +104,7 @@
 
                 yield break;
             }
-            
+
             var stalk = this.channelConfiguration[this.CommandSource].Stalks[stalkName];
 
             if (stalk.Subscribers.All(x => x.Mask.ToString() != botUser.Mask.ToString()))
@@ -186,22 +113,34 @@
                 {
                     Message = string.Format("You are not subscribed to notifications for stalk {0}", stalkName)
                 };
-                
+
                 yield break;
             }
 
             var item = stalk.Subscribers.FirstOrDefault(x => x.Mask.ToString() == botUser.Mask.ToString());
             stalk.Subscribers.Remove(item);
             this.channelConfiguration.Save();
-            
+
             yield return new CommandResponse
             {
                 Message = string.Format("Unsubscribed from notifications for stalk {0}", stalkName)
             };
         }
 
-        private IEnumerable<CommandResponse> SubscribeMode(string stalkName)
+        [SubcommandInvocation("subscribe")]
+        [CommandFlag(CLFlag.Standard)]
+        [RequiredArguments(1)]
+        [Help("<Identifier>", "Subscribes to email notifications for this stalk")]
+        // ReSharper disable once UnusedMember.Global
+        protected IEnumerable<CommandResponse> SubscribeMode()
         {
+            var tokenList = (List<string>) this.Arguments;
+            var stalkName = tokenList.PopFromFront();
+            if (!this.channelConfiguration[this.CommandSource].Stalks.ContainsKey(stalkName))
+            {
+                throw new CommandErrorException(string.Format("Can't find the stalk '{0}'!", stalkName));
+            }
+
             var accountKey = string.Format("$a:{0}", this.User.Account);
             var botUser = this.botUserConfiguration[accountKey];
 
@@ -224,7 +163,7 @@
 
                 yield break;
             }
-            
+
             var stalk = this.channelConfiguration[this.CommandSource].Stalks[stalkName];
 
             if (stalk.Subscribers.Any(x => x.Mask == botUser.Mask))
@@ -233,20 +172,24 @@
                 {
                     Message = string.Format("You are already subscribed to notifications for stalk {0}", stalkName)
                 };
-                
+
                 yield break;
             }
-            
+
             stalk.Subscribers.Add(new StalkUser(botUser.Mask));
             this.channelConfiguration.Save();
-            
+
             yield return new CommandResponse
             {
                 Message = string.Format("Subscribed to notifications for stalk {0}", stalkName)
             };
         }
 
-        private IEnumerable<CommandResponse> ReportMode()
+        [SubcommandInvocation("report")]
+        [CommandFlag(CLFlag.Standard)]
+        [Help("", "Sends a report on the status of all stalks via email")]
+        // ReSharper disable once UnusedMember.Global
+        protected IEnumerable<CommandResponse> ReportMode()
         {
             var accountKey = string.Format("$a:{0}", this.User.Account);
             var botUser = this.botUserConfiguration[accountKey];
@@ -297,11 +240,19 @@
             };
         }
 
-        private IEnumerable<CommandResponse> OrMode(List<string> tokenList, string stalkName)
+        [SubcommandInvocation("or")]
+        [CommandFlag(AccessFlags.Configuration)]
+        [RequiredArguments(2)]
+        [Help("<Identifier> <user|page|summary|xml> <Match...>",
+            "Sets the stalk configuration of the specified stalk to the logical OR of the current configuration, and a specified user, page, or edit summary; or XML tree (advanced).")]
+        // ReSharper disable once UnusedMember.Global
+        protected IEnumerable<CommandResponse> OrMode()
         {
-            if (tokenList.Count < 1)
+            var tokenList = (List<string>) this.Arguments;
+            var stalkName = tokenList.PopFromFront();
+            if (!this.channelConfiguration[this.CommandSource].Stalks.ContainsKey(stalkName))
             {
-                throw new ArgumentCountException(3, this.Arguments.Count(), "or");
+                throw new CommandErrorException(string.Format("Can't find the stalk '{0}'!", stalkName));
             }
 
             var newStalkType = tokenList.PopFromFront();
@@ -340,12 +291,21 @@
             this.channelConfiguration.Save();
         }
 
-        private IEnumerable<CommandResponse> AndMode(List<string> tokenList, string stalkName)
+        [SubcommandInvocation("and")]
+        [CommandFlag(AccessFlags.Configuration)]
+        [RequiredArguments(2)]
+        [Help("<Identifier> <user|page|summary|xml> <Match...>",
+            "Sets the stalk configuration of the specified stalk to the logical AND of the current configuration, and a specified user, page, or edit summary; or XML tree (advanced).")]
+        // ReSharper disable once UnusedMember.Global
+        protected IEnumerable<CommandResponse> AndMode()
         {
-            if (tokenList.Count < 1)
+            var tokenList = (List<string>) this.Arguments;
+            var stalkName = tokenList.PopFromFront();
+            if (!this.channelConfiguration[this.CommandSource].Stalks.ContainsKey(stalkName))
             {
-                throw new ArgumentCountException(3, this.Arguments.Count(), "and");
+                throw new CommandErrorException(string.Format("Can't find the stalk '{0}'!", stalkName));
             }
+
 
             var newStalkType = tokenList.PopFromFront();
 
@@ -384,11 +344,19 @@
             this.channelConfiguration.Save();
         }
 
-        private IEnumerable<CommandResponse> EnabledMode(List<string> tokenList, string stalkName)
+        [SubcommandInvocation("enabled")]
+        [CommandFlag(AccessFlags.Configuration)]
+        [RequiredArguments(2)]
+        [Help("<Identifier> <true|false>", "Marks a stalk as enabled or disabled")]
+        // ReSharper disable once UnusedMember.Global
+        // ReSharper disable once MemberCanBePrivate.Global
+        protected IEnumerable<CommandResponse> EnabledMode()
         {
-            if (tokenList.Count < 1)
+            var tokenList = (List<string>) this.Arguments;
+            var stalkName = tokenList.PopFromFront();
+            if (!this.channelConfiguration[this.CommandSource].Stalks.ContainsKey(stalkName))
             {
-                throw new ArgumentCountException(3, this.Arguments.Count(), "enabled");
+                throw new CommandErrorException(string.Format("Can't find the stalk '{0}'!", stalkName));
             }
 
             bool enabled;
@@ -411,11 +379,50 @@
             this.channelConfiguration.Save();
         }
 
-        private IEnumerable<CommandResponse> ExpiryMode(List<string> tokenList, string stalkName)
+        [SubcommandInvocation("enable")]
+        [CommandFlag(AccessFlags.Configuration)]
+        [RequiredArguments(1)]
+        // ReSharper disable once UnusedMember.Global
+        protected IEnumerable<CommandResponse> EnableAlias()
         {
-            if (tokenList.Count < 1)
+            var tokenList = (List<string>) this.Arguments;
+            var stalkName = tokenList.PopFromFront();
+            
+            this.Arguments.Clear();
+            this.Arguments.Add(stalkName);
+            this.Arguments.Add("true");
+
+            return this.EnabledMode();
+        }
+
+        [SubcommandInvocation("disable")]
+        [CommandFlag(AccessFlags.Configuration)]
+        [RequiredArguments(1)]
+        // ReSharper disable once UnusedMember.Global
+        protected IEnumerable<CommandResponse> DisableAlias()
+        {
+            var tokenList = (List<string>) this.Arguments;
+            var stalkName = tokenList.PopFromFront();
+            
+            this.Arguments.Clear();
+            this.Arguments.Add(stalkName);
+            this.Arguments.Add("false");
+
+            return this.EnabledMode();
+        }
+
+        [SubcommandInvocation("expiry")]
+        [CommandFlag(AccessFlags.Configuration)]
+        [RequiredArguments(2)]
+        [Help("<Identifier> <Expiry>", "Sets the expiry date/time of the specified stalk")]
+        // ReSharper disable once UnusedMember.Global
+        protected IEnumerable<CommandResponse> ExpiryMode()
+        {
+            var tokenList = (List<string>) this.Arguments;
+            var stalkName = tokenList.PopFromFront();
+            if (!this.channelConfiguration[this.CommandSource].Stalks.ContainsKey(stalkName))
             {
-                throw new ArgumentCountException(3, this.Arguments.Count(), "expiry");
+                throw new CommandErrorException(string.Format("Can't find the stalk '{0}'!", stalkName));
             }
 
             var date = string.Join(" ", tokenList);
@@ -434,8 +441,20 @@
             this.channelConfiguration.Save();
         }
 
-        private IEnumerable<CommandResponse> DescriptionMode(List<string> tokenList, string stalkName)
+        [SubcommandInvocation("description"), SubcommandInvocation("desc")]
+        [CommandFlag(AccessFlags.Configuration)]
+        [RequiredArguments(1)]
+        [Help("<Identifier> <Description...>", "Sets the description of the specified stalk")]
+        // ReSharper disable once UnusedMember.Global
+        protected IEnumerable<CommandResponse> DescriptionMode()
         {
+            var tokenList = (List<string>) this.Arguments;
+            var stalkName = tokenList.PopFromFront();
+            if (!this.channelConfiguration[this.CommandSource].Stalks.ContainsKey(stalkName))
+            {
+                throw new CommandErrorException(string.Format("Can't find the stalk '{0}'!", stalkName));
+            }
+
             var descr = string.Join(" ", tokenList);
 
             if (string.IsNullOrWhiteSpace(descr))
@@ -460,7 +479,11 @@
             this.channelConfiguration.Save();
         }
 
-        private IEnumerable<CommandResponse> ListMode()
+        [SubcommandInvocation("list")]
+        [CommandFlag(CLFlag.Standard)]
+        [Help("", "Lists all active stalks")]
+        // ReSharper disable once UnusedMember.Global
+        protected IEnumerable<CommandResponse> ListMode()
         {
             var activeStalks = this.channelConfiguration[this.CommandSource]
                 .Stalks.Values.Where(x => x.IsActive())
@@ -511,11 +534,20 @@
             this.channelConfiguration.Save();
         }
 
-        private IEnumerable<CommandResponse> SetMode(List<string> tokenList, string stalkName)
+        [SubcommandInvocation("set")]
+        [CommandFlag(AccessFlags.Configuration)]
+        [RequiredArguments(2)]
+        [Help(
+            "<Identifier> <user|page|summary|xml> <Match...>",
+            "Sets the stalk configuration of the specified stalk to specified user, page, or edit summary. Alternatively, manually specify an XML tree (advanced).")]
+        // ReSharper disable once UnusedMember.Global
+        protected IEnumerable<CommandResponse> SetMode()
         {
-            if (tokenList.Count < 1)
+            var tokenList = (List<string>) this.Arguments;
+            var stalkName = tokenList.PopFromFront();
+            if (!this.channelConfiguration[this.CommandSource].Stalks.ContainsKey(stalkName))
             {
-                throw new ArgumentCountException(3, this.Arguments.Count(), "set");
+                throw new CommandErrorException(string.Format("Can't find the stalk '{0}'!", stalkName));
             }
 
             var newStalkType = tokenList.PopFromFront();
@@ -534,8 +566,15 @@
             this.channelConfiguration.Save();
         }
 
-        private IEnumerable<CommandResponse> DeleteMode(string stalkName)
+        [SubcommandInvocation("delete"), SubcommandInvocation("del")]
+        [RequiredArguments(1)]
+        [CommandFlag(AccessFlags.Configuration)]
+        [Help("<identifier>", "Deletes a stalk")]
+        // ReSharper disable once UnusedMember.Global
+        protected IEnumerable<CommandResponse> DeleteMode()
         {
+            var stalkName = this.Arguments.First();
+
             this.channelConfiguration[this.CommandSource].Stalks.Remove(stalkName);
 
             yield return new CommandResponse
@@ -546,8 +585,15 @@
             this.channelConfiguration.Save();
         }
 
-        private IEnumerable<CommandResponse> ExportMode(string stalkName)
+        [SubcommandInvocation("export")]
+        [CommandFlag(CLFlag.Standard)]
+        [RequiredArguments(1)]
+        [Help("<identifier>", "Retrieves the XML search tree of a specific stalk")]
+        // ReSharper disable once UnusedMember.Global
+        protected IEnumerable<CommandResponse> ExportMode()
         {
+            var stalkName = this.Arguments.First();
+
             var searchTree = this.channelConfiguration[this.CommandSource].Stalks[stalkName].SearchTree;
 
             yield return new CommandResponse
@@ -560,12 +606,14 @@
             };
         }
 
-        private IEnumerable<CommandResponse> AddMode(List<string> tokenList)
+        [RequiredArguments(1)]
+        [SubcommandInvocation("add")]
+        [CommandFlag(AccessFlags.Configuration)]
+        [Help("<identifier>", "Adds a new unconfigured stalk")]
+        // ReSharper disable once UnusedMember.Global
+        protected IEnumerable<CommandResponse> AddMode()
         {
-            if (tokenList.Count < 1)
-            {
-                throw new ArgumentCountException(2, this.Arguments.Count(), "add");
-            }
+            var tokenList = this.Arguments;
 
             var stalkName = tokenList.First();
             var stalk = new ComplexStalk(stalkName) {Channel = this.CommandSource};
@@ -578,104 +626,6 @@
             };
 
             this.channelConfiguration.Save();
-        }
-
-        protected override IDictionary<string, HelpMessage> Help()
-        {
-            return new Dictionary<string, HelpMessage>
-            {
-                {
-                    "list",
-                    new HelpMessage(
-                        this.CommandName,
-                        "list",
-                        "Lists all active stalks")
-                },
-                {
-                    "subscribe",
-                    new HelpMessage(
-                        this.CommandName,
-                        "subscribe <Identifier>",
-                        "Subscribes to email notifications for this stalk")
-                },
-                {
-                    "unsubscribe",
-                    new HelpMessage(
-                        this.CommandName,
-                        "unsubscribe <Identifier>",
-                        "Unsubscribes from email notifications for this stalk")
-                },
-                {
-                    "add",
-                    new HelpMessage(
-                        this.CommandName,
-                        "add <Identifier>",
-                        "Adds a new unconfigured stalk")
-                },
-                {
-                    "report",
-                    new HelpMessage(
-                        this.CommandName,
-                        "report",
-                        "Sends a report on the status of all stalks via email")
-                },
-                {
-                    "del",
-                    new HelpMessage(
-                        this.CommandName,
-                        "del <Identifier>",
-                        "Deletes a stalk")
-                },
-                {
-                    "export",
-                    new HelpMessage(
-                        this.CommandName,
-                        "export <Identifier>",
-                        "Retrieves the XML search tree of a specific stalk")
-                },
-                {
-                    "enabled",
-                    new HelpMessage(
-                        this.CommandName,
-                        new[] {"enabled <Identifier> <true|false>", "enable <Identifier>", "disable <Identifier>"},
-                        "Marks a stalk as enabled or disabled")
-                },
-                {
-                    "description",
-                    new HelpMessage(
-                        this.CommandName,
-                        "description <Identifier> <Description...>",
-                        "Sets the description of the specified stalk")
-                },
-                {
-                    "expiry",
-                    new HelpMessage(
-                        this.CommandName,
-                        "expiry <Identifier> <Description...>",
-                        "Sets the description of the specified stalk")
-                },
-                {
-                    "set",
-                    new HelpMessage(
-                        this.CommandName,
-                        "set <Identifier> <user|page|summary|xml> <Match...>",
-                        "Sets the stalk configuration of the specified stalk to specified user, page, or edit summary. Alternatively, manually specify an XML tree (advanced).")
-                },
-                {
-                    "and",
-                    new HelpMessage(
-                        this.CommandName,
-                        "and <Identifier> <user|page|summary|xml> <Match...>",
-                        "Sets the stalk configuration of the specified stalk to the logical AND of the current configuration, and a specified user, page, or edit summary; or XML tree (advanced).")
-                },
-                {
-                    "or",
-                    new HelpMessage(
-                        this.CommandName,
-                        "or <Identifier> <user|page|summary|xml> <Match...>",
-                        "Sets the stalk configuration of the specified stalk to the logical OR of the current configuration, and a specified user, page, or edit summary; or XML tree (advanced).")
-                },
-            };
         }
 
         protected IStalkNode CreateNode(string type, string stalkTarget)

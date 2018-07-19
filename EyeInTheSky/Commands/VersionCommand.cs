@@ -20,7 +20,7 @@
     {
         public VersionCommand(string commandSource,
             IUser user,
-            IEnumerable<string> arguments,
+            IList<string> arguments,
             ILogger logger,
             IFlagService flagService,
             IConfigurationProvider configurationProvider,
@@ -35,6 +35,7 @@
         {
         }
 
+        [Help("", "Returns the current version of the running code")]
         protected override IEnumerable<CommandResponse> Execute()
         {
             var assemblyVersion = this.GetFileVersion(Assembly.GetExecutingAssembly());
@@ -54,20 +55,6 @@
         private string GetFileVersion(Assembly assembly)
         {
             return FileVersionInfo.GetVersionInfo(assembly.Location).FileVersion;
-        }
-
-        protected override IDictionary<string, HelpMessage> Help()
-        {
-            return new Dictionary<string, HelpMessage>
-            {
-                {
-                    string.Empty,
-                    new HelpMessage(
-                        this.CommandName,
-                        string.Empty,
-                        "Returns the current version of the running code")
-                }
-            };
         }
     }
 }

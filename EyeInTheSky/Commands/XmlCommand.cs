@@ -2,10 +2,10 @@
 {
     using System.Collections.Generic;
     using Castle.Core.Logging;
+    using EyeInTheSky.Model;
     using EyeInTheSky.Services.Interfaces;
     using Stwalkerster.Bot.CommandLib.Attributes;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities;
-    using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities.Models;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities.Response;
     using Stwalkerster.Bot.CommandLib.Services.Interfaces;
     using Stwalkerster.IrcClient.Interfaces;
@@ -13,14 +13,14 @@
     using CLFlag = Stwalkerster.Bot.CommandLib.Model.Flag;
 
     [CommandInvocation("xml")]
-    [CommandFlag(CLFlag.Standard)]
+    [CommandFlag(AccessFlags.Configuration)]
     public class XmlCommand : CommandBase
     {
         private readonly IXmlCacheService xmlCacheService;
 
         public XmlCommand(string commandSource,
             IUser user,
-            IEnumerable<string> arguments,
+            IList<string> arguments,
             ILogger logger,
             IFlagService flagService,
             IConfigurationProvider configurationProvider,
@@ -37,24 +37,11 @@
             this.xmlCacheService = xmlCacheService;
         }
 
+        [Help("<xml>", "Caches some XML for use in other commands")]
         protected override IEnumerable<CommandResponse> Execute()
         {
             this.xmlCacheService.CacheXml(this.OriginalArguments, this.User);
             yield return new CommandResponse {Message = "Cached requested XML."};
-        }
-
-        protected override IDictionary<string, HelpMessage> Help()
-        {
-            return new Dictionary<string, HelpMessage>
-            {
-                {
-                    string.Empty,
-                    new HelpMessage(
-                        this.CommandName,
-                        "<xml>",
-                        "Caches some XML for use in other commands")
-                }
-            };
         }
     }
 }

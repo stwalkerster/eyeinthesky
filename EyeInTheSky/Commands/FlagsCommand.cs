@@ -8,7 +8,6 @@
     using EyeInTheSky.Services.Interfaces;
     using Stwalkerster.Bot.CommandLib.Attributes;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities;
-    using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities.Models;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities.Response;
     using Stwalkerster.Bot.CommandLib.Exceptions;
     using Stwalkerster.Bot.CommandLib.Services.Interfaces;
@@ -18,6 +17,8 @@
     using CLFlag = Stwalkerster.Bot.CommandLib.Model.Flag;
 
     [CommandInvocation("flags")]
+    [CommandFlag(AccessFlags.GlobalAdmin, true)]
+    [CommandFlag(AccessFlags.LocalAdmin)]
     public class FlagsCommand : CommandBase
     {
         private readonly IBotUserConfiguration botUserConfiguration;
@@ -26,7 +27,7 @@
         public FlagsCommand(
             string commandSource,
             IUser user,
-            IEnumerable<string> arguments,
+            IList<string> arguments,
             ILogger logger,
             IFlagService flagService,
             IConfigurationProvider configurationProvider,
@@ -39,72 +40,33 @@
             this.channelConfiguration = channelConfiguration;
         }
 
-        public override bool CanExecute()
+        [SubcommandInvocation("local")]
+        [CommandFlag(AccessFlags.GlobalAdmin, true)]
+        [CommandFlag(AccessFlags.LocalAdmin)]
+        [RequiredArguments(2)]
+        [Help("<account> <changes>", "Modifies the flags granted to the usermask in the local channel")]
+        // ReSharper disable once UnusedMember.Global
+        protected IEnumerable<CommandResponse> LocalMode()
         {
-            var tokenList = this.OriginalArguments.ToParameters().ToList();
-
-            if (tokenList.Count < 1)
+            if (!this.CommandSource.StartsWith("#"))
             {
-                return base.CanExecute();
+                throw new CommandErrorException("This command must be executed in-channel!");
             }
 
-            var mode = tokenList.PopFromFront();
-
-            switch (mode)
-            {
-                case "global":
-                    return this.FlagService.UserHasFlag(this.User, AccessFlags.GlobalAdmin, null);
-                case "local":
-                    return this.FlagService.UserHasFlag(this.User, AccessFlags.GlobalAdmin, null) ||
-                           this.FlagService.UserHasFlag(this.User, AccessFlags.LocalAdmin, this.CommandSource);
-                default:
-                    return false;
-            }
-        }
-
-        protected override IEnumerable<CommandResponse> Execute()
-        {
-            var tokenList = this.OriginalArguments.ToParameters().ToList();
-
-            if (tokenList.Count < 1)
-            {
-                throw new ArgumentCountException(3, this.Arguments.Count());
-            }
-
-            var mode = tokenList.PopFromFront();
+            var tokenList = (List<string>) this.Arguments;
             var accountName = tokenList.PopFromFront();
             var userMask = "$a:" + accountName;
             var flagChanges = tokenList.PopFromFront();
 
             if (!this.botUserConfiguration.ContainsKey(userMask))
             {
-                return new[]
+                yield return new CommandResponse
                 {
-                    new CommandResponse
-                    {
-                        Message = "No such user is currently registered"
-                    }
+                    Message = "No such user is currently registered"
                 };
+                yield break;
             }
 
-            switch (mode)
-            {
-                case "global":
-                    return this.GlobalMode(userMask, flagChanges, accountName);
-                case "local":
-                    return this.LocalMode(userMask, flagChanges, accountName);
-                default:
-                    throw new CommandInvocationException();
-            }
-        }
-
-        private IEnumerable<CommandResponse> LocalMode(string userMask, string flagChanges, string accountName)
-        {
-            if (!this.CommandSource.StartsWith("#"))
-            {
-                throw new CommandErrorException("This command must be executed in-channel!");
-            }
-            
             var user = this.channelConfiguration[this.CommandSource]
                 .Users.FirstOrDefault(x => x.Mask.ToString() == userMask);
             if (user == null)
@@ -129,7 +91,7 @@
             // GlobalAdmin and Owner should never be granted locally - too much power.
             // Standard is granted by default, so no sense to remove it.
             var preventedChanges = new[] {AccessFlags.GlobalAdmin, CLFlag.Owner, CLFlag.Standard};
-            
+
             var updatedFlags = this.ApplyFlagChanges(ref flagChanges, currentFlags, preventedChanges);
 
             var newFlagString = string.Join(string.Empty, updatedFlags.OrderBy(x => x));
@@ -161,8 +123,27 @@
             }
         }
 
-        private IEnumerable<CommandResponse> GlobalMode(string userMask, string flagChanges, string accountName)
+        [SubcommandInvocation("global")]
+        [CommandFlag(AccessFlags.GlobalAdmin, true)]
+        [RequiredArguments(2)]
+        [Help("<account> <changes>", "Modifies the flags granted to the usermask in the global scope")]
+        // ReSharper disable once UnusedMember.Global
+        protected IEnumerable<CommandResponse> GlobalMode()
         {
+            var tokenList = (List<string>) this.Arguments;
+            var accountName = tokenList.PopFromFront();
+            var userMask = "$a:" + accountName;
+            var flagChanges = tokenList.PopFromFront();
+
+            if (!this.botUserConfiguration.ContainsKey(userMask))
+            {
+                yield return new CommandResponse
+                {
+                    Message = "No such user is currently registered"
+                };
+                yield break;
+            }
+
             var currentFlags = new HashSet<string>();
 
             if (this.botUserConfiguration[userMask].GlobalFlags != null)
@@ -185,7 +166,7 @@
             {
                 preventedChanges.Add(CLFlag.Owner);
             }
-            
+
             var updatedFlags = this.ApplyFlagChanges(ref flagChanges, currentFlags, preventedChanges);
 
             this.botUserConfiguration[userMask].GlobalFlags = string.Join(string.Empty, updatedFlags);
@@ -215,43 +196,20 @@
             }
         }
 
-        protected override IDictionary<string, HelpMessage> Help()
-        {
-            var help = new Dictionary<string, HelpMessage>();
-
-            if (this.FlagService.UserHasFlag(this.User, AccessFlags.GlobalAdmin, null))
-            {
-                help.Add(
-                    "flags",
-                    new HelpMessage(
-                        this.CommandName,
-                        "flags <global|local> <account> <changes>",
-                        "Modifies the flags granted to the usermask in either a global scope or in the local channel"));
-            }
-            else if (this.FlagService.UserHasFlag(this.User, AccessFlags.LocalAdmin, this.CommandSource))
-            {
-                help.Add(
-                    "flags",
-                    new HelpMessage(
-                        this.CommandName,
-                        "flags local <usermask> <account`1>",
-                        "Modifies the flags granted to the usermask in the local channel"));
-            }
-
-            return help;
-        }
-
-        private HashSet<string> ApplyFlagChanges(ref string changes, IEnumerable<string> original, IList<string> preventedChanges)
+        private HashSet<string> ApplyFlagChanges(
+            ref string changes,
+            IEnumerable<string> original,
+            IList<string> preventedChanges)
         {
             var result = new HashSet<string>(original);
             bool addMode = true;
 
             string newChanges = "";
-            
+
             foreach (var changeChar in changes)
             {
                 var c = changeChar.ToString();
-                
+
                 if (c == "-")
                 {
                     addMode = false;
@@ -274,11 +232,11 @@
                         {
                             continue;
                         }
-                        
+
                         result.Remove(i);
-                        newChanges += i;    
+                        newChanges += i;
                     }
-                    
+
                     continue;
                 }
 
@@ -299,7 +257,7 @@
                         // no-op
                         continue;
                     }
-                    
+
                     newChanges += c;
                     result.Add(c);
                 }
@@ -315,14 +273,14 @@
                         // no-op
                         continue;
                     }
-                    
+
                     newChanges += c;
                     result.Remove(c);
                 }
             }
 
             newChanges = newChanges.TrimEnd('+', '-');
-            
+
             changes = newChanges;
             return result;
         }

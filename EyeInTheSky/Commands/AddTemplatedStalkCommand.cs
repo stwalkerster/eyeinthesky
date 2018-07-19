@@ -25,7 +25,7 @@
         public AddTemplatedStalkCommand(
             string commandSource,
             IUser user,
-            IEnumerable<string> arguments,
+            IList<string> arguments,
             ILogger logger,
             IFlagService flagService,
             IConfigurationProvider configurationProvider,
@@ -113,7 +113,7 @@
                 {
                     this.InvokedAs,
                     new HelpMessage(
-                        this.InvokedAs,
+                        string.Empty,
                         flag + "<parameters...>",
                         "Defines a new stalk using the template " + this.InvokedAs)
                 }
