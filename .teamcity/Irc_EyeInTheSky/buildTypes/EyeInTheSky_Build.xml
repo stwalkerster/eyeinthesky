@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<build-type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="799081e5-e845-478e-8662-c42e78fe4277" xsi:noNamespaceSchemaLocation="http://www.jetbrains.com/teamcity/schemas/2018.1/project-config.xsd">
+  <name>Eye In The Sky</name>
+  <description />
+  <settings>
+    <options>
+      <option name="artifactRules" value="EyeInTheSky/bin/Release/**" />
+      <option name="buildNumberPattern" value="%version%.%build.counter%" />
+      <option name="cleanBuild" value="true" />
+    </options>
+    <parameters>
+      <param name="PHID" value="" />
+      <param name="system.Configuration" value="Release" />
+      <param name="version" value="2.4" />
+    </parameters>
+    <build-runners>
+      <runner id="RUNNER_6" name="" type="jb.nuget.installer">
+        <parameters>
+          <param name="nuget.path" value="%teamcity.tool.NuGet.CommandLine.DEFAULT%" />
+          <param name="nuget.sources" value="https://nexus.scimonshouse.net/repository/nuget-group/" />
+          <param name="nuget.updatePackages.mode" value="sln" />
+          <param name="nuget.use.restore" value="restore" />
+          <param name="sln.path" value="EyeInTheSky.sln" />
+          <param name="teamcity.step.mode" value="default" />
+        </parameters>
+      </runner>
+      <runner id="RUNNER_3" name="Build" type="MSBuild">
+        <parameters>
+          <param name="build-file-path" value="EyeInTheSky.sln" />
+          <param name="dotNetCoverage.NCover.HTMLReport.File.Sort" value="0" />
+          <param name="dotNetCoverage.NCover.HTMLReport.File.Type" value="1" />
+          <param name="dotNetCoverage.NCover.Reg" value="selected" />
+          <param name="dotNetCoverage.NCover.platformBitness" value="x86" />
+          <param name="dotNetCoverage.NCover.platformVersion" value="v2.0" />
+          <param name="dotNetCoverage.NCover3.Reg" value="selected" />
+          <param name="dotNetCoverage.NCover3.args" value="//ias .*" />
+          <param name="dotNetCoverage.NCover3.platformBitness" value="x86" />
+          <param name="dotNetCoverage.NCover3.platformVersion" value="NATIVE" />
+          <param name="dotNetCoverage.NCover3.reporter.executable.args" value="//or FullCoverageReport:Html:{teamcity.report.path}" />
+          <param name="dotNetCoverage.PartCover.Reg" value="selected" />
+          <param name="dotNetCoverage.PartCover.executable" value="ddfg" />
+          <param name="dotNetCoverage.PartCover.includes" value="[*]*" />
+          <param name="dotNetCoverage.PartCover.platformBitness" value="x86" />
+          <param name="dotNetCoverage.PartCover.platformVersion" value="v2.0" />
+          <param name="dotNetCoverage.dotCover.home.path" value="%teamcity.tool.JetBrains.dotCover.CommandLineTools.DEFAULT%" />
+          <param name="msbuild_version" value="mono_4.5" />
+          <param name="run-platform" value="x86" />
+          <param name="targets" value="Build" />
+          <param name="teamcity.step.mode" value="default" />
+          <param name="toolsVersion" value="4.0" />
+        </parameters>
+      </runner>
+      <runner id="RUNNER_7" name="Run Tests" type="simpleRunner">
+        <parameters>
+          <param name="command.executable" value="mono" />
+          <param name="command.parameters" value="packages/NUnit.ConsoleRunner.3.8.0/tools/nunit3-console.exe EyeInTheSky.Tests/bin/Release/EyeInTheSky.Tests.dll --teamcity" />
+          <param name="teamcity.step.mode" value="default" />
+        </parameters>
+      </runner>
+    </build-runners>
+    <vcs-settings>
+      <vcs-entry-ref root-id="EyeInTheSky_HttpsPhabricatorStwalkersterCoUkDiffusionEitsEyeInTheSkyGitRefsHeads" />
+    </vcs-settings>
+    <requirements />
+    <build-triggers>
+      <build-trigger id="vcsTrigger" type="vcsTrigger">
+        <parameters>
+          <param name="branchFilter" value="+:*" />
+          <param name="enableQueueOptimization" value="true" />
+          <param name="quietPeriodMode" value="DO_NOT_USE" />
+        </parameters>
+      </build-trigger>
+    </build-triggers>
+    <build-extensions>
+      <extension id="JetBrains.AssemblyInfo" type="JetBrains.AssemblyInfo">
+        <parameters>
+          <param name="assembly-format" value="%version%.%build.counter%.0" />
+          <param name="file-format" value="%version%.%build.counter%" />
+          <param name="info-format" value="%version%.%build.counter%" />
+          <param name="patch-global-assembly-info" value="true" />
+        </parameters>
+      </extension>
+      <extension id="BUILD_EXT_1" type="BuildFailureOnMetric">
+        <parameters>
+          <param name="anchorBuild" value="lastSuccessful" />
+          <param name="metricKey" value="BuildDurationNetTime" />
+          <param name="metricThreshold" value="50" />
+          <param name="metricUnits" value="metricUnitsPercents" />
+          <param name="moreOrLess" value="less" />
+          <param name="withBuildAnchor" value="true" />
+        </parameters>
+      </extension>
+      <extension id="BUILD_EXT_2" type="BuildFailureOnMetric">
+        <parameters>
+          <param name="anchorBuild" value="lastSuccessful" />
+          <param name="metricKey" value="VisibleArtifactsSize" />
+          <param name="metricThreshold" value="20" />
+          <param name="metricUnits" value="metricUnitsPercents" />
+          <param name="moreOrLess" value="less" />
+          <param name="withBuildAnchor" value="true" />
+        </parameters>
+      </extension>
+    </build-extensions>
+    <cleanup />
+  </settings>
+</build-type>
+

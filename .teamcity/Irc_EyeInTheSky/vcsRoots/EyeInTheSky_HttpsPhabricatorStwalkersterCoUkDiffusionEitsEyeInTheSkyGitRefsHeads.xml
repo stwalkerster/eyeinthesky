@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vcs-root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="aa120df9-d2f9-4f6f-a397-a8abeae391a5" type="jetbrains.git" xsi:noNamespaceSchemaLocation="http://www.jetbrains.com/teamcity/schemas/2018.1/project-config.xsd">
+  <name>EITS</name>
+  <param name="agentCleanFilesPolicy" value="ALL_UNTRACKED" />
+  <param name="agentCleanPolicy" value="ON_BRANCH_CHANGE" />
+  <param name="authMethod" value="TEAMCITY_SSH_KEY" />
+  <param name="branch" value="refs/heads/master" />
+  <param name="ignoreKnownHosts" value="true" />
+  <param name="submoduleCheckout" value="CHECKOUT" />
+  <param name="teamcitySshKey" value="TeamCity key" />
+  <param name="url" value="ssh://git@phabricator.stwalkerster.co.uk/diffusion/EITS/eye-in-the-sky.git" />
+  <param name="useAlternates" value="true" />
+  <param name="userForTags" value="TeamCity &lt;teamcity@stwalkerster.co.uk&gt;" />
+  <param name="usernameStyle" value="FULL" />
+</vcs-root>
+

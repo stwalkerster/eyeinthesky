@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" parent-id="Irc" uuid="22cf9dca-f5c1-440a-b5a7-7ff7448d14f7" xsi:noNamespaceSchemaLocation="http://www.jetbrains.com/teamcity/schemas/2018.1/project-config.xsd">
+  <name>EyeInTheSky</name>
+  <parameters />
+  <project-extensions>
+    <extension id="PROJECT_EXT_5" type="versionedSettings">
+      <parameters>
+        <param name="buildSettings" value="PREFER_VCS" />
+        <param name="credentialsStorageType" value="credentialsJSON" />
+        <param name="enabled" value="true" />
+        <param name="rootId" value="EyeInTheSky_HttpsPhabricatorStwalkersterCoUkDiffusionEitsEyeInTheSkyGitRefsHeads" />
+        <param name="showChanges" value="true" />
+      </parameters>
+    </extension>
+  </project-extensions>
+  <cleanup />
+</project>
+
