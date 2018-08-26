@@ -45,7 +45,7 @@
             yield return new CommandResponse
             {
                 Message = string.Format(
-                    "EyeInTheSky v{0}, using Stwalkerster.IrcClient v{1}, Stwalkerster.Bot.CommandLib v{2}",
+                    "EyeInTheSky v{0}; using Stwalkerster.IrcClient v{1}, Stwalkerster.Bot.CommandLib v{2}",
                     assemblyVersion,
                     ircVersion,
                     botLibVersion)

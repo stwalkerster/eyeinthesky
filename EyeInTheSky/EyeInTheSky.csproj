@@ -81,8 +81,8 @@
     <Reference Include="PCLStorage.Abstractions, Version=1.0.2.0, Culture=neutral, PublicKeyToken=286fe515a2c35b64">
       <HintPath>..\packages\PCLStorage.1.0.2\lib\net45\PCLStorage.Abstractions.dll</HintPath>
     </Reference>
-    <Reference Include="Stwalkerster.Bot.CommandLib, Version=11.6.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\Stwalkerster.Bot.CommandLib.11.6.30-beta\lib\net45\Stwalkerster.Bot.CommandLib.dll</HintPath>
+    <Reference Include="Stwalkerster.Bot.CommandLib, Version=11.7.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\Stwalkerster.Bot.CommandLib.11.7.31-beta\lib\net45\Stwalkerster.Bot.CommandLib.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Stwalkerster.IrcClient, Version=8.1.0.0, Culture=neutral, PublicKeyToken=null">
@@ -109,6 +109,8 @@
     <Compile Include="Commands\AddTemplatedStalkCommand.cs" />
     <Compile Include="Commands\ChannelCommand.cs" />
     <Compile Include="Commands\FlagsCommand.cs" />
+    <Compile Include="Commands\HelpCommand.cs" />
+    <Compile Include="Commands\MyFlagsCommand.cs" />
     <Compile Include="Commands\XmlCommand.cs" />
     <Compile Include="Exceptions\BugException.cs" />
     <Compile Include="Exceptions\ConfigurationException.cs" />
