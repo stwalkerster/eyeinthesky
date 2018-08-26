@@ -110,8 +110,6 @@
     <Compile Include="Commands\AddTemplatedStalkCommand.cs" />
     <Compile Include="Commands\ChannelCommand.cs" />
     <Compile Include="Commands\FlagsCommand.cs" />
-    <Compile Include="Commands\HelpCommand.cs" />
-    <Compile Include="Commands\MyFlagsCommand.cs" />
     <Compile Include="Commands\XmlCommand.cs" />
     <Compile Include="Exceptions\BugException.cs" />
     <Compile Include="Exceptions\ConfigurationException.cs" />
