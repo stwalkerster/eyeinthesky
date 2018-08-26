@@ -100,6 +100,15 @@
           <param name="withBuildAnchor" value="true" />
         </parameters>
       </extension>
+      <extension id="BUILD_EXT_3" type="BuildFailureOnMessage">
+        <parameters>
+          <param name="buildFailureOnMessage.conditionType" value="matchesRegex" />
+          <param name="buildFailureOnMessage.messagePattern" value="Reference '.+' not resolved" />
+          <param name="buildFailureOnMessage.outputText" value="Reference to library not resolved" />
+          <param name="buildFailureOnMessage.reverse" value="false" />
+          <param name="buildFailureOnMessage.stopBuildOnFailure" value="true" />
+        </parameters>
+      </extension>
     </build-extensions>
     <cleanup />
   </settings>
