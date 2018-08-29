@@ -8,7 +8,7 @@
         <param name="buildSettings" value="PREFER_VCS" />
         <param name="credentialsStorageType" value="credentialsJSON" />
         <param name="enabled" value="true" />
-        <param name="rootId" value="EyeInTheSky_HttpsPhabricatorStwalkersterCoUkDiffusionEitsEyeInTheSkyGitRefsHeads" />
+        <param name="rootId" value="Irc_EyeInTheSky_Eits" />
         <param name="showChanges" value="true" />
       </parameters>
     </extension>

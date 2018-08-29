@@ -59,7 +59,7 @@
       </runner>
     </build-runners>
     <vcs-settings>
-      <vcs-entry-ref root-id="EyeInTheSky_HttpsPhabricatorStwalkersterCoUkDiffusionEitsEyeInTheSkyGitRefsHeads" />
+      <vcs-entry-ref root-id="Irc_EyeInTheSky_Eits" />
     </vcs-settings>
     <requirements />
     <build-triggers>
