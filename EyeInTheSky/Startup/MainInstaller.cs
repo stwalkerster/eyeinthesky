@@ -13,6 +13,7 @@
     using EyeInTheSky.Startables;
     using Stwalkerster.Bot.CommandLib.Services;
     using Stwalkerster.Bot.CommandLib.Services.Interfaces;
+    using Stwalkerster.Bot.MediaWikiLib.Startup;
     using Stwalkerster.IrcClient;
     using Stwalkerster.IrcClient.Interfaces;
 
@@ -29,7 +30,8 @@
             container.Install(
                 Configuration.FromXmlFile("alert-templates.xml"),
                 new Stwalkerster.IrcClient.Installer(),
-                new Stwalkerster.Bot.CommandLib.Startup.Installer()
+                new Stwalkerster.Bot.CommandLib.Startup.Installer(),
+                new Stwalkerster.Bot.MediaWikiLib.Startup.Installer()
             );
 
             container.Register(

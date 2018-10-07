@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
     using EyeInTheSky.Model.Interfaces;
-    using EyeInTheSky.Services.Interfaces;
+    using Stwalkerster.Bot.MediaWikiLib.Services.Interfaces;
 
     public class RecentChange : IRecentChange
     {

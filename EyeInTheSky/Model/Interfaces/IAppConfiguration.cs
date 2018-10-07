@@ -11,8 +11,6 @@
         string TemplateConfigFile { get; }
         string RcUser { get; }
         string DateFormat { get; }
-        string MediaWikiApiEndpoint { get; }
-        string UserAgent { get; }
         EmailConfiguration EmailConfiguration { get; }
         string Owner { get; }
         int MonitoringPort { get; set; }

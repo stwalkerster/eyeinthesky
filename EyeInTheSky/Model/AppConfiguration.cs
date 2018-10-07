@@ -14,9 +14,7 @@ namespace EyeInTheSky.Model
             string templateConfigFile,
             string rcUser,
             string dateFormat,
-            string owner,
-            string mediaWikiApiEndpoint,
-            string userAgent)
+            string owner)
         {
             if (freenodeChannel == null)
             {
@@ -63,16 +61,6 @@ namespace EyeInTheSky.Model
                 throw new ArgumentNullException("owner");
             }
 
-            if (mediaWikiApiEndpoint == null)
-            {
-                throw new ArgumentNullException("mediaWikiApiEndpoint");
-            }
-
-            if (userAgent == null)
-            {
-                throw new ArgumentNullException("userAgent");
-            }
-
             this.FreenodeChannel = freenodeChannel;
             this.WikimediaChannel = wikimediaChannel;
             this.CommandPrefix = commandPrefix;
@@ -82,8 +70,6 @@ namespace EyeInTheSky.Model
             this.RcUser = rcUser;
             this.Owner = owner;
             this.DateFormat = dateFormat;
-            this.MediaWikiApiEndpoint = mediaWikiApiEndpoint;
-            this.UserAgent = userAgent;
         }
 
         public string FreenodeChannel { get; private set; }
@@ -95,8 +81,6 @@ namespace EyeInTheSky.Model
         public string RcUser { get; private set; }
         public string Owner { get; private set; }
         public string DateFormat { get; private set; }
-        public string MediaWikiApiEndpoint { get; private set; }
-        public string UserAgent { get; private set; }
 
         // These properties are optional, and set by Castle
         // ReSharper disable UnusedAutoPropertyAccessor.Global

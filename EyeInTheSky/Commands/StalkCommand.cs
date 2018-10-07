@@ -70,12 +70,16 @@
             this.stalkNodeFactory = stalkNodeFactory;
         }
 
-        protected override void OnPreRun()
+        protected override IEnumerable<CommandResponse> OnPreRun(out bool abort)
         {
+            abort = false;
+            
             if (!this.CommandSource.StartsWith("#"))
             {
                 throw new CommandErrorException("This command must be executed in-channel!");
             }
+
+            return null;
         }
 
         [SubcommandInvocation("unsubscribe")]

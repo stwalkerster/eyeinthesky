@@ -53,7 +53,7 @@
       <runner id="RUNNER_7" name="Run Tests" type="simpleRunner">
         <parameters>
           <param name="command.executable" value="mono" />
-          <param name="command.parameters" value="packages/NUnit.ConsoleRunner.3.8.0/tools/nunit3-console.exe EyeInTheSky.Tests/bin/Release/EyeInTheSky.Tests.dll --teamcity" />
+          <param name="command.parameters" value="packages/NUnit.ConsoleRunner.3.9.0/tools/nunit3-console.exe EyeInTheSky.Tests/bin/Release/EyeInTheSky.Tests.dll --teamcity" />
           <param name="teamcity.step.mode" value="default" />
         </parameters>
       </runner>

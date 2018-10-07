@@ -11,6 +11,8 @@ using NUnit.Framework;
 
 namespace EyeInTheSky.Tests.Model
 {
+    using Stwalkerster.Bot.MediaWikiLib.Services.Interfaces;
+
     class RecentChangeTests
     {
 

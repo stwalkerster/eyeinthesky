@@ -41,13 +41,18 @@
                 <owner></owner>
                 <!-- The format in which dates should appear -->
                 <dateFormat>u</dateFormat>
+                <!-- Privacy policy wording -->
+                <privacyPolicy>https://example.com/privacy</privacyPolicy>
+            </parameters>
+        </component>
+        
+        <!-- MEDIAWIKI CONFIGURATION -->
+        <component type="MediaWikiConfiguration" service="IMediaWikiConfiguration">
+            <parameters>
                 <!-- MediaWiki instance API endpoint -->
                 <mediawikiApiEndpoint>https://en.wikipedia.org/w/api.php</mediawikiApiEndpoint>
                 <!-- The User Agent to use for the bot. Add your own contact details here. -->
                 <useragent>EyeInTheSkyBot (https://stwalkerster.co.uk/eits; default configuration)</useragent>
-                <!-- Privacy policy wording -->
-                <privacyPolicy>https://example.com/privacy</privacyPolicy>
-                
             </parameters>
         </component>
         

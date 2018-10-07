@@ -6,9 +6,9 @@
     using Castle.Core.Logging;
     using Stwalkerster.Bot.CommandLib.Attributes;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities;
-    using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities.Models;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities.Response;
     using Stwalkerster.Bot.CommandLib.Services.Interfaces;
+    using Stwalkerster.Bot.MediaWikiLib.Services;
     using Stwalkerster.IrcClient;
     using Stwalkerster.IrcClient.Interfaces;
     using Stwalkerster.IrcClient.Model.Interfaces;
@@ -41,14 +41,16 @@
             var assemblyVersion = this.GetFileVersion(Assembly.GetExecutingAssembly());
             var ircVersion = this.GetFileVersion(Assembly.GetAssembly(typeof(IrcClient)));
             var botLibVersion = this.GetFileVersion(Assembly.GetAssembly(typeof(CommandBase)));
+            var mediaWikiLibVersion = this.GetFileVersion(Assembly.GetAssembly(typeof(MediaWikiApi)));
 
             yield return new CommandResponse
             {
                 Message = string.Format(
-                    "EyeInTheSky v{0}; using Stwalkerster.IrcClient v{1}, Stwalkerster.Bot.CommandLib v{2}",
+                    "EyeInTheSky v{0}; using Stwalkerster.IrcClient v{1}, Stwalkerster.Bot.CommandLib v{2}, Stwalkerster.Bot.MediaWikiLib v{3}",
                     assemblyVersion,
                     ircVersion,
-                    botLibVersion)
+                    botLibVersion,
+                    mediaWikiLibVersion)
             };
         }
 

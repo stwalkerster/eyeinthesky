@@ -40,7 +40,7 @@
                     return new FalseNode();
 
                 default:
-                    throw new XmlException();
+                    throw new XmlException("Unknown element " + fragment.Name);
             }
         }
 
@@ -53,7 +53,7 @@
                     node = new NotNode();
                     break;
                 default:
-                    throw new XmlException();
+                    throw new XmlException("Unknown element " + fragment.Name);
             }
 
             var child = this.NewFromXmlFragment((XmlElement) fragment.ChildNodes[0]);
@@ -72,7 +72,7 @@
                     node = new XorNode();
                     break;
                 default:
-                    throw new XmlException();
+                    throw new XmlException("Unknown element " + fragment.Name);
             }
 
             var left = this.NewFromXmlFragment((XmlElement) fragment.ChildNodes[0]);
@@ -112,7 +112,7 @@
                     node = xofnode;
                     break;
                 default:
-                    throw new XmlException();
+                    throw new XmlException("Unknown element " + fragment.Name);
             }
 
             node.ChildNodes = new List<IStalkNode>();
@@ -150,7 +150,7 @@
                     node = new InCategoryNode();
                     break;
                 default:
-                    throw new XmlException();
+                    throw new XmlException("Unknown element " + fragment.Name);
             }
 
             node.SetMatchExpression(fragment.Attributes["value"].Value);
@@ -179,7 +179,7 @@
                     node = new LogStalkNode();
                     break;
                 default:
-                    throw new XmlException();
+                    throw new XmlException("Unknown element " + fragment.Name);
             }
 
             if (fragment.Attributes["caseinsensitive"] != null)

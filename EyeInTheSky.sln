@@ -8,6 +8,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		GlobalAssemblyInfo.cs = GlobalAssemblyInfo.cs
 		README.md = README.md
 		LICENCE = LICENCE
+		.teamcity\Irc_EyeInTheSky\buildTypes\EyeInTheSky_Build.xml = .teamcity\Irc_EyeInTheSky\buildTypes\EyeInTheSky_Build.xml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EyeInTheSky.Tests", "EyeInTheSky.Tests\EyeInTheSky.Tests.csproj", "{3053D2E4-5518-416C-A76E-8176B000EA79}"

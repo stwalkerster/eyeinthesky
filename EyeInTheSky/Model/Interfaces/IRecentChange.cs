@@ -1,7 +1,7 @@
 namespace EyeInTheSky.Model.Interfaces
 {
     using System.Collections.Generic;
-    using EyeInTheSky.Services.Interfaces;
+    using Stwalkerster.Bot.MediaWikiLib.Services.Interfaces;
 
     public interface IRecentChange
     {
