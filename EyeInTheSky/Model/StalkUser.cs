@@ -4,11 +4,14 @@
 
     public class StalkUser
     {
-        public StalkUser(IrcUserMask mask)
+        public StalkUser(IrcUserMask mask, bool subscribed)
         {
             this.Mask = mask;
+            this.Subscribed = subscribed;
         }
 
         public IrcUserMask Mask { get; private set; }
+        
+        public bool Subscribed { get; set; }
     }
 }

@@ -153,6 +153,12 @@
             {
                 var u = doc.CreateElement("user");
                 u.SetAttribute("mask", user.Mask.ToString());
+
+                if (!user.Subscribed)
+                {
+                    u.SetAttribute("inverse", XmlConvert.ToString(true));
+                }
+                
                 subsElement.AppendChild(u);
             }
             
@@ -214,6 +220,13 @@
                 }
                 
                 var mask = e.Attributes["mask"].Value;
+
+                var inverse = false;
+                
+                if (e.Attributes["inverse"] != null)
+                {
+                    inverse = XmlConvert.ToBoolean(e.Attributes["inverse"].Value);
+                }
                 
                 // TODO: Hack in a delay for stored $a masks until T1236 is fixed
                 if (this.freenodeClient.ExtBanTypes == null)
@@ -221,9 +234,9 @@
                     Thread.Sleep(5000);
                 }
                 
-                var ircmask = new IrcUserMask(mask, this.freenodeClient);
+                var ircUserMask = new IrcUserMask(mask, this.freenodeClient);
 
-                yield return new StalkUser(ircmask);
+                yield return new StalkUser(ircUserMask, !inverse);
             }            
         }
     }

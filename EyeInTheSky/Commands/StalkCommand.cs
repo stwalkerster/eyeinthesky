@@ -33,6 +33,7 @@
         private readonly RecentChangeHandler recentChangeHandler;
         private readonly IXmlCacheService xmlCacheService;
         private readonly IBotUserConfiguration botUserConfiguration;
+        private readonly IStalkSubscriptionHelper stalkSubscriptionHelper;
         private readonly IStalkNodeFactory stalkNodeFactory;
 
         public StalkCommand(
@@ -50,7 +51,8 @@
             IEmailHelper emailHelper,
             RecentChangeHandler recentChangeHandler,
             IXmlCacheService xmlCacheService,
-            IBotUserConfiguration botUserConfiguration
+            IBotUserConfiguration botUserConfiguration,
+            IStalkSubscriptionHelper stalkSubscriptionHelper
         ) : base(
             commandSource,
             user,
@@ -67,6 +69,7 @@
             this.recentChangeHandler = recentChangeHandler;
             this.xmlCacheService = xmlCacheService;
             this.botUserConfiguration = botUserConfiguration;
+            this.stalkSubscriptionHelper = stalkSubscriptionHelper;
             this.stalkNodeFactory = stalkNodeFactory;
         }
 
@@ -91,7 +94,8 @@
         {
             var tokenList = (List<string>) this.Arguments;
             var stalkName = tokenList.PopFromFront();
-            if (!this.channelConfiguration[this.CommandSource].Stalks.ContainsKey(stalkName))
+            var ircChannel = this.channelConfiguration[this.CommandSource];
+            if (!ircChannel.Stalks.ContainsKey(stalkName))
             {
                 throw new CommandErrorException(string.Format("Can't find the stalk '{0}'!", stalkName));
             }
@@ -109,26 +113,25 @@
                 yield break;
             }
 
-            var stalk = this.channelConfiguration[this.CommandSource].Stalks[stalkName];
-
-            if (stalk.Subscribers.All(x => x.Mask.ToString() != botUser.Mask.ToString()))
+            var stalk = ircChannel.Stalks[stalkName];
+            SubscriptionSource subscriptionSource;
+            var result = this.stalkSubscriptionHelper.UnsubscribeStalk(botUser.Mask, ircChannel, stalk, out subscriptionSource);
+            this.channelConfiguration.Save();
+            
+            if (result)
+            {
+                yield return new CommandResponse
+                {
+                    Message = string.Format("Unsubscribed from notifications for stalk {0}", stalkName)
+                };
+            }
+            else
             {
                 yield return new CommandResponse
                 {
                     Message = string.Format("You are not subscribed to notifications for stalk {0}", stalkName)
                 };
-
-                yield break;
             }
-
-            var item = stalk.Subscribers.FirstOrDefault(x => x.Mask.ToString() == botUser.Mask.ToString());
-            stalk.Subscribers.Remove(item);
-            this.channelConfiguration.Save();
-
-            yield return new CommandResponse
-            {
-                Message = string.Format("Unsubscribed from notifications for stalk {0}", stalkName)
-            };
         }
 
         [SubcommandInvocation("subscribe")]
@@ -140,7 +143,8 @@
         {
             var tokenList = (List<string>) this.Arguments;
             var stalkName = tokenList.PopFromFront();
-            if (!this.channelConfiguration[this.CommandSource].Stalks.ContainsKey(stalkName))
+            var ircChannel = this.channelConfiguration[this.CommandSource];
+            if (!ircChannel.Stalks.ContainsKey(stalkName))
             {
                 throw new CommandErrorException(string.Format("Can't find the stalk '{0}'!", stalkName));
             }
@@ -168,25 +172,35 @@
                 yield break;
             }
 
-            var stalk = this.channelConfiguration[this.CommandSource].Stalks[stalkName];
+            var stalk = ircChannel.Stalks[stalkName];
 
-            if (stalk.Subscribers.Any(x => x.Mask == botUser.Mask))
+            SubscriptionSource subscriptionSource;
+            var result = this.stalkSubscriptionHelper.SubscribeStalk(botUser.Mask, ircChannel, stalk, out subscriptionSource);
+            this.channelConfiguration.Save();
+            
+            if (result)
             {
                 yield return new CommandResponse
                 {
-                    Message = string.Format("You are already subscribed to notifications for stalk {0}", stalkName)
+                    Message = string.Format("Subscribed to notifications for stalk {0}", stalkName)
                 };
-
-                yield break;
             }
-
-            stalk.Subscribers.Add(new StalkUser(botUser.Mask));
-            this.channelConfiguration.Save();
-
-            yield return new CommandResponse
+            else
             {
-                Message = string.Format("Subscribed to notifications for stalk {0}", stalkName)
-            };
+                var message = string.Format("You are already subscribed to notifications for stalk {0}", stalkName);
+                if (subscriptionSource == SubscriptionSource.Channel)
+                {
+                    message = string.Format(
+                        "You are already subscribed to notifications for {1}, including stalk {0}", stalkName,
+                        ircChannel.Identifier);
+                    
+                }
+
+                yield return new CommandResponse
+                {
+                    Message = message
+                };
+            }
         }
 
         [SubcommandInvocation("report")]

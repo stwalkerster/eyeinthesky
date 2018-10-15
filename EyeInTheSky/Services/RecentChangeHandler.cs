@@ -151,13 +151,24 @@
                 // channel subscribers
                 foreach (var channelUser in this.channelConfig[stalk.Channel].Users.Where(x => x.Subscribed))
                 {
-                    stalkSplit[this.botUserConfiguration[channelUser.Mask.ToString()]].Add(stalk);
+                    var botUser = this.botUserConfiguration[channelUser.Mask.ToString()];
+                    stalkSplit[botUser].Add(stalk);
                 }
 
                 // stalk subscribers
                 foreach (var stalkUser in stalk.Subscribers)
                 {
-                    stalkSplit[this.botUserConfiguration[stalkUser.Mask.ToString()]].Add(stalk);
+                    var botUser = this.botUserConfiguration[stalkUser.Mask.ToString()];
+
+                    if (stalkUser.Subscribed)
+                    {
+                        stalkSplit[botUser].Add(stalk);
+                    }
+                    else
+                    {
+                        // subscription exclusion for channel users
+                        stalkSplit[botUser].Remove(stalk);
+                    }
                 }
             }
 
@@ -304,9 +315,10 @@
                     : "never";
 
                 var subList = new List<string>();
-                if (stalk.Subscribers.Any(x => x.Mask.ToString() == botUser.Mask.ToString()))
+                var subItem = stalk.Subscribers.FirstOrDefault(x => x.Mask.ToString() == botUser.Mask.ToString());
+                if (subItem != null)
                 {
-                    subList.Add("via stalk");
+                    subList.Add(subItem.Subscribed ? "via stalk" : "excluded stalk");
                 }
 
                 if (this.channelConfig[stalk.Channel]

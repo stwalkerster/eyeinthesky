@@ -161,6 +161,7 @@
     <Compile Include="Model\StalkNodes\XOfStalkNode.cs" />
     <Compile Include="Model\StalkNodes\XorNode.cs" />
     <Compile Include="Model\StalkUser.cs" />
+    <Compile Include="Model\SubscriptionSource.cs" />
     <Compile Include="Model\Template.cs" />
     <Compile Include="Services\BooleanParser.cs" />
     <Compile Include="Services\BotUserFactory.cs" />
@@ -169,9 +170,11 @@
     <Compile Include="Services\ConfigFactoryBase.cs" />
     <Compile Include="Services\Interfaces\IChannelConfiguration.cs" />
     <Compile Include="Services\Interfaces\IChannelFactory.cs" />
+    <Compile Include="Services\Interfaces\IStalkSubscriptionHelper.cs" />
     <Compile Include="Services\StalkConfigFactoryBase.cs" />
     <Compile Include="Services\ConfigFileBase.cs" />
     <Compile Include="Services\ConfigurationProvider.cs" />
+    <Compile Include="Services\StalkSubscriptionHelper.cs" />
     <Compile Include="Services\UserFlagService.cs" />
     <Compile Include="Services\EmailHelper.cs" />
     <Compile Include="Services\EmailSender.cs" />
