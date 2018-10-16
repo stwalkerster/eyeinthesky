@@ -11,7 +11,7 @@
       <param name="solutionName" value="EyeInTheSky" />
       <param name="version" value="2.4" />
     </parameters>
-    <build-runners order="RUNNER_6, RUNNER_1, RUNNER_3, RUNNER_7" />
+    <build-runners order="RUNNER_6, RUNNER_1, RUNNER_7" />
     <vcs-settings>
       <vcs-entry-ref root-id="Irc_EyeInTheSky_Eits" />
     </vcs-settings>
