@@ -2,18 +2,16 @@
 <build-type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="799081e5-e845-478e-8662-c42e78fe4277" xsi:noNamespaceSchemaLocation="http://www.jetbrains.com/teamcity/schemas/2018.1/project-config.xsd">
   <name>Eye In The Sky</name>
   <description />
-  <settings>
+  <settings ref="DotNetProject">
     <options>
       <option name="artifactRules" value="EyeInTheSky/bin/Release/**" />
-      <option name="buildNumberPattern" value="%version%.%build.counter%" />
-      <option name="cleanBuild" value="true" />
     </options>
     <parameters>
-      <param name="PHID" value="" />
-      <param name="system.Configuration" value="Release" />
+      <param name="primaryProjectName"><![CDATA[%solutionName%]]></param>
+      <param name="solutionName" value="EyeInTheSky" />
       <param name="version" value="2.4" />
     </parameters>
-    <build-runners>
+    <build-runners order="RUNNER_6, RUNNER_1, RUNNER_3, RUNNER_7">
       <runner id="RUNNER_6" name="" type="jb.nuget.installer">
         <parameters>
           <param name="nuget.path" value="%teamcity.tool.NuGet.CommandLine.DEFAULT%" />
@@ -71,45 +69,6 @@
         </parameters>
       </build-trigger>
     </build-triggers>
-    <build-extensions>
-      <extension id="JetBrains.AssemblyInfo" type="JetBrains.AssemblyInfo">
-        <parameters>
-          <param name="assembly-format" value="%version%.%build.counter%.0" />
-          <param name="file-format" value="%version%.%build.counter%" />
-          <param name="info-format" value="%version%.%build.counter%" />
-          <param name="patch-global-assembly-info" value="true" />
-        </parameters>
-      </extension>
-      <extension id="BUILD_EXT_1" type="BuildFailureOnMetric">
-        <parameters>
-          <param name="anchorBuild" value="lastSuccessful" />
-          <param name="metricKey" value="BuildDurationNetTime" />
-          <param name="metricThreshold" value="50" />
-          <param name="metricUnits" value="metricUnitsPercents" />
-          <param name="moreOrLess" value="less" />
-          <param name="withBuildAnchor" value="true" />
-        </parameters>
-      </extension>
-      <extension id="BUILD_EXT_2" type="BuildFailureOnMetric">
-        <parameters>
-          <param name="anchorBuild" value="lastSuccessful" />
-          <param name="metricKey" value="VisibleArtifactsSize" />
-          <param name="metricThreshold" value="20" />
-          <param name="metricUnits" value="metricUnitsPercents" />
-          <param name="moreOrLess" value="less" />
-          <param name="withBuildAnchor" value="true" />
-        </parameters>
-      </extension>
-      <extension id="BUILD_EXT_3" type="BuildFailureOnMessage">
-        <parameters>
-          <param name="buildFailureOnMessage.conditionType" value="matchesRegex" />
-          <param name="buildFailureOnMessage.messagePattern" value="Reference '.+' not resolved" />
-          <param name="buildFailureOnMessage.outputText" value="Reference to library not resolved" />
-          <param name="buildFailureOnMessage.reverse" value="false" />
-          <param name="buildFailureOnMessage.stopBuildOnFailure" value="true" />
-        </parameters>
-      </extension>
-    </build-extensions>
     <cleanup />
   </settings>
 </build-type>
