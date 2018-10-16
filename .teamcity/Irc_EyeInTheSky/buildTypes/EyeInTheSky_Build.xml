@@ -10,34 +10,7 @@
       <param name="solutionName" value="EyeInTheSky" />
       <param name="version" value="2.4" />
     </parameters>
-    <build-runners order="RUNNER_6, RUNNER_1, RUNNER_3, RUNNER_7">
-      <runner id="RUNNER_3" name="Build" type="MSBuild">
-        <parameters>
-          <param name="build-file-path" value="EyeInTheSky.sln" />
-          <param name="dotNetCoverage.NCover.HTMLReport.File.Sort" value="0" />
-          <param name="dotNetCoverage.NCover.HTMLReport.File.Type" value="1" />
-          <param name="dotNetCoverage.NCover.Reg" value="selected" />
-          <param name="dotNetCoverage.NCover.platformBitness" value="x86" />
-          <param name="dotNetCoverage.NCover.platformVersion" value="v2.0" />
-          <param name="dotNetCoverage.NCover3.Reg" value="selected" />
-          <param name="dotNetCoverage.NCover3.args" value="//ias .*" />
-          <param name="dotNetCoverage.NCover3.platformBitness" value="x86" />
-          <param name="dotNetCoverage.NCover3.platformVersion" value="NATIVE" />
-          <param name="dotNetCoverage.NCover3.reporter.executable.args" value="//or FullCoverageReport:Html:{teamcity.report.path}" />
-          <param name="dotNetCoverage.PartCover.Reg" value="selected" />
-          <param name="dotNetCoverage.PartCover.executable" value="ddfg" />
-          <param name="dotNetCoverage.PartCover.includes" value="[*]*" />
-          <param name="dotNetCoverage.PartCover.platformBitness" value="x86" />
-          <param name="dotNetCoverage.PartCover.platformVersion" value="v2.0" />
-          <param name="dotNetCoverage.dotCover.home.path" value="%teamcity.tool.JetBrains.dotCover.CommandLineTools.DEFAULT%" />
-          <param name="msbuild_version" value="mono_4.5" />
-          <param name="run-platform" value="x86" />
-          <param name="targets" value="Build" />
-          <param name="teamcity.step.mode" value="default" />
-          <param name="toolsVersion" value="4.0" />
-        </parameters>
-      </runner>
-    </build-runners>
+    <build-runners order="RUNNER_6, RUNNER_1, RUNNER_3, RUNNER_7" />
     <vcs-settings>
       <vcs-entry-ref root-id="Irc_EyeInTheSky_Eits" />
     </vcs-settings>
