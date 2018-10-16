@@ -156,7 +156,7 @@
 
                 if (!user.Subscribed)
                 {
-                    u.SetAttribute("inverse", XmlConvert.ToString(true));
+                    u.SetAttribute("unsubscribed", XmlConvert.ToString(true));
                 }
                 
                 subsElement.AppendChild(u);
@@ -223,9 +223,9 @@
 
                 var inverse = false;
                 
-                if (e.Attributes["inverse"] != null)
+                if (e.Attributes["unsubscribed"] != null)
                 {
-                    inverse = XmlConvert.ToBoolean(e.Attributes["inverse"].Value);
+                    inverse = XmlConvert.ToBoolean(e.Attributes["unsubscribed"].Value);
                 }
                 
                 // TODO: Hack in a delay for stored $a masks until T1236 is fixed

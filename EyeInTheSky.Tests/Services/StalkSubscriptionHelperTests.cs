@@ -17,38 +17,68 @@ namespace EyeInTheSky.Tests.Services
     public class StalkSubscriptionHelperTests : TestBase
     {
         private Mock<IIrcClient> ircClient;
+        private Mock<IStalk> stalk;
+        private Mock<IIrcChannel> channel;
+        private StalkSubscriptionHelper subscriptionHelper;
+        private IrcUserMask mask;
 
         [SetUp]
         public void LocalSetup()
         {
             this.ircClient = new Mock<IIrcClient>();
             this.ircClient.Setup(x => x.ExtBanTypes).Returns(string.Empty);
+            
+            this.channel = new Mock<IIrcChannel>();
+            this.stalk = new Mock<IStalk>();
+
+            this.channel.Setup(x => x.Identifier).Returns("#channel");
+            this.stalk.Setup(x => x.Channel).Returns("#channel");
+            
+            this.subscriptionHelper = new StalkSubscriptionHelper(this.LoggerMock.Object);
+            this.mask = new IrcUserMask("*!*@*", this.ircClient.Object);
         }
 
         [Test]
         public void SimpleSubscribe()
         {
             // arrange
-            var stalk = new Mock<IStalk>();
-            var channel = new Mock<IIrcChannel>();
-            var subscriptionHelper = new StalkSubscriptionHelper(this.LoggerMock.Object);
-            var mask = new IrcUserMask("*!*@*", this.ircClient.Object);
-
-            channel.Setup(x => x.Identifier).Returns("#channel");
-            stalk.Setup(x => x.Channel).Returns("#channel");
-
             var channelUserList = new List<ChannelUser>();
-            channel.Setup(x => x.Users).Returns(channelUserList);
+            this.channel.Setup(x => x.Users).Returns(channelUserList);
 
             var stalkUserList = new List<StalkUser>();
-            stalk.Setup(x => x.Subscribers).Returns(stalkUserList);
+            this.stalk.Setup(x => x.Subscribers).Returns(stalkUserList);
             
             // act
             SubscriptionSource source;
-            var result = subscriptionHelper.SubscribeStalk(mask, channel.Object, stalk.Object, out source);
+            var result = this.subscriptionHelper.SubscribeStalk(this.mask, this.channel.Object, this.stalk.Object, out source);
 
             // assert
             Assert.IsTrue(result);
+            Assert.AreEqual(1, stalkUserList.Count);
+            Assert.AreEqual(0, channelUserList.Count);
+            Assert.AreEqual(true, stalkUserList[0].Subscribed);
+            Assert.AreEqual("*!*@*", stalkUserList[0].Mask.ToString());
+        }        
+        
+        [Test]
+        public void SimpleSubscribeFail()
+        {
+            // arrange
+            var channelUserList = new List<ChannelUser>();
+            this.channel.Setup(x => x.Users).Returns(channelUserList);
+
+            var stalkUserList = new List<StalkUser>
+            {
+                new StalkUser(this.mask, true)
+            };
+            this.stalk.Setup(x => x.Subscribers).Returns(stalkUserList);
+            
+            // act
+            SubscriptionSource source;
+            var result = this.subscriptionHelper.SubscribeStalk(this.mask, this.channel.Object, this.stalk.Object, out source);
+
+            // assert
+            Assert.IsFalse(result);
             Assert.AreEqual(1, stalkUserList.Count);
             Assert.AreEqual(0, channelUserList.Count);
             Assert.AreEqual(true, stalkUserList[0].Subscribed);
@@ -59,26 +89,18 @@ namespace EyeInTheSky.Tests.Services
         public void SimpleUnsubscribe()
         {
             // arrange
-            var stalk = new Mock<IStalk>();
-            var channel = new Mock<IIrcChannel>();
-            var subscriptionHelper = new StalkSubscriptionHelper(this.LoggerMock.Object);
-            var mask = new IrcUserMask("*!*@*", this.ircClient.Object);
-
-            channel.Setup(x => x.Identifier).Returns("#channel");
-            stalk.Setup(x => x.Channel).Returns("#channel");
-
             var channelUserList = new List<ChannelUser>();
-            channel.Setup(x => x.Users).Returns(channelUserList);
+            this.channel.Setup(x => x.Users).Returns(channelUserList);
 
             var stalkUserList = new List<StalkUser>
             {
-                new StalkUser(mask, true)
+                new StalkUser(this.mask, true)
             };
-            stalk.Setup(x => x.Subscribers).Returns(stalkUserList);
+            this.stalk.Setup(x => x.Subscribers).Returns(stalkUserList);
             
             // act
             SubscriptionSource source;
-            var result = subscriptionHelper.UnsubscribeStalk(mask, channel.Object, stalk.Object, out source);
+            var result = this.subscriptionHelper.UnsubscribeStalk(this.mask, this.channel.Object, this.stalk.Object, out source);
 
             // assert
             Assert.IsTrue(result);
@@ -87,29 +109,41 @@ namespace EyeInTheSky.Tests.Services
         }
         
         [Test]
-        public void UnsubscribeWhenChannelSubscribed()
+        public void SimpleUnsubscribeFail()
         {
             // arrange
-            var stalk = new Mock<IStalk>();
-            var channel = new Mock<IIrcChannel>();
-            var subscriptionHelper = new StalkSubscriptionHelper(this.LoggerMock.Object);
-            var mask = new IrcUserMask("*!*@*", this.ircClient.Object);
-
-            channel.Setup(x => x.Identifier).Returns("#channel");
-            stalk.Setup(x => x.Channel).Returns("#channel");
-
-            var channelUserList = new List<ChannelUser>
-            {
-                new ChannelUser(mask)
-            };
-            channel.Setup(x => x.Users).Returns(channelUserList);
+            var channelUserList = new List<ChannelUser>();
+            this.channel.Setup(x => x.Users).Returns(channelUserList);
 
             var stalkUserList = new List<StalkUser>();
-            stalk.Setup(x => x.Subscribers).Returns(stalkUserList);
+            this.stalk.Setup(x => x.Subscribers).Returns(stalkUserList);
             
             // act
             SubscriptionSource source;
-            var result = subscriptionHelper.UnsubscribeStalk(mask, channel.Object, stalk.Object, out source);
+            var result = this.subscriptionHelper.UnsubscribeStalk(this.mask, this.channel.Object, this.stalk.Object, out source);
+
+            // assert
+            Assert.IsFalse(result);
+            Assert.AreEqual(0, stalkUserList.Count);
+            Assert.AreEqual(0, channelUserList.Count);
+        }
+        
+        [Test]
+        public void UnsubscribeWhenChannelSubscribed()
+        {
+            // arrange
+            var channelUserList = new List<ChannelUser>
+            {
+                new ChannelUser(this.mask) { Subscribed = true }
+            };
+            this.channel.Setup(x => x.Users).Returns(channelUserList);
+
+            var stalkUserList = new List<StalkUser>();
+            this.stalk.Setup(x => x.Subscribers).Returns(stalkUserList);
+            
+            // act
+            SubscriptionSource source;
+            var result = this.subscriptionHelper.UnsubscribeStalk(this.mask, this.channel.Object, this.stalk.Object, out source);
 
             // assert
             Assert.IsTrue(result);
