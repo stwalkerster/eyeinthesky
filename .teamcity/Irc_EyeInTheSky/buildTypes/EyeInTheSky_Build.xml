@@ -7,6 +7,7 @@
       <option name="artifactRules" value="EyeInTheSky/bin/Release/**" />
     </options>
     <parameters>
+      <param name="pathPrefix" value="" />
       <param name="solutionName" value="EyeInTheSky" />
       <param name="version" value="2.4" />
     </parameters>
