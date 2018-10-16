@@ -11,16 +11,6 @@
       <param name="version" value="2.4" />
     </parameters>
     <build-runners order="RUNNER_6, RUNNER_1, RUNNER_3, RUNNER_7">
-      <runner id="RUNNER_6" name="" type="jb.nuget.installer">
-        <parameters>
-          <param name="nuget.path" value="%teamcity.tool.NuGet.CommandLine.DEFAULT%" />
-          <param name="nuget.sources" value="https://nexus.scimonshouse.net/repository/nuget-group/" />
-          <param name="nuget.updatePackages.mode" value="sln" />
-          <param name="nuget.use.restore" value="restore" />
-          <param name="sln.path" value="EyeInTheSky.sln" />
-          <param name="teamcity.step.mode" value="default" />
-        </parameters>
-      </runner>
       <runner id="RUNNER_3" name="Build" type="MSBuild">
         <parameters>
           <param name="build-file-path" value="EyeInTheSky.sln" />
