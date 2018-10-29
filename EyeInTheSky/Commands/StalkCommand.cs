@@ -646,6 +646,72 @@
             this.channelConfiguration.Save();
         }
 
+        [RequiredArguments(3)]
+        [SubcommandInvocation("clone")]
+        [CommandFlag(AccessFlags.Configuration)]
+        [Help("<source channel> <source identifier> <target identifier>", "Clones an existing stalk from a different channel")]
+        // ReSharper disable once UnusedMember.Global
+        protected IEnumerable<CommandResponse> CloneMode()
+        {
+            var tokenList = this.Arguments;
+            var sourceChannel = tokenList[0];
+            var sourceIdentifier = tokenList[1];
+            var targetIdentifier = tokenList[2];
+
+            var sourceChannelConfig = this.channelConfiguration.ContainsKey(sourceChannel)
+                ? this.channelConfiguration[sourceChannel]
+                : null;
+
+            if (sourceChannelConfig == null)
+            {
+                throw new CommandErrorException(string.Format("The channel {0} does not exist in configuration", sourceChannel));
+            }
+
+            var sourceStalk = sourceChannelConfig.Stalks.ContainsKey(sourceIdentifier)
+                ? sourceChannelConfig.Stalks[sourceIdentifier]
+                : null;
+            
+            if (sourceStalk == null)
+            {
+                throw new CommandErrorException(string.Format("The channel {0} does not exist in configuration", sourceChannel));
+            }
+
+            if (this.channelConfiguration[this.CommandSource].Stalks.ContainsKey(targetIdentifier))
+            {
+                throw new CommandErrorException(string.Format("The identifier {0} already exists in this channel!",
+                    targetIdentifier));
+            }
+            
+            var tree = sourceStalk.SearchTree;
+            
+            // bounce it via XML to ensure its a) different objects and b) saves properly
+            tree = this.stalkNodeFactory.NewFromXmlFragment(this.stalkNodeFactory.ToXml(new XmlDocument(), tree));
+
+            var newStalk = new ComplexStalk(targetIdentifier)
+            {
+                Channel = this.CommandSource,
+                Description = sourceStalk.Description,
+                ExpiryTime = sourceStalk.ExpiryTime,
+                IsEnabled = sourceStalk.IsEnabled,
+                SearchTree = tree
+            };
+
+            this.channelConfiguration[this.CommandSource].Stalks.Add(newStalk.Identifier, newStalk);
+            this.channelConfiguration.Save();
+
+            yield return new CommandResponse
+            {
+                Message = string.Format("Created new {1} stalk {0}{2} with CSL {3}",
+                    newStalk.Identifier,
+                    newStalk.IsEnabled ? "enabled" : "disabled",
+                    newStalk.ExpiryTime.HasValue
+                        ? string.Format(" (expiring in {0:%d}d {0:%h}h {0:%m}m)", newStalk.ExpiryTime.Value - DateTime.Now)
+                        : string.Empty,
+                    tree
+                )
+            };
+        }
+        
         protected IStalkNode CreateNode(string type, string stalkTarget)
         {
             IStalkNode newNode;
