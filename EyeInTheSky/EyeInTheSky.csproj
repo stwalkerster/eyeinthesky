@@ -147,6 +147,7 @@
     <Compile Include="Model\StalkNodes\BaseNodes\RegexLeafNode.cs" />
     <Compile Include="Model\StalkNodes\BaseNodes\SingleChildLogicalNode.cs" />
     <Compile Include="Model\StalkNodes\BaseNodes\StalkNode.cs" />
+    <Compile Include="Model\StalkNodes\ExternalNode.cs" />
     <Compile Include="Model\StalkNodes\FalseNode.cs" />
     <Compile Include="Model\StalkNodes\FlagStalkNode.cs" />
     <Compile Include="Model\StalkNodes\InCategoryNode.cs" />
@@ -168,6 +169,9 @@
     <Compile Include="Services\ChannelConfiguration.cs" />
     <Compile Include="Services\ChannelFactory.cs" />
     <Compile Include="Services\ConfigFactoryBase.cs" />
+    <Compile Include="Services\ExternalProviders\Interfaces\IExternalProvider.cs" />
+    <Compile Include="Services\ExternalProviders\Interfaces\IPhabricatorExternalProvider.cs" />
+    <Compile Include="Services\ExternalProviders\PhabricatorExternalProvider.cs" />
     <Compile Include="Services\Interfaces\IChannelConfiguration.cs" />
     <Compile Include="Services\Interfaces\IChannelFactory.cs" />
     <Compile Include="Services\Interfaces\IStalkSubscriptionHelper.cs" />

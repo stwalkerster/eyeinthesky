@@ -5,18 +5,31 @@
     using EyeInTheSky.Model.StalkNodes;
     using EyeInTheSky.Model.StalkNodes.BaseNodes;
     using EyeInTheSky.Services;
+    using EyeInTheSky.Services.ExternalProviders.Interfaces;
+
+    using Moq;
+
     using NUnit.Framework;
 
     [TestFixture]
     public class StalkNodeFactoryTests
     {
+        private Mock<IPhabricatorExternalProvider> phabExternalMock;
+
+        [OneTimeSetUp]
+        public void Setup()
+        {
+            this.phabExternalMock = new Mock<IPhabricatorExternalProvider>();
+        }
+        
+        
         #region Object tests
         
         [Test]
         public void ShouldCreateTrueNode()
         {
             // arrange
-            var snf = new StalkNodeFactory();
+            var snf = new StalkNodeFactory(this.phabExternalMock.Object);
             var doc = new XmlDocument();
             doc.LoadXml("<true />");
 
@@ -31,7 +44,7 @@
         public void ShouldCreateFalseNode()
         {
             // arrange
-            var snf = new StalkNodeFactory();
+            var snf = new StalkNodeFactory(this.phabExternalMock.Object);
             var doc = new XmlDocument();
             doc.LoadXml("<false />");
 
@@ -46,7 +59,7 @@
         public void ShouldCreateUserNode()
         {
             // arrange
-            var snf = new StalkNodeFactory();
+            var snf = new StalkNodeFactory(this.phabExternalMock.Object);
             var doc = new XmlDocument();
             doc.LoadXml("<user value=\"abc\" />");
 
@@ -62,7 +75,7 @@
         public void ShouldCreatePageNode()
         {
             // arrange
-            var snf = new StalkNodeFactory();
+            var snf = new StalkNodeFactory(this.phabExternalMock.Object);
             var doc = new XmlDocument();
             doc.LoadXml("<page value=\"abc\" />");
 
@@ -79,7 +92,7 @@
         public void ShouldCreateSummaryNode()
         {
             // arrange
-            var snf = new StalkNodeFactory();
+            var snf = new StalkNodeFactory(this.phabExternalMock.Object);
             var doc = new XmlDocument();
             doc.LoadXml("<summary value=\"abc\" />");
 
@@ -95,7 +108,7 @@
         public void ShouldCreateFlagNode()
         {
             // arrange
-            var snf = new StalkNodeFactory();
+            var snf = new StalkNodeFactory(this.phabExternalMock.Object);
             var doc = new XmlDocument();
             doc.LoadXml("<flag value=\"abc\" />");
 
@@ -111,7 +124,7 @@
         public void ShouldCreateUserGroupNode()
         {
             // arrange
-            var snf = new StalkNodeFactory();
+            var snf = new StalkNodeFactory(this.phabExternalMock.Object);
             var doc = new XmlDocument();
             doc.LoadXml("<usergroup value=\"abc\" />");
 
@@ -127,7 +140,7 @@
         public void ShouldCreateNotNode()
         {
             // arrange
-            var snf = new StalkNodeFactory();
+            var snf = new StalkNodeFactory(this.phabExternalMock.Object);
             var doc = new XmlDocument();
             doc.LoadXml("<not><true /></not>");
 
@@ -145,7 +158,7 @@
         public void ShouldCreateXorNode()
         {
             // arrange
-            var snf = new StalkNodeFactory();
+            var snf = new StalkNodeFactory(this.phabExternalMock.Object);
             var doc = new XmlDocument();
             doc.LoadXml("<xor><true /><false /></xor>");
 
@@ -164,7 +177,7 @@
         public void ShouldCreateAndNode()
         {
             // arrange
-            var snf = new StalkNodeFactory();
+            var snf = new StalkNodeFactory(this.phabExternalMock.Object);
             var doc = new XmlDocument();
             doc.LoadXml("<and><true /><false /></and>");
 
@@ -184,7 +197,7 @@
         public void ShouldCreateOrNode()
         {
             // arrange
-            var snf = new StalkNodeFactory();
+            var snf = new StalkNodeFactory(this.phabExternalMock.Object);
             var doc = new XmlDocument();
             doc.LoadXml("<or><true /><false /></or>");
 
@@ -204,7 +217,7 @@
         public void ShouldCreateBasicXOfNode()
         {
             // arrange
-            var snf = new StalkNodeFactory();
+            var snf = new StalkNodeFactory(this.phabExternalMock.Object);
             var doc = new XmlDocument();
             doc.LoadXml("<x-of><true /><false /></x-of>");
 
@@ -226,7 +239,7 @@
         public void ShouldCreateMinXOfNode()
         {
             // arrange
-            var snf = new StalkNodeFactory();
+            var snf = new StalkNodeFactory(this.phabExternalMock.Object);
             var doc = new XmlDocument();
             doc.LoadXml("<x-of minimum=\"5\"><true /><false /></x-of>");
 
@@ -249,7 +262,7 @@
         public void ShouldCreateMaxXOfNode()
         {
             // arrange
-            var snf = new StalkNodeFactory();
+            var snf = new StalkNodeFactory(this.phabExternalMock.Object);
             var doc = new XmlDocument();
             doc.LoadXml("<x-of maximum=\"5\"><true /><false /></x-of>");
 
@@ -278,7 +291,7 @@
             var node = new TrueNode();
             var doc = new XmlDocument();
             
-            var snf = new StalkNodeFactory(); 
+            var snf = new StalkNodeFactory(this.phabExternalMock.Object); 
             
             // act
             var result = snf.ToXml(doc, node);
@@ -294,7 +307,7 @@
             var node = new FalseNode();
             var doc = new XmlDocument();
             
-            var snf = new StalkNodeFactory(); 
+            var snf = new StalkNodeFactory(this.phabExternalMock.Object); 
             
             // act
             var result = snf.ToXml(doc, node);
@@ -312,7 +325,7 @@
             
             var doc = new XmlDocument();
             
-            var snf = new StalkNodeFactory(); 
+            var snf = new StalkNodeFactory(this.phabExternalMock.Object); 
             
             // act
             var result = snf.ToXml(doc, node);
@@ -330,7 +343,7 @@
             
             var doc = new XmlDocument();
             
-            var snf = new StalkNodeFactory(); 
+            var snf = new StalkNodeFactory(this.phabExternalMock.Object); 
             
             // act
             var result = snf.ToXml(doc, node);
@@ -349,7 +362,7 @@
             
             var doc = new XmlDocument();
             
-            var snf = new StalkNodeFactory(); 
+            var snf = new StalkNodeFactory(this.phabExternalMock.Object); 
             
             // act
             var result = snf.ToXml(doc, node);
@@ -367,7 +380,7 @@
             
             var doc = new XmlDocument();
             
-            var snf = new StalkNodeFactory(); 
+            var snf = new StalkNodeFactory(this.phabExternalMock.Object); 
             
             // act
             var result = snf.ToXml(doc, node);
@@ -385,7 +398,7 @@
             
             var doc = new XmlDocument();
             
-            var snf = new StalkNodeFactory(); 
+            var snf = new StalkNodeFactory(this.phabExternalMock.Object); 
             
             // act
             var result = snf.ToXml(doc, node);
@@ -403,7 +416,7 @@
             
             var doc = new XmlDocument();
             
-            var snf = new StalkNodeFactory(); 
+            var snf = new StalkNodeFactory(this.phabExternalMock.Object); 
             
             // act
             var result = snf.ToXml(doc, node);
@@ -427,7 +440,7 @@
 
             var doc = new XmlDocument();
             
-            var snf = new StalkNodeFactory(); 
+            var snf = new StalkNodeFactory(this.phabExternalMock.Object); 
             
             // act
             var result = snf.ToXml(doc, node);
@@ -451,7 +464,7 @@
 
             var doc = new XmlDocument();
             
-            var snf = new StalkNodeFactory(); 
+            var snf = new StalkNodeFactory(this.phabExternalMock.Object); 
             
             // act
             var result = snf.ToXml(doc, node);
@@ -472,7 +485,7 @@
 
             var doc = new XmlDocument();
             
-            var snf = new StalkNodeFactory(); 
+            var snf = new StalkNodeFactory(this.phabExternalMock.Object); 
             
             // act
             var result = snf.ToXml(doc, node);
@@ -492,7 +505,7 @@
 
             var doc = new XmlDocument();
             
-            var snf = new StalkNodeFactory(); 
+            var snf = new StalkNodeFactory(this.phabExternalMock.Object); 
             
             // act
             var result = snf.ToXml(doc, node);
@@ -516,7 +529,7 @@
 
             var doc = new XmlDocument();
             
-            var snf = new StalkNodeFactory(); 
+            var snf = new StalkNodeFactory(this.phabExternalMock.Object); 
             
             // act
             var result = snf.ToXml(doc, node);
@@ -541,7 +554,7 @@
 
             var doc = new XmlDocument();
             
-            var snf = new StalkNodeFactory(); 
+            var snf = new StalkNodeFactory(this.phabExternalMock.Object); 
             
             // act
             var result = snf.ToXml(doc, node);
@@ -566,7 +579,7 @@
 
             var doc = new XmlDocument();
             
-            var snf = new StalkNodeFactory(); 
+            var snf = new StalkNodeFactory(this.phabExternalMock.Object); 
             
             // act
             var result = snf.ToXml(doc, node);
@@ -592,7 +605,7 @@
 
             var doc = new XmlDocument();
             
-            var snf = new StalkNodeFactory(); 
+            var snf = new StalkNodeFactory(this.phabExternalMock.Object); 
             
             // act
             var result = snf.ToXml(doc, node);

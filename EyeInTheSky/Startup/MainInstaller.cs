@@ -37,6 +37,7 @@
             container.Register(
                 // Services
                 Classes.FromThisAssembly().InNamespace("EyeInTheSky.Services").WithServiceAllInterfaces(),
+                Classes.FromThisAssembly().InNamespace("EyeInTheSky.Services.ExternalProviders").WithServiceAllInterfaces(),
                 Classes.FromThisAssembly().InNamespace("EyeInTheSky.Commands").LifestyleTransient(),
 
                 // Main application
