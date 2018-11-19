@@ -31,6 +31,7 @@
                     return this.NewDoubleChildNode(fragment);
 
                 case "not":
+                case "external":
                     return this.NewSingleChildNode(fragment);
 
                 case "user":
