@@ -6,6 +6,9 @@
     <options>
       <option name="artifactRules" value="EyeInTheSky/bin/Release/**" />
     </options>
+    <disabled-settings>
+      <setting-ref ref="BUILD_EXT_4" />
+    </disabled-settings>
     <parameters>
       <param name="solutionName" value="EyeInTheSky" />
       <param name="version" value="2.4" />
