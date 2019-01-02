@@ -28,9 +28,12 @@
         public XmlElement RetrieveXml(IUser forUser)
         {
             XmlElement element;
-            if (!this.cache.TryGetValue(forUser, out element))
+            lock (this.cache)
             {
-                return null;
+                if (!this.cache.TryGetValue(forUser, out element))
+                {
+                    return null;
+                }
             }
 
             return element;

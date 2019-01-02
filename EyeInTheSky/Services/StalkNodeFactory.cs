@@ -96,7 +96,6 @@
             IExternalProvider provider;
             switch (extNode.Provider)
             {
-                    
                 case "phabricator":
                     provider = this.phabricatorExternalProvider;
                     break;

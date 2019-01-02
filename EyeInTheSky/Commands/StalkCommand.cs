@@ -623,6 +623,30 @@
                 )
             };
         }
+        
+        [SubcommandInvocation("refresh")]
+        [CommandFlag(AccessFlags.Configuration)]
+        [RequiredArguments(1)]
+        [Help("<identifier>", "Refreshes the stalk tree if any external node providers are used.")]
+        // ReSharper disable once UnusedMember.Global
+        protected IEnumerable<CommandResponse> RefreshMode()
+        {
+            var stalkName = this.Arguments.First();
+
+            // bounce through XML, as this is guaranteed to be a refresh.
+            var originalTree = this.channelConfiguration[this.CommandSource].Stalks[stalkName].SearchTree;
+            var xmlTree = this.stalkNodeFactory.ToXml(new XmlDocument(), originalTree);
+            var newTree = this.stalkNodeFactory.NewFromXmlFragment(xmlTree);
+            
+            yield return new CommandResponse
+            {
+                Message = string.Format(
+                    "{0}: {1}",
+                    stalkName,
+                    newTree
+                )
+            };
+        }
 
         [RequiredArguments(1)]
         [SubcommandInvocation("add")]
