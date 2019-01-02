@@ -181,6 +181,18 @@
                             Expiry = TimeSpan.FromHours(31),
                             EditSummary = "see also 86.28.94.117",
                             EditFlags = "reblock, anon. only, account creation blocked, cannot edit own talk page"
+                        });     
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/block14]]4 reblock10 02 5* 03Sir Sputnik 5*  10changed block settings for [[02User:Albertpda10]]  with an expiry time of indefinite: Abusing [[WP:SOCK|multiple accounts]]: Please see: [[Wikipedia:Sockpuppet investigations/Albertpda]]")
+                    .Returns(
+                        new RecentChange("Sir Sputnik")
+                        {
+                            Log = "block",
+                            TargetUser = "Albertpda",
+                            Expiry = null,
+                            EditSummary = "Abusing [[WP:SOCK|multiple accounts]]: Please see: [[Wikipedia:Sockpuppet investigations/Albertpda]]",
+                            EditFlags = "reblock"
                         });
                 
                 yield return new TestCaseData(
@@ -304,6 +316,17 @@
                             EditFlags = "event",
                             EditSummary = "[[WP:RD3|RD3]]: Purely disruptive material"
                         });
+                
+                yield return new TestCaseData(
+                    "14[[07Special:Log/delete14]]4 event10 02 5* 03Od Mishehu 5*  10Od Mishehu changed visibility of 2 log events on [[02Special:Log10]]: content hidden: [[WP:RD3|RD3]]: Purely disruptive material: user name")
+                    .Returns(
+                        new RecentChange("Od Mishehu")
+                        {
+                            Log = "delete",
+                            Page = "Special:Log",
+                            EditFlags = "event",
+                            EditSummary = "[[WP:RD3|RD3]]: Purely disruptive material: user name"
+                        });
                 #endregion
                 #region import
                 // faked
@@ -387,6 +410,17 @@
                             Page = "User talk:Sam Korn",
                             EditSummary = "Ichthus April 2018",
                             EditFlags = "failure"
+                        });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/massmessage14]]4 skipbadns10 02 5* 03MediaWiki message delivery 5*  10Delivery of \"Wikipedia translation of the week: 2018-52\" to [[02Sadenar4000010]] was skipped because target was in a namespace that cannot be posted in")
+                    .Returns(
+                        new RecentChange("MediaWiki message delivery")
+                        {
+                            Log = "massmessage",
+                            Page = "Sadenar40000",
+                            EditSummary = "Wikipedia translation of the week: 2018-52",
+                            EditFlags = "skipbadns"
                         });
                 #endregion
                 #region merge
@@ -808,6 +842,17 @@
                             Page = "Cartoon Network (Australia and New Zealand)",
                             TargetPage = "Cartoon Network (Australian and New Zealand TV channel)",
                             EditFlags = "move_stable"
+                        });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/stable14]]4 modify10 02 5* 03Vanamonde93 5*  10Vanamonde93 altered pending changes settings for [[02IndiGo10]] [Auto-accept: require \"autoconfirmed\" permission]: Persistent [[WP:Disruptive editing|disruptive editing]]")
+                    .Returns(
+                        new RecentChange("Vanamonde93")
+                        {
+                            Log = "stable",
+                            Page = "IndiGo",
+                            EditFlags = "modify",
+                            EditSummary = "Persistent [[WP:Disruptive editing|disruptive editing]]"
                         });
                 #endregion
                 #region tag

@@ -150,7 +150,7 @@
                     
                     if (rc.EditFlags == "reblock")
                     {
-                        var match = new Regex("^changed block settings for \\[\\[User:(?<targetUser>.*?)\\]\\] \\((?<flags>.*?)\\) with an expiry time of (?<expiry>.*?)(?:: (?<comment>.*))?$");
+                        var match = new Regex("^changed block settings for \\[\\[User:(?<targetUser>.*?)\\]\\] (?:\\((?<flags>.*?)\\))? with an expiry time of (?<expiry>.*?)(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
@@ -160,8 +160,11 @@
                             {
                                 rc.EditSummary = result.Groups["comment"].Value;
                             }
-                            
-                            rc.EditFlags += ", " + result.Groups["flags"].Value;
+
+                            if (result.Groups["flags"].Success)
+                            {
+                                rc.EditFlags += ", " + result.Groups["flags"].Value;
+                            }
 
                             handled = true;
                         }
@@ -290,7 +293,7 @@
 
                     if (rc.EditFlags == "event")
                     {
-                        var match = new Regex(@" changed visibility of a log event on \[\[(?<pageName>.*?)\]\]: (?:[a-z, ]*)hidden(?:: (?<comment>.*))?$");
+                        var match = new Regex(@" changed visibility of (?:a log event|[0-9]+ log events) on \[\[(?<pageName>.*?)\]\]: (?:[a-z, ]*)hidden(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
@@ -394,6 +397,23 @@
                     if (rc.EditFlags == "failure")
                     {
                         var match = new Regex("^Delivery of \"(?<comment>.*?)\" to \\[\\[(?<page>.*?)\\]\\] failed with an error code of .*$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["page"].Value;
+
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+
+                            handled = true;
+                        }
+                    }
+                    
+                    if (rc.EditFlags == "skipbadns")
+                    {
+                        var match = new Regex("^Delivery of \"(?<comment>.*?)\" to \\[\\[(?<page>.*?)\\]\\] was skipped because target was in a namespace that cannot be posted in$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
@@ -741,6 +761,23 @@
                         {
                             rc.Page = result.Groups["page"].Value;
                             rc.TargetPage = result.Groups["newpage"].Value;
+
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+
+                            handled = true;
+                        }
+                    }
+                    
+                    if (rc.EditFlags == "modify")
+                    {
+                        var match = new Regex(@" altered pending changes settings for \[\[(?<page>.*?)\]\] (?:\[Auto-(?:accept|review): .*?\])?(?: ?)(?:\((?:(?:expires .*?\(UTC\))|indefinite)\))?(?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["page"].Value;
 
                             if (result.Groups["comment"].Success)
                             {
