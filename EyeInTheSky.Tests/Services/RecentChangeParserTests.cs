@@ -328,6 +328,18 @@
                             EditSummary = "[[WP:RD3|RD3]]: Purely disruptive material: user name"
                         });
                 #endregion
+                #region gblblock
+                yield return new TestCaseData(
+                        "14[[07Special:Log/gblblock14]]4 whitelist10 02 5* 03Zzuuzz 5*  10Zzuuzz disabled the global block on [[02User:85.255.236.0/2310]] locally: too much collateral; contact me if there's any issues")
+                    .Returns(
+                        new RecentChange("Zzuuzz")
+                        {
+                            Log = "gblblock",
+                            TargetUser = "85.255.236.0/23",
+                            EditFlags = "whitelist",
+                            EditSummary = "too much collateral; contact me if there's any issues"
+                        });
+                #endregion
                 #region import
                 // faked
                 yield return new TestCaseData(
@@ -364,6 +376,28 @@
                             Page = "STiki",
                             EditFlags = "create",
                             EditSummary = "Tracking edits made by the [[WP:STiki]] tool"
+                        });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/managetags14]]4 deactivate10 02 5* 03AGK 5*  10AGK deactivated the tag \"PAWS\" for use by users and bots: misclicked")
+                    .Returns(
+                        new RecentChange("AGK")
+                        {
+                            Log = "managetags",
+                            Page = "PAWS",
+                            EditFlags = "deactivate",
+                            EditSummary = "misclicked"
+                        });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/managetags14]]4 delete10 02 5* 03MusikAnimal 5*  10MusikAnimal deleted the tag \"long-term-abuse\" (removed from 15 revisions and/or log entries): Per [[Special:Permalink/864524082#Please review 937]], may do more harm than good")
+                    .Returns(
+                        new RecentChange("MusikAnimal")
+                        {
+                            Log = "managetags",
+                            Page = "long-term-abuse",
+                            EditFlags = "delete",
+                            EditSummary = "Per [[Special:Permalink/864524082#Please review 937]], may do more harm than good"
                         });
                 #endregion
                 #region massmessage
@@ -865,6 +899,27 @@
                             EditFlags = "update",
                             Page = "Special:Log/patrol",
                             EditSummary = "tag test"
+                        });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/tag14]]4 update10 02 5* 03Xaosflux 5*  10Xaosflux added the tag bot trial to revision 53987300 of page [[02User:Fluxbot10]]: test")
+                    .Returns(
+                        new RecentChange("Xaosflux")
+                        {
+                            Log = "tag",
+                            EditFlags = "update",
+                            Page = "User:Fluxbot",
+                            EditSummary = "test"
+                        });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/tag14]]4 update10 02 5* 03Xaosflux 5*  10Xaosflux removed the tag bot trial from revision 53987300 of page [[02User:Fluxbot10]]")
+                    .Returns(
+                        new RecentChange("Xaosflux")
+                        {
+                            Log = "tag",
+                            EditFlags = "update",
+                            Page = "User:Fluxbot"
                         });
                 #endregion
                 #region thanks

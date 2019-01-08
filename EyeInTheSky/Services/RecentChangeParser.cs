@@ -308,6 +308,25 @@
                         }
                     }
                     break;
+                case "gblblock":
+                    if (rc.EditFlags == "whitelist")
+                    {
+                        var match = new Regex(@" disabled the global block on \[\[User:(?<targetUser>.*?)\]\] locally(?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.TargetUser = result.Groups["targetUser"].Value;
+
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+
+                            handled = true;
+                        }
+                    }
+
+                    break;
                 case "import":
                     if (rc.EditFlags == "interwiki")
                     {
@@ -348,6 +367,40 @@
                     if (rc.EditFlags == "create")
                     {
                         var match = new Regex(@" created the tag ""(?<pageName>.*?)""(?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["pageName"].Value;
+
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+
+                            handled = true;
+                        }
+                    }
+                    
+                    if (rc.EditFlags == "deactivate")
+                    {
+                        var match = new Regex(@" deactivated the tag ""(?<pageName>.*?)"" for use by users and bots(?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["pageName"].Value;
+
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+
+                            handled = true;
+                        }
+                    }
+                    
+                    if (rc.EditFlags == "delete")
+                    {
+                        var match = new Regex(@" deleted the tag ""(?<pageName>.*?)"" \(removed from [0-9]+ revisions and/or log entries\)(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
@@ -793,7 +846,7 @@
                 case "tag":
                     if (rc.EditFlags == "update")
                     {
-                        var match = new Regex(@" added the tag .*? to log entry [0-9]+ of page \[\[(?<page>.*?)\]\](?:: (?<comment>.*))?$");
+                        var match = new Regex(@" (?:added|removed) the tag .*? (?:to|from) (?:log entry|revision) [0-9]+ of page \[\[(?<page>.*?)\]\](?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
