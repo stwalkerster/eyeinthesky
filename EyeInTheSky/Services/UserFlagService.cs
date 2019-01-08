@@ -48,6 +48,11 @@
                 return true;
             }
 
+            if (user.Account != null && flag == AccessFlags.User)
+            {
+                return true;
+            }
+            
             var matchingUsers = this.userConfiguration.Items
                 .Where(x => x.Mask.Matches(user).GetValueOrDefault())
                 .ToList();
@@ -137,6 +142,11 @@
             this.PreCacheOwnerMask(user);
 
             var flags = new HashSet<string>{Flag.Standard};
+
+            if (user.Account != null)
+            {
+                flags.Add(AccessFlags.User);
+            }
             
             if (this.ownerMask.Matches(user).GetValueOrDefault(false))
             {

@@ -90,7 +90,8 @@
 
             // GlobalAdmin and Owner should never be granted locally - too much power.
             // Standard is granted by default, so no sense to remove it.
-            var preventedChanges = new[] {AccessFlags.GlobalAdmin, CLFlag.Owner, CLFlag.Standard};
+            // User is granted based on login to NickServ account, also makes no sense to remove it
+            var preventedChanges = new[] {AccessFlags.GlobalAdmin, CLFlag.Owner, CLFlag.Standard, AccessFlags.User};
 
             var updatedFlags = this.ApplyFlagChanges(ref flagChanges, currentFlags, preventedChanges);
 
@@ -160,7 +161,8 @@
             }
 
             // Standard is granted by default, so no sense to remove it.
-            var preventedChanges = new List<string> {CLFlag.Standard};
+            // User is granted based on login to NickServ account, also makes no sense to remove it
+            var preventedChanges = new List<string> {CLFlag.Standard, AccessFlags.User};
 
             if (!this.FlagService.UserHasFlag(this.User, CLFlag.Owner, null))
             {

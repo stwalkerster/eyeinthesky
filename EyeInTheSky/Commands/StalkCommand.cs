@@ -23,7 +23,7 @@
     using CLFlag = Stwalkerster.Bot.CommandLib.Model.Flag;
 
     [CommandInvocation("stalk")]
-    [CommandFlag(CLFlag.Standard)]
+    [CommandFlag(AccessFlags.User)]
     public class StalkCommand : CommandBase
     {
         private readonly IChannelConfiguration channelConfiguration;
@@ -86,7 +86,6 @@
         }
 
         [SubcommandInvocation("unsubscribe")]
-        [CommandFlag(CLFlag.Standard)]
         [RequiredArguments(1)]
         [Help("<Identifier>", "Unsubscribes from email notifications for this stalk")]
         // ReSharper disable once UnusedMember.Global
@@ -135,7 +134,6 @@
         }
 
         [SubcommandInvocation("subscribe")]
-        [CommandFlag(CLFlag.Standard)]
         [RequiredArguments(1)]
         [Help("<Identifier>", "Subscribes to email notifications for this stalk")]
         // ReSharper disable once UnusedMember.Global
@@ -204,7 +202,6 @@
         }
 
         [SubcommandInvocation("report")]
-        [CommandFlag(CLFlag.Standard)]
         [Help("", "Sends a report on the status of all stalks via email")]
         // ReSharper disable once UnusedMember.Global
         protected IEnumerable<CommandResponse> ReportMode()

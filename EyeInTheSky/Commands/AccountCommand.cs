@@ -18,7 +18,7 @@
     using CLFlag = Stwalkerster.Bot.CommandLib.Model.Flag;
 
     [CommandInvocation("account")]
-    [CommandFlag(CLFlag.Standard)]
+    [CommandFlag(AccessFlags.User)]
     public class AccountCommand : CommandBase
     {
         private readonly IAppConfiguration appConfig;
@@ -427,18 +427,6 @@
         private IEnumerable<CommandResponse> GetBotUser(out IBotUser botUser)
         {
             botUser = null;
-
-            if (this.User.Account == null)
-            {
-                return new[]
-                {
-                    new CommandResponse
-                    {
-                        Message = "Please identify to NickServ first!",
-                        Destination = CommandResponseDestination.PrivateMessage
-                    }
-                };
-            }
 
             var accountKey = string.Format("$a:{0}", this.User.Account);
 

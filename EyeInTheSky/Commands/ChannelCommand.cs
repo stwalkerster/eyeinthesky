@@ -16,7 +16,7 @@
     using CLFlag = Stwalkerster.Bot.CommandLib.Model.Flag;
 
     [CommandInvocation("channel")]
-    [CommandFlag(CLFlag.Standard)]
+    [CommandFlag(AccessFlags.User)]
     public class ChannelCommand : CommandBase
     {
         private readonly IChannelConfiguration channelConfiguration;
