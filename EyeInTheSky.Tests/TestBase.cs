@@ -19,6 +19,7 @@
             this.NotificationTemplatesMock = new Mock<INotificationTemplates>();
 
             this.AppConfigMock.Setup(s => s.DateFormat).Returns("u");
+            this.AppConfigMock.Setup(s => s.WikimediaChannel).Returns("#en.wikipedia");
         }
     }
 }

@@ -14,10 +14,17 @@
     public class StalkFactory : StalkConfigFactoryBase, IStalkFactory
     {
         private readonly IIrcClient freenodeClient;
+        private readonly IAppConfiguration appConfig;
 
-        public StalkFactory(ILogger logger, IStalkNodeFactory stalkNodeFactory, IIrcClient freenodeClient) : base(logger, stalkNodeFactory)
+        public StalkFactory(
+            ILogger logger,
+            IStalkNodeFactory stalkNodeFactory,
+            IIrcClient freenodeClient,
+            IAppConfiguration appConfig)
+            : base(logger, stalkNodeFactory)
         {
             this.freenodeClient = freenodeClient;
+            this.appConfig = appConfig;
         }
 
         public IStalk NewFromXmlElement(XmlElement element)
@@ -88,6 +95,12 @@
                 lastMessageId = null;
             }
 
+            var watchChannel = element.GetAttribute("watchchannel");
+            if (string.IsNullOrWhiteSpace(watchChannel))
+            {
+                watchChannel = this.appConfig.WikimediaChannel;
+            }
+
             var s = new ComplexStalk(
                 flag,
                 lastUpdateTime,
@@ -96,7 +109,8 @@
                 expiryTime,
                 enabled,
                 triggerCount,
-                lastMessageId);
+                lastMessageId,
+                watchChannel);
             
             this.ProcessStalkChildren(element, flag, s);
 
@@ -134,6 +148,8 @@
             }
 
             e.SetAttribute("enabled", XmlConvert.ToString(stalk.IsEnabled));
+            
+            e.SetAttribute("watchchannel", stalk.WatchChannel);
             
             if (stalk.ExpiryTime != null)
             {

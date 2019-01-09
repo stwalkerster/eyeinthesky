@@ -9,8 +9,12 @@
     
     public class TemplateFactory : StalkConfigFactoryBase, ITemplateFactory
     {
-        public TemplateFactory(ILogger logger, IStalkNodeFactory stalkNodeFactory) : base(logger, stalkNodeFactory)
+        private readonly IAppConfiguration appConfig;
+
+        public TemplateFactory(ILogger logger, IStalkNodeFactory stalkNodeFactory, IAppConfiguration appConfig)
+            : base(logger, stalkNodeFactory)
         {
+            this.appConfig = appConfig;
         }
         
         public ITemplate NewFromXmlElement(XmlElement element)
@@ -68,6 +72,12 @@
                 expiryDuration = XmlConvert.ToTimeSpan(expiryDurationAttribute);
             }
 
+            var watchChannel = element.GetAttribute("watchchannel");
+            if (string.IsNullOrWhiteSpace(watchChannel))
+            {
+                watchChannel = this.appConfig.WikimediaChannel;
+            }
+
             var elementChildNode = element.ChildNodes[0];
             if (elementChildNode.Name != "searchtree")
             {
@@ -82,7 +92,8 @@
                 description,
                 lastUpdateTime,
                 expiryDuration,
-                elementChildNode.InnerText);
+                elementChildNode.InnerText,
+                watchChannel);
 
             return t;
         }
@@ -112,6 +123,8 @@
             
             e.SetAttribute("stalkenabled", XmlConvert.ToString(stalk.StalkIsEnabled));
             e.SetAttribute("templateenabled", XmlConvert.ToString(stalk.TemplateIsEnabled));
+            
+            e.SetAttribute("watchchannel", stalk.WatchChannel);
 
             if (stalk.ExpiryDuration.HasValue)
             {

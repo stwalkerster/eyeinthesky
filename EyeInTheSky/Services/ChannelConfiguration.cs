@@ -24,7 +24,7 @@
         {
         }
         
-        public IEnumerable<IStalk> MatchStalks(IRecentChange rc)
+        public IEnumerable<IStalk> MatchStalks(IRecentChange rc, string channel)
         {
             if (!this.Initialised)
             {
@@ -36,13 +36,14 @@
             {
                 stalkListClone = new SortedList<string, IStalk>(
                     this.ItemList.SelectMany(x => x.Value.Stalks.Values)
+                        .Where(x => x.WatchChannel == channel)
                         .ToDictionary(x => x.Identifier + "@" + x.Channel));
             }
             
             foreach (var s in stalkListClone)
             {
                 bool isMatch;
-             
+                
                 try
                 {
                     isMatch = s.Value.Match(rc);

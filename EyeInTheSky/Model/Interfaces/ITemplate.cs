@@ -12,5 +12,6 @@
         TimeSpan? ExpiryDuration { get; set; }
         string SearchTree { get; set; }
         string StalkFlag { get; set; }
+        string WatchChannel { get; set; }
     }
 }

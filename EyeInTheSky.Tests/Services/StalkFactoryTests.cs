@@ -21,7 +21,7 @@
         {
             var snf = new Mock<IStalkNodeFactory>();
             var irc = new Mock<IIrcClient>();
-            var sf = new StalkFactory(this.LoggerMock.Object, snf.Object, irc.Object);
+            var sf = new StalkFactory(this.LoggerMock.Object, snf.Object, irc.Object, this.AppConfigMock.Object);
 
             var actual = sf.ParseDate(string.Empty, inputDate, string.Empty);
 
@@ -84,15 +84,16 @@
             stalk.Setup(x => x.Identifier).Returns("testflag");
             stalk.Setup(x => x.IsEnabled).Returns(true);
             stalk.Setup(x => x.TriggerCount).Returns(4);
+            stalk.Setup(x => x.WatchChannel).Returns("#en.wikipedia");
             
             
-            var sf = new StalkFactory(this.LoggerMock.Object, snf.Object, irc.Object);
+            var sf = new StalkFactory(this.LoggerMock.Object, snf.Object, irc.Object, this.AppConfigMock.Object);
 
             // act
             var xmlElement = sf.ToXmlElement(stalk.Object, doc);
             
             // assert
-            Assert.AreEqual("<complexstalk flag=\"testflag\" enabled=\"true\" triggercount=\"4\"><searchtree><false /></searchtree><subscribers /></complexstalk>", xmlElement.OuterXml);
+            Assert.AreEqual("<complexstalk flag=\"testflag\" enabled=\"true\" watchchannel=\"#en.wikipedia\" triggercount=\"4\"><searchtree><false /></searchtree><subscribers /></complexstalk>", xmlElement.OuterXml);
         }
 
         [Test]
@@ -113,15 +114,16 @@
             stalk.Setup(x => x.SearchTree).Returns(node.Object);
             stalk.Setup(x => x.Identifier).Returns("testflag");
             stalk.Setup(x => x.IsEnabled).Returns(true);
+            stalk.Setup(x => x.WatchChannel).Returns("#en.wikipedia");
             
             
-            var sf = new StalkFactory(this.LoggerMock.Object, snf.Object, irc.Object);
+            var sf = new StalkFactory(this.LoggerMock.Object, snf.Object, irc.Object, this.AppConfigMock.Object);
 
             // act
             var xmlElement = sf.ToXmlElement(stalk.Object, doc);
             
             // assert
-            Assert.AreEqual("<complexstalk flag=\"testflag\" enabled=\"true\" triggercount=\"0\"><searchtree><or><true /><false /></or></searchtree><subscribers /></complexstalk>", xmlElement.OuterXml);
+            Assert.AreEqual("<complexstalk flag=\"testflag\" enabled=\"true\" watchchannel=\"#en.wikipedia\" triggercount=\"0\"><searchtree><or><true /><false /></or></searchtree><subscribers /></complexstalk>", xmlElement.OuterXml);
         }
 
         [Test]
@@ -147,14 +149,15 @@
             stalk.Setup(x => x.ExpiryTime).Returns(DateTime.MaxValue);
             stalk.Setup(x => x.TriggerCount).Returns(3334);
             stalk.Setup(x => x.LastMessageId).Returns("foobar");
+            stalk.Setup(x => x.WatchChannel).Returns("#metawiki");
             
-            var sf = new StalkFactory(this.LoggerMock.Object, snf.Object, irc.Object);
+            var sf = new StalkFactory(this.LoggerMock.Object, snf.Object, irc.Object, this.AppConfigMock.Object);
 
             // act
             var xmlElement = sf.ToXmlElement(stalk.Object, doc);
             
             // assert
-            Assert.AreEqual("<complexstalk flag=\"testflag\" lastupdate=\"2018-03-14T01:02:03Z\" lasttrigger=\"0001-01-01T00:00:00Z\" description=\"my description here\" lastmessageid=\"foobar\" enabled=\"true\" expiry=\"9999-12-31T23:59:59.9999999Z\" triggercount=\"3334\"><searchtree><false /></searchtree><subscribers /></complexstalk>", xmlElement.OuterXml);
+            Assert.AreEqual("<complexstalk flag=\"testflag\" lastupdate=\"2018-03-14T01:02:03Z\" lasttrigger=\"0001-01-01T00:00:00Z\" description=\"my description here\" lastmessageid=\"foobar\" enabled=\"true\" watchchannel=\"#metawiki\" expiry=\"9999-12-31T23:59:59.9999999Z\" triggercount=\"3334\"><searchtree><false /></searchtree><subscribers /></complexstalk>", xmlElement.OuterXml);
         }
 
         [Test]
@@ -169,7 +172,7 @@
             snf.Setup(x => x.NewFromXmlFragment(It.IsAny<XmlElement>())).Returns(new TrueNode());
             
             // act
-            var fact = new StalkFactory(this.LoggerMock.Object, snf.Object, irc.Object);
+            var fact = new StalkFactory(this.LoggerMock.Object, snf.Object, irc.Object, this.AppConfigMock.Object);
             var stalk = fact.NewFromXmlElement(doc.DocumentElement);
 
             // assert
@@ -200,7 +203,7 @@
             snf.Setup(x => x.NewFromXmlFragment(It.IsAny<XmlElement>())).Returns(new TrueNode());
             
             // act
-            var fact = new StalkFactory(this.LoggerMock.Object, snf.Object, irc.Object);
+            var fact = new StalkFactory(this.LoggerMock.Object, snf.Object, irc.Object, this.AppConfigMock.Object);
             var stalk = fact.NewFromXmlElement(doc.DocumentElement);
 
             // assert
@@ -208,6 +211,7 @@
             Assert.IsNull(stalk.ExpiryTime);
             Assert.AreEqual("testytest", stalk.Identifier);
             Assert.IsFalse(stalk.IsEnabled);
+            Assert.AreEqual("#en.wikipedia", stalk.WatchChannel);
             Assert.AreEqual("foobar", stalk.LastMessageId);
             Assert.AreEqual(new DateTime(2018,03,25,16,42,21,878), stalk.LastTriggerTime);
             Assert.AreEqual(new DateTime(2018,03,25,16,42,30,984), stalk.LastUpdateTime);
@@ -219,6 +223,37 @@
             snf.Verify(x => x.NewFromXmlFragment(It.IsAny<XmlElement>()), Times.Once);
         }
         
+        [Test]
+        public void ShouldCreateObjectFromXmlWithWatchChannel()
+        {
+            string xml =
+                "<complexstalk flag=\"testytest\" lastupdate=\"2018-03-25T16:42:30.984000Z\" lasttrigger=\"2018-03-25T16:42:21.878000Z\" immediatemail=\"true\" lastmessageid=\"foobar\" enabled=\"false\" watchchannel=\"#fr.wikipedia\"><searchtree><true /></searchtree></complexstalk>";
+            var doc = new XmlDocument();
+            doc.LoadXml(xml);
+            var snf = new Mock<IStalkNodeFactory>();
+            var irc = new Mock<IIrcClient>();
+            snf.Setup(x => x.NewFromXmlFragment(It.IsAny<XmlElement>())).Returns(new TrueNode());
+            
+            // act
+            var fact = new StalkFactory(this.LoggerMock.Object, snf.Object, irc.Object, this.AppConfigMock.Object);
+            var stalk = fact.NewFromXmlElement(doc.DocumentElement);
+
+            // assert
+            Assert.IsNull(stalk.Description);
+            Assert.IsNull(stalk.ExpiryTime);
+            Assert.AreEqual("testytest", stalk.Identifier);
+            Assert.IsFalse(stalk.IsEnabled);
+            Assert.AreEqual("#fr.wikipedia", stalk.WatchChannel);
+            Assert.AreEqual("foobar", stalk.LastMessageId);
+            Assert.AreEqual(new DateTime(2018,03,25,16,42,21,878), stalk.LastTriggerTime);
+            Assert.AreEqual(new DateTime(2018,03,25,16,42,30,984), stalk.LastUpdateTime);
+            Assert.AreEqual(0, stalk.TriggerCount);
+
+            Assert.IsNotNull(stalk.SearchTree);
+            Assert.IsInstanceOf<IStalkNode>(stalk.SearchTree);
+            
+            snf.Verify(x => x.NewFromXmlFragment(It.IsAny<XmlElement>()), Times.Once);
+        }
 
         [Test, Ignore("Waiting on T964")]
         public void ShouldCreateObjectFromXmlWithComments()
@@ -232,7 +267,7 @@
             snf.Setup(x => x.NewFromXmlFragment(It.IsAny<XmlElement>())).Returns(new TrueNode());
             
             // act
-            var fact = new StalkFactory(this.LoggerMock.Object, snf.Object, irc.Object);
+            var fact = new StalkFactory(this.LoggerMock.Object, snf.Object, irc.Object, this.AppConfigMock.Object);
             var stalk = fact.NewFromXmlElement(doc.DocumentElement);
 
             // assert
@@ -264,7 +299,7 @@
             snf.Setup(x => x.NewFromXmlFragment(It.IsAny<XmlElement>())).Returns(new TrueNode());
             
             // act
-            var fact = new StalkFactory(this.LoggerMock.Object, snf.Object, irc.Object);
+            var fact = new StalkFactory(this.LoggerMock.Object, snf.Object, irc.Object, this.AppConfigMock.Object);
             var stalk = fact.NewFromXmlElement(doc.DocumentElement);
 
             // assert

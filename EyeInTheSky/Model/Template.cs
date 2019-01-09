@@ -27,7 +27,8 @@
             string description,
             DateTime? lastUpdateTime,
             TimeSpan? expiryDuration,
-            string searchTree)
+            string searchTree,
+            string watchChannel)
         {
             this.stalkFlag = stalkFlag;
             this.templateIsEnabled = templateIsEnabled;
@@ -37,6 +38,7 @@
             this.expiryDuration = expiryDuration;
             this.Identifier = flag;
             this.LastUpdateTime = lastUpdateTime;
+            this.WatchChannel = watchChannel;
         }
 
         public string Identifier { get; private set; }
@@ -61,6 +63,8 @@
                 this.LastUpdateTime = DateTime.Now;
             }
         }
+
+        public string WatchChannel { get; set; }
 
         public bool TemplateIsEnabled
         {

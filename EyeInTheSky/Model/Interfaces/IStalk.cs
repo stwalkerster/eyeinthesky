@@ -19,5 +19,6 @@
         bool IsActive();
         bool Match(IRecentChange rc);
         List<StalkUser> Subscribers { get; }
+        string WatchChannel { get; set; }
     }
 }

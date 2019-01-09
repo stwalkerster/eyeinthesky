@@ -111,7 +111,7 @@
                 return;
             }
 
-            var stalks = this.channelConfig.MatchStalks(rc).ToList();
+            var stalks = this.channelConfig.MatchStalks(rc, e.Target).ToList();
 
             if (stalks.Count == 0)
             {

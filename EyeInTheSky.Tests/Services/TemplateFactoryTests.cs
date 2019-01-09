@@ -24,15 +24,16 @@
             template.Setup(x => x.Identifier).Returns("testflag");
             template.Setup(x => x.StalkIsEnabled).Returns(true);
             template.Setup(x => x.TemplateIsEnabled).Returns(false);
+            template.Setup(x => x.WatchChannel).Returns("#foo");
             
             
-            var sf = new TemplateFactory(this.LoggerMock.Object, snf.Object);
+            var sf = new TemplateFactory(this.LoggerMock.Object, snf.Object, this.AppConfigMock.Object);
 
             // act
             var xmlElement = sf.ToXmlElement(template.Object, doc);
             
             // assert
-            Assert.AreEqual("<template flag=\"testflag\" stalkenabled=\"true\" templateenabled=\"false\"><searchtree><![CDATA[<false />]]></searchtree></template>", xmlElement.OuterXml);
+            Assert.AreEqual("<template flag=\"testflag\" stalkenabled=\"true\" templateenabled=\"false\" watchchannel=\"#foo\"><searchtree><![CDATA[<false />]]></searchtree></template>", xmlElement.OuterXml);
         }
 
         [Test]
@@ -47,15 +48,15 @@
             template.Setup(x => x.Identifier).Returns("testflag");
             template.Setup(x => x.StalkIsEnabled).Returns(true);
             template.Setup(x => x.TemplateIsEnabled).Returns(false);
+            template.Setup(x => x.WatchChannel).Returns("#foo");
             
-            
-            var sf = new TemplateFactory(this.LoggerMock.Object, snf.Object);
+            var sf = new TemplateFactory(this.LoggerMock.Object, snf.Object, this.AppConfigMock.Object);
 
             // act
             var xmlElement = sf.ToXmlElement(template.Object, doc);
             
             // assert
-            Assert.AreEqual("<template flag=\"testflag\" stalkenabled=\"true\" templateenabled=\"false\"><searchtree><![CDATA[<or><true /><false /></or>]]></searchtree></template>", xmlElement.OuterXml);
+            Assert.AreEqual("<template flag=\"testflag\" stalkenabled=\"true\" templateenabled=\"false\" watchchannel=\"#foo\"><searchtree><![CDATA[<or><true /><false /></or>]]></searchtree></template>", xmlElement.OuterXml);
         }
 
         [Test]
@@ -74,14 +75,15 @@
             template.Setup(x => x.TemplateIsEnabled).Returns(false);
             template.Setup(x => x.LastUpdateTime).Returns(new DateTime(2018, 3, 14, 1, 2, 3));
             template.Setup(x => x.ExpiryDuration).Returns(new TimeSpan(90, 0, 0, 0));
+            template.Setup(x => x.WatchChannel).Returns("#bar");
             
-            var sf = new TemplateFactory(this.LoggerMock.Object, snf.Object);
+            var sf = new TemplateFactory(this.LoggerMock.Object, snf.Object, this.AppConfigMock.Object);
 
             // act
             var xmlElement = sf.ToXmlElement(template.Object, doc);
             
             // assert
-            Assert.AreEqual("<template flag=\"testflag\" lastupdate=\"2018-03-14T01:02:03Z\" description=\"my description here\" stalkflag=\"bar\" stalkenabled=\"true\" templateenabled=\"false\" expiryduration=\"P90D\"><searchtree><![CDATA[<false />]]></searchtree></template>", xmlElement.OuterXml);
+            Assert.AreEqual("<template flag=\"testflag\" lastupdate=\"2018-03-14T01:02:03Z\" description=\"my description here\" stalkflag=\"bar\" stalkenabled=\"true\" templateenabled=\"false\" watchchannel=\"#bar\" expiryduration=\"P90D\"><searchtree><![CDATA[<false />]]></searchtree></template>", xmlElement.OuterXml);
         }
 
 
@@ -89,13 +91,13 @@
         public void ShouldCreateObjectFromXml()
         {
             string xml =
-                "<template flag=\"testytest\" stalkflag=\"bar\" lastupdate=\"2018-03-25T16:42:30.984000Z\" immediatemail=\"true\" templateenabled=\"true\" stalkenabled=\"false\"><searchtree><![CDATA[<true />]]></searchtree></template>";
+                "<template flag=\"testytest\" stalkflag=\"bar\" lastupdate=\"2018-03-25T16:42:30.984000Z\" immediatemail=\"true\" templateenabled=\"true\" stalkenabled=\"false\" watchchannel=\"#quux\"><searchtree><![CDATA[<true />]]></searchtree></template>";
             var doc = new XmlDocument();
             doc.LoadXml(xml);
             var snf = new Mock<IStalkNodeFactory>();
             
             // act
-            var fact = new TemplateFactory(this.LoggerMock.Object, snf.Object);
+            var fact = new TemplateFactory(this.LoggerMock.Object, snf.Object, this.AppConfigMock.Object);
             var template = fact.NewFromXmlElement(doc.DocumentElement);
 
             // assert
@@ -107,6 +109,7 @@
             Assert.IsTrue(template.TemplateIsEnabled);
             Assert.AreEqual(new DateTime(2018,03,25,16,42,30,984), template.LastUpdateTime);
             Assert.AreEqual(template.SearchTree, "<true />");
+            Assert.AreEqual("#quux", template.WatchChannel);
         }
     }
 }

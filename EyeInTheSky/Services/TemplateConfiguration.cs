@@ -67,7 +67,8 @@
                 Description = description,
                 IsEnabled = template.StalkIsEnabled,
                 ExpiryTime = template.ExpiryDuration.HasValue ? DateTime.Now + template.ExpiryDuration : null,
-                SearchTree = stalkNode
+                SearchTree = stalkNode,
+                WatchChannel = template.WatchChannel
             };
 
             return stalk;

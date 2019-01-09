@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using System.Text.RegularExpressions;
     using System.Xml;
@@ -34,6 +35,7 @@
         private readonly IXmlCacheService xmlCacheService;
         private readonly IBotUserConfiguration botUserConfiguration;
         private readonly IStalkSubscriptionHelper stalkSubscriptionHelper;
+        private readonly IIrcClient wikimediaClient;
         private readonly IStalkNodeFactory stalkNodeFactory;
 
         public StalkCommand(
@@ -52,7 +54,8 @@
             RecentChangeHandler recentChangeHandler,
             IXmlCacheService xmlCacheService,
             IBotUserConfiguration botUserConfiguration,
-            IStalkSubscriptionHelper stalkSubscriptionHelper
+            IStalkSubscriptionHelper stalkSubscriptionHelper,
+            IIrcClient wikimediaClient
         ) : base(
             commandSource,
             user,
@@ -70,6 +73,7 @@
             this.xmlCacheService = xmlCacheService;
             this.botUserConfiguration = botUserConfiguration;
             this.stalkSubscriptionHelper = stalkSubscriptionHelper;
+            this.wikimediaClient = wikimediaClient;
             this.stalkNodeFactory = stalkNodeFactory;
         }
 
@@ -655,7 +659,8 @@
             var tokenList = this.Arguments;
 
             var stalkName = tokenList.First();
-            var stalk = new ComplexStalk(stalkName) {Channel = this.CommandSource};
+            var stalk = new ComplexStalk(stalkName)
+                {Channel = this.CommandSource, WatchChannel = this.config.WikimediaChannel};
 
             this.channelConfiguration[this.CommandSource].Stalks.Add(stalk.Identifier, stalk);
 
@@ -714,7 +719,8 @@
                 Description = sourceStalk.Description,
                 ExpiryTime = sourceStalk.ExpiryTime,
                 IsEnabled = sourceStalk.IsEnabled,
-                SearchTree = tree
+                SearchTree = tree,
+                WatchChannel = sourceStalk.WatchChannel
             };
 
             this.channelConfiguration[this.CommandSource].Stalks.Add(newStalk.Identifier, newStalk);
@@ -731,6 +737,34 @@
                     tree
                 )
             };
+        }
+
+        [RequiredArguments(2)]
+        [SubcommandInvocation("watchchannel")]
+        [CommandFlag(AccessFlags.Configuration)]
+        [Help("<identifier> <channel>", "Changes the monitored feed to a different wiki")]
+        // ReSharper disable once UnusedMember.Global
+        protected IEnumerable<CommandResponse> WatchChannelMode()
+        {
+            var tokenList = (List<string>) this.Arguments;
+            var stalkName = tokenList.PopFromFront();
+            if (!this.channelConfiguration[this.CommandSource].Stalks.ContainsKey(stalkName))
+            {
+                throw new CommandErrorException(string.Format("Can't find the stalk '{0}'!", stalkName));
+            }
+
+            var stalk = this.channelConfiguration[this.CommandSource].Stalks[stalkName];
+
+            stalk.WatchChannel = tokenList.PopFromFront();
+            
+            Debugger.Break();
+            
+            yield return new CommandResponse
+            {
+                Message = string.Format("Set watch channel for stalk {0} to {1}", stalkName, stalk.WatchChannel)
+            };
+
+            this.channelConfiguration.Save();
         }
         
         protected IStalkNode CreateNode(string type, string stalkTarget)

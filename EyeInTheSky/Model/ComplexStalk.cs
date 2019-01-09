@@ -25,13 +25,15 @@
             DateTime? expiryTime,
             bool isEnabled,
             int triggerCount,
-            string lastMessageId)
+            string lastMessageId,
+            string watchChannel)
         {
             this.Identifier = flag;
             this.LastUpdateTime = lastUpdateTime;
             this.LastTriggerTime = lastTriggerTime;
             this.TriggerCount = triggerCount;
             this.LastMessageId = lastMessageId;
+            this.WatchChannel = watchChannel;
             this.description = description;
             this.expiryTime = expiryTime;
             this.isEnabled = isEnabled;
@@ -56,6 +58,8 @@
         public string LastMessageId { get; set; }
         
         public string Channel { get; set; }
+        
+        public string WatchChannel { get; set; }
 
         public bool IsEnabled
         {

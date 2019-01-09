@@ -5,6 +5,6 @@
 
     public interface IChannelConfiguration : IConfigurationBase<IIrcChannel>
     {
-        IEnumerable<IStalk> MatchStalks(IRecentChange rc);
+        IEnumerable<IStalk> MatchStalks(IRecentChange rc, string channel);
     }
 }
