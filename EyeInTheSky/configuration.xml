@@ -16,6 +16,9 @@
         <botUsername></botUsername>
         <!-- The Freenode NickServ password -->
         <botPassword></botPassword>
+        
+        <!-- The User Agent to use for the bot. Add your own contact details here. -->
+        <useragent>EyeInTheSkyBot (https://stwalkerster.co.uk/eits; default configuration)</useragent>
     </properties>
 
     <!-- GENERAL CONFIGURATION -->
@@ -47,14 +50,32 @@
         </component>
         
         <!-- MEDIAWIKI CONFIGURATION -->
-        <component type="MediaWikiConfiguration" service="IMediaWikiConfiguration">
+        <!-- You'll need to use either one of these -->
+        <!--<component type="MapMediaWikiConfigProvider" service="IMediaWikiConfigurationProvider">
             <parameters>
-                <!-- MediaWiki instance API endpoint -->
-                <mediawikiApiEndpoint>https://en.wikipedia.org/w/api.php</mediawikiApiEndpoint>
-                <!-- The User Agent to use for the bot. Add your own contact details here. -->
-                <useragent>EyeInTheSkyBot (https://stwalkerster.co.uk/eits; default configuration)</useragent>
+                <channelMap>
+                    <list>
+                        <item channel="#en.wikipedia">
+                            <component type="MediaWikiConfiguration" service="IMediaWikiConfiguration">
+                                <parameters>
+                                    <mediawikiApiEndpoint>https://en.wikipedia.org/w/api.php</mediawikiApiEndpoint>
+                                    <useragent>#{useragent}</useragent>
+                                </parameters>
+                            </component>
+                        </item>
+                    </list>
+                </channelMap>
+            </parameters>
+        </component>-->
+
+        <component type="PatternMediaWikiConfigProvider" service="IMediaWikiConfigurationProvider">
+            <parameters>
+                <channelMatch>^#(.*)#</channelMatch>
+                <urlReplacement>https://$1.org/w/api.php</urlReplacement>
+                <userAgent>#{useragent}</userAgent>
             </parameters>
         </component>
+
         
         <!-- EMAIL CONFIGURATION -->
         <component type="EyeInTheSky.Model.EmailConfiguration">

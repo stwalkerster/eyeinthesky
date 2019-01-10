@@ -98,7 +98,7 @@
 
             try
             {
-                rc = this.rcParser.Parse(rcMessage);
+                rc = this.rcParser.Parse(rcMessage, e.Target);
             }
             catch (BugException ex)
             {

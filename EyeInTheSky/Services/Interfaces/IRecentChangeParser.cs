@@ -4,6 +4,6 @@
 
     public interface IRecentChangeParser
     {
-        IRecentChange Parse(string data);
+        IRecentChange Parse(string data, string channel);
     }
 }

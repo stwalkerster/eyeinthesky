@@ -174,12 +174,17 @@
     <Compile Include="Services\ChannelConfiguration.cs" />
     <Compile Include="Services\ChannelFactory.cs" />
     <Compile Include="Services\ConfigFactoryBase.cs" />
+    <Compile Include="Services\ConfigProviders\IMediaWikiConfigurationProvider.cs" />
+    <Compile Include="Services\ConfigProviders\MapMediaWikiConfigProvider.cs" />
+    <Compile Include="Services\ConfigProviders\PatternMediaWikiConfigProvider.cs" />
     <Compile Include="Services\ExternalProviders\Interfaces\IExternalProvider.cs" />
     <Compile Include="Services\ExternalProviders\Interfaces\IPhabricatorExternalProvider.cs" />
     <Compile Include="Services\ExternalProviders\PhabricatorExternalProvider.cs" />
     <Compile Include="Services\Interfaces\IChannelConfiguration.cs" />
     <Compile Include="Services\Interfaces\IChannelFactory.cs" />
+    <Compile Include="Services\Interfaces\IMediaWikiApiHelper.cs" />
     <Compile Include="Services\Interfaces\IStalkSubscriptionHelper.cs" />
+    <Compile Include="Services\MediaWikiApiHelper.cs" />
     <Compile Include="Services\StalkConfigFactoryBase.cs" />
     <Compile Include="Services\ConfigFileBase.cs" />
     <Compile Include="Services\ConfigurationProvider.cs" />
@@ -216,8 +221,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\XmlCacheService.cs" />
     <Compile Include="Startables\NagiosMonitoringService.cs" />
+    <Compile Include="Startup\Converters\MediaWikiConfigMapEntryConverter.cs" />
     <Compile Include="Startup\Launch.cs" />
     <Compile Include="Startup\MainInstaller.cs" />
+    <Compile Include="TypedFactories\IMediaWikiApiTypedFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

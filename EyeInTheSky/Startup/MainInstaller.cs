@@ -4,15 +4,22 @@
     using Castle.Facilities.Logging;
     using Castle.Facilities.Startable;
     using Castle.Facilities.TypedFactory;
+    using Castle.MicroKernel;
     using Castle.MicroKernel.Registration;
     using Castle.MicroKernel.SubSystems.Configuration;
+    using Castle.MicroKernel.SubSystems.Conversion;
     using Castle.Services.Logging.Log4netIntegration;
     using Castle.Windsor;
     using Castle.Windsor.Installer;
     using EyeInTheSky.Services;
     using EyeInTheSky.Startables;
+    using EyeInTheSky.Startup.Converters;
+    using EyeInTheSky.TypedFactories;
+
     using Stwalkerster.Bot.CommandLib.Services;
     using Stwalkerster.Bot.CommandLib.Services.Interfaces;
+    using Stwalkerster.Bot.MediaWikiLib.Services;
+    using Stwalkerster.Bot.MediaWikiLib.Services.Interfaces;
     using Stwalkerster.IrcClient;
     using Stwalkerster.IrcClient.Interfaces;
 
@@ -26,14 +33,23 @@
             container.AddFacility<StartableFacility>(f => f.DeferredStart());
             container.AddFacility<TypedFactoryFacility>();
 
+            // Configuration converters
+            var conversionManager =
+                (IConversionManager) container.Kernel.GetSubSystem(SubSystemConstants.ConversionManagerKey);
+            conversionManager.Add(new MediaWikiConfigMapEntryConverter());
+            
             container.Install(
                 Configuration.FromXmlFile("alert-templates.xml"),
                 new Stwalkerster.IrcClient.Installer(),
-                new Stwalkerster.Bot.CommandLib.Startup.Installer(),
-                new Stwalkerster.Bot.MediaWikiLib.Startup.Installer()
+                new Stwalkerster.Bot.CommandLib.Startup.Installer()
             );
 
             container.Register(
+                // MediaWiki stuff
+                Component.For<IMediaWikiApiTypedFactory>().AsFactory(),
+                Component.For<IMediaWikiApi>().ImplementedBy<MediaWikiApi>().LifestyleTransient(),
+                Component.For<IWebServiceClient>().ImplementedBy<WebServiceClient>(),
+                
                 // Services
                 Classes.FromThisAssembly().InNamespace("EyeInTheSky.Services").WithServiceAllInterfaces(),
                 Classes.FromThisAssembly().InNamespace("EyeInTheSky.Services.ExternalProviders").WithServiceAllInterfaces(),

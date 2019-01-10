@@ -8,22 +8,21 @@
     using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Services.Interfaces;
-    using Stwalkerster.Bot.MediaWikiLib.Services.Interfaces;
 
     public class RecentChangeParser : IRecentChangeParser
     {
         private readonly ILogger logger;
-        private readonly IMediaWikiApi mediaWikiApi;
+        private readonly IMediaWikiApiHelper mediaWikiApiHelper;
         private const string FullStringRegex = @"14\[\[07(?<title>.*)14\]\]4 (?<flag>.*)10 02(?<url>[^ ]*) 5\* 03(?<user>.*) 5\* (?:\((?<szdiff>.*)\))? 10(?<comment>.*?)?$";
         private const string AntiColourParse = @"[01]?[0-9]";
         
         private Regex dataregex;
         private Regex colsregex;
 
-        public RecentChangeParser(ILogger logger, IMediaWikiApi mediaWikiApi)
+        public RecentChangeParser(ILogger logger, IMediaWikiApiHelper mediaWikiApiHelper)
         {
             this.logger = logger;
-            this.mediaWikiApi = mediaWikiApi;
+            this.mediaWikiApiHelper = mediaWikiApiHelper;
         }
 
         private Regex GetRegex()
@@ -39,10 +38,11 @@
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="data"></param>
+        /// <param name="data">The RC entry from IRC</param>
+        /// <param name="channel">The channel the RC entry was picked up from</param>
         /// <returns></returns>
         /// <exception cref="FormatException"></exception>
-        public IRecentChange Parse(string data)
+        public IRecentChange Parse(string data, string channel)
         {
             Match m = this.GetRegex().Match(data);
             if (m.Success == false)
@@ -83,7 +83,7 @@
                 this.ConstructEditObject(rc, titleValue, urlValue, comment, flagValue, rcSizeDiff);
             }
 
-            rc.MediaWikiApi = this.mediaWikiApi;
+            rc.MediaWikiApi = this.mediaWikiApiHelper.GetApiForChannel(channel);
             return rc;
         }
 

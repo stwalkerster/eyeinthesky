@@ -6,8 +6,12 @@
     using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Services;
+    using EyeInTheSky.Services.Interfaces;
+
     using Moq;
     using NUnit.Framework;
+
+    using Stwalkerster.Bot.MediaWikiLib.Services.Interfaces;
 
     [TestFixture]
     public class RecentChangeParserTests : TestBase
@@ -17,13 +21,16 @@
         [SetUp]
         public void LocalSetup()
         {
-            this.rcparser = new RecentChangeParser(this.LoggerMock.Object, null);
+            var helperMock = new Mock<IMediaWikiApiHelper>();
+            helperMock.Setup(x => x.GetApiForChannel(It.IsAny<string>())).Returns((IMediaWikiApi)null);
+            
+            this.rcparser = new RecentChangeParser(this.LoggerMock.Object, helperMock.Object);
         }
 
         [Test, TestCaseSource(typeof(RecentChangeParserTests), "ParseTestData")]
         public IRecentChange ShouldParseCorrectly(string data)
         {
-            var shouldParseCorrectly = this.rcparser.Parse(data);
+            var shouldParseCorrectly = this.rcparser.Parse(data, "");
             this.LoggerMock.Verify(x => x.ErrorFormat(It.IsAny<string>(), It.IsAny<object[]>()), Times.Never);
             return shouldParseCorrectly;
         }
@@ -31,7 +38,7 @@
         [Test, TestCaseSource(typeof(RecentChangeParserTests), "ParseLogTestData")]
         public IRecentChange ShouldParseLogCorrectly(string data)
         {
-            var shouldParseLogCorrectly = this.rcparser.Parse(data);
+            var shouldParseLogCorrectly = this.rcparser.Parse(data, "");
             this.LoggerMock.Verify(x => x.ErrorFormat(It.IsAny<string>(), It.IsAny<object[]>()), Times.Never, "Failed to parse log entry");
             return shouldParseLogCorrectly;
         }
@@ -43,7 +50,7 @@
             string data = "14[[07Special:Log/fakelog14]]4 sdfsdf10 02 5* 03Jimbo 5*  10Loggy message";
 
             // act
-            Assert.Throws<BugException>(() => this.rcparser.Parse(data));
+            Assert.Throws<BugException>(() => this.rcparser.Parse(data, ""));
         }
 
         public static IEnumerable<TestCaseData> ParseTestData
