@@ -1,6 +1,7 @@
 ﻿namespace EyeInTheSky.Startup
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Threading;
@@ -111,12 +112,24 @@
 
         public void Run()
         {
+            var watchChannels = new List<string> {this.appConfig.WikimediaChannel};
             foreach (var channel in this.channelConfiguration.Items)
             {
                 this.freenodeClient.JoinChannel(channel.Identifier);
+
+                foreach (var stalk in channel.Stalks.Values)
+                {
+                    if (!watchChannels.Contains(stalk.WatchChannel) && !string.IsNullOrWhiteSpace(stalk.WatchChannel) )
+                    {
+                        watchChannels.Add(stalk.WatchChannel);
+                    }
+                }
             }
 
-            this.wikimediaClient.JoinChannel(this.appConfig.WikimediaChannel);
+            foreach (var channel in watchChannels)
+            {
+                this.wikimediaClient.JoinChannel(channel);
+            }
 
             while (this.alive)
             {

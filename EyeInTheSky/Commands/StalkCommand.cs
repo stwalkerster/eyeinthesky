@@ -755,7 +755,28 @@
 
             var stalk = this.channelConfiguration[this.CommandSource].Stalks[stalkName];
 
+            var oldWatchChannel = stalk.WatchChannel;
+            
             stalk.WatchChannel = tokenList.PopFromFront();
+
+            if (!this.wikimediaClient.Channels.ContainsKey(stalk.WatchChannel))
+            {
+                this.wikimediaClient.JoinChannel(stalk.WatchChannel);
+            }
+
+            var remainingStalksOnChannel = this.channelConfiguration.Items.Select(x => x.Stalks)
+                .Aggregate(
+                    new List<IStalk>(),
+                    (agg, cur) =>
+                    {
+                        agg.AddRange(cur.Values.Where(x => x.WatchChannel == oldWatchChannel));
+                        return agg;
+                    });
+
+            if (remainingStalksOnChannel.Count == 0)
+            {
+                this.wikimediaClient.PartChannel(oldWatchChannel, "Nothing left to watch here");
+            }
             
             Debugger.Break();
             
