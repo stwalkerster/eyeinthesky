@@ -54,13 +54,15 @@
                 {
                     Title = ex.Title,
                     Description = ex.Description,
-                    Priority = "normal"
+                    Priority = "normal",
+                    Points = 1
                 };
                 fod.AddProjects(this.projectPhid);
             }
             else
             {
                 fod.AddComment(ex.Description);
+                fod.Points = fod.Points.GetValueOrDefault(0) + 1;
             }
 
             this.maniphest.Edit(fod);
