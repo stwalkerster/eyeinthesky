@@ -13,7 +13,6 @@
     using EyeInTheSky.Startables;
     using Stwalkerster.Bot.CommandLib.Services;
     using Stwalkerster.Bot.CommandLib.Services.Interfaces;
-    using Stwalkerster.Bot.MediaWikiLib.Startup;
     using Stwalkerster.IrcClient;
     using Stwalkerster.IrcClient.Interfaces;
 
@@ -38,7 +37,8 @@
                 // Services
                 Classes.FromThisAssembly().InNamespace("EyeInTheSky.Services").WithServiceAllInterfaces(),
                 Classes.FromThisAssembly().InNamespace("EyeInTheSky.Services.ExternalProviders").WithServiceAllInterfaces(),
-                Classes.FromThisAssembly().InNamespace("EyeInTheSky.Commands").LifestyleTransient(),
+                Classes.FromThisAssembly().InNamespace("EyeInTheSky.Commands").LifestyleTransient()
+                    .Configure(x => x.DependsOn(Dependency.OnComponent("wikimediaClient", "wikimediaClient"))),
 
                 // Main application
                 Component.For<IApplication>()
