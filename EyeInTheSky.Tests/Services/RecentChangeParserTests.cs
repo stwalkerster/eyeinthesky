@@ -346,6 +346,29 @@
                             EditFlags = "whitelist",
                             EditSummary = "too much collateral; contact me if there's any issues"
                         });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/gblblock14]]4 gblock210 02 5* 03RadiX 5*  10globally blocked [[02User:84.244.90.0/2410]] (expiration 02:41, 10 April 2019): Cross-wiki spam")
+                    .Returns(
+                        new RecentChange("RadiX")
+                        {
+                            Log = "gblblock",
+                            TargetUser = "84.244.90.0/24",
+                            EditFlags = "gblock2",
+                            EditSummary = "Cross-wiki spam"
+                        });
+                #endregion
+                #region globalauth
+                yield return new TestCaseData(
+                        "14[[07Special:Log/globalauth14]]4 setstatus10 02 5* 03Rxy 5*  10changed status for global account \"User:テイルズオブ田中綾子@global\": set locked; unset (none): Long-term abuse: [[w:ja:LTA:ISECHIKA]] or copycat<!--automatic-->")
+                    .Returns(
+                        new RecentChange("Rxy")
+                        {
+                            Log = "globalauth",
+                            TargetUser = "テイルズオブ田中綾子",
+                            EditFlags = "setstatus",
+                            EditSummary = "Long-term abuse: [[w:ja:LTA:ISECHIKA]] or copycat<!--automatic-->"
+                        });
                 #endregion
                 #region import
                 // faked
@@ -938,6 +961,17 @@
                             Log = "thanks",
                             EditFlags = "thank",
                             TargetUser = "Eagleash"
+                        });
+                #endregion
+                #region translationreview
+                yield return new TestCaseData(
+                        "14[[07Special:Log/translationreview14]]4 message10 02 5* 03Meno25 5*  10Meno25 reviewed translation [[02Translations:Interface editors/3/ar10]]")
+                    .Returns(
+                        new RecentChange("Meno25")
+                        {
+                            Log = "translationreview",
+                            Page = "Translations:Interface editors/3/ar",
+                            EditFlags = "message",
                         });
                 #endregion
                 #region upload

@@ -325,7 +325,42 @@
                             handled = true;
                         }
                     }
+                    
+                    if (rc.EditFlags == "gblock2")
+                    {
+                        var match = new Regex(@"^globally blocked \[\[User:(?<targetUser>.*?)\]\] \(expiration .*?\)(?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.TargetUser = result.Groups["targetUser"].Value;
 
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+
+                            handled = true;
+                        }
+                    }
+
+                    break;
+                case "globalauth":
+                    if (rc.EditFlags == "setstatus")
+                    {
+                        var match = new Regex(@"^changed status for global account ""User:(?<targetUser>.*?)@global"": set .*?; unset .*?(?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.TargetUser = result.Groups["targetUser"].Value;
+
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+
+                            handled = true;
+                        }
+                    }
                     break;
                 case "import":
                     if (rc.EditFlags == "interwiki")
@@ -875,7 +910,20 @@
                     }
                     
                     break;
-                
+                case "translationreview":
+                    if (rc.EditFlags == "message")
+                    {
+                        var match = new Regex(" reviewed translation \\[\\[(?<page>.*?)\\]\\]$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["page"].Value;
+                            
+                            handled = true;
+                        }
+                    }
+
+                    break;
                 case "upload":
                     if (rc.EditFlags == "overwrite" || rc.EditFlags == "upload")
                     {
