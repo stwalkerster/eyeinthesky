@@ -13,7 +13,19 @@
       <param name="solutionName" value="EyeInTheSky" />
       <param name="version" value="2.4" />
     </parameters>
-    <build-runners order="RUNNER_6, RUNNER_1, RUNNER_7" />
+    <build-runners order="RUNNER_6, RUNNER_1, RUNNER_7">
+      <runner id="RUNNER_6" name="" type="jb.nuget.installer">
+        <parameters>
+          <param name="nuget.path" value="%teamcity.tool.NuGet.CommandLine.DEFAULT%" />
+          <param name="nuget.sources" value="https://nexus.scimonshouse.net/repository/nuget-group/" />
+          <param name="nuget.updatePackages.include.prerelease" value="true" />
+          <param name="nuget.updatePackages.mode" value="sln" />
+          <param name="nuget.use.restore" value="restore" />
+          <param name="sln.path" value="%pathPrefix%%solutionName%.sln" />
+          <param name="teamcity.step.mode" value="default" />
+        </parameters>
+      </runner>
+    </build-runners>
     <vcs-settings>
       <vcs-entry-ref root-id="Irc_EyeInTheSky_Eits" />
     </vcs-settings>
