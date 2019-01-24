@@ -76,7 +76,7 @@
 
             if (titleValue.StartsWith("Special:Log/"))
             {
-                this.ConstructLogObject(rc, titleValue, comment, flagValue, data);
+                this.ConstructLogObject(rc, titleValue, comment, flagValue, data, channel);
             }
             else
             {
@@ -87,7 +87,7 @@
             return rc;
         }
 
-        private void ConstructLogObject(RecentChange rc, string titleValue, string comment, string flagValue, string data)
+        private void ConstructLogObject(RecentChange rc, string titleValue, string comment, string flagValue, string data, string channel)
         {
             rc.Log = titleValue.Split('/').Skip(1).First();
             rc.EditFlags = flagValue;
@@ -128,7 +128,7 @@
                 case "block":
                     if (rc.EditFlags == "block")
                     {
-                        var match = new Regex("^blocked User:(?<targetUser>.*?) (?:\\((?<flags>.*?)\\))? with an expiry time of (?<expiry>.*?)(?:: (?<comment>.*))?$");
+                        var match = new Regex("^blocked (?:\\[\\[)?User:(?<targetUser>.*?)(?:\\]\\])?(?:[ ]*)(?:\\((?<flags>.*?)\\))? with an (?:expiry|expiration) time of (?<expiry>.*?)(?: \\((?<flags2>.*?)\\))?(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
@@ -142,6 +142,11 @@
                             if (result.Groups["flags"].Success)
                             {
                                 rc.EditFlags += ", " + result.Groups["flags"].Value;   
+                            }
+
+                            if (result.Groups["flags2"].Success)
+                            {
+                                rc.EditFlags += ", " + result.Groups["flags2"].Value;   
                             }
 
                             handled = true;
@@ -344,6 +349,26 @@
                     }
 
                     break;
+                case "gblrename":
+                    if (rc.EditFlags == "rename")
+                    {
+                        var match = new Regex(@" globally renamed \[\[Special:CentralAuth/(?<targetUser>.*?)\]\] to \[\[Special:CentralAuth/(.*?)\]\](?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.TargetUser = result.Groups["targetUser"].Value;
+
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+
+                            handled = true;
+                        }
+                    }
+
+                    break;
+                    
                 case "globalauth":
                     if (rc.EditFlags == "setstatus")
                     {
@@ -922,6 +947,18 @@
                             handled = true;
                         }
                     }
+                    
+                    if (rc.EditFlags == "group")
+                    {
+                        var match = new Regex(" changed the state of .*? translations of \\[\\[.*?\\|(?<page>.*?)\\]\\] from .*? to .*?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["page"].Value;
+                            
+                            handled = true;
+                        }
+                    }
 
                     break;
                 case "upload":
@@ -949,7 +986,7 @@
             {
                 throw new BugException(
                     string.Format("Unhandled log entry of type {0} / {1}", rc.Log, rc.EditFlags),
-                    string.Format("```\n{0}\n```\n```\n{1}\n```", comment, data));
+                    string.Format("```\n{0}\n```\n```\n{1}\n```\nFrom: {2}", comment, data, channel));
             }
         }
 

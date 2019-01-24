@@ -212,6 +212,29 @@
                             EditSummary = "following request",
                             EditFlags = "unblock"
                         });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/block14]]4 block10 02 5* 03RadiX 5*  10blocked [[02User:181.15.157.216/2910]] with an expiration time of 6 months (account creation disabled, cannot edit own talk page): Cross-wiki spam: leaky webhost; should you be affected by this block, please [[:m:Special:Contact/Stewards|contact us]]")
+                    .Returns(
+                        new RecentChange("RadiX")
+                        {
+                            Log = "block",
+                            TargetUser = "181.15.157.216/29",
+                            EditSummary = "Cross-wiki spam: leaky webhost; should you be affected by this block, please [[:m:Special:Contact/Stewards|contact us]]",
+                            EditFlags = "block, account creation disabled, cannot edit own talk page"
+                        });
+
+                yield return new TestCaseData(
+                        "14[[07Special:Log/block14]]4 block10 02 5* 03Defender 5*  10blocked [[02User:Other LT-'AS Copy Gl'apz10]] with an expiration time of infinite (account creation disabled, email disabled, cannot edit own talk page)")
+                    .Returns(
+                        new RecentChange("Defender")
+                        {
+                            Log = "block",
+                            TargetUser = "Other LT-'AS Copy Gl'apz",
+                            EditFlags = "block, account creation disabled, email disabled, cannot edit own talk page"
+                        });
+                
+                
                 #endregion
                 #region contentmodel
                 //faked
@@ -357,6 +380,20 @@
                             EditFlags = "gblock2",
                             EditSummary = "Cross-wiki spam"
                         });
+                #endregion
+                #region gblrename
+
+                yield return new TestCaseData(
+                        "14[[07Special:Log/gblrename14]]4 rename10 02 5* 03Bencemac 5*  10Bencemac globally renamed [[Special:CentralAuth/Roland Kiadó]] to [[02Special:CentralAuth/Kékelefánt10]]: Per [[w:hu:Special:Permalink/20868144#Roland Kiadó .E2.86.92 Kékelefánt|request on huwiki]]")
+                    .Returns(
+                        new RecentChange("Bencemac")
+                        {
+                            Log = "gblrename",
+                            TargetUser = "Roland Kiadó",
+                            EditFlags = "rename",
+                            EditSummary = "Per [[w:hu:Special:Permalink/20868144#Roland Kiadó .E2.86.92 Kékelefánt|request on huwiki]]"
+                        });
+                
                 #endregion
                 #region globalauth
                 yield return new TestCaseData(
@@ -964,6 +1001,7 @@
                         });
                 #endregion
                 #region translationreview
+
                 yield return new TestCaseData(
                         "14[[07Special:Log/translationreview14]]4 message10 02 5* 03Meno25 5*  10Meno25 reviewed translation [[02Translations:Interface editors/3/ar10]]")
                     .Returns(
@@ -972,6 +1010,16 @@
                             Log = "translationreview",
                             Page = "Translations:Interface editors/3/ar",
                             EditFlags = "message",
+                        });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/translationreview14]]4 group10 02 5* 03FuzzyBot 5*  10FuzzyBot changed the state of Arabic translations of [[Special:Translate/agg- High priority - Access to nonpublic information policy|Access to nonpublic information policy]] from Ready to Proofreading")
+                    .Returns(
+                        new RecentChange("FuzzyBot")
+                        {
+                            Log = "translationreview",
+                            Page = "Access to nonpublic information policy",
+                            EditFlags = "group"
                         });
                 #endregion
                 #region upload
