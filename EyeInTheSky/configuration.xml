@@ -16,6 +16,11 @@
         <botUsername></botUsername>
         <!-- The Freenode NickServ password -->
         <botPassword></botPassword>
+
+        <!-- The Wikimedia account name -->
+        <wikiUsername></wikiUsername>
+        <!-- The Wikimedia account password -->
+        <wikiPassword></wikiPassword>
         
         <!-- The User Agent to use for the bot. Add your own contact details here. -->
         <useragent>EyeInTheSkyBot (https://stwalkerster.co.uk/eits; default configuration)</useragent>
@@ -73,6 +78,8 @@
                 <channelMatch>^#(.*)#</channelMatch>
                 <urlReplacement>https://$1.org/w/api.php</urlReplacement>
                 <userAgent>#{useragent}</userAgent>
+                <username>#{wikiUsername}</username>
+                <password>#{wikiPassword}</password>
             </parameters>
         </component>
 
