@@ -368,7 +368,25 @@
                     }
 
                     break;
+                case "gblrights":
+                    if (rc.EditFlags == "usergroups")
+                    {
+                        var match = new Regex(@"^changed global group membership for User:(?<targetUser>.+?) from (?:.+?) to (?:.+?)(?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.TargetUser = result.Groups["targetUser"].Value;
+
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+
+                            handled = true;
+                        }
+                    }
                     
+                    break;
                 case "globalauth":
                     if (rc.EditFlags == "setstatus")
                     {
@@ -622,6 +640,20 @@
                         }
                     }
                     break;
+                case "pagetranslation":
+                    if (rc.EditFlags == "mark")
+                    {
+                        var match = new Regex(" marked \\[\\[(?<page>.*?)\\]\\] for translation$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["page"].Value;
+            
+                            handled = true;
+                        }
+                    }
+
+                    break;
                 case "pagetriage-curation":
                     if (rc.EditFlags == "reviewed")
                     {
@@ -726,7 +758,7 @@
                     
                     if (rc.EditFlags == "modify")
                     {
-                        var match = new Regex(@"^changed protection level of (?<page>.*?) .(?:\[(?:edit|move|create|upload)=[a-z-]+\] \((?:(?:expires .*?\(UTC\))|indefinite)\).?)+(?:: (?<comment>.*))?$");
+                        var match = new Regex(@"^changed protection level (?:of|for) (?:""\[\[)?(?<page>.*?) .(?:\[(?:edit|move|create|upload)=[a-z-]+\] \((?:(?:expires .*?\(UTC\))|indefinite)\).?)+(?:\]\]"")?(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {

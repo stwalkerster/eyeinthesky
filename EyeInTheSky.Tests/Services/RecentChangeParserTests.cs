@@ -395,6 +395,20 @@
                         });
                 
                 #endregion
+                #region gblrights
+
+                yield return new TestCaseData(
+                        "14[[07Special:Log/gblrights14]]4 usergroups10 02 5* 03MarcoAurelio 5*  10changed global group membership for User:StraussInTheHouse from (none) to oathauth-tester: [[Special:Permalink/18775617]]")
+                    .Returns(
+                        new RecentChange("MarcoAurelio")
+                        {
+                            Log = "gblrights",
+                            TargetUser = "StraussInTheHouse",
+                            EditFlags = "usergroups",
+                            EditSummary = "[[Special:Permalink/18775617]]"
+                        });
+                
+                #endregion
                 #region globalauth
                 yield return new TestCaseData(
                         "14[[07Special:Log/globalauth14]]4 setstatus10 02 5* 03Rxy 5*  10changed status for global account \"User:テイルズオブ田中綾子@global\": set locked; unset (none): Long-term abuse: [[w:ja:LTA:ISECHIKA]] or copycat<!--automatic-->")
@@ -642,6 +656,17 @@
                             
                         });
                 #endregion
+                #region pagetranslation
+                yield return new TestCaseData(
+                        "14[[07Special:Log/pagetranslation14]]4 mark10 02 5* 03Rodelar 5*  10Rodelar marked [[02The Wikipedia Library/1Lib1Ref10]] for translation")
+                    .Returns(
+                        new RecentChange("Rodelar")
+                        {
+                            Log = "pagetranslation",
+                            Page = "The Wikipedia Library/1Lib1Ref",
+                            EditFlags = "mark"
+                        });
+                #endregion
                 #region pagetriage
                 yield return new TestCaseData(
                         "14[[07Special:Log/pagetriage-curation14]]4 reviewed10 02 5* 03Natureium 5*  10Natureium marked [[02John Thomas (Republican advertising)10]] as reviewed")
@@ -793,6 +818,17 @@
                             Page = "Tom Kenny filmography",
                             EditFlags = "modify",
                             EditSummary = "Persistent [[WP:Vandalism|vandalism]]: IP hopping crap"
+                        });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/protect14]]4 modify10 02 5* 03Ajraddatz 5*  10changed protection level for \"[[Talk:Steward requests/Global ‎[edit=autoconfirmed] (expires 17:41, 25 January 2019 (UTC))‎[move=sysop] (indefinite)]]\": Persistent vandalism")
+                    .Returns(
+                        new RecentChange("Ajraddatz")
+                        {
+                            Log = "protect",
+                            Page = "Talk:Steward requests/Global",
+                            EditFlags = "modify",
+                            EditSummary = "Persistent vandalism"
                         });
                 
                 // faked
