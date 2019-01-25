@@ -209,6 +209,12 @@
             {
                 case "user":
                     node = new UserStalkNode();
+                    break;                
+                case "targetuser":
+                    node = new TargetUserStalkNode();
+                    break;                
+                case "actinguser":
+                    node = new ActingUserStalkNode();
                     break;
                 case "page":
                     node = new PageStalkNode();

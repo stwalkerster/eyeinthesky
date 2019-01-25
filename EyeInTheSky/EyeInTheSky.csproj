@@ -143,6 +143,7 @@
     <Compile Include="Model\IrcChannel.cs" />
     <Compile Include="Model\RecentChange.cs" />
     <Compile Include="Model\NotificationTemplates.cs" />
+    <Compile Include="Model\StalkNodes\ActingUserStalkNode.cs" />
     <Compile Include="Model\StalkNodes\AndNode.cs" />
     <Compile Include="Model\StalkNodes\BaseNodes\DoubleChildLogicalNode.cs" />
     <Compile Include="Model\StalkNodes\BaseNodes\IStalkNode.cs" />
@@ -161,6 +162,7 @@
     <Compile Include="Model\StalkNodes\OrNode.cs" />
     <Compile Include="Model\StalkNodes\PageStalkNode.cs" />
     <Compile Include="Model\StalkNodes\SummaryStalkNode.cs" />
+    <Compile Include="Model\StalkNodes\TargetUserStalkNode.cs" />
     <Compile Include="Model\StalkNodes\TrueNode.cs" />
     <Compile Include="Model\StalkNodes\UserGroupStalkNode.cs" />
     <Compile Include="Model\StalkNodes\UserStalkNode.cs" />
