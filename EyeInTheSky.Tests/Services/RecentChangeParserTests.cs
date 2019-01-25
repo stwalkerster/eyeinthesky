@@ -233,6 +233,18 @@
                             TargetUser = "Other LT-'AS Copy Gl'apz",
                             EditFlags = "block, account creation disabled, email disabled, cannot edit own talk page"
                         });
+
+                yield return new TestCaseData(
+                        "14[[07Special:Log/block14]]4 reblock10 02 5* 03Billinghurst 5*  10changed block settings for [[02User:194.187.219.14610]] with an expiration time of 3 months (anonymous users only, account creation disabled, email disabled, cannot edit own talk page): [[w:Open proxy|Open proxy]] or [[w:Zombie computer|zombie]] ([[No open proxies|more info]]): [[WM:VN|Vandalism]]")
+                    .Returns(
+                        new RecentChange("Billinghurst")
+                        {
+                            Log = "block",
+                            TargetUser = "194.187.219.146",
+                            EditFlags = "reblock, anonymous users only, account creation disabled, email disabled, cannot edit own talk page",
+                            Expiry = new TimeSpan(90,0,0,0),
+                            EditSummary = "[[w:Open proxy|Open proxy]] or [[w:Zombie computer|zombie]] ([[No open proxies|more info]]): [[WM:VN|Vandalism]]"
+                        });
                 
                 
                 #endregion
@@ -379,6 +391,39 @@
                             TargetUser = "84.244.90.0/24",
                             EditFlags = "gblock2",
                             EditSummary = "Cross-wiki spam"
+                        });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/gblblock14]]4 gblock210 02 5* 03Tegel 5*  10globally blocked [[02User:2605:3E80:D00:10:0:0:0:0/6410]] (anonymous only, expiration 16:44, 27 January 2019): Long-term abuse")
+                    .Returns(
+                        new RecentChange("Tegel")
+                        {
+                            Log = "gblblock",
+                            TargetUser = "2605:3E80:D00:10:0:0:0:0/64",
+                            EditFlags = "gblock2",
+                            EditSummary = "Long-term abuse"
+                        });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/gblblock14]]4 modify10 02 5* 03RadiX 5*  10modified the global block on [[02User:172.255.125.13710]] (expiration 03:35, 25 January 2020): [[m:NOP|Open proxy]]")
+                    .Returns(
+                        new RecentChange("RadiX")
+                        {
+                            Log = "gblblock",
+                            TargetUser = "172.255.125.137",
+                            EditFlags = "modify",
+                            EditSummary = "[[m:NOP|Open proxy]]"
+                        });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/gblblock14]]4 gunblock10 02 5* 03Rxy 5*  10removed global block on [[02User:2001:2C0:DB07:3E00:0:0:0:0/6410]]: done")
+                    .Returns(
+                        new RecentChange("Rxy")
+                        {
+                            Log = "gblblock",
+                            TargetUser = "2001:2C0:DB07:3E00:0:0:0:0/64",
+                            EditFlags = "gunblock",
+                            EditSummary = "done"
                         });
                 #endregion
                 #region gblrename
@@ -665,6 +710,28 @@
                             Log = "pagetranslation",
                             Page = "The Wikipedia Library/1Lib1Ref",
                             EditFlags = "mark"
+                        });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/pagetranslation14]]4 deletelok10 02 5* 03MarcoAurelio 5*  10MarcoAurelio completed deletion of translation page [[02Neutral point of view/gsw10]]: vandalism")
+                    .Returns(
+                        new RecentChange("MarcoAurelio")
+                        {
+                            Log = "pagetranslation",
+                            Page = "Neutral point of view/gsw",
+                            EditFlags = "deletelok",
+                            EditSummary = "vandalism"
+                        });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/pagetranslation14]]4 deletefok10 02 5* 03Xaosflux 5*  10Xaosflux completed deletion of translatable page [[02Template:1lib1ref navigation portal10]]: cleanup following move")
+                    .Returns(
+                        new RecentChange("Xaosflux")
+                        {
+                            Log = "pagetranslation",
+                            Page = "Template:1lib1ref navigation portal",
+                            EditFlags = "deletefok",
+                            EditSummary = "cleanup following move"
                         });
                 #endregion
                 #region pagetriage

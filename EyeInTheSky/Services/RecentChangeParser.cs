@@ -155,7 +155,7 @@
                     
                     if (rc.EditFlags == "reblock")
                     {
-                        var match = new Regex("^changed block settings for \\[\\[User:(?<targetUser>.*?)\\]\\] (?:\\((?<flags>.*?)\\))? with an expiry time of (?<expiry>.*?)(?:: (?<comment>.*))?$");
+                        var match = new Regex("^changed block settings for \\[\\[User:(?<targetUser>.*?)\\]\\](?:[ ]*)(?:\\((?<flags>.*?)\\))? with an (?:expiry|expiration) time of (?<expiry>.*?)(?: \\((?<flags2>.*?)\\))?(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
@@ -169,6 +169,11 @@
                             if (result.Groups["flags"].Success)
                             {
                                 rc.EditFlags += ", " + result.Groups["flags"].Value;
+                            }
+
+                            if (result.Groups["flags2"].Success)
+                            {
+                                rc.EditFlags += ", " + result.Groups["flags2"].Value;   
                             }
 
                             handled = true;
@@ -333,7 +338,41 @@
                     
                     if (rc.EditFlags == "gblock2")
                     {
-                        var match = new Regex(@"^globally blocked \[\[User:(?<targetUser>.*?)\]\] \(expiration .*?\)(?:: (?<comment>.*))?$");
+                        var match = new Regex(@"^globally blocked \[\[User:(?<targetUser>.*?)\]\] \(.*?\)(?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.TargetUser = result.Groups["targetUser"].Value;
+
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+
+                            handled = true;
+                        }
+                    }
+                    
+                    if (rc.EditFlags == "modify")
+                    {
+                        var match = new Regex(@"^modified the global block on \[\[User:(?<targetUser>.*?)\]\] \(.*?\)(?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.TargetUser = result.Groups["targetUser"].Value;
+
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+
+                            handled = true;
+                        }
+                    }
+                    
+                    if (rc.EditFlags == "gunblock")
+                    {
+                        var match = new Regex(@"^removed global block on \[\[User:(?<targetUser>.*?)\]\](?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
@@ -648,6 +687,40 @@
                         if (result.Success)
                         {
                             rc.Page = result.Groups["page"].Value;
+            
+                            handled = true;
+                        }
+                    }
+                    
+                    if (rc.EditFlags == "deletelok")
+                    {
+                        var match = new Regex(" completed deletion of translation page \\[\\[(?<page>.*?)\\]\\](?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["page"].Value;
+                            
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+            
+                            handled = true;
+                        }
+                    }
+                    
+                    if (rc.EditFlags == "deletefok")
+                    {
+                        var match = new Regex(" completed deletion of translatable page \\[\\[(?<page>.*?)\\]\\](?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["page"].Value;
+                            
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
             
                             handled = true;
                         }
