@@ -680,6 +680,18 @@
                     }
                     break;
                 case "pagetranslation":
+                    if (rc.EditFlags == "associate" || rc.EditFlags == "dissociate")
+                    {
+                        var match = new Regex(" (added|removed) translatable page \\[\\[(?<page>.*?)\\]\\] (to|from) aggregate group ");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["page"].Value;
+            
+                            handled = true;
+                        }
+                    }
+                    
                     if (rc.EditFlags == "mark")
                     {
                         var match = new Regex(" marked \\[\\[(?<page>.*?)\\]\\] for translation$");
@@ -687,6 +699,19 @@
                         if (result.Success)
                         {
                             rc.Page = result.Groups["page"].Value;
+            
+                            handled = true;
+                        }
+                    }
+                    
+                    if (rc.EditFlags == "moveok")
+                    {
+                        var match = new Regex(" completed renaming of translatable page \\[\\[(?<page>.*?)\\]\\] to \\[\\[(?<targetpage>.*?)\\]\\]$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["page"].Value;
+                            rc.TargetPage = result.Groups["targetpage"].Value;
             
                             handled = true;
                         }

@@ -703,6 +703,16 @@
                 #endregion
                 #region pagetranslation
                 yield return new TestCaseData(
+                        "14[[07Special:Log/pagetranslation14]]4 associate10 02 5* 03Jon Harald Søby (WMNO) 5*  10Jon Harald Søby (WMNO) added translatable page [[02Template:Uralic contest 201910]] to aggregate group Uralic language contest 2019")
+                    .Returns(
+                        new RecentChange("Jon Harald Søby (WMNO)")
+                        {
+                            Log = "pagetranslation",
+                            Page = "Template:Uralic contest 2019",
+                            EditFlags = "associate"
+                        });
+                
+                yield return new TestCaseData(
                         "14[[07Special:Log/pagetranslation14]]4 mark10 02 5* 03Rodelar 5*  10Rodelar marked [[02The Wikipedia Library/1Lib1Ref10]] for translation")
                     .Returns(
                         new RecentChange("Rodelar")
@@ -710,6 +720,17 @@
                             Log = "pagetranslation",
                             Page = "The Wikipedia Library/1Lib1Ref",
                             EditFlags = "mark"
+                        });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/pagetranslation14]]4 moveok10 02 5* 03AVasanth (WMF) 5*  10AVasanth (WMF) completed renaming of translatable page [[02The Wikipedia Library/1Lib1Ref/Portal10]] to [[Template:The Wikipedia Library 1lib1ref navigation portal]]")
+                    .Returns(
+                        new RecentChange("AVasanth (WMF)")
+                        {
+                            Log = "pagetranslation",
+                            Page = "The Wikipedia Library/1Lib1Ref/Portal",
+                            TargetPage = "Template:The Wikipedia Library 1lib1ref navigation portal",
+                            EditFlags = "moveok"
                         });
                 
                 yield return new TestCaseData(
@@ -732,6 +753,16 @@
                             Page = "Template:1lib1ref navigation portal",
                             EditFlags = "deletefok",
                             EditSummary = "cleanup following move"
+                        });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/pagetranslation14]]4 dissociate10 02 5* 03Chrumps 5*  10Chrumps removed translatable page [[02Special:Translate/page-Community health initiative/Per-user page, namespace, and upload blocking10]] from aggregate group Community Health")
+                    .Returns(
+                        new RecentChange("Chrumps")
+                        {
+                            Log = "pagetranslation",
+                            Page = "Special:Translate/page-Community health initiative/Per-user page, namespace, and upload blocking",
+                            EditFlags = "dissociate",
                         });
                 #endregion
                 #region pagetriage
