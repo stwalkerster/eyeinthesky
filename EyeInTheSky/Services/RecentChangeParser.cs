@@ -534,7 +534,7 @@
                     
                     break;
                 case "massmessage":
-                    if (rc.EditFlags == "skipnouser" || rc.EditFlags == "skipoptout")
+                    if (rc.EditFlags == "skipnouser")
                     {
                         var match = new Regex("^Delivery of \"(?<page>.*?)\" to \\[\\[User talk:(?<targetuser>.*?)\\]\\] was skipped because .*$");
                         var result = match.Match(comment);
@@ -542,6 +542,19 @@
                         {
                             rc.Page = result.Groups["page"].Value;
                             rc.TargetUser = result.Groups["targetuser"].Value;
+
+                            handled = true;
+                        }
+                    }
+                    
+                    if (rc.EditFlags == "skipoptout")
+                    {
+                        var match = new Regex("^Delivery of \"(?<page>.*?)\" to \\[\\[(?<targetpage>.*?)\\]\\] was skipped because .*$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["page"].Value;
+                            rc.TargetPage = result.Groups["targetpage"].Value;
 
                             handled = true;
                         }
@@ -679,6 +692,20 @@
                         }
                     }
                     break;
+                case "pagelang":
+                    if (rc.EditFlags == "pagelang")
+                    {
+                        var match = new Regex(" changed the language of \\[\\[(?<page>.*?)\\]\\] from .*$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["page"].Value;
+            
+                            handled = true;
+                        }
+                    }
+
+                    break;
                 case "pagetranslation":
                     if (rc.EditFlags == "associate" || rc.EditFlags == "dissociate")
                     {
@@ -734,6 +761,23 @@
                         }
                     }
                     
+                    if (rc.EditFlags == "deletelnok")
+                    {
+                        var match = new Regex(" failed to delete \\[\\[(?:.*?)\\]\\] which belongs to translation page \\[\\[(?<page>.*?)\\]\\](?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["page"].Value;
+                            
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+            
+                            handled = true;
+                        }
+                    }
+                    
                     if (rc.EditFlags == "deletefok")
                     {
                         var match = new Regex(" completed deletion of translatable page \\[\\[(?<page>.*?)\\]\\](?:: (?<comment>.*))?$");
@@ -747,6 +791,47 @@
                                 rc.EditSummary = result.Groups["comment"].Value;
                             }
             
+                            handled = true;
+                        }
+                    }
+                    
+                    if (rc.EditFlags == "discourage")
+                    {
+                        var match = new Regex(" discouraged translation of \\[\\[(?<page>.*?)\\]\\]$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["page"].Value;
+                            
+                            handled = true;
+                        }
+                    }
+                    
+                    if (rc.EditFlags == "prioritylanguages")
+                    {
+                        var match = new Regex(" (?:set the priority languages|limited languages) for translatable page \\[\\[(?<page>.*?)\\]\\] to [a-zA-Z, ]+(?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["page"].Value;
+                            
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+            
+                            handled = true;
+                        }
+                    }
+                    
+                    if (rc.EditFlags == "unmark")
+                    {
+                        var match = new Regex(" removed \\[\\[(?<page>.*?)\\]\\] from the translation system$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["page"].Value;
+                            
                             handled = true;
                         }
                     }

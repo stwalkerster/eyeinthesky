@@ -545,7 +545,18 @@
                         {
                             Log = "massmessage",
                             Page = "This Month in Education: March 2018",
-                            TargetUser = "Dcoetzee",
+                            TargetPage = "User talk:Dcoetzee",
+                            EditFlags = "skipoptout"
+                        });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/massmessage14]]4 skipoptout10 02 5* 03MediaWiki message delivery 5*  10Delivery of \"New Affiliations Committee appointments\" to [[02Talk:Commons Photographers User Group10]] was skipped because the target has opted-out of message delivery")
+                    .Returns(
+                        new RecentChange("MediaWiki message delivery")
+                        {
+                            Log = "massmessage",
+                            Page = "New Affiliations Committee appointments",
+                            TargetPage = "Talk:Commons Photographers User Group",
                             EditFlags = "skipoptout"
                         });
 
@@ -701,6 +712,17 @@
                             
                         });
                 #endregion
+                #region pagelang
+                yield return new TestCaseData(
+                        "14[[07Special:Log/pagelang14]]4 pagelang10 02 5* 03Benoit Rochon 5*  10Benoit Rochon changed the language of [[02WikiFranca/Plan d'action10]] from English (en) [default] to French (fr)")
+                    .Returns(
+                        new RecentChange("Benoit Rochon")
+                        {
+                            Log = "pagelang",
+                            Page = "WikiFranca/Plan d'action",
+                            EditFlags = "pagelang"
+                        });
+                #endregion
                 #region pagetranslation
                 yield return new TestCaseData(
                         "14[[07Special:Log/pagetranslation14]]4 associate10 02 5* 03Jon Harald Søby (WMNO) 5*  10Jon Harald Søby (WMNO) added translatable page [[02Template:Uralic contest 201910]] to aggregate group Uralic language contest 2019")
@@ -742,6 +764,17 @@
                             Page = "Neutral point of view/gsw",
                             EditFlags = "deletelok",
                             EditSummary = "vandalism"
+                        }); 
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/pagetranslation14]]4 deletelnok10 02 5* 03MarcoAurelio 5*  10MarcoAurelio failed to delete [[02Translations:Template:User oversighter/translatable/1/ro10]] which belongs to translation page [[Template:User oversighter/translatable/ro]]: banned contributor")
+                    .Returns(
+                        new RecentChange("MarcoAurelio")
+                        {
+                            Log = "pagetranslation",
+                            Page = "Template:User oversighter/translatable/ro",
+                            EditFlags = "deletelnok",
+                            EditSummary = "banned contributor"
                         });
                 
                 yield return new TestCaseData(
@@ -756,13 +789,54 @@
                         });
                 
                 yield return new TestCaseData(
+                        "14[[07Special:Log/pagetranslation14]]4 discourage10 02 5* 03GVarnum-WMF 5*  10GVarnum-WMF discouraged translation of [[02Wikimedia Foundation Chief Executive Officer and Executive Director/May 2016 office hours/Announcement10]]")
+                    .Returns(
+                        new RecentChange("GVarnum-WMF")
+                        {
+                            Log = "pagetranslation",
+                            Page = "Wikimedia Foundation Chief Executive Officer and Executive Director/May 2016 office hours/Announcement",
+                            EditFlags = "discourage"
+                        });
+                
+                yield return new TestCaseData(
                         "14[[07Special:Log/pagetranslation14]]4 dissociate10 02 5* 03Chrumps 5*  10Chrumps removed translatable page [[02Special:Translate/page-Community health initiative/Per-user page, namespace, and upload blocking10]] from aggregate group Community Health")
                     .Returns(
                         new RecentChange("Chrumps")
                         {
                             Log = "pagetranslation",
                             Page = "Special:Translate/page-Community health initiative/Per-user page, namespace, and upload blocking",
-                            EditFlags = "dissociate",
+                            EditFlags = "dissociate"
+                        });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/pagetranslation14]]4 prioritylanguages10 02 5* 03Quiddity (WMF) 5*  10Quiddity (WMF) limited languages for translatable page [[02User:ELappen (WMF)/Sandbox10]] to Arabic, French, German, Hindi, Japanese, Chinese, Portuguese, Russian, Spanish and Persian: per team request")
+                    .Returns(
+                        new RecentChange("Quiddity (WMF)")
+                        {
+                            Log = "pagetranslation",
+                            Page = "User:ELappen (WMF)/Sandbox",
+                            EditFlags = "prioritylanguages",
+                            EditSummary = "per team request"
+                        });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/pagetranslation14]]4 prioritylanguages10 02 5* 03B1mbo 5*  10B1mbo set the priority languages for translatable page [[02Iberocoop:Iberoconf 2019/Carta de Santiago10]] to Spanish, English, Portuguese and Italian")
+                    .Returns(
+                        new RecentChange("B1mbo")
+                        {
+                            Log = "pagetranslation",
+                            Page = "Iberocoop:Iberoconf 2019/Carta de Santiago",
+                            EditFlags = "prioritylanguages"
+                        });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/pagetranslation14]]4 unmark10 02 5* 03MarcoAurelio 5*  10MarcoAurelio removed [[02Meta:Sandbox10]] from the translation system")
+                    .Returns(
+                        new RecentChange("MarcoAurelio")
+                        {
+                            Log = "pagetranslation",
+                            Page = "Meta:Sandbox",
+                            EditFlags = "unmark"
                         });
                 #endregion
                 #region pagetriage
