@@ -336,6 +336,23 @@
                         }
                     }
                     
+                    if (rc.EditFlags == "dwhitelist")
+                    {
+                        var match = new Regex(@" re-enabled the global block on \[\[User:(?<targetUser>.*?)\]\] locally(?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.TargetUser = result.Groups["targetUser"].Value;
+
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+
+                            handled = true;
+                        }
+                    }
+                    
                     if (rc.EditFlags == "gblock2")
                     {
                         var match = new Regex(@"^globally blocked \[\[User:(?<targetUser>.*?)\]\] \(.*?\)(?:: (?<comment>.*))?$");
@@ -425,11 +442,45 @@
                         }
                     }
                     
+                    if (rc.EditFlags == "setchange")
+                    {
+                        var match = new Regex(@"^changed wikis in ""(?<page>.*?)"": added: (?:.*?); removed: (?:.*?)(?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["page"].Value;
+
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+
+                            handled = true;
+                        }
+                    }
+                    
                     break;
                 case "globalauth":
                     if (rc.EditFlags == "setstatus")
                     {
                         var match = new Regex(@"^changed status for global account ""User:(?<targetUser>.*?)@global"": set .*?; unset .*?(?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.TargetUser = result.Groups["targetUser"].Value;
+
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+
+                            handled = true;
+                        }
+                    }
+                    
+                    if (rc.EditFlags == "delete")
+                    {
+                        var match = new Regex(@"^deleted global account ""User:(?<targetUser>.*?)@global""(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
@@ -691,6 +742,20 @@
                             handled = true;
                         }
                     }
+                    break;
+                case "notifytranslators":
+                    if (rc.EditFlags == "sent")
+                    {
+                        var match = new Regex(" sent a notification about translating page \\[\\[(?<page>.*?)\\]\\]; .*");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["page"].Value;
+            
+                            handled = true;
+                        }
+                    }
+                    
                     break;
                 case "pagelang":
                     if (rc.EditFlags == "pagelang")
@@ -1177,7 +1242,7 @@
 
                     break;
                 case "upload":
-                    if (rc.EditFlags == "overwrite" || rc.EditFlags == "upload")
+                    if (rc.EditFlags == "overwrite" || rc.EditFlags == "upload" || rc.EditFlags == "revert")
                     {
                         var match = new Regex("uploaded(?: a new version of)? \"\\[\\[(?<page>.*?)\\]\\]\"(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);

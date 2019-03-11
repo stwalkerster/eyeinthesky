@@ -383,6 +383,17 @@
                         });
                 
                 yield return new TestCaseData(
+                        "14[[07Special:Log/gblblock14]]4 dwhitelist10 02 5* 03Galobtter 5*  10Galobtter re-enabled the global block on [[02User:138.197.0.0/1610]] locally: Subranges have all been blocked")
+                    .Returns(
+                        new RecentChange("Galobtter")
+                        {
+                            Log = "gblblock",
+                            TargetUser = "138.197.0.0/16",
+                            EditFlags = "dwhitelist",
+                            EditSummary = "Subranges have all been blocked"
+                        });
+                
+                yield return new TestCaseData(
                         "14[[07Special:Log/gblblock14]]4 gblock210 02 5* 03RadiX 5*  10globally blocked [[02User:84.244.90.0/2410]] (expiration 02:41, 10 April 2019): Cross-wiki spam")
                     .Returns(
                         new RecentChange("RadiX")
@@ -453,6 +464,28 @@
                             EditSummary = "[[Special:Permalink/18775617]]"
                         });
                 
+                yield return new TestCaseData(
+                        "14[[07Special:Log/gblrights14]]4 setchange10 02 5* 03MF-Warburg 5*  10changed wikis in \"All existing wikis\": added: liwikinews, satwiki, shnwiki, yuewiktionary, zhwikiversity; removed: (–): update")
+                    .Returns(
+                        new RecentChange("MF-Warburg")
+                        {
+                            Log = "gblrights",
+                            Page = "All existing wikis",
+                            EditFlags = "setchange",
+                            EditSummary = "update"
+                        });          
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/gblrights14]]4 setchange10 02 5* 03MarcoAurelio 5*  10changed wikis in \"Global bot wikis\": added: kywikibooks; removed: (none): [[b:ky:Special:Permalink/4616#Bot_policy|no objections]]")
+                    .Returns(
+                        new RecentChange("MarcoAurelio")
+                        {
+                            Log = "gblrights",
+                            Page = "Global bot wikis",
+                            EditFlags = "setchange",
+                            EditSummary = "[[b:ky:Special:Permalink/4616#Bot_policy|no objections]]"
+                        });
+                
                 #endregion
                 #region globalauth
                 yield return new TestCaseData(
@@ -464,6 +497,16 @@
                             TargetUser = "テイルズオブ田中綾子",
                             EditFlags = "setstatus",
                             EditSummary = "Long-term abuse: [[w:ja:LTA:ISECHIKA]] or copycat<!--automatic-->"
+                        });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/globalauth14]]4 delete10 02 5* 03Tegel 5*  10deleted global account \"User:Plaster93@global\"")
+                    .Returns(
+                        new RecentChange("Tegel")
+                        {
+                            Log = "globalauth",
+                            TargetUser = "Plaster93",
+                            EditFlags = "delete",
                         });
                 #endregion
                 #region import
@@ -710,6 +753,17 @@
                             EditFlags = "byemail",
                             EditSummary = "Requested at ACC",
                             
+                        });
+                #endregion
+                #region notifytranslators
+                yield return new TestCaseData(
+                        "14[[07Special:Log/notifytranslators14]]4 sent10 02 5* 03MarcoAurelio 5*  10MarcoAurelio sent a notification about translating page [[02Admin activity review/Notice to inactive right holders10]]; languages: de, de-formal; deadline: none; priority: medium; sent to 171 recipients, failed for 0 recipients, skipped for 0 recipients")
+                    .Returns(
+                        new RecentChange("MarcoAurelio")
+                        {
+                            Log = "notifytranslators",
+                            Page = "Admin activity review/Notice to inactive right holders",
+                            EditFlags = "sent"
                         });
                 #endregion
                 #region pagelang
@@ -1251,6 +1305,17 @@
                             Log = "upload",
                             EditFlags = "overwrite",
                             Page = "File:Columbia logo, from Concerto in B Flat Minor, circa 1942.png"
+                        });    
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/upload14]]4 revert10 02 5* 03Mani.Ghv 5*  10uploaded a new version of \"[[02File:Paykan VC Logo.svg10]]\": Reverted to version as of 02:00, 25 February 2019 (UTC)")
+                    .Returns(
+                        new RecentChange("Mani.Ghv")
+                        {
+                            Log = "upload",
+                            EditFlags = "revert",
+                            Page = "File:Paykan VC Logo.svg",
+                            EditSummary = "Reverted to version as of 02:00, 25 February 2019 (UTC)"
                         });
                 
                 // faked
