@@ -100,6 +100,9 @@
     <Compile Include="Model\StalkNodes\InCategoryNodeTest.cs" />
     <Compile Include="Model\StalkNodes\LogStalkNodeTest.cs" />
     <Compile Include="Model\StalkNodes\NotNodeTest.cs" />
+    <Compile Include="Model\StalkNodes\NumericNodes\DiffDeltaNumberNodeTests.cs" />
+    <Compile Include="Model\StalkNodes\NumericNodes\InficNumericLogicalNodeTests.cs" />
+    <Compile Include="Model\StalkNodes\NumericNodes\StaticNumberNodeTests.cs" />
     <Compile Include="Model\StalkNodes\OrNodeTest.cs" />
     <Compile Include="Model\StalkNodes\PageStalkNodeTest.cs" />
     <Compile Include="Model\StalkNodes\SummaryStalkNodeTest.cs" />
@@ -130,7 +133,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

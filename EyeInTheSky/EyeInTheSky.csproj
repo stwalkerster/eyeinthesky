@@ -146,10 +146,13 @@
     <Compile Include="Model\StalkNodes\ActingUserStalkNode.cs" />
     <Compile Include="Model\StalkNodes\AndNode.cs" />
     <Compile Include="Model\StalkNodes\BaseNodes\DoubleChildLogicalNode.cs" />
+    <Compile Include="Model\StalkNodes\BaseNodes\INumberProviderNode.cs" />
     <Compile Include="Model\StalkNodes\BaseNodes\IStalkNode.cs" />
+    <Compile Include="Model\StalkNodes\BaseNodes\ITreeNode.cs" />
     <Compile Include="Model\StalkNodes\BaseNodes\LeafNode.cs" />
     <Compile Include="Model\StalkNodes\BaseNodes\LogicalNode.cs" />
     <Compile Include="Model\StalkNodes\BaseNodes\MultiChildLogicalNode.cs" />
+    <Compile Include="Model\StalkNodes\BaseNodes\NumberProviderNode.cs" />
     <Compile Include="Model\StalkNodes\BaseNodes\RegexLeafNode.cs" />
     <Compile Include="Model\StalkNodes\BaseNodes\SingleChildLogicalNode.cs" />
     <Compile Include="Model\StalkNodes\BaseNodes\StalkNode.cs" />
@@ -159,6 +162,9 @@
     <Compile Include="Model\StalkNodes\InCategoryNode.cs" />
     <Compile Include="Model\StalkNodes\LogStalkNode.cs" />
     <Compile Include="Model\StalkNodes\NotNode.cs" />
+    <Compile Include="Model\StalkNodes\NumericNodes\DiffDeltaNumberNode.cs" />
+    <Compile Include="Model\StalkNodes\NumericNodes\InfixNumericLogicalNode.cs" />
+    <Compile Include="Model\StalkNodes\NumericNodes\StaticNumberNode.cs" />
     <Compile Include="Model\StalkNodes\OrNode.cs" />
     <Compile Include="Model\StalkNodes\PageStalkNode.cs" />
     <Compile Include="Model\StalkNodes\SummaryStalkNode.cs" />

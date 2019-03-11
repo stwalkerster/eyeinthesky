@@ -6,6 +6,7 @@
     using EyeInTheSky.Attributes;
     using EyeInTheSky.Model.StalkNodes;
     using EyeInTheSky.Model.StalkNodes.BaseNodes;
+    using EyeInTheSky.Model.StalkNodes.NumericNodes;
     using EyeInTheSky.Services.ExternalProviders.Interfaces;
     using EyeInTheSky.Services.Interfaces;
 
@@ -42,15 +43,55 @@
                 case "incategory":
                 case "log":
                     return this.NewLeafNode(fragment);
+                
+                case "infixnumeric":
+                    return this.NewInfixNumeric(fragment);
 
                 case "true":
                     return new TrueNode();
                 case "false":
                     return new FalseNode();
 
+                
+                
                 default:
                     throw new XmlException("Unknown element " + fragment.Name);
             }
+        }
+        
+        public INumberProviderNode NewNumericFromXmlFragment(XmlElement fragment)
+        {
+            switch (fragment.Name)
+            {
+                case "number":
+                    var node = new StaticNumberNode();
+                    var fragmentAttribute = fragment.Attributes["value"];
+                    if (fragmentAttribute != null)
+                    {
+                        node.Value = XmlConvert.ToInt64(fragmentAttribute.Value);
+                    }
+
+                    return node;
+                case "diffsize":
+                    return new DiffDeltaNumberNode();
+
+                default:
+                    throw new XmlException("Unknown element " + fragment.Name);
+            }
+        }
+
+        private IStalkNode NewInfixNumeric(XmlElement fragment)
+        {
+            var node = new InfixNumericLogicalNode();
+            node.Operator = fragment.Attributes["operator"].Value;
+
+            var lcn = this.NewNumericFromXmlFragment((XmlElement) fragment.ChildNodes[0]);
+            var rcn = this.NewNumericFromXmlFragment((XmlElement) fragment.ChildNodes[1]);
+
+            node.LeftChildNode = lcn;
+            node.RightChildNode = rcn;
+
+            return node;
         }
 
         private IStalkNode NewSingleChildNode(XmlElement fragment)
@@ -259,7 +300,7 @@
             throw new XmlException();
         }
 
-        private XmlElement CreateElement(XmlDocument doc, IStalkNode node)
+        private XmlElement CreateElement(XmlDocument doc, ITreeNode node)
         {
             var attr =
                 node.GetType().GetCustomAttributes(typeof(StalkNodeTypeAttribute), false).FirstOrDefault() as
@@ -309,9 +350,44 @@
             if (singleChildLogicalNode != null)
             {
                 return this.SingleChildToXml(doc, singleChildLogicalNode);
-            }   
+            }
 
+            var infixNumeric = node as InfixNumericLogicalNode;
+            if (infixNumeric != null)
+            {
+                return this.InfixNumericToXml(doc, infixNumeric);
+            }
+            
             return this.CreateElement(doc, node);
+        }
+
+        private XmlElement InfixNumericToXml(XmlDocument doc, InfixNumericLogicalNode node)
+        {
+            var elem = this.CreateElement(doc, node);
+
+            elem.AppendChild(this.NumericToXml(doc, node.LeftChildNode));
+            elem.AppendChild(this.NumericToXml(doc, node.RightChildNode));
+            elem.SetAttribute("operator", node.Operator);
+
+            return elem;
+        }
+
+        private XmlNode NumericToXml(XmlDocument doc, INumberProviderNode node)
+        {
+            if (node is DiffDeltaNumberNode)
+            {
+                return this.CreateElement(doc, node);
+            }
+
+            var staticNumberNode = node as StaticNumberNode;
+            if (staticNumberNode != null)
+            {
+                var elem = this.CreateElement(doc, node);
+                elem.SetAttribute("value", XmlConvert.ToString(staticNumberNode.Value));
+                return elem;
+            }
+            
+            throw new XmlException();
         }
 
         private XmlElement SingleChildToXml(XmlDocument doc, SingleChildLogicalNode node)

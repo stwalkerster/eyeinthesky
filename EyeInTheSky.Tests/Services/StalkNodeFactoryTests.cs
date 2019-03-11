@@ -4,6 +4,7 @@
     using System.Xml;
     using EyeInTheSky.Model.StalkNodes;
     using EyeInTheSky.Model.StalkNodes.BaseNodes;
+    using EyeInTheSky.Model.StalkNodes.NumericNodes;
     using EyeInTheSky.Services;
     using EyeInTheSky.Services.ExternalProviders.Interfaces;
 
@@ -280,6 +281,30 @@
             Assert.IsInstanceOf<TrueNode>(mcln.ChildNodes[0]);
             Assert.IsInstanceOf<FalseNode>(mcln.ChildNodes[1]);
         }
+
+        [Test]
+        public void ShouldCreateInfixNumericNode()
+        {
+            // arrange
+            var snf = new StalkNodeFactory(this.phabExternalMock.Object);
+            var doc = new XmlDocument();
+            doc.LoadXml("<infixnumeric operator=\">=\"><number value=\"4\" /><diffsize /></infixnumeric>");
+            
+            // act
+            var result = snf.NewFromXmlFragment(doc.DocumentElement);
+
+            // assert
+            Assert.IsInstanceOf<InfixNumericLogicalNode>(result);
+
+            var inln = (InfixNumericLogicalNode) result;
+            Assert.IsInstanceOf<StaticNumberNode>(inln.LeftChildNode);
+            Assert.IsInstanceOf<DiffDeltaNumberNode>(inln.RightChildNode);
+
+            var snn = (StaticNumberNode) inln.LeftChildNode;
+            Assert.AreEqual(4, snn.Value);
+        }
+        
+        
         #endregion
         
         #region XML tests
@@ -612,6 +637,28 @@
 
             // assert
             Assert.AreEqual("<x-of minimum=\"2\" maximum=\"5\"><true /><false /></x-of>", result.OuterXml);
+        }
+        
+        [Test]
+        public void ShouldSerialiseInfixCorrectly()
+        {
+            // arrange 
+            var node = new InfixNumericLogicalNode
+            {
+               Operator = "==",
+               LeftChildNode = new StaticNumberNode{Value = 4},
+               RightChildNode = new DiffDeltaNumberNode()
+            };
+
+            var doc = new XmlDocument();
+            
+            var snf = new StalkNodeFactory(this.phabExternalMock.Object); 
+            
+            // act
+            var result = snf.ToXml(doc, node);
+
+            // assert
+            Assert.AreEqual("<infixnumeric operator=\"==\"><number value=\"4\" /><diffsize /></infixnumeric>", result.OuterXml);
         }
         
         #endregion
