@@ -3,11 +3,14 @@
     using System;
     using System.Collections.Generic;
     using EyeInTheSky.Model.Interfaces;
+
+    using Stwalkerster.Bot.MediaWikiLib.Model;
     using Stwalkerster.Bot.MediaWikiLib.Services.Interfaces;
 
     public class RecentChange : IRecentChange
     {
         private IEnumerable<string> usergroups;
+        private PageInformation pageinfo;
 
         public RecentChange(string user)
         {
@@ -51,6 +54,21 @@
             }
             
             return this.usergroups;
+        }
+
+        public long GetPageSize()
+        {
+            if (this.MediaWikiApi == null)
+            {
+                throw new InvalidOperationException("API helper not available");
+            }
+
+            if (this.pageinfo == null)
+            {
+                this.pageinfo = this.MediaWikiApi.GetPageInformation(this.Page);
+            }
+            
+            return this.pageinfo.Size;
         }
 
         public bool PageIsInCategory(string category)

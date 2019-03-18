@@ -3,20 +3,23 @@ namespace EyeInTheSky.Model.StalkNodes.NumericNodes
     using EyeInTheSky.Attributes;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Model.StalkNodes.BaseNodes;
-    
-    [StalkNodeType("number")]
-    public class StaticNumberNode : NumberProviderNode
+
+    [StalkNodeType("pagesize")]
+    public class PageSizeNumberNode : NumberProviderNode
     {
         public override long? GetValue(IRecentChange rc, bool forceMatch)
         {
-            return this.Value;
+            if (!forceMatch)
+            {
+                return null;
+            }
+
+            return rc.GetPageSize();
         }
 
         public override string ToString()
         {
-            return string.Format("(#:{0})", this.Value);
+            return "(#pagesize)";
         }
-
-        public long Value { get; set; }
     }
 }

@@ -164,6 +164,7 @@
     <Compile Include="Model\StalkNodes\NotNode.cs" />
     <Compile Include="Model\StalkNodes\NumericNodes\DiffDeltaNumberNode.cs" />
     <Compile Include="Model\StalkNodes\NumericNodes\InfixNumericLogicalNode.cs" />
+    <Compile Include="Model\StalkNodes\NumericNodes\PageSizeNumberNode.cs" />
     <Compile Include="Model\StalkNodes\NumericNodes\StaticNumberNode.cs" />
     <Compile Include="Model\StalkNodes\OrNode.cs" />
     <Compile Include="Model\StalkNodes\PageStalkNode.cs" />

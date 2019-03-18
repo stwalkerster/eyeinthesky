@@ -14,7 +14,7 @@ namespace EyeInTheSky.Model.StalkNodes.NumericNodes
 
         public override string ToString()
         {
-            return "(diffsize)";
+            return "(#diffsize)";
         }
     }
 }

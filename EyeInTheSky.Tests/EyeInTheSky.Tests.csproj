@@ -101,7 +101,7 @@
     <Compile Include="Model\StalkNodes\LogStalkNodeTest.cs" />
     <Compile Include="Model\StalkNodes\NotNodeTest.cs" />
     <Compile Include="Model\StalkNodes\NumericNodes\DiffDeltaNumberNodeTests.cs" />
-    <Compile Include="Model\StalkNodes\NumericNodes\InficNumericLogicalNodeTests.cs" />
+    <Compile Include="Model\StalkNodes\NumericNodes\InfixNumericLogicalNodeTests.cs" />
     <Compile Include="Model\StalkNodes\NumericNodes\StaticNumberNodeTests.cs" />
     <Compile Include="Model\StalkNodes\OrNodeTest.cs" />
     <Compile Include="Model\StalkNodes\PageStalkNodeTest.cs" />

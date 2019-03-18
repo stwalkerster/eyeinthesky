@@ -74,6 +74,8 @@
                     return node;
                 case "diffsize":
                     return new DiffDeltaNumberNode();
+                case "pagesize":
+                    return new PageSizeNumberNode();
 
                 default:
                     throw new XmlException("Unknown element " + fragment.Name);
@@ -374,7 +376,7 @@
 
         private XmlNode NumericToXml(XmlDocument doc, INumberProviderNode node)
         {
-            if (node is DiffDeltaNumberNode)
+            if (node is DiffDeltaNumberNode || node is PageSizeNumberNode)
             {
                 return this.CreateElement(doc, node);
             }

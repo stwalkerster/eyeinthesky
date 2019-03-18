@@ -303,6 +303,28 @@
             var snn = (StaticNumberNode) inln.LeftChildNode;
             Assert.AreEqual(4, snn.Value);
         }
+
+        [Test]
+        public void ShouldCreateInfixNumericNode2()
+        {
+            // arrange
+            var snf = new StalkNodeFactory(this.phabExternalMock.Object);
+            var doc = new XmlDocument();
+            doc.LoadXml("<infixnumeric operator=\">=\"><number value=\"4\" /><pagesize /></infixnumeric>");
+            
+            // act
+            var result = snf.NewFromXmlFragment(doc.DocumentElement);
+
+            // assert
+            Assert.IsInstanceOf<InfixNumericLogicalNode>(result);
+
+            var inln = (InfixNumericLogicalNode) result;
+            Assert.IsInstanceOf<StaticNumberNode>(inln.LeftChildNode);
+            Assert.IsInstanceOf<PageSizeNumberNode>(inln.RightChildNode);
+
+            var snn = (StaticNumberNode) inln.LeftChildNode;
+            Assert.AreEqual(4, snn.Value);
+        }
         
         
         #endregion
@@ -659,6 +681,28 @@
 
             // assert
             Assert.AreEqual("<infixnumeric operator=\"==\"><number value=\"4\" /><diffsize /></infixnumeric>", result.OuterXml);
+        }
+        
+        [Test]
+        public void ShouldSerialiseInfixCorrectly2()
+        {
+            // arrange 
+            var node = new InfixNumericLogicalNode
+            {
+               Operator = "==",
+               LeftChildNode = new StaticNumberNode{Value = 4},
+               RightChildNode = new PageSizeNumberNode()
+            };
+
+            var doc = new XmlDocument();
+            
+            var snf = new StalkNodeFactory(this.phabExternalMock.Object); 
+            
+            // act
+            var result = snf.ToXml(doc, node);
+
+            // assert
+            Assert.AreEqual("<infixnumeric operator=\"==\"><number value=\"4\" /><pagesize /></infixnumeric>", result.OuterXml);
         }
         
         #endregion

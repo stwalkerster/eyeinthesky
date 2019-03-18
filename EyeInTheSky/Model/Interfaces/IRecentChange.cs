@@ -19,5 +19,6 @@ namespace EyeInTheSky.Model.Interfaces
 
         IEnumerable<string> GetUserGroups();
         bool PageIsInCategory(string category);
+        long GetPageSize();
     }
 }
