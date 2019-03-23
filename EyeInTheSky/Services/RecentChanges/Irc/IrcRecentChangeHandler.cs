@@ -1,16 +1,15 @@
-namespace EyeInTheSky.Services
+namespace EyeInTheSky.Services.RecentChanges.Irc
 {
     using System;
     using Castle.Core.Logging;
     using EyeInTheSky.Exceptions;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Services.Interfaces;
-    using EyeInTheSky.Services.RecentChanges;
     using EyeInTheSky.Services.RecentChanges.Interfaces;
     using EyeInTheSky.Services.RecentChanges.Irc.Interfaces;
     using Stwalkerster.IrcClient.Events;
     using Stwalkerster.IrcClient.Model;
-    
+
     public class IrcRecentChangeHandler
     {
         private readonly ILogger logger;

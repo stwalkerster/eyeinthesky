@@ -12,6 +12,7 @@
     using Castle.Windsor;
     using Castle.Windsor.Installer;
     using EyeInTheSky.Services;
+    using EyeInTheSky.Services.RecentChanges.Irc;
     using EyeInTheSky.Startables;
     using EyeInTheSky.Startup.Converters;
     using EyeInTheSky.TypedFactories;
