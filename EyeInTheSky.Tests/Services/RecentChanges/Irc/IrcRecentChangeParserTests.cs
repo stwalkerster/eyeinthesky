@@ -1,16 +1,14 @@
-﻿namespace EyeInTheSky.Tests.Services
+﻿namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
 {
     using System;
     using System.Collections.Generic;
     using EyeInTheSky.Exceptions;
     using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
-    using EyeInTheSky.Services;
     using EyeInTheSky.Services.Interfaces;
-
+    using EyeInTheSky.Services.RecentChanges.Irc;
     using Moq;
     using NUnit.Framework;
-
     using Stwalkerster.Bot.MediaWikiLib.Services.Interfaces;
 
     [TestFixture]

@@ -1,12 +1,12 @@
-﻿namespace EyeInTheSky.Tests.Services
+﻿namespace EyeInTheSky.Tests.Services.RecentChanges
 {
     using System;
     using System.Collections.Generic;
     using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Model.StalkNodes;
-    using EyeInTheSky.Services;
     using EyeInTheSky.Services.Interfaces;
+    using EyeInTheSky.Services.RecentChanges;
     using Moq;
     using NUnit.Framework;
     using Stwalkerster.IrcClient.Interfaces;
@@ -18,7 +18,6 @@
     {
         private Mock<IStalk> stalkMock;
         private Mock<IRecentChange> rcMock;
-        private Mock<IBugReporter> bugMock;
         private Mock<IBotUser> botUser;
         private Mock<IChannelConfiguration> channelConfig;
 
@@ -29,7 +28,6 @@
 
             this.stalkMock = new Mock<IStalk>();
             this.rcMock = new Mock<IRecentChange>();
-            this.bugMock = new Mock<IBugReporter>();
             this.botUser = new Mock<IBotUser>();
             this.channelConfig = new Mock<IChannelConfiguration>();
             

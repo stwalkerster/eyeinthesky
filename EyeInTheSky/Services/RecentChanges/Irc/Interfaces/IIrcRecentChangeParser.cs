@@ -1,4 +1,4 @@
-﻿namespace EyeInTheSky.Services.Interfaces
+﻿namespace EyeInTheSky.Services.RecentChanges.Irc.Interfaces
 {
     using EyeInTheSky.Model.Interfaces;
 

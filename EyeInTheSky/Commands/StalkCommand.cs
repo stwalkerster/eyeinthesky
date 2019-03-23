@@ -14,6 +14,8 @@
     using EyeInTheSky.Model.StalkNodes.BaseNodes;
     using EyeInTheSky.Services;
     using EyeInTheSky.Services.Interfaces;
+    using EyeInTheSky.Services.RecentChanges;
+    using EyeInTheSky.Services.RecentChanges.Interfaces;
     using Stwalkerster.Bot.CommandLib.Attributes;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities.Response;

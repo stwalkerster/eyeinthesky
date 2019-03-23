@@ -1,4 +1,4 @@
-﻿namespace EyeInTheSky.Services
+﻿namespace EyeInTheSky.Services.RecentChanges.Irc
 {
     using System;
     using System.Linq;
@@ -8,6 +8,7 @@
     using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Services.Interfaces;
+    using EyeInTheSky.Services.RecentChanges.Irc.Interfaces;
 
     public class IrcRecentChangeParser : IIrcRecentChangeParser
     {

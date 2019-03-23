@@ -1,4 +1,4 @@
-﻿namespace EyeInTheSky.Services
+﻿namespace EyeInTheSky.Services.RecentChanges
 {
     using System;
     using System.Collections.Generic;
@@ -8,15 +8,10 @@
     using Castle.Core.Logging;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Services.Interfaces;
+    using EyeInTheSky.Services.RecentChanges.Interfaces;
     using Stwalkerster.IrcClient.Events;
     using Stwalkerster.IrcClient.Interfaces;
 
-    public interface IRecentChangeHandler
-    {
-        void HandleRcEvent(MessageReceivedEventArgs e, IRecentChange rc);
-        string FormatStalkListForEmail(IEnumerable<IStalk> stalks, IBotUser botUser);
-    }
-    
     public class RecentChangeHandler : IRecentChangeHandler
     {
         private readonly IAppConfiguration appConfig;
