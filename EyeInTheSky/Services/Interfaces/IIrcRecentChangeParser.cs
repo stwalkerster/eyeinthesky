@@ -2,7 +2,7 @@
 {
     using EyeInTheSky.Model.Interfaces;
 
-    public interface IRecentChangeParser
+    public interface IIrcRecentChangeParser
     {
         IRecentChange Parse(string data, string channel);
     }

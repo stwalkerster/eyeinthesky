@@ -14,9 +14,9 @@
     using Stwalkerster.Bot.MediaWikiLib.Services.Interfaces;
 
     [TestFixture]
-    public class RecentChangeParserTests : TestBase
+    public class IrcRecentChangeParserTests : TestBase
     {
-        private RecentChangeParser rcparser;
+        private IrcRecentChangeParser rcparser;
 
         [SetUp]
         public void LocalSetup()
@@ -24,10 +24,10 @@
             var helperMock = new Mock<IMediaWikiApiHelper>();
             helperMock.Setup(x => x.GetApiForChannel(It.IsAny<string>())).Returns((IMediaWikiApi)null);
             
-            this.rcparser = new RecentChangeParser(this.LoggerMock.Object, helperMock.Object);
+            this.rcparser = new IrcRecentChangeParser(this.LoggerMock.Object, helperMock.Object);
         }
 
-        [Test, TestCaseSource(typeof(RecentChangeParserTests), "ParseTestData")]
+        [Test, TestCaseSource(typeof(IrcRecentChangeParserTests), "ParseTestData")]
         public IRecentChange ShouldParseCorrectly(string data)
         {
             var shouldParseCorrectly = this.rcparser.Parse(data, "");
@@ -35,7 +35,7 @@
             return shouldParseCorrectly;
         }
 
-        [Test, TestCaseSource(typeof(RecentChangeParserTests), "ParseLogTestData")]
+        [Test, TestCaseSource(typeof(IrcRecentChangeParserTests), "ParseLogTestData")]
         public IRecentChange ShouldParseLogCorrectly(string data)
         {
             var shouldParseLogCorrectly = this.rcparser.Parse(data, "");

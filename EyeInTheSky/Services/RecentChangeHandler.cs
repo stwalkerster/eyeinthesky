@@ -6,26 +6,26 @@
     using System.Linq;
     using System.Text;
     using Castle.Core.Logging;
-    using EyeInTheSky.Exceptions;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Services.Interfaces;
     using Stwalkerster.IrcClient.Events;
     using Stwalkerster.IrcClient.Interfaces;
-    using Stwalkerster.IrcClient.Model;
 
-    public class RecentChangeHandler
+    public interface IRecentChangeHandler
+    {
+        void HandleRcEvent(MessageReceivedEventArgs e, IRecentChange rc);
+        string FormatStalkListForEmail(IEnumerable<IStalk> stalks, IBotUser botUser);
+    }
+    
+    public class RecentChangeHandler : IRecentChangeHandler
     {
         private readonly IAppConfiguration appConfig;
         private readonly ILogger logger;
         private readonly IChannelConfiguration channelConfig;
         private readonly IBotUserConfiguration botUserConfiguration;
         private readonly IIrcClient freenodeClient;
-        private readonly IRecentChangeParser rcParser;
         private readonly IEmailHelper emailHelper;
         private readonly INotificationTemplates templates;
-        private readonly IBugReporter bugReporter;
-
-        private IrcUserMask rcUserMaskCache;
 
         public RecentChangeHandler(
             IAppConfiguration appConfig,
@@ -33,20 +33,16 @@
             IChannelConfiguration channelConfig,
             IBotUserConfiguration botUserConfiguration,
             IIrcClient freenodeClient,
-            IRecentChangeParser rcParser,
             IEmailHelper emailHelper,
-            INotificationTemplates templates,
-            IBugReporter bugReporter)
+            INotificationTemplates templates)
         {
             this.appConfig = appConfig;
             this.logger = logger;
             this.channelConfig = channelConfig;
             this.botUserConfiguration = botUserConfiguration;
             this.freenodeClient = freenodeClient;
-            this.rcParser = rcParser;
             this.emailHelper = emailHelper;
             this.templates = templates;
-            this.bugReporter = bugReporter;
 
             if (this.appConfig.EmailConfiguration == null)
             {
@@ -54,63 +50,8 @@
             }
         }
 
-        public void OnReceivedMessage(object sender, MessageReceivedEventArgs e)
+        public void HandleRcEvent(MessageReceivedEventArgs e, IRecentChange rc)
         {
-            if (e.IsNotice)
-            {
-                return;
-            }
-
-            var source = e.User;
-
-            // first check is performance-related, second is thread safety related.
-            if (this.rcUserMaskCache == null)
-            {
-                lock (this)
-                {
-                    try
-                    {
-                        if (this.rcUserMaskCache == null)
-                        {
-                            this.rcUserMaskCache = new IrcUserMask(this.appConfig.RcUser, e.Client);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        this.logger.ErrorFormat(ex, "Encountered error building mask, on receipt of {0}", e.Message);
-                        return;
-                    }
-                }
-            }
-
-            if (!this.rcUserMaskCache.Matches(source).GetValueOrDefault(false))
-            {
-                this.logger.WarnFormat(
-                    "Received private message from {0} instead of expected {1}!",
-                    source.ToString(),
-                    this.appConfig.RcUser);
-                return;
-            }
-
-            var rcMessage = e.Message;
-
-            IRecentChange rc;
-
-            try
-            {
-                rc = this.rcParser.Parse(rcMessage, e.Target);
-            }
-            catch (BugException ex)
-            {
-                this.bugReporter.ReportBug(ex);
-                return;
-            }
-            catch (FormatException ex)
-            {
-                this.logger.ErrorFormat(ex, "Error processing received message: {0}", e.Message);
-                return;
-            }
-
             var stalks = this.channelConfig.MatchStalks(rc, e.Target).ToList();
 
             if (stalks.Count == 0)
@@ -277,7 +218,7 @@
             );
         }
 
-        public string FormatMessageForEmail(IEnumerable<IStalk> stalks, IRecentChange rc, IBotUser botUser)
+        private string FormatMessageForEmail(IEnumerable<IStalk> stalks, IRecentChange rc, IBotUser botUser)
         {
             var stalksFormatted = this.FormatStalkListForEmail(stalks, botUser);
 

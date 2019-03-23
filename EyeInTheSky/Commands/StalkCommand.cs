@@ -31,7 +31,7 @@
         private readonly IAppConfiguration config;
         private readonly INotificationTemplates templates;
         private readonly IEmailHelper emailHelper;
-        private readonly RecentChangeHandler recentChangeHandler;
+        private readonly IRecentChangeHandler recentChangeHandler;
         private readonly IXmlCacheService xmlCacheService;
         private readonly IBotUserConfiguration botUserConfiguration;
         private readonly IStalkSubscriptionHelper stalkSubscriptionHelper;
@@ -51,7 +51,7 @@
             IAppConfiguration config,
             INotificationTemplates templates,
             IEmailHelper emailHelper,
-            RecentChangeHandler recentChangeHandler,
+            IRecentChangeHandler recentChangeHandler,
             IXmlCacheService xmlCacheService,
             IBotUserConfiguration botUserConfiguration,
             IStalkSubscriptionHelper stalkSubscriptionHelper,

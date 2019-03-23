@@ -74,7 +74,7 @@
                     .DependsOn(Dependency.OnComponent("configuration", "wikimediaIrcConfig"))
                     .PublishEvent(
                         p => p.ReceivedMessage += null,
-                        x => x.To<RecentChangeHandler>(l => l.OnReceivedMessage(null, null))),
+                        x => x.To<IrcRecentChangeHandler>(l => l.OnReceivedMessage(null, null))),
 
                 // Linked to IRC services, so needs special configuration.
                 Component.For<NagiosMonitoringService>()

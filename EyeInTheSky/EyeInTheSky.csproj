@@ -193,6 +193,7 @@
     <Compile Include="Services\Interfaces\IChannelFactory.cs" />
     <Compile Include="Services\Interfaces\IMediaWikiApiHelper.cs" />
     <Compile Include="Services\Interfaces\IStalkSubscriptionHelper.cs" />
+    <Compile Include="Services\IrcRecentChangeHandler.cs" />
     <Compile Include="Services\MediaWikiApiHelper.cs" />
     <Compile Include="Services\StalkConfigFactoryBase.cs" />
     <Compile Include="Services\ConfigFileBase.cs" />
@@ -211,14 +212,14 @@
     <Compile Include="Services\Interfaces\IEmailHelper.cs" />
     <Compile Include="Services\Interfaces\IEmailSender.cs" />
     <Compile Include="Services\Interfaces\IFileService.cs" />
-    <Compile Include="Services\Interfaces\IRecentChangeParser.cs" />
+    <Compile Include="Services\Interfaces\IIrcRecentChangeParser.cs" />
     <Compile Include="Services\Interfaces\IStalkFactory.cs" />
     <Compile Include="Services\Interfaces\IStalkNodeFactory.cs" />
     <Compile Include="Services\Interfaces\ITemplateConfiguration.cs" />
     <Compile Include="Services\Interfaces\ITemplateFactory.cs" />
     <Compile Include="Services\Interfaces\IXmlCacheService.cs" />
     <Compile Include="Services\RecentChangeHandler.cs" />
-    <Compile Include="Services\RecentChangeParser.cs" />
+    <Compile Include="Services\IrcRecentChangeParser.cs" />
     <Compile Include="Services\StalkConfiguration.cs" />
     <Compile Include="Services\StalkFactory.cs" />
     <Compile Include="Services\StalkNodeFactory.cs" />

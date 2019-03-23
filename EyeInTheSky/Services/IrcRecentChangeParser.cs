@@ -9,7 +9,7 @@
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Services.Interfaces;
 
-    public class RecentChangeParser : IRecentChangeParser
+    public class IrcRecentChangeParser : IIrcRecentChangeParser
     {
         private readonly ILogger logger;
         private readonly IMediaWikiApiHelper mediaWikiApiHelper;
@@ -19,7 +19,7 @@
         private Regex dataregex;
         private Regex colsregex;
 
-        public RecentChangeParser(ILogger logger, IMediaWikiApiHelper mediaWikiApiHelper)
+        public IrcRecentChangeParser(ILogger logger, IMediaWikiApiHelper mediaWikiApiHelper)
         {
             this.logger = logger;
             this.mediaWikiApiHelper = mediaWikiApiHelper;
