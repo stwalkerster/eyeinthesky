@@ -73,9 +73,7 @@
                 null,
                 null,
                 null,
-                null,
-                this.NotificationTemplatesMock.Object, 
-                this.bugMock.Object);
+                this.NotificationTemplatesMock.Object);
 
             // act
             var result = rcHander.FormatMessageForIrc(new[] {this.stalkMock.Object, s2.Object}, this.rcMock.Object);
@@ -102,9 +100,7 @@
                 null,
                 null,
                 null,
-                null,
-                this.NotificationTemplatesMock.Object, 
-                this.bugMock.Object);
+                this.NotificationTemplatesMock.Object);
 
             // act
             var result = rcHander.FormatMessageForIrc(new[] {this.stalkMock.Object, s2.Object}, this.rcMock.Object);
@@ -128,9 +124,7 @@
                 null,
                 null,
                 null,
-                null,
-                this.NotificationTemplatesMock.Object, 
-                this.bugMock.Object);
+                this.NotificationTemplatesMock.Object);
 
             // act
             var result = rcHander.FormatMessageForIrc(new[] {this.stalkMock.Object}, this.rcMock.Object);
@@ -154,9 +148,7 @@
                 null,
                 null,
                 null,
-                null,
-                this.NotificationTemplatesMock.Object, 
-                this.bugMock.Object);
+                this.NotificationTemplatesMock.Object);
 
             // act
             var result = rcHander.FormatMessageForIrc(new[] {this.stalkMock.Object}, this.rcMock.Object);
