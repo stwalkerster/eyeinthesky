@@ -766,7 +766,9 @@
                     newStalk.Identifier,
                     newStalk.IsEnabled ? "enabled" : "disabled",
                     newStalk.ExpiryTime.HasValue
-                        ? string.Format(" (expiring in {0:%d}d {0:%h}h {0:%m}m)", newStalk.ExpiryTime.Value - DateTime.Now)
+                        ? newStalk.ExpiryTime < DateTime.Now
+                            ? string.Format(" (expired {0:%d}d {0:%h}h {0:%m}m ago)", newStalk.ExpiryTime.Value - DateTime.Now)
+                            : string.Format(" (expiring in {0:%d}d {0:%h}h {0:%m}m)", newStalk.ExpiryTime.Value - DateTime.Now)
                         : string.Empty,
                     tree
                 )
