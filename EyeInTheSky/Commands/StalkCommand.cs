@@ -596,6 +596,11 @@
         {
             var stalkName = this.Arguments.First();
 
+            if (!this.channelConfiguration[this.CommandSource].Stalks.ContainsKey(stalkName))
+            {
+                throw new CommandErrorException(string.Format("Can't find the stalk '{0}'!", stalkName));
+            }
+            
             this.channelConfiguration[this.CommandSource].Stalks.Remove(stalkName);
 
             yield return new CommandResponse
@@ -615,6 +620,11 @@
         {
             var stalkName = this.Arguments.First();
 
+            if (!this.channelConfiguration[this.CommandSource].Stalks.ContainsKey(stalkName))
+            {
+                throw new CommandErrorException(string.Format("Can't find the stalk '{0}'!", stalkName));
+            }
+            
             var searchTree = this.channelConfiguration[this.CommandSource].Stalks[stalkName].SearchTree;
 
             yield return new CommandResponse
@@ -636,6 +646,11 @@
         {
             var stalkName = this.Arguments.First();
 
+            if (!this.channelConfiguration[this.CommandSource].Stalks.ContainsKey(stalkName))
+            {
+                throw new CommandErrorException(string.Format("Can't find the stalk '{0}'!", stalkName));
+            }
+            
             // bounce through XML, as this is guaranteed to be a refresh.
             var originalTree = this.channelConfiguration[this.CommandSource].Stalks[stalkName].SearchTree;
             var xmlTree = this.stalkNodeFactory.ToXml(new XmlDocument(), originalTree);
