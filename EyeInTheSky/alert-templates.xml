@@ -22,9 +22,11 @@ This alert was triggered because the following stalks were triggered, and at lea
 ]]></emailRcTemplate>
                 <emailStalkTemplate><![CDATA[Flag:                 {0}
 Channel:              {3}
+Monitored wiki:       {9}
 Description:          {1}
 Configuration:        {2}
 Expiry:               {4}
+Last config update:   {8}
 Last trigger:         {5}
 Previously triggered: {6} times
 Subscribed:           {7}

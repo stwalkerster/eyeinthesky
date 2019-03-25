@@ -246,8 +246,12 @@
                     ? stalk.ExpiryTime.Value.ToString(this.appConfig.DateFormat)
                     : "never";
 
-                var lastTrigger = stalk.LastTriggerTime.HasValue
+                var lastTrigger = (stalk.LastTriggerTime.HasValue && stalk.LastTriggerTime != DateTime.MinValue)
                     ? stalk.LastTriggerTime.Value.ToString(this.appConfig.DateFormat)
+                    : "never";
+                
+                var lastUpdate = stalk.LastUpdateTime.HasValue
+                    ? stalk.LastUpdateTime.Value.ToString(this.appConfig.DateFormat)
                     : "never";
 
                 var subList = new List<string>();
@@ -280,7 +284,9 @@
                         expiry,
                         lastTrigger,
                         stalk.TriggerCount,
-                        subscription
+                        subscription,
+                        lastUpdate,
+                        stalk.WatchChannel
                     ));
             }
 
