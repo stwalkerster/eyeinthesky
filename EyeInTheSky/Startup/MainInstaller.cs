@@ -56,6 +56,7 @@
                 Classes.FromThisAssembly().InNamespace("EyeInTheSky.Services.ExternalProviders").WithServiceAllInterfaces(),
                 Classes.FromThisAssembly().InNamespace("EyeInTheSky.Services.RecentChanges").WithServiceAllInterfaces(),
                 Classes.FromThisAssembly().InNamespace("EyeInTheSky.Services.RecentChanges.Irc").WithServiceAllInterfaces(),
+                Classes.FromThisAssembly().InNamespace("EyeInTheSky.Services.RecentChanges.EventStreams").WithServiceAllInterfaces(),
                 Classes.FromThisAssembly().InNamespace("EyeInTheSky.Commands").LifestyleTransient()
                     .Configure(x => x.DependsOn(Dependency.OnComponent("wikimediaClient", "wikimediaClient"))),
 
