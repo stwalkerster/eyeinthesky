@@ -435,7 +435,7 @@
         [SubcommandInvocation("expiry")]
         [CommandFlag(AccessFlags.Configuration)]
         [RequiredArguments(2)]
-        [Help("<Identifier> <Expiry>", "Sets the expiry date/time of the specified stalk")]
+        [Help(new[]{"<Identifier> <Expiry Date>", "<Identifier> never"}, "Sets the expiry date/time of the specified stalk")]
         // ReSharper disable once UnusedMember.Global
         protected IEnumerable<CommandResponse> ExpiryMode()
         {
@@ -448,16 +448,33 @@
 
             var date = string.Join(" ", tokenList);
 
-            var expiryTime = DateTime.Parse(date);
-            this.channelConfiguration[this.CommandSource].Stalks[stalkName].ExpiryTime = expiryTime;
-
-            yield return new CommandResponse
+            DateTime expiryTime;
+            if (date == "never" || date == "infinite" || date == "infinity")
             {
-                Message = string.Format(
-                    "Set expiry attribute on stalk {0} to {1}",
-                    stalkName,
-                    expiryTime.ToString(this.config.DateFormat))
-            };
+                this.channelConfiguration[this.CommandSource].Stalks[stalkName].ExpiryTime = null;
+                yield return new CommandResponse
+                {
+                    Message = string.Format("Removed expiry from stalk {0}", stalkName)
+                };
+
+            } 
+            else if (DateTime.TryParse(date, out expiryTime))
+            {
+                this.channelConfiguration[this.CommandSource].Stalks[stalkName].ExpiryTime = expiryTime;
+                yield return new CommandResponse
+                {
+                    Message = string.Format(
+                        "Set expiry attribute on stalk {0} to {1}",
+                        stalkName,
+                        expiryTime.ToString(this.config.DateFormat))
+                };
+            }
+            else
+            {
+                throw new CommandErrorException(string.Format(
+                    "Unable to parse date from '{0}'. If you mean to remove the expiry date, please specify \"never\".",
+                    date));
+            }
 
             this.channelConfiguration.Save();
         }
