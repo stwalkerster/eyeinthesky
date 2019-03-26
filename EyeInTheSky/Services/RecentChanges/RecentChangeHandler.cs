@@ -1,4 +1,4 @@
-﻿namespace EyeInTheSky.Services.RecentChanges
+namespace EyeInTheSky.Services.RecentChanges
 {
     using System;
     using System.Collections.Generic;
@@ -58,11 +58,17 @@
                 "Seen stalked change for stalks: {0}",
                 string.Join(" ", stalks.Select(x => x.Identifier)));
 
+            // Touch expiry date (*before* email is sent)
+            foreach (var stalk in stalks)
+            {
+                stalk.TriggerDynamicExpiry();
+            }
+
             // send notifications
             this.SendToIrc(stalks, rc);
             this.SendEmail(stalks, rc);
 
-            // touch update flag
+            // touch update/count
             foreach (var stalk in stalks)
             {
                 stalk.LastTriggerTime = DateTime.Now;
@@ -246,6 +252,10 @@
                     ? stalk.ExpiryTime.Value.ToString(this.appConfig.DateFormat)
                     : "never";
 
+                var dynamicExpiry = stalk.DynamicExpiry.HasValue
+                    ? " (on trigger, up to an additional " + stalk.DynamicExpiry.Value.ToString(this.appConfig.TimeSpanFormat) + ")"
+                    : string.Empty;
+
                 var lastTrigger = (stalk.LastTriggerTime.HasValue && stalk.LastTriggerTime != DateTime.MinValue)
                     ? stalk.LastTriggerTime.Value.ToString(this.appConfig.DateFormat)
                     : "never";
@@ -286,7 +296,8 @@
                         stalk.TriggerCount,
                         subscription,
                         lastUpdate,
-                        stalk.WatchChannel
+                        stalk.WatchChannel,
+                        dynamicExpiry
                     ));
             }
 

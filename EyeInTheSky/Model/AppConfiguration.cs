@@ -14,6 +14,7 @@ namespace EyeInTheSky.Model
             string templateConfigFile,
             string rcUser,
             string dateFormat,
+            string timeSpanFormat,
             string owner)
         {
             if (freenodeChannel == null)
@@ -56,6 +57,11 @@ namespace EyeInTheSky.Model
                 throw new ArgumentNullException("dateFormat");
             }
 
+            if (timeSpanFormat == null)
+            {
+                throw new ArgumentNullException("timeSpanFormat");
+            }
+
             if (owner == null)
             {
                 throw new ArgumentNullException("owner");
@@ -70,6 +76,7 @@ namespace EyeInTheSky.Model
             this.RcUser = rcUser;
             this.Owner = owner;
             this.DateFormat = dateFormat;
+            this.TimeSpanFormat = timeSpanFormat;
         }
 
         public string FreenodeChannel { get; private set; }
@@ -81,6 +88,7 @@ namespace EyeInTheSky.Model
         public string RcUser { get; private set; }
         public string Owner { get; private set; }
         public string DateFormat { get; private set; }
+        public string TimeSpanFormat { get; private set; }
 
         // These properties are optional, and set by Castle
         // ReSharper disable UnusedAutoPropertyAccessor.Global

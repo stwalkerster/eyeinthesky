@@ -1,4 +1,4 @@
-﻿namespace EyeInTheSky.Commands
+namespace EyeInTheSky.Commands
 {
     using System;
     using System.Collections.Generic;
@@ -14,7 +14,6 @@
     using EyeInTheSky.Model.StalkNodes.BaseNodes;
     using EyeInTheSky.Services;
     using EyeInTheSky.Services.Interfaces;
-    using EyeInTheSky.Services.RecentChanges;
     using EyeInTheSky.Services.RecentChanges.Interfaces;
     using Stwalkerster.Bot.CommandLib.Attributes;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities;
@@ -435,7 +434,8 @@
         [SubcommandInvocation("expiry")]
         [CommandFlag(AccessFlags.Configuration)]
         [RequiredArguments(2)]
-        [Help(new[]{"<Identifier> <Expiry Date>","<Identifier> <Duration>", "<Identifier> never"}, "Sets the expiry date/time of the specified stalk")]
+        [Help(new[]{"<Identifier> <Expiry Date>","<Identifier> <Duration>", "<Identifier> never"},
+            "Sets the expiry date/time of the specified stalk")]
         // ReSharper disable once UnusedMember.Global
         protected IEnumerable<CommandResponse> ExpiryMode()
         {
@@ -486,6 +486,54 @@
             {
                 throw new CommandErrorException(string.Format(
                     "Unable to parse date from '{0}'. If you mean to remove the expiry date, please specify \"never\".",
+                    date));
+            }
+
+            this.channelConfiguration.Save();
+        }
+
+        [SubcommandInvocation("dynamicexpiry")]
+        [CommandFlag(AccessFlags.Configuration)]
+        [RequiredArguments(2)]
+        [Help(new[]{"<Identifier> <Interval>", "<Identifier> never"},
+            "Sets the dynamic expiry duration of the specified stalk. ")]
+        // ReSharper disable once UnusedMember.Global
+        protected IEnumerable<CommandResponse> DynamicExpiryMode()
+        {
+            var tokenList = (List<string>) this.Arguments;
+            var stalkName = tokenList.PopFromFront();
+            if (!this.channelConfiguration[this.CommandSource].Stalks.ContainsKey(stalkName))
+            {
+                throw new CommandErrorException(string.Format("Can't find the stalk '{0}'!", stalkName));
+            }
+
+            var date = string.Join(" ", tokenList);
+
+            TimeSpan expiryDuration;
+            if (date == "never" || date == "infinite" || date == "infinity")
+            {
+                this.channelConfiguration[this.CommandSource].Stalks[stalkName].DynamicExpiry = null;
+                yield return new CommandResponse
+                {
+                    Message = string.Format("Removed dynamic expiry duration from stalk {0}", stalkName)
+                };
+
+            }
+            else if (TimeSpan.TryParse(date, out expiryDuration))
+            {
+                this.channelConfiguration[this.CommandSource].Stalks[stalkName].DynamicExpiry = expiryDuration;
+                yield return new CommandResponse
+                {
+                    Message = string.Format(
+                        "Set dynamic expiry attribute on stalk {0} to {1}",
+                        stalkName,
+                        expiryDuration.ToString(this.config.TimeSpanFormat))
+                };
+            }
+            else
+            {
+                throw new CommandErrorException(string.Format(
+                    "Unable to parse time span from '{0}'. If you mean to remove the dynamic expiry duration, please specify \"never\".",
                     date));
             }
 

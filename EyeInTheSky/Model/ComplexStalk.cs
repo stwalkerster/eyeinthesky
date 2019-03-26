@@ -26,7 +26,8 @@
             bool isEnabled,
             int triggerCount,
             string lastMessageId,
-            string watchChannel)
+            string watchChannel,
+            TimeSpan? dynamicExpiry)
         {
             this.Identifier = flag;
             this.LastUpdateTime = lastUpdateTime;
@@ -34,6 +35,7 @@
             this.TriggerCount = triggerCount;
             this.LastMessageId = lastMessageId;
             this.WatchChannel = watchChannel;
+            this.dynamicExpiry = dynamicExpiry;
             this.description = description;
             this.expiryTime = expiryTime;
             this.isEnabled = isEnabled;
@@ -44,6 +46,7 @@
         private string description;
         private DateTime? expiryTime;
         private bool isEnabled;
+        private TimeSpan? dynamicExpiry;
 
         public List<StalkUser> Subscribers { get; private set; }
         
@@ -60,6 +63,16 @@
         public string Channel { get; set; }
         
         public string WatchChannel { get; set; }
+
+        public TimeSpan? DynamicExpiry
+        {
+            get { return this.dynamicExpiry; }
+            set
+            {
+                this.dynamicExpiry = value;
+                this.LastUpdateTime = DateTime.Now;
+            }
+        }
 
         public bool IsEnabled
         {
@@ -89,6 +102,22 @@
                 this.expiryTime = value;
                 this.LastUpdateTime = DateTime.Now;
             }
+        }
+
+        public bool TriggerDynamicExpiry()
+        {
+            if (this.dynamicExpiry.HasValue)
+            {
+                var proposedExpiry = DateTime.Now + this.dynamicExpiry.Value;
+
+                if (this.expiryTime < proposedExpiry)
+                {
+                    this.expiryTime = proposedExpiry;
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public IStalkNode SearchTree

@@ -1,4 +1,4 @@
-﻿namespace EyeInTheSky.Tests.Services
+namespace EyeInTheSky.Tests.Services
 {
     using System;
     using System.Collections.Generic;
@@ -150,6 +150,7 @@
             stalk.Setup(x => x.TriggerCount).Returns(3334);
             stalk.Setup(x => x.LastMessageId).Returns("foobar");
             stalk.Setup(x => x.WatchChannel).Returns("#metawiki");
+            stalk.Setup(x => x.DynamicExpiry).Returns(new TimeSpan(90, 0, 0, 0));
             
             var sf = new StalkFactory(this.LoggerMock.Object, snf.Object, irc.Object, this.AppConfigMock.Object);
 
@@ -157,7 +158,7 @@
             var xmlElement = sf.ToXmlElement(stalk.Object, doc);
             
             // assert
-            Assert.AreEqual("<complexstalk flag=\"testflag\" lastupdate=\"2018-03-14T01:02:03Z\" lasttrigger=\"0001-01-01T00:00:00Z\" description=\"my description here\" lastmessageid=\"foobar\" enabled=\"true\" watchchannel=\"#metawiki\" expiry=\"9999-12-31T23:59:59.9999999Z\" triggercount=\"3334\"><searchtree><false /></searchtree><subscribers /></complexstalk>", xmlElement.OuterXml);
+            Assert.AreEqual("<complexstalk flag=\"testflag\" lastupdate=\"2018-03-14T01:02:03Z\" lasttrigger=\"0001-01-01T00:00:00Z\" description=\"my description here\" lastmessageid=\"foobar\" enabled=\"true\" watchchannel=\"#metawiki\" expiry=\"9999-12-31T23:59:59.9999999Z\" dynamicexpiry=\"P90D\" triggercount=\"3334\"><searchtree><false /></searchtree><subscribers /></complexstalk>", xmlElement.OuterXml);
         }
 
         [Test]
@@ -314,6 +315,32 @@
             Assert.IsNotNull(stalk.SearchTree);
             Assert.IsInstanceOf<IStalkNode>(stalk.SearchTree);
             
+            snf.Verify(x => x.NewFromXmlFragment(It.IsAny<XmlElement>()), Times.Once);
+        }
+
+        [Test]
+        public void ShouldCreateObjectFromXmlWithExpiry()
+        {
+            string xml =
+                "<complexstalk flag=\"testytest\" expiry=\"2018-03-25T16:42:30.984000Z\" dynamicexpiry=\"P3M\"><searchtree><true /></searchtree></complexstalk>";
+            var doc = new XmlDocument();
+            doc.LoadXml(xml);
+            var snf = new Mock<IStalkNodeFactory>();
+            var irc = new Mock<IIrcClient>();
+            snf.Setup(x => x.NewFromXmlFragment(It.IsAny<XmlElement>())).Returns(new TrueNode());
+
+            // act
+            var fact = new StalkFactory(this.LoggerMock.Object, snf.Object, irc.Object, this.AppConfigMock.Object);
+            var stalk = fact.NewFromXmlElement(doc.DocumentElement);
+
+            // assert
+            Assert.AreEqual("testytest", stalk.Identifier);
+            Assert.AreEqual(new DateTime(2018,03,25,16,42,30,984), stalk.ExpiryTime);
+            Assert.AreEqual(new TimeSpan(90, 0, 0, 0), stalk.DynamicExpiry);
+
+            Assert.IsNotNull(stalk.SearchTree);
+            Assert.IsInstanceOf<IStalkNode>(stalk.SearchTree);
+
             snf.Verify(x => x.NewFromXmlFragment(It.IsAny<XmlElement>()), Times.Once);
         }
     }

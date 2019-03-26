@@ -1,4 +1,4 @@
-﻿namespace EyeInTheSky.Services
+namespace EyeInTheSky.Services
 {
     using System;
     using System.Collections.Generic;
@@ -67,6 +67,14 @@
                 }
             }
 
+            // Dynamic expiry
+            var dynamicExpiryAttribute = element.GetAttribute("dynamicexpiry");
+            TimeSpan? dynamicExpiry = null;
+            if (!string.IsNullOrWhiteSpace(dynamicExpiryAttribute))
+            {
+                dynamicExpiry = XmlConvert.ToTimeSpan(dynamicExpiryAttribute);
+            }
+
             // Enabled attribute
             var enabledText = element.GetAttribute("enabled");
             bool enabled;
@@ -110,7 +118,8 @@
                 enabled,
                 triggerCount,
                 lastMessageId,
-                watchChannel);
+                watchChannel,
+                dynamicExpiry);
             
             this.ProcessStalkChildren(element, flag, s);
 
@@ -154,6 +163,11 @@
             if (stalk.ExpiryTime != null)
             {
                 e.SetAttribute("expiry", XmlConvert.ToString(stalk.ExpiryTime.Value, XmlDateTimeSerializationMode.Utc));
+            }
+
+            if (stalk.DynamicExpiry != null)
+            {
+                e.SetAttribute("dynamicexpiry", XmlConvert.ToString(stalk.DynamicExpiry.Value));
             }
 
             e.SetAttribute("triggercount", XmlConvert.ToString(stalk.TriggerCount));

@@ -49,6 +49,8 @@
                 <owner></owner>
                 <!-- The format in which dates should appear -->
                 <dateFormat>u</dateFormat>
+                <!-- The format in which time spans should appear -->
+                <timeSpanFormat>d\d\ hh\:mm\:ss</timeSpanFormat>
                 <!-- Privacy policy wording -->
                 <privacyPolicy>https://example.com/privacy</privacyPolicy>
             </parameters>
