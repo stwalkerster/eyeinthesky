@@ -1,4 +1,4 @@
-﻿namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
+namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
 {
     using System;
     using System.Collections.Generic;
@@ -484,6 +484,16 @@
                             EditSummary = "[[b:ky:Special:Permalink/4616#Bot_policy|no objections]]"
                         });
                 
+                yield return new TestCaseData(
+                        "14[[07Special:Log/gblrights14]]4 groupprms210 02 5* 03Rxy 5*  10changed global group permissions for Special:GlobalUsers/steward: added (none); removed bigdelete: -bigdelete: dangerous things; no need this usually")
+                    .Returns(
+                        new RecentChange("Rxy")
+                        {
+                            Log = "gblrights",
+                            EditFlags = "groupprms2",
+                            EditSummary = "-bigdelete: dangerous things; no need this usually"
+                        });
+
                 #endregion
                 #region globalauth
                 yield return new TestCaseData(

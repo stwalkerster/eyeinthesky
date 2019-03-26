@@ -1,4 +1,4 @@
-﻿namespace EyeInTheSky.Services.RecentChanges.Irc
+namespace EyeInTheSky.Services.RecentChanges.Irc
 {
     using System;
     using System.Linq;
@@ -443,6 +443,21 @@
                         }
                     }
                     
+                    if (rc.EditFlags == "groupprms2")
+                    {
+                        var match = new Regex(@"^changed global group permissions for .*?: added .*?; removed .*?(?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+
+                            handled = true;
+                        }
+                    }
+
                     if (rc.EditFlags == "setchange")
                     {
                         var match = new Regex(@"^changed wikis in ""(?<page>.*?)"": added: (?:.*?); removed: (?:.*?)(?:: (?<comment>.*))?$");
