@@ -28,7 +28,7 @@
             Assert.AreEqual("mno", this.appConfig.TemplateConfigFile);
             Assert.AreEqual("p!q@r", this.appConfig.RcUser);
             Assert.AreEqual("stu", this.appConfig.DateFormat);
-            Assert.AreEqual("''d", this.appConfig.DateFormat);
+            Assert.AreEqual("''d", this.appConfig.TimeSpanFormat);
             Assert.AreEqual("v!w@x", this.appConfig.Owner);
         }
 
