@@ -811,11 +811,13 @@ namespace EyeInTheSky.Commands
             var newStalk = new ComplexStalk(targetIdentifier)
             {
                 Channel = this.CommandSource,
-                Description = sourceStalk.Description,
+                Description = string.Format("{0}; based on stalk {1} from {2}", sourceStalk.Description, sourceIdentifier, sourceChannel),
                 ExpiryTime = sourceStalk.ExpiryTime,
                 IsEnabled = sourceStalk.IsEnabled,
                 SearchTree = tree,
-                WatchChannel = sourceStalk.WatchChannel
+                WatchChannel = sourceStalk.WatchChannel,
+                DynamicExpiry = sourceStalk.DynamicExpiry,
+                LastTriggerTime = sourceStalk.LastTriggerTime
             };
 
             this.channelConfiguration[this.CommandSource].Stalks.Add(newStalk.Identifier, newStalk);
