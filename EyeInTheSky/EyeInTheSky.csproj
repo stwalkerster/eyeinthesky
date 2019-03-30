@@ -81,6 +81,10 @@
       <HintPath>..\packages\Nancy.1.4.1\lib\net40\Nancy.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Nancy.Authentication.Forms, Version=1.4.1.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\Nancy.Authentication.Forms.1.4.1\lib\net40\Nancy.Authentication.Forms.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Nancy.Bootstrappers.Windsor, Version=1.4.1.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\packages\Nancy.Bootstrappers.Windsor.1.4.1\lib\net40\Nancy.Bootstrappers.Windsor.dll</HintPath>
       <Private>True</Private>
@@ -250,6 +254,7 @@
     <Compile Include="Startup\Converters\MediaWikiConfigMapEntryConverter.cs" />
     <Compile Include="Startup\Launch.cs" />
     <Compile Include="Startup\MainInstaller.cs" />
+    <Compile Include="Startup\NancyBootstrapper.cs" />
     <Compile Include="TypedFactories\IMediaWikiApiTypedFactory.cs" />
   </ItemGroup>
   <ItemGroup>
