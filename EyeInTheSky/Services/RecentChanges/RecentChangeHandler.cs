@@ -1,4 +1,4 @@
-namespace EyeInTheSky.Services.RecentChanges
+﻿namespace EyeInTheSky.Services.RecentChanges
 {
     using System;
     using System.Collections.Generic;
@@ -263,6 +263,10 @@ namespace EyeInTheSky.Services.RecentChanges
                 var lastUpdate = stalk.LastUpdateTime.HasValue
                     ? stalk.LastUpdateTime.Value.ToString(this.appConfig.DateFormat)
                     : "never";
+                
+                var creation = stalk.CreationDate == DateTime.MinValue
+                    ? stalk.CreationDate.ToString(this.appConfig.DateFormat)
+                    : "before records began";
 
                 var subList = new List<string>();
                 var subItem = stalk.Subscribers.FirstOrDefault(x => x.Mask.ToString() == botUser.Mask.ToString());
@@ -297,7 +301,8 @@ namespace EyeInTheSky.Services.RecentChanges
                         subscription,
                         lastUpdate,
                         stalk.WatchChannel,
-                        dynamicExpiry
+                        dynamicExpiry,
+                        creation
                     ));
             }
 

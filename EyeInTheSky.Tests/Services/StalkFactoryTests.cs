@@ -151,6 +151,7 @@ namespace EyeInTheSky.Tests.Services
             stalk.Setup(x => x.LastMessageId).Returns("foobar");
             stalk.Setup(x => x.WatchChannel).Returns("#metawiki");
             stalk.Setup(x => x.DynamicExpiry).Returns(new TimeSpan(90, 0, 0, 0));
+            stalk.Setup(x => x.CreationDate).Returns(new DateTime(2019, 03, 28, 1, 2, 3));
             
             var sf = new StalkFactory(this.LoggerMock.Object, snf.Object, irc.Object, this.AppConfigMock.Object);
 
@@ -158,7 +159,7 @@ namespace EyeInTheSky.Tests.Services
             var xmlElement = sf.ToXmlElement(stalk.Object, doc);
             
             // assert
-            Assert.AreEqual("<complexstalk flag=\"testflag\" lastupdate=\"2018-03-14T01:02:03Z\" lasttrigger=\"0001-01-01T00:00:00Z\" description=\"my description here\" lastmessageid=\"foobar\" enabled=\"true\" watchchannel=\"#metawiki\" expiry=\"9999-12-31T23:59:59.9999999Z\" dynamicexpiry=\"P90D\" triggercount=\"3334\"><searchtree><false /></searchtree><subscribers /></complexstalk>", xmlElement.OuterXml);
+            Assert.AreEqual("<complexstalk flag=\"testflag\" lastupdate=\"2018-03-14T01:02:03Z\" lasttrigger=\"0001-01-01T00:00:00Z\" creation=\"2019-03-28T01:02:03Z\" description=\"my description here\" lastmessageid=\"foobar\" enabled=\"true\" watchchannel=\"#metawiki\" expiry=\"9999-12-31T23:59:59.9999999Z\" dynamicexpiry=\"P90D\" triggercount=\"3334\"><searchtree><false /></searchtree><subscribers /></complexstalk>", xmlElement.OuterXml);
         }
 
         [Test]
@@ -196,7 +197,7 @@ namespace EyeInTheSky.Tests.Services
         public void ShouldCreateObjectFromXml()
         {
             string xml =
-                "<complexstalk flag=\"testytest\" lastupdate=\"2018-03-25T16:42:30.984000Z\" lasttrigger=\"2018-03-25T16:42:21.878000Z\" immediatemail=\"true\" lastmessageid=\"foobar\" enabled=\"false\"><searchtree><true /></searchtree></complexstalk>";
+                "<complexstalk flag=\"testytest\" lastupdate=\"2018-03-25T16:42:30.984000Z\" lasttrigger=\"2018-03-25T16:42:21.878000Z\" creation=\"2019-01-01T23:23:23.090Z\" immediatemail=\"true\" lastmessageid=\"foobar\" enabled=\"false\"><searchtree><true /></searchtree></complexstalk>";
             var doc = new XmlDocument();
             doc.LoadXml(xml);
             var snf = new Mock<IStalkNodeFactory>();
@@ -216,6 +217,7 @@ namespace EyeInTheSky.Tests.Services
             Assert.AreEqual("foobar", stalk.LastMessageId);
             Assert.AreEqual(new DateTime(2018,03,25,16,42,21,878), stalk.LastTriggerTime);
             Assert.AreEqual(new DateTime(2018,03,25,16,42,30,984), stalk.LastUpdateTime);
+            Assert.AreEqual(new DateTime(2019,01,01,23,23,23,90), stalk.CreationDate);
             Assert.AreEqual(0, stalk.TriggerCount);
 
             Assert.IsNotNull(stalk.SearchTree);

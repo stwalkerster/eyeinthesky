@@ -1,4 +1,4 @@
-namespace EyeInTheSky.Services
+﻿namespace EyeInTheSky.Services
 {
     using System;
     using System.Collections.Generic;
@@ -37,6 +37,14 @@ namespace EyeInTheSky.Services
             if (timeAttribute != null)
             {
                 lastUpdateTime = this.ParseDate(flag, timeAttribute.Value, "last update time");
+            }
+            
+            // Creation time
+            var creationAttribute = element.Attributes["creation"];
+            var creation = DateTime.MinValue;
+            if (creationAttribute != null)
+            {
+                creation = this.ParseDate(flag, creationAttribute.Value, "creation time");
             }
             
             // Last trigger time
@@ -119,7 +127,8 @@ namespace EyeInTheSky.Services
                 triggerCount,
                 lastMessageId,
                 watchChannel,
-                dynamicExpiry);
+                dynamicExpiry,
+                creation);
             
             this.ProcessStalkChildren(element, flag, s);
 
@@ -144,6 +153,13 @@ namespace EyeInTheSky.Services
                 e.SetAttribute(
                     "lasttrigger",
                     XmlConvert.ToString(stalk.LastTriggerTime.Value, XmlDateTimeSerializationMode.Utc));
+            }
+
+            if (stalk.CreationDate != DateTime.MinValue)
+            {
+                e.SetAttribute(
+                    "creation",
+                    XmlConvert.ToString(stalk.CreationDate, XmlDateTimeSerializationMode.Utc));
             }
             
             if (stalk.Description != null)
