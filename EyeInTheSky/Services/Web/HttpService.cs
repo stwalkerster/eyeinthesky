@@ -19,12 +19,26 @@ namespace EyeInTheSky.Services.Web
 
         public void Start()
         {
-            this.server = new NancyHost(new Uri("http://0.0.0.0:8080"));
-            this.server.Start();
+            try
+            {
+                this.logger.Debug("Starting management web service");
+                this.server = new NancyHost(
+                    new HostConfiguration {RewriteLocalhost = true},
+                    new Uri("http://localhost:8080"));
+                this.server.Start();
+                this.logger.Info("Started management web service");
+                
+            }
+            catch (Exception ex)
+            {
+                this.logger.Error("Error encountered starting web interface", ex);
+                throw;
+            }
         }
 
         public void Stop()
         {
+            this.logger.Info("Stopping management web service");
             this.server.Stop();
         }
 
