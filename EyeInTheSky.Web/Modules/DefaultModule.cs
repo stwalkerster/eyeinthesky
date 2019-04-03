@@ -1,4 +1,4 @@
-namespace EyeInTheSky.Services.Web.Modules
+namespace EyeInTheSky.Web.Modules
 {
     using Nancy;
 

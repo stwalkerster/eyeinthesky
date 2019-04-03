@@ -1,4 +1,4 @@
-namespace EyeInTheSky.Services.Web
+namespace EyeInTheSky.Web.Services
 {
     using System;
     using Castle.Core;

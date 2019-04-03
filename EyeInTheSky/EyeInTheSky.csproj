@@ -77,8 +77,8 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="mscorlib" />
-    <Reference Include="Nancy, Version=1.4.1.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\Nancy.1.4.1\lib\net40\Nancy.dll</HintPath>
+    <Reference Include="Nancy, Version=1.4.5.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\Nancy.1.4.5\lib\net40\Nancy.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Nancy.Authentication.Forms, Version=1.4.1.0, Culture=neutral, PublicKeyToken=null">
@@ -247,14 +247,11 @@
     <Compile Include="Commands\StalkCommand.cs" />
     <Compile Include="Commands\VersionCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\Web\HttpService.cs" />
-    <Compile Include="Services\Web\Modules\DefaultModule.cs" />
     <Compile Include="Services\XmlCacheService.cs" />
     <Compile Include="Startables\NagiosMonitoringService.cs" />
     <Compile Include="Startup\Converters\MediaWikiConfigMapEntryConverter.cs" />
     <Compile Include="Startup\Launch.cs" />
     <Compile Include="Startup\MainInstaller.cs" />
-    <Compile Include="Startup\NancyBootstrapper.cs" />
     <Compile Include="TypedFactories\IMediaWikiApiTypedFactory.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -270,6 +267,9 @@
     </Content>
     <Content Include="alert-templates.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="modules.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>

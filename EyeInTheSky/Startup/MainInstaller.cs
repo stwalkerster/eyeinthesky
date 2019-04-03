@@ -11,7 +11,6 @@
     using Castle.Services.Logging.Log4netIntegration;
     using Castle.Windsor;
     using Castle.Windsor.Installer;
-    using EyeInTheSky.Services;
     using EyeInTheSky.Services.RecentChanges.Irc;
     using EyeInTheSky.Startables;
     using EyeInTheSky.Startup.Converters;
@@ -53,7 +52,6 @@
                 
                 // Services
                 Classes.FromThisAssembly().InNamespace("EyeInTheSky.Services").WithServiceAllInterfaces(),
-                Classes.FromThisAssembly().InNamespace("EyeInTheSky.Services.Web").WithServiceAllInterfaces(),
                 Classes.FromThisAssembly().InNamespace("EyeInTheSky.Services.ExternalProviders").WithServiceAllInterfaces(),
                 Classes.FromThisAssembly().InNamespace("EyeInTheSky.Services.RecentChanges").WithServiceAllInterfaces(),
                 Classes.FromThisAssembly().InNamespace("EyeInTheSky.Services.RecentChanges.Irc").WithServiceAllInterfaces(),

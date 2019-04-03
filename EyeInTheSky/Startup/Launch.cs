@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Reflection;
     using System.Threading;
     using Castle.Core.Logging;
     using Castle.Windsor;
@@ -40,10 +41,10 @@
                 Console.WriteLine("Configuration file does not exist!");
                 return 1;
             }
-
+            
             container = new WindsorContainer(configurationFile);
-            container.Install(FromAssembly.This());
-
+            container.Install(FromAssembly.This(), Configuration.FromXmlFile("modules.xml"));
+            
             var app = container.Resolve<IApplication>();
 
             app.Run();
