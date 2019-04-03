@@ -1,0 +1,29 @@
+@Master['Master/master.sshtml']
+
+@Section['Content']
+<div class="row">
+    <h2>Channels</h2>
+</div>
+<div class="row">
+    <div class="col-12">
+        <table class="table table-bordered table-striped">
+            <thead>
+            <tr>
+                <th>Channel</th>
+                <th>Users</th>
+                <th>Stalks</th>
+            </tr>
+            </thead>
+            <tbody>
+            @Each.Channels
+            <tr>
+                <th><a href="/channel/@!Current.Identifier">@!Current.Identifier</a></th>
+                <td>@!Current.Users.Count</td>
+                <td>@!Current.Stalks.Count</td>
+            </tr>
+            @EndEach
+            </tbody>
+        </table>
+    </div>
+</div>
+@EndSection

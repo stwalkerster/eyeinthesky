@@ -9,7 +9,6 @@ namespace EyeInTheSky.Web.Modules
     using EyeInTheSky.Web.Models;
     using Nancy;
     using Nancy.Authentication.Forms;
-    using Stwalkerster.IrcClient;
     using Stwalkerster.IrcClient.Interfaces;
 
     public class LoginModule : NancyModule

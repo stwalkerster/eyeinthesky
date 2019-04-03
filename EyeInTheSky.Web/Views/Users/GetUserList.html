@@ -1,0 +1,29 @@
+@Master['Master/master.sshtml']
+
+@Section['Content']
+<div class="row">
+    <h2>Bot Users</h2>
+</div>
+<div class="row">
+    <div class="col-12">
+        <table class="table table-bordered table-striped">
+            <thead>
+            <tr>
+                <th>Mask</th>
+                <th>Verified email</th>
+                <th>Global flags</th>
+            </tr>
+            </thead>
+            <tbody>
+            @Each.BotUsers
+            <tr>
+                <th>@!Current.Identifier</th>
+                <td>@!Current.EmailAddressConfirmed</td>
+                <td>@!Current.GlobalFlags</td>
+            </tr>
+            @EndEach
+            </tbody>
+        </table>
+    </div>
+</div>
+@EndSection
