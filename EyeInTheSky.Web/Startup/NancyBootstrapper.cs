@@ -7,6 +7,7 @@ namespace EyeInTheSky.Web.Startup
     using Castle.Windsor;
     using Nancy;
     using Nancy.Authentication.Forms;
+    using Nancy.Authentication.Stateless;
     using Nancy.Bootstrapper;
     using Nancy.Bootstrappers.Windsor;
     using Nancy.Conventions;
@@ -44,11 +45,19 @@ namespace EyeInTheSky.Web.Startup
         {
             SSLProxy.RewriteSchemeUsingForwardedHeaders(pipelines);
 
+#if SKIPAUTH
+            var statelessAuthenticationConfiguration = new StatelessAuthenticationConfiguration(ctx =>
+                {
+                    var userMapper = container.Resolve<IUserMapper>();
+                    return userMapper.GetUserFromIdentifier(Guid.Empty, null);
+                });
+            StatelessAuthentication.Enable(pipelines, statelessAuthenticationConfiguration);
+#else
             FormsAuthenticationConfiguration formsAuthConfiguration;           
             try
             {
                 var userMapper = container.Resolve<IUserMapper>();
-            
+                
                 formsAuthConfiguration = new FormsAuthenticationConfiguration
                 {
                     UserMapper = userMapper,
@@ -62,6 +71,8 @@ namespace EyeInTheSky.Web.Startup
             }
 
             FormsAuthentication.Enable(pipelines, formsAuthConfiguration);
+#endif
+            
         }
 
         protected override void ApplicationStartup(IWindsorContainer container, IPipelines pipelines)
