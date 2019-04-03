@@ -1,4 +1,4 @@
-﻿namespace EyeInTheSky.Services
+namespace EyeInTheSky.Services
 {
     using System;
     using System.Threading;
@@ -51,6 +51,20 @@
                 deleteConfirmationHash = null;
             }
 
+            // web GUID
+            var webGuid = Guid.NewGuid();
+            var webGuidAttribute = element.GetAttribute("webguid");
+            if (!string.IsNullOrWhiteSpace(webGuidAttribute))
+            {
+                webGuid = Guid.Parse(webGuidAttribute);
+            }
+
+            var webPassword = element.GetAttribute("webpassword");
+            if (string.IsNullOrWhiteSpace(webPassword))
+            {
+                webPassword = null;
+            }
+
             // Mail confirmed
             var mailConfirmedText = element.GetAttribute("mailconfirmed");
             bool mailConfirmed;
@@ -80,7 +94,7 @@
             }
             
             var userMask = new IrcUserMask(mask, this.freenodeClient);
-            
+
             var u = new BotUser(
                 userMask,
                 globalflags,
@@ -89,7 +103,9 @@
                 deleteConfirmationHash,
                 mailConfirmed,
                 emailTimestamp,
-                deleteTimestamp);
+                deleteTimestamp,
+                webGuid,
+                webPassword);
 
             return u;
         }
@@ -99,6 +115,13 @@
             var e = doc.CreateElement("user");
 
             e.SetAttribute("mask", item.Identifier);
+
+            e.SetAttribute("webguid", item.WebGuid.ToString());
+
+            if (item.WebPassword != null)
+            {
+                e.SetAttribute("webpassword", item.WebPassword);
+            }
 
             if (item.GlobalFlags != null)
             {

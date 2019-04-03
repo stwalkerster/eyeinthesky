@@ -21,7 +21,6 @@ namespace EyeInTheSky.Web.Modules
         
         public dynamic LogInPost(dynamic parameters)
         {
-          
             var username = (string)this.Request.Form.username;
             var password = (string)this.Request.Form.password;
 

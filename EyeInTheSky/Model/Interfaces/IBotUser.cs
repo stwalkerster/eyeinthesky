@@ -1,4 +1,4 @@
-﻿namespace EyeInTheSky.Model.Interfaces
+namespace EyeInTheSky.Model.Interfaces
 {
     using System;
     using Stwalkerster.IrcClient.Model;
@@ -17,5 +17,8 @@
         string ValidateDeleteAccount(string token);
         void PrepareDeleteAccount();
         void GarbageCollectTokens();
+
+        string WebPassword { get; set; }
+        Guid WebGuid { get; set; }
     }
 }

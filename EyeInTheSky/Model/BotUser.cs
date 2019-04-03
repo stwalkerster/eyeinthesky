@@ -1,4 +1,4 @@
-﻿namespace EyeInTheSky.Model
+namespace EyeInTheSky.Model
 {
     using System;
     using EyeInTheSky.Model.Interfaces;
@@ -13,6 +13,7 @@
         public BotUser(IrcUserMask mask)
         {
             this.Mask = mask;
+            this.WebGuid = new Guid();
         }
 
         internal BotUser(IrcUserMask mask,
@@ -22,7 +23,9 @@
             string deletionConfirmationToken,
             bool emailAddressConfirmed,
             DateTime? emailConfirmationTimestamp,
-            DateTime? deletionConfirmationTimestamp)
+            DateTime? deletionConfirmationTimestamp,
+            Guid webGuid,
+            string webPassword)
         {
             this.Mask = mask;
             this.GlobalFlags = flags;
@@ -31,6 +34,8 @@
             this.EmailAddressConfirmed = emailAddressConfirmed;
             this.EmailConfirmationTimestamp = emailConfirmationTimestamp;
             this.DeletionConfirmationTimestamp = deletionConfirmationTimestamp;
+            this.WebGuid = webGuid;
+            this.WebPassword = webPassword;
             this.emailAddress = emailAddress;
         }
 
@@ -42,6 +47,9 @@
         public IrcUserMask Mask { get; private set; }
 
         public string GlobalFlags { get; set; }
+
+        public string WebPassword { get; set; }
+        public Guid WebGuid { get; set; }
 
         public string EmailAddress
         {

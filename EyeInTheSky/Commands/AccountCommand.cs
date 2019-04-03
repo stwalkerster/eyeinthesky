@@ -1,7 +1,8 @@
-﻿namespace EyeInTheSky.Commands
+namespace EyeInTheSky.Commands
 {
     using System.Collections.Generic;
     using System.Linq;
+    using BCrypt.Net;
     using Castle.Core.Logging;
     using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
@@ -287,6 +288,51 @@
             {
                 Message = "Deleted user " + accountKey
             };
+        }
+
+        [SubcommandInvocation("webpass")]
+        [Help("[password]", "Sets or removes your web password")]
+        // ReSharper disable once UnusedMember.Global
+        protected IEnumerable<CommandResponse> WebPasswordMode()
+        {
+            IBotUser botUser;
+            var resp = this.GetBotUser(out botUser);
+            if (resp != null)
+            {
+                return resp;
+            }
+
+            IList<string> tokenList = this.Arguments;
+            var password = tokenList.FirstOrDefault();
+
+            if (string.IsNullOrWhiteSpace(password))
+            {
+                botUser.WebPassword = null;
+                this.botUserConfiguration.Save();
+
+                return new[]
+                {
+                    new CommandResponse
+                    {
+                        Message = "Your web password has been removed.",
+                        Destination = CommandResponseDestination.PrivateMessage
+                    }
+                };
+            }
+            else
+            {
+                botUser.WebPassword = BCrypt.HashPassword(password);
+                this.botUserConfiguration.Save();
+
+                return new[]
+                {
+                    new CommandResponse
+                    {
+                        Message = "Your web password has been set.",
+                        Destination = CommandResponseDestination.PrivateMessage
+                    }
+                };
+            }
         }
    
         [SubcommandInvocation("forcenomail")]
