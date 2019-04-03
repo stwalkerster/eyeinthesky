@@ -1,5 +1,32 @@
-<form method="post">
-    <label>username</label><input type="text" name="Username" />
-    <label>password</label><input type="password" name="Password" />
-    <button type="submit">Login</button>
+@Master['Master/base.sshtml']
+@Section['BaseHead']
+<link href="/Content/signin.css" rel="stylesheet">
+@EndSection
+@Section['BaseContent']
+<form class="text-center form-signin" method="post">
+    <h1 class="h1 mb-3">EyeInTheSky</h1>
+    <h1 class="h2 mb-3 font-weight-normal">Web Management Tool</h1>
+    <div class="logo">
+    @Partial['logo.html']
+    </div>
+    <h2 class="h3 mb-3 font-weight-normal">Please sign in</h2>
+    @If.HasError
+        <div class="alert alert-danger" role="alert">
+            @!Model.Error
+        </div>
+    @EndIf
+    
+    <label for="inputUsername" class="sr-only">Username</label>
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">$a:</span>
+        </div>
+        <input type="text" id="inputUsername" class="form-control" placeholder="Username" name="Username" value="@!Model.Username" required autofocus>
+    </div>
+    
+    <label for="inputPassword" class="sr-only">Password</label>
+    <input type="password" id="inputPassword" class="form-control" placeholder="Password" name="Password" required>
+
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
 </form>
+@EndSection

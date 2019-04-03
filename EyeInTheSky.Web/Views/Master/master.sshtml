@@ -1,0 +1,34 @@
+@Master['Master/base.sshtml']
+
+@Section['BaseContent']
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+    <a class="navbar-brand" href="/">EyeInTheSky</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="mainNavbar">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+        </ul>
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <span class="navbar-text text-white">@!Model.BotUser.Identifier</span>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/logout">Logout</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div role="main" class="container">
+@Section['Content'];
+</div><!-- /.container -->
+@EndSection
+
+@Section['BaseHead']
+<link href="/Content/mainstyle.css" rel="stylesheet" crossorigin="anonymous" />
+@EndSection

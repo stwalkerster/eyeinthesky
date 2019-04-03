@@ -23,7 +23,7 @@ namespace EyeInTheSky.Web.Services
             {
                 this.logger.Debug("Starting management web service");
                 this.server = new NancyHost(
-                    new HostConfiguration {RewriteLocalhost = true},
+                    new HostConfiguration {RewriteLocalhost = false},
                     new Uri("http://localhost:8080"));
                 
                 this.server.Start();

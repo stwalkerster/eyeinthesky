@@ -28,6 +28,7 @@
                 // Main application
                 Component.For<IApplication>().ImplementedBy<Launch>(),
                 Classes.FromAssemblyNamed("EyeInTheSky").InNamespace("EyeInTheSky.Services").WithServiceAllInterfaces(),
+                Classes.FromAssemblyNamed("EyeInTheSky").InNamespace("EyeInTheSky.Services.ExternalProviders").WithServiceAllInterfaces(),
                 Component.For<IIrcClient>().Instance(ircClientMock.Object)
             );
         }

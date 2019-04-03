@@ -25,5 +25,10 @@ namespace EyeInTheSky.Web.Misc
                 return new List<string>();
             }
         }
+
+        public IBotUser BotUser
+        {
+            get { return this.botUser; }
+        }
     }
 }

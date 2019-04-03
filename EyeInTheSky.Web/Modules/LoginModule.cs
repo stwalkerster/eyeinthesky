@@ -1,14 +1,22 @@
 namespace EyeInTheSky.Web.Modules
 {
-    using System;
+    using System.Linq;
+
+    using BCrypt.Net;
+
+    using EyeInTheSky.Services.Interfaces;
     using EyeInTheSky.Web.Models;
     using Nancy;
     using Nancy.Authentication.Forms;
 
     public class LoginModule : NancyModule
     {
-        public LoginModule()
+        private readonly IBotUserConfiguration botUserConfiguration;
+
+        public LoginModule(IBotUserConfiguration botUserConfiguration)
         {
+            this.botUserConfiguration = botUserConfiguration;
+            
             this.Get["/login"] = this.LogIn;
             this.Get["/logout"] = this.LogOut;
             this.Post["/login"] = this.LogInPost;
@@ -24,15 +32,18 @@ namespace EyeInTheSky.Web.Modules
             var username = (string)this.Request.Form.username;
             var password = (string)this.Request.Form.password;
 
-            if (true /* user is valid */)
+            var user = this.botUserConfiguration.Items.FirstOrDefault(x => x.Identifier == "$a:" + username);
+
+            if (user != null)
             {
-                var token = Guid.NewGuid() ;
-                return this.LoginAndRedirect(token);
+                if (BCrypt.Verify(password, user.WebPassword))
+                {
+                    var token = user.WebGuid;
+                    return this.LoginAndRedirect(token);
+                }
             }
-            else
-            {
-                throw new ArgumentException("Invalid username or password");
-            }
+
+            return new LoginDataModel {Error = "Invalid username or password", Username = username};
         }
 
         public dynamic LogOut(dynamic parameters)

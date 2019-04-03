@@ -1,0 +1,35 @@
+@Master['Master/master.sshtml']
+
+@Section['Content']
+<div class="row">
+    <h2>Welcome, @!Model.BotUser.Identifier!</h2>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="p-md-3 bg-light rounded">
+            <h4>Subscribed channels</h4>
+            <p class="text-muted">
+                You are currently subscribed to the channels listed below. By default, you will receive notifications for all stalks in these channels, except for the ones from which you have opted-out.
+            </p>
+            <ul>
+                @Each.SubscribedChannels
+                <li><code>@!Current.Identifier</code></li>
+                @EndEach
+            </ul>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="p-md-3 bg-light rounded">
+            <h4>Subscribed stalks</h4>
+            <p class="text-muted">
+                You are currently subscribed to the stalks listed below. Note this list does not include any stalks with which a channel subscription applies.
+            </p>
+            <ul>
+                @Each.SubscribedStalks
+                <li><<code>@!Current.Identifier</code> in <code>@!Current.Channel</code></li>
+                @EndEach
+            </ul>
+        </div>
+    </div>
+</div>
+@EndSection

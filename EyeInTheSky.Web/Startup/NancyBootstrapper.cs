@@ -8,12 +8,20 @@ namespace EyeInTheSky.Web.Startup
     using Nancy.Authentication.Forms;
     using Nancy.Bootstrapper;
     using Nancy.Bootstrappers.Windsor;
+    using Nancy.Conventions;
     using Nancy.Security;
     using Nancy.ViewEngines;
 
     public class NancyBootstrapper : WindsorNancyBootstrapper
     {
         private ILogger logger;
+
+        protected override void ConfigureConventions(NancyConventions nancyConventions)
+        {
+            base.ConfigureConventions(nancyConventions);
+
+            nancyConventions.StaticContentsConventions.AddDirectory("Scripts", "Scripts");
+        }
 
         protected override void RequestStartup(IWindsorContainer container, IPipelines pipelines, NancyContext context)
         {
@@ -48,6 +56,9 @@ namespace EyeInTheSky.Web.Startup
             base.ApplicationStartup(container, pipelines);
         }
 
+        /// <summary>
+        /// Configures Nancy to use EmbeddedResources for it's views
+        /// </summary>
         protected override NancyInternalConfiguration InternalConfiguration
         {
             get
@@ -57,6 +68,11 @@ namespace EyeInTheSky.Web.Startup
             }
         }
 
+        /// <summary>
+        /// Provides Nancy the main application's Windsor container
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         protected override IWindsorContainer GetApplicationContainer()
         {
             var typeName = Assembly.GetEntryAssembly().GetName().Name + ".Startup.Launch";
