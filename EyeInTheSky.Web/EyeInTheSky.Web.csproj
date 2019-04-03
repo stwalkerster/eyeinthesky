@@ -88,7 +88,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Views\Login\LD.html" />
+    <EmbeddedResource Include="Views\Login\LoginData.html" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Views\Default\test.html" />
