@@ -11,7 +11,7 @@
     </disabled-settings>
     <parameters>
       <param name="solutionName" value="EyeInTheSky" />
-      <param name="version" value="2.4" />
+      <param name="version" value="2.5" />
     </parameters>
     <build-runners order="RUNNER_6, RUNNER_1, RUNNER_7" />
     <vcs-settings>
