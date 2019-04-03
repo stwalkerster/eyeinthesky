@@ -2,7 +2,9 @@ namespace EyeInTheSky.Web.Services
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using EyeInTheSky.Services.Interfaces;
+    using EyeInTheSky.Web.Misc;
     using Nancy;
     using Nancy.Authentication.Forms;
     using Nancy.Security;
@@ -18,19 +20,15 @@ namespace EyeInTheSky.Web.Services
         
         public IUserIdentity GetUserFromIdentifier(Guid identifier, NancyContext context)
         {
-            return new UserIdentity("webuser", new[] {"Admin"});
-        }
-
-        public class UserIdentity : IUserIdentity
-        {
-            public UserIdentity(string userName, IEnumerable<string> claims)
+            var user = this.botUserConfiguration.Items.FirstOrDefault(x => x.WebGuid == identifier);
+            if (user == null)
             {
-                this.UserName = userName;
-                this.Claims = claims;
+                return null;
             }
 
-            public string UserName { get; private set; }
-            public IEnumerable<string> Claims { get; private set; }
+            return new UserIdentity(user);
         }
+
+
     }
 }

@@ -22,7 +22,7 @@
             
             var ircClientMock = new Mock<IIrcClient>();
             ircClientMock.Setup(x => x.ExtBanTypes).Returns("a");
-            ircClientMock.Setup(x => x.ExtBanDelimiter).Returns(":");
+            ircClientMock.Setup(x => x.ExtBanDelimiter).Returns("$");
 
             container.Register(
                 // Main application
