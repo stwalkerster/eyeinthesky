@@ -1,7 +1,7 @@
 @Master['Master/base.sshtml']
 
 @Section['BaseContent']
-<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+<nav class="navbar navbar-expand-md navbar-light bg-light fixed-top">
     <a class="navbar-brand" href="/">EyeInTheSky</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -29,6 +29,3 @@
 </div><!-- /.container -->
 @EndSection
 
-@Section['BaseHead']
-<link href="/Content/mainstyle.css" rel="stylesheet" crossorigin="anonymous" />
-@EndSection

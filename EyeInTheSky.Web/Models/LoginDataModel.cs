@@ -1,6 +1,6 @@
 namespace EyeInTheSky.Web.Models
 {
-    public class LoginDataModel
+    public class LoginDataModel : ModelBase
     {
         public string Username { get; set; }
         public string Password { get; set; }
@@ -10,5 +10,6 @@ namespace EyeInTheSky.Web.Models
         {
             get { return !string.IsNullOrWhiteSpace(this.Error); }
         }
+
     }
 }

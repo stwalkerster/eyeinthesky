@@ -3,14 +3,13 @@ body {
     height: 100%;
 }
 
-body {
+.form-signin-wrapper {
     display: -ms-flexbox;
     display: flex;
     -ms-flex-align: center;
     align-items: center;
     padding-top: 40px;
     padding-bottom: 40px;
-    background-color: #f5f5f5;
 }
 
 .form-signin {
@@ -43,7 +42,8 @@ body {
     border-top-right-radius: 0;
 }
 
-.logo {
+.logo img {
     max-width: 250px;
-    margin: 0 auto;
+    margin: 0 auto 1em auto;
+    width: 250px;
 }

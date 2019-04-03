@@ -23,6 +23,8 @@
             var ircClientMock = new Mock<IIrcClient>();
             ircClientMock.Setup(x => x.ExtBanTypes).Returns("a");
             ircClientMock.Setup(x => x.ExtBanDelimiter).Returns("$");
+            ircClientMock.Setup(x => x.Nickname).Returns("EyeInTheSkyBot");
+            ircClientMock.Setup(x => x.ClientName).Returns("Freenode");
 
             container.Register(
                 // Main application

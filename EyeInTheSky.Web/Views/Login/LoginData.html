@@ -3,13 +3,13 @@
 <link href="/Content/signin.css" rel="stylesheet">
 @EndSection
 @Section['BaseContent']
+<div class="form-signin-wrapper">
 <form class="text-center form-signin" method="post">
     <h1 class="h1 mb-3">EyeInTheSky</h1>
-    <h1 class="h2 mb-3 font-weight-normal">Web Management Tool</h1>
     <div class="logo">
-    @Partial['logo.html']
+        <img src="/Content/logo.svg" alt="Logo"/>
     </div>
-    <h2 class="h3 mb-3 font-weight-normal">Please sign in</h2>
+    <h2 class="h2 mb-5 font-weight-normal">Web Management Tool</h2>
     @If.HasError
         <div class="alert alert-danger" role="alert">
             @!Model.Error
@@ -17,7 +17,7 @@
     @EndIf
     
     <label for="inputUsername" class="sr-only">Username</label>
-    <div class="input-group mb-3">
+    <div class="input-group">
         <div class="input-group-prepend">
             <span class="input-group-text" id="basic-addon1">$a:</span>
         </div>
@@ -28,5 +28,13 @@
     <input type="password" id="inputPassword" class="form-control" placeholder="Password" name="Password" required>
 
     <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+
+    <p class="mt-3 text-muted">
+        <strong>No account?</strong> No problem! Simply message <code>@!Model.IrcClient.Nickname</code> on @!Model.IrcClient.ClientName with <code>@!Model.AppConfiguration.CommandPrefix;account register</code>. Then, set a password by messaging <code>@!Model.IrcClient.Nickname</code> again with <code>@!Model.AppConfiguration.CommandPrefix;account webpass sup3rsekr1t</code>.
+    </p>
+    <p class="mt-3 text-muted">
+        EyeInTheSky tracks users by their NickServ account name on @!Model.IrcClient.ClientName, so your username here will match your @!Model.IrcClient.ClientName NickServ account name.
+    </p>
 </form>
+</div>
 @EndSection

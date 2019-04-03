@@ -7,13 +7,18 @@ namespace EyeInTheSky.Web.Modules
     using EyeInTheSky.Services.Interfaces;
     using EyeInTheSky.Web.Misc;
     using EyeInTheSky.Web.Models;
+    using Stwalkerster.IrcClient.Interfaces;
 
     public class DefaultModule : AuthenticatedModuleBase
     {
         private readonly IBotUserConfiguration botUserConfiguration;
         private readonly IChannelConfiguration channelConfiguration;
 
-        public DefaultModule(IBotUserConfiguration botUserConfiguration, IChannelConfiguration channelConfiguration)
+        public DefaultModule(
+            IBotUserConfiguration botUserConfiguration,
+            IChannelConfiguration channelConfiguration,
+            IAppConfiguration appConfiguration,
+            IIrcClient client) : base(appConfiguration, client)
         {
             this.botUserConfiguration = botUserConfiguration;
             this.channelConfiguration = channelConfiguration;

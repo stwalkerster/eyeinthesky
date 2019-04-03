@@ -7,11 +7,35 @@
     <title>Eye In The Sky - Web Management Tool</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/Content/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
+    <link href="/Content/darkly.min.css" rel="stylesheet" integrity="sha256-6W1mxPaAt4a6pkJVW5x5Xmq/LvxuQpR9dlzgy77SeZs=" crossorigin="anonymous" />
+    <link href="/Content/mainstyle.css" rel="stylesheet" crossorigin="anonymous" />
     @Section['BaseHead'];
 </head>
 <body>
 @Section['BaseContent'];
+<footer class="footer pt-2 mt-md-5 mb-md-2 pt-md-2 mx-3 border-top border-light small">
+    <div class="row">
+        <div class="col-md-6 text-md-left text-muted">
+            <p><strong>EyeInTheSky Web Management Console</strong></p>
+            <p>Version: @!Model.Version</p>
+            <p>This software is Copyright &copy; 2011-2019 Simon Walker, and is available under the <a href="https://github.com/stwalkerster/eyeinthesky/blob/master/LICENCE">MIT Licence</a>.</p>
+        </div>
+        <div class="col-md-6 text-md-right text-muted">
+            <ul class="list-inline">
+                <li class="list-inline-item"><a href="https://phabricator.stwalkerster.co.uk/w/eyeinthesky/">Documentation</a></li>
+                <li class="list-inline-item"><a href="https://github.com/stwalkerster/eyeinthesky/">Source</a></li>
+                <li class="list-inline-item"><a href="https://phabricator.stwalkerster.co.uk/project/board/79/">Bugs</a></li>
+                <li class="list-inline-item"><a href="@!Model.AppConfiguration.PrivacyPolicy">Privacy Policy</a></li>
+            </ul>
+            @If.Model.IrcClient.NetworkConnected
+            <p>Currently connected as @!Model.IrcClient.Nickname on @!Model.IrcClient.ClientName.</p>
+            @EndIf
+            @IfNot.Model.IrcClient.NetworkConnected
+            <p class="text-danger">Not currently connected to @!Model.IrcClient.ClientName!</p>
+            @EndIf
+        </div>
+    </div>
+</footer>
 <script src="/Scripts/jquery-3.0.0.slim.min.js" integrity="sha256-Rf4BadfyCtsvHmO89BUZcbYvNNvZvOT08ALfEzvCsD0=" crossorigin="anonymous"></script>
 <script src="/Scripts/bootstrap.bundle.min.js" integrity="sha384-xrRywqdh3PHs8keKZN+8zzc5TX0GRTLCcmivcbNJWm2rs5C8PRhcEn3czEjhAO9o" crossorigin="anonymous"></script>
 </body>

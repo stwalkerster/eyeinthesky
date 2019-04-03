@@ -1,6 +1,7 @@
 namespace EyeInTheSky.Web.Startup
 {
     using System;
+    using System.IO;
     using System.Reflection;
     using Castle.Core.Logging;
     using Castle.Windsor;
@@ -15,6 +16,22 @@ namespace EyeInTheSky.Web.Startup
     public class NancyBootstrapper : WindsorNancyBootstrapper
     {
         private ILogger logger;
+        private byte[] favicon;
+
+        protected override byte[] FavIcon
+        {
+            get { return this.favicon ?? (this.favicon = this.LoadFavicon()); }
+        }
+
+        private byte[] LoadFavicon()
+        {
+            using (var resourceStream = this.GetType().Assembly.GetManifestResourceStream("EyeInTheSky.Web.Content.logo.ico"))
+            {
+                var memoryStream = new MemoryStream();
+                resourceStream.CopyTo(memoryStream);
+                return memoryStream.GetBuffer();
+            }
+        }
 
         protected override void ConfigureConventions(NancyConventions nancyConventions)
         {
