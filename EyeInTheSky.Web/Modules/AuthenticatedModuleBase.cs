@@ -1,5 +1,6 @@
 namespace EyeInTheSky.Web.Modules
 {
+    using System.Collections.Generic;
     using System.Diagnostics;
     using System.Reflection;
     using EyeInTheSky.Model.Interfaces;
@@ -30,6 +31,7 @@ namespace EyeInTheSky.Web.Modules
 
             model.AppConfiguration = this.appConfiguration;
             model.IrcClient = this.freenodeClient;
+            model.Errors = new List<string>();
 
             model.Version = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion;
             return model;

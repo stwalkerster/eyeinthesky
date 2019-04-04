@@ -1,10 +1,15 @@
 namespace EyeInTheSky.Web.Modules
 {
+    using System.Collections.Generic;
     using System.Linq;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Services.Interfaces;
     using EyeInTheSky.Web.Models;
+
+    using Nancy;
+
     using Stwalkerster.IrcClient.Interfaces;
+    using Stwalkerster.IrcClient.Model;
 
     public class ChannelModule : AuthenticatedModuleBase
     {
@@ -29,12 +34,35 @@ namespace EyeInTheSky.Web.Modules
 
             return getChannelListModel;
         }
-        
+
         public dynamic GetChannelInfo(dynamic parameters)
         {
-            throw new System.NotImplementedException();
+            var channel = this.channelConfiguration.Items.FirstOrDefault(x => x.Guid == parameters.channel);
+
+            if (channel == null)
+            {
+                return new NotFoundResponse();
+            }
+
+            var model = this.CreateModel<ChannelInfoModel>(this.Context);
+            model.IrcChannel = channel;
+
+            if (model.IrcClient.Channels.ContainsKey(channel.Identifier))
+            {
+                var ircClientChannel = model.IrcClient.Channels[channel.Identifier];
+
+                model.ChannelMembers = ircClientChannel.Users.Values.ToList();
+            }
+            else
+            {
+                model.ChannelMembers = new List<IrcChannelUser>();
+                model.Errors.Add(string.Format("{0} is not currently in this channel, or tracking is broken.",
+                    model.IrcClient.Nickname));
+            }
+
+            return model;
         }
-        
+
         public dynamic GetStalkInfo(dynamic parameters)
         {
             throw new System.NotImplementedException();

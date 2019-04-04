@@ -1,5 +1,7 @@
 ﻿namespace EyeInTheSky.Web.Bootstrap.Startup
 {
+    using System.Collections.Generic;
+
     using Castle.Facilities.Logging;
     using Castle.Facilities.Startable;
     using Castle.MicroKernel.Registration;
@@ -9,6 +11,7 @@
     using EyeInTheSky.Web.Startup;
     using Moq;
     using Stwalkerster.IrcClient.Interfaces;
+    using Stwalkerster.IrcClient.Model;
 
     public class MainInstaller : IWindsorInstaller
     {
@@ -25,6 +28,7 @@
             ircClientMock.Setup(x => x.ExtBanDelimiter).Returns("$");
             ircClientMock.Setup(x => x.Nickname).Returns("EyeInTheSkyBot");
             ircClientMock.Setup(x => x.ClientName).Returns("Freenode");
+            ircClientMock.Setup(x => x.Channels).Returns(new Dictionary<string, IrcChannel>());
 
             container.Register(
                 // Main application

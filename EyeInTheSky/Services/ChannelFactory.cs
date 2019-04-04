@@ -1,6 +1,6 @@
 ﻿namespace EyeInTheSky.Services
 {
-    using System.Collections.Generic;
+    using System;
     using System.Threading;
     using System.Xml;
     using Castle.Core.Logging;
@@ -26,7 +26,14 @@
         {
             var name = element.Attributes["name"].Value;
 
-            var ircChannel = new IrcChannel(name);
+            var guid = Guid.NewGuid();
+            var guidAttribute = element.GetAttribute("guid");
+            if (!string.IsNullOrWhiteSpace(guidAttribute))
+            {
+                guid = Guid.Parse(guidAttribute);
+            }
+
+            var ircChannel = new IrcChannel(name, guid);
 
             this.ChildrenFromXml(element, name, ircChannel);
 
@@ -129,6 +136,7 @@
         {
             var e = doc.CreateElement("channel");
             e.SetAttribute("name", item.Identifier);
+            e.SetAttribute("guid", item.Guid.ToString());
 
             var usersElement = doc.CreateElement("users");
             e.AppendChild(usersElement);

@@ -31,6 +31,17 @@
 </nav>
 
 <div role="main" class="container">
+@If.HasErrors
+<div class="row">
+    @Each.Errors
+    <div class="col-12">
+    <div class="alert alert-danger" role="alert">
+        @!Current
+    </div>
+    </div>
+    @EndEach
+</div>
+@EndIf
 @Section['Content'];
 </div><!-- /.container -->
 @EndSection

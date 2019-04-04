@@ -89,6 +89,7 @@
       <Link>Properties/GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Misc\UserIdentity.cs" />
+    <Compile Include="Models\ChannelInfoModel.cs" />
     <Compile Include="Models\GetChannelListModel.cs" />
     <Compile Include="Models\GetUserListModel.cs" />
     <Compile Include="Models\LoginDataModel.cs" />
@@ -140,6 +141,7 @@
     <None Include="Scripts\umd\popper.min.js.map" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Views\Channel\ChannelInfo.html" />
     <EmbeddedResource Include="Views\Login\LoginData.html" />
   </ItemGroup>
   <ItemGroup>

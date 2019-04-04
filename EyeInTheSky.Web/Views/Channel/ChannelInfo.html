@@ -1,0 +1,44 @@
+@Master['Master/master.sshtml']
+
+@Section['Content']
+<div class="row">
+    <h2>@!Model.IrcChannel.Identifier</h2>
+</div>
+<div class="row">
+    <div class="col-12">
+        <h3>Stalks</h3>
+        
+        @Each.IrcChannel.Stalks
+            <div class="card">
+                <h5 class="card-header">@Current.Identifier</h5>
+                <div class="card-body">
+                    <h5 class="card-title">Special title treatment</h5>
+                    <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                </div>
+            </div>
+        @EndEach
+    </div>
+    <div class="col-12">
+        <h3>Users</h3>
+        <table class="table table-bordered table-striped">
+            <thead>
+            <tr>
+                <th>User mask</th>
+                <th>Subscribed</th>
+                <th>Local flags</th>
+            </tr>
+            </thead>
+            <tbody>
+            @Each.IrcChannel.Users
+            <tr>
+                <th>@!Current.Mask</th>
+                <td>@!Current.Subscribed</td>
+                <td>@!Current.LocalFlags</td>
+            </tr>
+            @EndEach
+            </tbody>
+        </table>
+    </div>
+</div>
+@EndSection
