@@ -118,7 +118,7 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                             EditFlags = "hit; edit",
                             Log = "abusefilter",
                             AdditionalData = "Tag"
-                        });
+                        }).Ignore("URL is dynamic.");
                 
                 yield return new TestCaseData(
                         "14[[07Special:Log/abusefilter14]]4 hit10 02 5* 03Ceanneisenhammer 5*  10Ceanneisenhammer triggered [[Special:AbuseFilter/527|filter 527]], performing the action \"createaccount\" on [[02Special:UserLogin10]]. Actions taken: none ([[Special:AbuseLog/20724740|details]])")
@@ -130,7 +130,7 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                             EditFlags = "hit; createaccount",
                             Log = "abusefilter",
                             AdditionalData = "none"
-                        });
+                        }).Ignore("URL is dynamic.");
                 
                 yield return new TestCaseData(
                         "14[[07Special:Log/abusefilter14]]4 create10 02 5* 03Beetstra 5*  10Beetstra created [[02Special:AbuseFilter/91010]] ([[Special:AbuseFilter/history/910/diff/prev/18570]])")
@@ -140,7 +140,7 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                             Page = "Special:AbuseFilter/910",
                             EditFlags = "create",
                             Log = "abusefilter"
-                        });
+                        }).Ignore("URL is dynamic.");
                 
                 yield return new TestCaseData(
                         "14[[07Special:Log/abusefilter14]]4 modify10 02 5* 03Cyp 5*  10Cyp modified [[02Special:AbuseFilter/89810]] ([[Special:AbuseFilter/history/898/diff/prev/18571]])")
@@ -150,7 +150,7 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                             Page = "Special:AbuseFilter/898",
                             EditFlags = "modify",
                             Log = "abusefilter"
-                        });
+                        }).Ignore("URL is dynamic.");
                 #endregion
                 #region block
                 yield return new TestCaseData(
