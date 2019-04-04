@@ -6,7 +6,7 @@
 </div>
 <div class="row">
     <div class="col-12">
-        <h3>Stalks</h3>
+        <h4>Stalks</h4>
 
         <div class="card-columns">
         @Each.Model.Stalks
@@ -37,8 +37,10 @@
         @EndEach
         </div>
     </div>
-    <div class="col-12">
-        <h3>Users</h3>
+</div>
+<div class="row">
+    <div class="col-6">
+        <h4>Registered users</h4>
         <table class="table table-bordered table-striped">
             <thead>
             <tr>
@@ -58,5 +60,29 @@
             </tbody>
         </table>
     </div>
+    <div class="col-6">
+        <h4>Users in channel</h4>
+        <table class="table table-bordered table-striped">
+            <thead>
+            <tr>
+                <th>Account</th>
+                <th>Mask</th>
+                <th>Channel op</th>
+                <th>Voice</th>
+            </tr>
+            </thead>
+            <tbody>
+            @Each.ChannelMembers
+            <tr>
+                <th>@!Current.User.Account</th>
+                <td>@!Current.User.Nickname!@!Current.User.Username@@!Current.User.Hostname</td>
+                <td>@!Current.Operator</td>
+                <td>@!Current.Voice</td>
+            </tr>
+            @EndEach
+            </tbody>
+        </table>
+    </div>
+
 </div>
 @EndSection
