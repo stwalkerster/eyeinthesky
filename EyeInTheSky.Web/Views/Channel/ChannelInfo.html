@@ -7,17 +7,35 @@
 <div class="row">
     <div class="col-12">
         <h3>Stalks</h3>
-        
-        @Each.IrcChannel.Stalks
-            <div class="card">
-                <h5 class="card-header">@Current.Identifier</h5>
+
+        <div class="card-columns">
+        @Each.Model.Stalks
+            <div class="card @!Current.StalkDisplayHints.Border">
+                <div class="card-header">
+                    <div class="float-right @!Current.StalkDisplayHints.Text mr-n2">
+                        <a href="/channels/@!Model.IrcChannel.Guid/stalk/@!Current.Stalk.Identifier" class="ml-1 align-middle btn btn-light btn-sm"><i class="fas fa-cog"></i></a>
+                        @If.StalkDisplayHints.HasEnabledIcon
+                        <i class="ml-1 align-middle @!Current.StalkDisplayHints.EnabledIcon"></i>
+                        @EndIf
+                        @If.StalkDisplayHints.HasExpiryIcon
+                        <i class="ml-1 align-middle @!Current.StalkDisplayHints.ExpiryIcon"></i>
+                        @EndIf
+                    </div>
+                    <h5><code class=" @!Current.StalkDisplayHints.Text">@!Current.Stalk.Identifier</code></h5>
+                </div>
                 <div class="card-body">
-                    <h5 class="card-title">Special title treatment</h5>
-                    <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                    <p class="card-text">@!Current.Stalk.Description</p>
+                    <p class="card-text text-muted mb-0"><small>Last triggered: @!Current.LastTrigger</small></p>
+                    @If.IsExpiryDefined
+                    <p class="card-text text-muted mb-0"><small>Expires: @!Current.Expiry</small></p>
+                    @EndIf
+                    <p class="card-text text-muted mb-0 sr-only"><small>Enabled: @!Current.Stalk.IsEnabled</small></p>
+                    <p class="card-text text-muted mb-0 sr-only"><small>Has Expired: @!Current.IsExpired</small></p>
+                    <p class="card-text text-muted mb-0 sr-only"><small>ExpSoon: @!Current.IsExpiringSoon</small></p>
                 </div>
             </div>
         @EndEach
+        </div>
     </div>
     <div class="col-12">
         <h3>Users</h3>

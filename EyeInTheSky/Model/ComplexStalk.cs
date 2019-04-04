@@ -49,19 +49,19 @@
         private TimeSpan? dynamicExpiry;
 
         public List<StalkUser> Subscribers { get; private set; }
-        
+
         public string Identifier { get; private set; }
 
         public DateTime? LastUpdateTime { get; private set; }
 
         public DateTime? LastTriggerTime { get; set; }
-        
+
         public int TriggerCount { get; set; }
-        
+
         public string LastMessageId { get; set; }
-        
+
         public string Channel { get; set; }
-        
+
         public string WatchChannel { get; set; }
 
         public TimeSpan? DynamicExpiry
@@ -139,6 +139,27 @@
             }
 
             return this.IsEnabled;
+        }
+
+        public bool IsExpiringSoon()
+        {
+            if (!this.ExpiryTime.HasValue)
+            {
+                return false;
+            }
+
+            if (DateTime.Now > this.ExpiryTime)
+            {
+                return false;
+            }
+
+            var remaining = this.ExpiryTime.Value - DateTime.Now;
+            if (remaining.TotalDays < 7)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         public bool Match(IRecentChange rc)

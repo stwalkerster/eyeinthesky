@@ -18,6 +18,7 @@
         string LastMessageId { get; set; }
         string Channel { get; set; }
         bool IsActive();
+        bool IsExpiringSoon();
         bool Match(IRecentChange rc);
         List<StalkUser> Subscribers { get; }
         string WatchChannel { get; set; }

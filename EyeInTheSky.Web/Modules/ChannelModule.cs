@@ -4,6 +4,7 @@ namespace EyeInTheSky.Web.Modules
     using System.Linq;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Services.Interfaces;
+    using EyeInTheSky.Web.Misc;
     using EyeInTheSky.Web.Models;
 
     using Nancy;
@@ -23,8 +24,8 @@ namespace EyeInTheSky.Web.Modules
             this.channelConfiguration = channelConfiguration;
 
             this.Get["/channels"] = this.GetChannelList;
-            this.Get["/channel/{channel}"] = this.GetChannelInfo;
-            this.Get["/channel/{channel}/stalk/{stalk}"] = this.GetStalkInfo;
+            this.Get["/channels/{channel}"] = this.GetChannelInfo;
+            this.Get["/channels/{channel}/stalk/{stalk}"] = this.GetStalkInfo;
         }
 
         public dynamic GetChannelList(dynamic parameters)
@@ -46,6 +47,8 @@ namespace EyeInTheSky.Web.Modules
 
             var model = this.CreateModel<ChannelInfoModel>(this.Context);
             model.IrcChannel = channel;
+
+            model.Stalks = channel.Stalks.Values.Select(v => new DisplayStalk(v, this.AppConfiguration)).ToList();
 
             if (model.IrcClient.Channels.ContainsKey(channel.Identifier))
             {

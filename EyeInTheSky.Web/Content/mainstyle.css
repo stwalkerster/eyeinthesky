@@ -5,3 +5,7 @@ body {
 footer.footer p, footer.footer ul {
     margin-bottom: 0.3em;
 }
+
+.card .card-header h5 {
+    margin-bottom: 0;
+}

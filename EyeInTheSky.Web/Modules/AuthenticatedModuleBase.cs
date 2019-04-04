@@ -13,13 +13,13 @@ namespace EyeInTheSky.Web.Modules
 
     public abstract class AuthenticatedModuleBase : NancyModule
     {
-        private readonly IAppConfiguration appConfiguration;
-        private readonly IIrcClient freenodeClient;
+        public IAppConfiguration AppConfiguration { get; private set; }
+        public IIrcClient FreenodeClient { get; private set; }
 
         protected AuthenticatedModuleBase(IAppConfiguration appConfiguration, IIrcClient freenodeClient)
         {
-            this.appConfiguration = appConfiguration;
-            this.freenodeClient = freenodeClient;
+            this.AppConfiguration = appConfiguration;
+            this.FreenodeClient = freenodeClient;
             this.RequiresAuthentication();
         }
 
@@ -29,8 +29,8 @@ namespace EyeInTheSky.Web.Modules
             var userIdentity = context.CurrentUser as UserIdentity;
             model.BotUser = userIdentity.BotUser;
 
-            model.AppConfiguration = this.appConfiguration;
-            model.IrcClient = this.freenodeClient;
+            model.AppConfiguration = this.AppConfiguration;
+            model.IrcClient = this.FreenodeClient;
             model.Errors = new List<string>();
 
             model.Version = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion;
