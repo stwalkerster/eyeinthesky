@@ -22,13 +22,37 @@
             container.AddFacility<StartableFacility>(f => f.DeferredStart());
 
             container.Install(new WebInstaller());
-            
+
             var ircClientMock = new Mock<IIrcClient>();
             ircClientMock.Setup(x => x.ExtBanTypes).Returns("a");
             ircClientMock.Setup(x => x.ExtBanDelimiter).Returns("$");
             ircClientMock.Setup(x => x.Nickname).Returns("EyeInTheSkyBot");
             ircClientMock.Setup(x => x.ClientName).Returns("Freenode");
-            ircClientMock.Setup(x => x.Channels).Returns(new Dictionary<string, IrcChannel>());
+
+            var ircChannels = new Dictionary<string, IrcChannel>();
+            var chan = new IrcChannel("##stwalkerster-development");
+            ircChannels.Add(chan.Name, chan);
+            ircClientMock.Setup(x => x.Channels).Returns(ircChannels);
+
+            IrcUser user;
+            IrcChannelUser ircChannelUser;
+
+            user = IrcUser.FromPrefix("stwalkerster!stwalkerst@wikimedia/stwalkerster", ircClientMock.Object);
+            user.Account = "stwalkerster";
+            ircChannelUser = new IrcChannelUser(user, chan.Name);
+            chan.Users.Add(user.Nickname, ircChannelUser);
+
+            user = IrcUser.FromPrefix("ChanServ!ChanServ@services.", ircClientMock.Object);
+            ircChannelUser = new IrcChannelUser(user, chan.Name);
+            ircChannelUser.Operator = true;
+            chan.Users.Add(user.Nickname, ircChannelUser);
+
+            user = IrcUser.FromPrefix(
+                "EyeInTheSkyBot!eyeinthesk@unaffiliated/stwalkerster/bot/eyeintheskybot",
+                ircClientMock.Object);
+            ircChannelUser = new IrcChannelUser(user, chan.Name);
+            ircChannelUser.Voice = true;
+            chan.Users.Add(user.Nickname, ircChannelUser);
 
             container.Register(
                 // Main application
