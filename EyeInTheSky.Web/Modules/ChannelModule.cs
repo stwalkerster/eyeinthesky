@@ -68,8 +68,13 @@ namespace EyeInTheSky.Web.Modules
                     model.IrcClient.Nickname));
             }
 
-            // //////////////////////////////////////////////////////////////////////////////////////////////////////
+            model.DisplayUsers = this.GetChannelDisplayUsers(channel, model);
 
+            return model;
+        }
+
+        private List<ChannelDisplayUser> GetChannelDisplayUsers(IIrcChannel channel, ChannelInfoModel model)
+        {
             var displayUsers = new List<ChannelDisplayUser>();
 
             var globalUsers = this.botUserConfiguration.Items.ToList();
@@ -154,14 +159,7 @@ namespace EyeInTheSky.Web.Modules
                 displayUsers.Add(u);
             }
 
-
-
-
-            model.DisplayUsers = displayUsers;
-
-            // //////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            return model;
+            return displayUsers;
         }
 
         public dynamic GetStalkInfo(dynamic parameters)
