@@ -43,7 +43,7 @@ namespace EyeInTheSky.Model
         {
             get { return this.Mask.ToString(); }
         }
-    
+
         public IrcUserMask Mask { get; private set; }
 
         public string GlobalFlags { get; set; }
@@ -60,17 +60,17 @@ namespace EyeInTheSky.Model
                 {
                     return;
                 }
-                
+
                 this.EmailAddressConfirmed = false;
                 this.emailAddress = value;
-                
+
                 if (value == null)
                 {
                     this.EmailConfirmationToken = null;
                     this.EmailConfirmationTimestamp = null;
                     return;
                 }
-                    
+
                 var buf = new byte[15];
                 new SecureRandom().NextBytes(buf);
 
@@ -78,7 +78,7 @@ namespace EyeInTheSky.Model
                 this.EmailConfirmationTimestamp = DateTime.Now.AddHours(1);
             }
         }
-        
+
         public bool EmailAddressConfirmed { get; private set; }
         public DateTime? EmailConfirmationTimestamp { get; private set; }
         public DateTime? DeletionConfirmationTimestamp { get; private set; }
@@ -95,21 +95,21 @@ namespace EyeInTheSky.Model
                 this.EmailAddressConfirmed = false;
                 this.EmailConfirmationTimestamp = null;
             }
-            
+
             if (this.DeletionConfirmationTimestamp < DateTime.Now)
             {
                 this.DeletionConfirmationToken = null;
                 this.DeletionConfirmationTimestamp = null;
             }
         }
-        
+
         public string ConfirmEmailAddress(string token)
         {
             if (this.EmailConfirmationToken == null)
             {
                 return "no-token";
             }
-            
+
             if (token != this.EmailConfirmationToken)
             {
                 return "token-mismatch";
@@ -130,14 +130,14 @@ namespace EyeInTheSky.Model
             return "ok";
 
         }
-        
+
         public string ValidateDeleteAccount(string token)
         {
             if (this.DeletionConfirmationToken == null)
             {
                 return "no-token";
             }
-            
+
             if (token != this.DeletionConfirmationToken)
             {
                 return "token-mismatch";
