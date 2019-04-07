@@ -161,5 +161,10 @@ namespace EyeInTheSky.Model
             this.DeletionConfirmationToken = Base64.ToBase64String(buf);
             this.DeletionConfirmationTimestamp = DateTime.Now.AddHours(1);
         }
+
+        public override string ToString()
+        {
+            return string.Format("Mask: {0}, GlobalFlags: {1}", this.Mask, this.GlobalFlags);
+        }
     }
 }

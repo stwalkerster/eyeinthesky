@@ -21,7 +21,7 @@
             <conversionPattern value="%date %-5level %logger - %message%newline" />
         </layout>
     </appender>
-    
+
     <root>
         <level value="DEBUG" />
         <appender-ref ref="ConsoleAppender" />
@@ -39,6 +39,10 @@
         <level value="OFF" />
     </logger>
     <logger name="Stwalkerster.IrcClient.IrcClient.Freenode">
+        <level value="WARN" />
+    </logger>
+
+    <logger name="EyeInTheSky.Services">
         <level value="WARN" />
     </logger>
 </log4net>

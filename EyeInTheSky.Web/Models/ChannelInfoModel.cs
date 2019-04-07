@@ -12,5 +12,7 @@ namespace EyeInTheSky.Web.Models
         public List<IrcChannelUser> ChannelMembers { get; set; }
 
         public List<DisplayStalk> Stalks { get; set; }
+
+        public List<ChannelDisplayUser> DisplayUsers { get; set; }
     }
 }

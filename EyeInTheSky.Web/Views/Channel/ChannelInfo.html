@@ -6,7 +6,14 @@
 </div>
 <div class="row">
     <div class="col-12">
+
         <h4>Stalks</h4>
+
+        @IfNot.Model.HasStalks
+            <div class="alert alert-info" role="alert">
+                No stalks are defined in this channel.
+            </div>
+        @EndIf
 
         <div class="card-columns">
         @Each.Model.Stalks
@@ -39,50 +46,34 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-6">
-        <h4>Registered users</h4>
-        <table class="table table-bordered table-striped">
-            <thead>
-            <tr>
-                <th>User mask</th>
-                <th>Subscribed</th>
-                <th>Local flags</th>
-            </tr>
-            </thead>
-            <tbody>
-            @Each.IrcChannel.Users
-            <tr>
-                <th>@!Current.Mask</th>
-                <td>@!Current.Subscribed</td>
-                <td>@!Current.LocalFlags</td>
-            </tr>
-            @EndEach
-            </tbody>
-        </table>
-    </div>
-    <div class="col-6">
-        <h4>Users in channel</h4>
-        <table class="table table-bordered table-striped">
+    <div class="col-12">
+        <h4>Local users</h4>
+        <table class="table table-striped table-bordered">
             <thead>
             <tr>
                 <th>NickServ Account</th>
-                <th>Mask</th>
+                <th>Member</th>
                 <th>Channel op</th>
                 <th>Voice</th>
+                <th>Subscribed</th>
+                <th>Local flags</th>
+                <th>Global flags</th>
             </tr>
             </thead>
             <tbody>
-            @Each.ChannelMembers
-            <tr>
-                <th>@!Current.User.Account</th>
-                <td>@!Current.User.Nickname!@!Current.User.Username@@!Current.User.Hostname</td>
-                <td>@!Current.Operator</td>
-                <td>@!Current.Voice</td>
-            </tr>
+            @Each.DisplayUsers
+                <tr>
+                    <td>@!Current.Account</td>
+                    <td>@!Current.MemberMask</td>
+                    <td>@Current.IsOperator</td>
+                    <td>@Current.IsVoice</td>
+                    <td>@Current.IsLocallySubscribed</td>
+                    <td>@!Current.LocalFlags</td>
+                    <td>@!Current.GlobalFlags</td>
+                </tr>
             @EndEach
             </tbody>
         </table>
     </div>
-
 </div>
 @EndSection

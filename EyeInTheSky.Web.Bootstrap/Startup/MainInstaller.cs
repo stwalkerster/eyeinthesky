@@ -39,10 +39,18 @@
 
             user = IrcUser.FromPrefix("stwalkerster!stwalkerst@wikimedia/stwalkerster", ircClientMock.Object);
             user.Account = "stwalkerster";
+            user.SkeletonStatus = IrcUserSkeletonStatus.Full;
+            ircChannelUser = new IrcChannelUser(user, chan.Name);
+            chan.Users.Add(user.Nickname, ircChannelUser);
+
+            user = IrcUser.FromPrefix("Thargoid!stwalkerst@wikimedia/stwalkerster", ircClientMock.Object);
+            user.Account = "stwalkerster";
+            user.SkeletonStatus = IrcUserSkeletonStatus.Full;
             ircChannelUser = new IrcChannelUser(user, chan.Name);
             chan.Users.Add(user.Nickname, ircChannelUser);
 
             user = IrcUser.FromPrefix("ChanServ!ChanServ@services.", ircClientMock.Object);
+            user.SkeletonStatus = IrcUserSkeletonStatus.Full;
             ircChannelUser = new IrcChannelUser(user, chan.Name);
             ircChannelUser.Operator = true;
             chan.Users.Add(user.Nickname, ircChannelUser);
@@ -50,6 +58,7 @@
             user = IrcUser.FromPrefix(
                 "EyeInTheSkyBot!eyeinthesk@unaffiliated/stwalkerster/bot/eyeintheskybot",
                 ircClientMock.Object);
+            user.SkeletonStatus = IrcUserSkeletonStatus.Full;
             ircChannelUser = new IrcChannelUser(user, chan.Name);
             ircChannelUser.Voice = true;
             chan.Users.Add(user.Nickname, ircChannelUser);
