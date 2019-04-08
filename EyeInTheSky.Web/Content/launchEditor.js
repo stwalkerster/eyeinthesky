@@ -45,11 +45,11 @@ $(function(){
             action: Xonomy.newElementChild,
             actionParameter: "<xor />",
             hideIf: hideMenu
-            // },{
-            //     caption: "Append <x-of>",
-            //     action: Xonomy.newElementChild,
-            //     actionParameter: "<x-of />",
-            //     hideIf: hideMenu
+        },{
+            caption: "Append <x-of>",
+            action: Xonomy.newElementChild,
+            actionParameter: "<x-of />",
+            hideIf: hideMenu
         },{
             caption: "Append <user>",
             action: Xonomy.newElementChild,
@@ -117,19 +117,19 @@ $(function(){
                     return jsElement.hasAttribute("caseinsensitive");
                 }
             }].concat(deleteItemMenu).concat(editRawMenu),
-    attributes: {
-        "value": {
-            asker: Xonomy.askString
+        attributes: {
+            "value": {
+                asker: Xonomy.askString
+            },
+            "caseinsensitive": {
+                menu: [{
+                    caption: "Mark as case sensitive",
+                    action: Xonomy.deleteAttribute
+                }]
+            }
         },
-        "caseinsensitive": {
-            menu: [{
-                caption: "Mark as case sensitive",
-                action: Xonomy.deleteAttribute
-            }]
-        }
-    },
-    canDropTo: canDropTo
-};
+        canDropTo: canDropTo
+    };
 
     var leafNode = {
         menu: deleteItemMenu.concat(editRawMenu),
@@ -149,16 +149,62 @@ $(function(){
             },
             "and": {
                 menu: addChildMenu.concat(deleteItemMenu).concat(editRawMenu),
-                canDropTo: canDropTo
+                canDropTo: canDropTo,
+                caption: function() {return "Returns true all child nodes return true."}
+            },
+            "xor": {
+                menu: addChildMenu.concat(deleteItemMenu).concat(editRawMenu),
+                canDropTo: canDropTo,
+                caption: function() {return "Returns true if exactly one child node returns true."}
             },
             "or": {
                 menu: addChildMenu.concat(deleteItemMenu).concat(editRawMenu),
-                canDropTo: canDropTo
+                canDropTo: canDropTo,
+                caption: function() {return "Returns true any child node return true."}
             },
             "not": {
                 menu: addChildMenu.concat(deleteItemMenu).concat(editRawMenu),
-                canDropTo: canDropTo
+                canDropTo: canDropTo,
+                caption: function() {return "Returns true if the child node returns false."}
             },
+            "x-of": {
+                menu: [
+                    {
+                        caption: "Add minimum",
+                        action: Xonomy.newAttribute,
+                        actionParameter: {name: "minimum", value: ""},
+                        hideIf: function(jsElement) {
+                            return jsElement.hasAttribute("minimum");
+                        }
+                    },{
+                        caption: "Add maximum",
+                        action: Xonomy.newAttribute,
+                        actionParameter: {name: "maximum", value: ""},
+                        hideIf: function(jsElement) {
+                            return jsElement.hasAttribute("maximum");
+                        }
+                    }
+                ].concat(addChildMenu).concat(deleteItemMenu).concat(editRawMenu),
+                attributes: {
+                    "minimum": {
+                        asker: Xonomy.askString,
+                        menu: [{
+                            caption: "Remove minimum",
+                            action: Xonomy.deleteAttribute
+                        }]
+                    },
+                    "maximum": {
+                        asker: Xonomy.askString,
+                        menu: [{
+                            caption: "Remove maximum",
+                            action: Xonomy.deleteAttribute
+                        }]
+                    }
+                },
+                canDropTo: canDropTo,
+                caption: function() {return "Returns true of at least the minimum and at most the maximum child nodes return true."}
+            },
+
             "user": regexLeafNode,
             "page": regexLeafNode,
             "summary": regexLeafNode,
@@ -166,11 +212,21 @@ $(function(){
             "log": regexLeafNode,
 
             "usergroup": leafNode,
-            "incategory": leafNode
+            "incategory": leafNode,
+
+            "true": leafNode,
+            "false": leafNode
         },
-        // allowModeSwitching: true
+        onchange: function() {
+            $('#saveButton').removeClass('hide');
+        }
     };
 
     Xonomy.setMode("laic");
     Xonomy.render(xml, editor, docSpec);
+});
+
+$('#stalkForm').submit(function(event) {
+   var xml = Xonomy.harvest();
+   $('#newsearchtree').val(xml);
 });
