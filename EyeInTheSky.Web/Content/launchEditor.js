@@ -85,6 +85,11 @@ $(function(){
             action: Xonomy.newElementChild,
             actionParameter: "<usergroup value=\"\" />",
             hideIf: hideMenu
+        },{
+            caption: "Append <external>",
+            action: Xonomy.newElementChild,
+            actionParameter: "<external provider=\"phabricator\" location=\"\" />",
+            hideIf: hideMenu
         }
     ];
 
@@ -168,7 +173,15 @@ $(function(){
                 caption: function() {return "Returns true if the child node returns false."}
             },
             "external": {
-                menu: addChildMenu.concat(deleteItemMenu).concat(editRawMenu),
+                menu: [].concat(deleteItemMenu).concat(editRawMenu),
+                attributes: {
+                    "provider": {
+                        asker: Xonomy.askString
+                    },
+                    "location": {
+                        asker: Xonomy.askString
+                    }
+                },
                 canDropTo: canDropTo,
                 caption: function() {return "References a section of tree stored elsewhere"}
             },
