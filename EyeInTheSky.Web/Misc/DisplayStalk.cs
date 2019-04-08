@@ -144,7 +144,7 @@ namespace EyeInTheSky.Web.Misc
 
         public bool IsExpired
         {
-            get { return this.Stalk.ExpiryTime.HasValue && this.Stalk.ExpiryTime.Value < DateTime.Now; }
+            get { return this.Stalk.ExpiryTime.HasValue && this.Stalk.ExpiryTime.Value < DateTime.UtcNow; }
         }
 
         public class DisplayHints

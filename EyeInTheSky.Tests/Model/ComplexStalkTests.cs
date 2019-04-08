@@ -12,21 +12,21 @@ namespace EyeInTheSky.Tests.Model
         public void ShouldConstructFlag()
         {
             var stalk = new ComplexStalk("abc");
-            
+
             Assert.AreEqual("abc", stalk.Identifier);
         }
-        
+
         [Test]
         public void ShouldSetLastModified()
         {
             var stalk = new ComplexStalk("abc");
 
-            var span = DateTime.Now - stalk.LastUpdateTime;
-            
+            var span = DateTime.UtcNow - stalk.LastUpdateTime;
+
             Assert.True(span.HasValue);
             Assert.Less(span.Value.TotalSeconds, 5);
         }
-        
+
         [Test]
         public void ShouldBeActive()
         {
@@ -38,31 +38,31 @@ namespace EyeInTheSky.Tests.Model
 
             Assert.IsTrue(stalk.IsActive());
         }
-        
+
         [Test]
         public void ShouldBeActiveWithExpiry()
         {
             var stalk = new ComplexStalk("abc")
             {
                 IsEnabled = true,
-                ExpiryTime = DateTime.Now.AddMinutes(1)
+                ExpiryTime = DateTime.UtcNow.AddMinutes(1)
             };
 
             Assert.IsTrue(stalk.IsActive());
         }
-        
+
         [Test]
         public void ShouldNotBeActiveWithExpiry()
         {
             var stalk = new ComplexStalk("abc")
             {
                 IsEnabled = true,
-                ExpiryTime = DateTime.Now.AddMinutes(-1)
+                ExpiryTime = DateTime.UtcNow.AddMinutes(-1)
             };
 
             Assert.IsFalse(stalk.IsActive());
         }
-        
+
         [Test]
         public void ShouldNotBeActive()
         {

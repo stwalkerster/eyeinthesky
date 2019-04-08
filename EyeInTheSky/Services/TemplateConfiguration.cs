@@ -44,7 +44,7 @@
             doc.LoadXml(templateSearchTree);
 
             var stalkNode = this.stalkNodeFactory.NewFromXmlFragment(doc.DocumentElement);
-            
+
             if (flag == null)
             {
                 if (template.StalkFlag == null)
@@ -55,7 +55,7 @@
                 flag = string.Format(template.StalkFlag, formatParameters);
             }
 
-            
+
             string description = null;
             if (template.Description != null)
             {
@@ -66,7 +66,7 @@
             {
                 Description = description,
                 IsEnabled = template.StalkIsEnabled,
-                ExpiryTime = template.ExpiryDuration.HasValue ? DateTime.Now + template.ExpiryDuration : null,
+                ExpiryTime = template.ExpiryDuration.HasValue ? DateTime.UtcNow + template.ExpiryDuration : null,
                 SearchTree = stalkNode,
                 WatchChannel = template.WatchChannel
             };
@@ -80,7 +80,7 @@
             bool dirty = false;
             foreach (var template in this.ItemList.Where(x => x.Value.TemplateIsEnabled).Select(x => x.Value))
             {
-                
+
                 if (this.commandParser.GetRegisteredCommand(template.Identifier) != null)
                 {
                     this.Logger.ErrorFormat("{0} is already registered as a command, disabling!", template.Identifier);
@@ -97,7 +97,7 @@
             {
                 this.Save();
             }
-            
+
             foreach (var template in enabled)
             {
                 this.commandParser.RegisterCommand(template.Identifier, typeof(AddTemplatedStalkCommand));
@@ -115,7 +115,7 @@
             {
                 this.commandParser.RegisterCommand(template.Identifier, typeof(AddTemplatedStalkCommand));
             }
-            
+
         }
 
         protected override void OnRemove(ITemplate item)

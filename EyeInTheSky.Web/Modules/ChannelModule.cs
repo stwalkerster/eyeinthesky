@@ -1,5 +1,6 @@
 namespace EyeInTheSky.Web.Modules
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Xml;
@@ -60,6 +61,19 @@ namespace EyeInTheSky.Web.Modules
 
             stalk.IsEnabled = stalkIsEnabled.HasValue;
             stalk.Description = this.Request.Form.stalkDescription;
+
+            var expiry = this.Request.Form.expiry;
+
+            DateTime newExpiry;
+            var dateParseResult = DateTime.TryParse(expiry, out newExpiry);
+            if (dateParseResult)
+            {
+                stalk.ExpiryTime = newExpiry.ToUniversalTime();
+            }
+            else
+            {
+                stalk.ExpiryTime = null;
+            }
 
             this.channelConfiguration.Save();
             this.FreenodeClient.SendMessage(

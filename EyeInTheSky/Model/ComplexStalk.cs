@@ -11,7 +11,7 @@
         public ComplexStalk(string flag)
         {
             this.LastTriggerTime = DateTime.MinValue;
-            this.LastUpdateTime = DateTime.Now;
+            this.LastUpdateTime = DateTime.UtcNow;
             this.Identifier = flag;
             this.baseNode = new FalseNode();
             this.Subscribers = new List<StalkUser>();
@@ -70,7 +70,7 @@
             set
             {
                 this.dynamicExpiry = value;
-                this.LastUpdateTime = DateTime.Now;
+                this.LastUpdateTime = DateTime.UtcNow;
             }
         }
 
@@ -80,7 +80,7 @@
             set
             {
                 this.isEnabled = value;
-                this.LastUpdateTime = DateTime.Now;
+                this.LastUpdateTime = DateTime.UtcNow;
             }
         }
 
@@ -90,7 +90,7 @@
             set
             {
                 this.description = value;
-                this.LastUpdateTime = DateTime.Now;
+                this.LastUpdateTime = DateTime.UtcNow;
             }
         }
 
@@ -100,7 +100,7 @@
             set
             {
                 this.expiryTime = value;
-                this.LastUpdateTime = DateTime.Now;
+                this.LastUpdateTime = DateTime.UtcNow;
             }
         }
 
@@ -108,7 +108,7 @@
         {
             if (this.dynamicExpiry.HasValue)
             {
-                var proposedExpiry = DateTime.Now + this.dynamicExpiry.Value;
+                var proposedExpiry = DateTime.UtcNow + this.dynamicExpiry.Value;
 
                 if (this.expiryTime < proposedExpiry)
                 {
@@ -126,14 +126,14 @@
 
             set
             {
-                this.LastUpdateTime = DateTime.Now;
+                this.LastUpdateTime = DateTime.UtcNow;
                 this.baseNode = value;
             }
         }
 
         public bool IsActive()
         {
-            if (DateTime.Now > this.ExpiryTime)
+            if (DateTime.UtcNow > this.ExpiryTime)
             {
                 return false;
             }
@@ -148,12 +148,12 @@
                 return false;
             }
 
-            if (DateTime.Now > this.ExpiryTime)
+            if (DateTime.UtcNow > this.ExpiryTime)
             {
                 return false;
             }
 
-            var remaining = this.ExpiryTime.Value - DateTime.Now;
+            var remaining = this.ExpiryTime.Value - DateTime.UtcNow;
             if (remaining.TotalDays < 7)
             {
                 return true;

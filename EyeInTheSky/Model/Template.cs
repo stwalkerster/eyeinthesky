@@ -2,7 +2,7 @@
 {
     using System;
     using EyeInTheSky.Model.Interfaces;
-    
+
     public class Template : ITemplate
     {
         private string stalkFlag;
@@ -15,7 +15,7 @@
         public Template(string flag)
         {
             this.Identifier = flag;
-            this.LastUpdateTime = DateTime.Now;
+            this.LastUpdateTime = DateTime.UtcNow;
             this.searchTree = "<false />";
         }
 
@@ -50,7 +50,7 @@
             set
             {
                 this.expiryDuration = value;
-                this.LastUpdateTime = DateTime.Now;
+                this.LastUpdateTime = DateTime.UtcNow;
             }
         }
 
@@ -60,7 +60,7 @@
             set
             {
                 this.stalkFlag = value;
-                this.LastUpdateTime = DateTime.Now;
+                this.LastUpdateTime = DateTime.UtcNow;
             }
         }
 
@@ -72,7 +72,7 @@
             set
             {
                 this.templateIsEnabled = value;
-                this.LastUpdateTime = DateTime.Now;
+                this.LastUpdateTime = DateTime.UtcNow;
             }
         }
 
@@ -82,7 +82,7 @@
             set
             {
                 this.stalkIsEnabled = value;
-                this.LastUpdateTime = DateTime.Now;
+                this.LastUpdateTime = DateTime.UtcNow;
             }
         }
 
@@ -92,16 +92,16 @@
             set
             {
                 this.description = value;
-                this.LastUpdateTime = DateTime.Now;
+                this.LastUpdateTime = DateTime.UtcNow;
             }
         }
-        
+
         public string SearchTree
         {
             get { return this.searchTree; }
             set
             {
-                this.LastUpdateTime = DateTime.Now;
+                this.LastUpdateTime = DateTime.UtcNow;
                 this.searchTree = value;
             }
         }

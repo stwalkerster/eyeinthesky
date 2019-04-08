@@ -75,7 +75,7 @@ namespace EyeInTheSky.Model
                 new SecureRandom().NextBytes(buf);
 
                 this.EmailConfirmationToken = Base64.ToBase64String(buf);
-                this.EmailConfirmationTimestamp = DateTime.Now.AddHours(1);
+                this.EmailConfirmationTimestamp = DateTime.UtcNow.AddHours(1);
             }
         }
 
@@ -88,7 +88,7 @@ namespace EyeInTheSky.Model
 
         public void GarbageCollectTokens()
         {
-            if (this.EmailConfirmationTimestamp < DateTime.Now)
+            if (this.EmailConfirmationTimestamp < DateTime.UtcNow)
             {
                 this.emailAddress = null;
                 this.EmailConfirmationToken = null;
@@ -96,7 +96,7 @@ namespace EyeInTheSky.Model
                 this.EmailConfirmationTimestamp = null;
             }
 
-            if (this.DeletionConfirmationTimestamp < DateTime.Now)
+            if (this.DeletionConfirmationTimestamp < DateTime.UtcNow)
             {
                 this.DeletionConfirmationToken = null;
                 this.DeletionConfirmationTimestamp = null;
@@ -115,7 +115,7 @@ namespace EyeInTheSky.Model
                 return "token-mismatch";
             }
 
-            if (this.EmailConfirmationTimestamp < DateTime.Now)
+            if (this.EmailConfirmationTimestamp < DateTime.UtcNow)
             {
                 this.emailAddress = null;
                 this.EmailConfirmationToken = null;
@@ -143,7 +143,7 @@ namespace EyeInTheSky.Model
                 return "token-mismatch";
             }
 
-            if (this.DeletionConfirmationTimestamp < DateTime.Now)
+            if (this.DeletionConfirmationTimestamp < DateTime.UtcNow)
             {
                 this.DeletionConfirmationToken = null;
                 this.DeletionConfirmationTimestamp = null;
@@ -159,7 +159,7 @@ namespace EyeInTheSky.Model
             new SecureRandom().NextBytes(buf);
 
             this.DeletionConfirmationToken = Base64.ToBase64String(buf);
-            this.DeletionConfirmationTimestamp = DateTime.Now.AddHours(1);
+            this.DeletionConfirmationTimestamp = DateTime.UtcNow.AddHours(1);
         }
 
         public override string ToString()

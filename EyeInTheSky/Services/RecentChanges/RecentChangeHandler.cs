@@ -71,7 +71,7 @@ namespace EyeInTheSky.Services.RecentChanges
             // touch update/count
             foreach (var stalk in stalks)
             {
-                stalk.LastTriggerTime = DateTime.Now;
+                stalk.LastTriggerTime = DateTime.UtcNow;
                 stalk.TriggerCount++;
             }
 
@@ -215,7 +215,7 @@ namespace EyeInTheSky.Services.RecentChanges
                 rc.EditSummary,
                 sizeDiff,
                 rc.EditFlags,
-                DateTime.Now.ToString(this.appConfig.DateFormat)
+                DateTime.UtcNow.ToString(this.appConfig.DateFormat)
             );
         }
 
@@ -239,7 +239,7 @@ namespace EyeInTheSky.Services.RecentChanges
                 rc.EditSummary,
                 sizeDiff,
                 rc.EditFlags,
-                DateTime.Now.ToString(this.appConfig.DateFormat)
+                DateTime.UtcNow.ToString(this.appConfig.DateFormat)
             );
         }
 
@@ -259,7 +259,7 @@ namespace EyeInTheSky.Services.RecentChanges
                 var lastTrigger = (stalk.LastTriggerTime.HasValue && stalk.LastTriggerTime != DateTime.MinValue)
                     ? stalk.LastTriggerTime.Value.ToString(this.appConfig.DateFormat)
                     : "never";
-                
+
                 var lastUpdate = stalk.LastUpdateTime.HasValue
                     ? stalk.LastUpdateTime.Value.ToString(this.appConfig.DateFormat)
                     : "never";
