@@ -2,12 +2,12 @@ namespace EyeInTheSky.Web.Modules
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Xml;
     using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Services.Interfaces;
     using EyeInTheSky.Web.Misc;
     using EyeInTheSky.Web.Models;
-    using Microsoft.Win32.SafeHandles;
     using Nancy;
     using Stwalkerster.Bot.CommandLib.Model;
     using Stwalkerster.IrcClient.Interfaces;
@@ -35,6 +35,29 @@ namespace EyeInTheSky.Web.Modules
             this.Get["/channels"] = this.GetChannelList;
             this.Get["/channels/{channel}"] = this.GetChannelInfo;
             this.Get["/channels/{channel}/stalk/{stalk}"] = this.GetStalkInfo;
+            this.Get["/channels/{channel}/stalk/{stalk}/edit"] = this.GetStalkInfoForEdit;
+            this.Post["/channels/{channel}/stalk/{stalk}/edit"] = this.PostStalkInfo;
+        }
+
+        public dynamic PostStalkInfo(dynamic parameters)
+        {
+            var channel = this.channelConfiguration.Items.FirstOrDefault(x => x.Guid == parameters.channel);
+
+            if (channel == null || !channel.Stalks.ContainsKey(parameters.stalk))
+            {
+                return new NotFoundResponse();
+            }
+
+            var doc = new XmlDocument();
+            doc.LoadXml(this.Request.Form.newsearchtree);
+
+            IStalk stalk = channel.Stalks[parameters.stalk];
+            var newTree = this.stalkNodeFactory.NewFromXmlFragment((XmlElement) doc.FirstChild.FirstChild);
+
+            stalk.SearchTree = newTree;
+            this.channelConfiguration.Save();
+
+            return this.Response.AsRedirect(string.Format("/channels/{0}/stalk/{1}", channel.Guid, stalk.Identifier));
         }
 
         public dynamic GetChannelList(dynamic parameters)
@@ -170,6 +193,18 @@ namespace EyeInTheSky.Web.Modules
 
         public dynamic GetStalkInfo(dynamic parameters)
         {
+            var model = this.CreateModel<StalkInfoModel>(this.Context);
+            return StalkInfoPageBase(parameters, model);
+        }
+
+        public dynamic GetStalkInfoForEdit(dynamic parameters)
+        {
+            var model = this.CreateModel<EditableStalkInfoModel>(this.Context);
+            return StalkInfoPageBase(parameters, model);
+        }
+
+        private dynamic StalkInfoPageBase(dynamic parameters, StalkInfoModel model)
+        {
             var channel = this.channelConfiguration.Items.FirstOrDefault(x => x.Guid == parameters.channel);
 
             if (channel == null || !channel.Stalks.ContainsKey(parameters.stalk))
@@ -177,7 +212,6 @@ namespace EyeInTheSky.Web.Modules
                 return new NotFoundResponse();
             }
 
-            var model = this.CreateModel<StalkInfoModel>(this.Context);
             model.IrcChannel = channel;
             model.Stalk = new DisplayStalk(
                 channel.Stalks[parameters.stalk],

@@ -30,3 +30,10 @@ div.xonomy.laic .element > .tag.opening > .attributes > .attribute > .valueConta
 div.xonomy.laic .element > .connector > .plusminus {
     background-color: inherit;
 }
+
+div.xonomy.laic .element > .tag.opening > .attributes > .attribute > .valueContainer.current {
+    background-color: inherit;
+}
+div.xonomy.laic .element.current > .tag > .name {
+    background-color: inherit;
+}

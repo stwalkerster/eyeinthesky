@@ -17,7 +17,7 @@ namespace EyeInTheSky.Web.Services
         {
             this.botUserConfiguration = botUserConfiguration;
         }
-        
+
         public IUserIdentity GetUserFromIdentifier(Guid identifier, NancyContext context)
         {
             var user = this.botUserConfiguration.Items.FirstOrDefault(x => x.WebGuid == identifier);
@@ -26,7 +26,12 @@ namespace EyeInTheSky.Web.Services
                 return null;
             }
 
-            return new UserIdentity(user);
+            var identity = new UserIdentity(user);
+
+            ((List<string>) identity.Claims).AddRange(user.GlobalFlags.ToCharArray().Select(x => x.ToString()));
+
+            return identity;
+
         }
 
 
