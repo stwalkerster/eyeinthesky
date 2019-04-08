@@ -2,9 +2,9 @@
 <configuration>
     <!--
     Welcome, new EITS user.
-    
+
     There are a few key bits of configuration which you will need to update here.
-    
+
     Please consult the documentation for a more thorough explanation
     -->
     <properties>
@@ -21,14 +21,14 @@
         <wikiUsername></wikiUsername>
         <!-- The Wikimedia account password -->
         <wikiPassword></wikiPassword>
-        
+
         <!-- The User Agent to use for the bot. Add your own contact details here. -->
         <useragent>EyeInTheSkyBot (https://stwalkerster.co.uk/eits; default configuration)</useragent>
     </properties>
 
     <!-- GENERAL CONFIGURATION -->
     <components>
-        <component type="EyeInTheSky.Model.AppConfiguration" 
+        <component type="EyeInTheSky.Model.AppConfiguration"
                    service="EyeInTheSky.Model.Interfaces.IAppConfiguration">
             <parameters>
                 <!-- The Freenode channel to join and report in -->
@@ -53,9 +53,11 @@
                 <timeSpanFormat>d\d\ hh\:mm\:ss</timeSpanFormat>
                 <!-- Privacy policy wording -->
                 <privacyPolicy>https://example.com/privacy</privacyPolicy>
+                <!-- IP address and port number to run the web service on -->
+                <webServiceHostPort>127.0.0.1:8080</webServiceHostPort>
             </parameters>
         </component>
-        
+
         <!-- MEDIAWIKI CONFIGURATION -->
         <!-- You'll need to use either one of these -->
         <!--<component type="MapMediaWikiConfigProvider" service="IMediaWikiConfigurationProvider">
@@ -85,7 +87,7 @@
             </parameters>
         </component>
 
-        
+
         <!-- EMAIL CONFIGURATION -->
         <component type="EyeInTheSky.Model.EmailConfiguration">
             <parameters>
@@ -106,7 +108,7 @@
         </component>
 
         <!-- WIKIMEDIA CONFIGURATION
-         
+
          There should be little need to change the parameters in this section.
          -->
         <component id="wikimediaIrcConfig"
@@ -126,7 +128,7 @@
         </component>
 
         <!-- FREENODE CONFIGURATION
-         
+
          There should be little need to change the parameters in this section.
          -->
         <component id="freenodeIrcConfig"
