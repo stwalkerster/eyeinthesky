@@ -144,11 +144,18 @@
 
             try
             {
+
+                var extraHeaders = new Dictionary<string, string>
+                {
+                    {"StalkList", stalkList}
+                };
+
                 this.emailHelper.SendEmail(
                     this.FormatMessageForEmail(stalks, rc, botUser),
                     string.Format(this.templates.EmailRcSubject, stalkList, rc.Page),
                     null,
-                    botUser);
+                    botUser,
+                    extraHeaders);
             }
             catch (Exception ex)
             {
@@ -259,11 +266,11 @@
                 var lastTrigger = (stalk.LastTriggerTime.HasValue && stalk.LastTriggerTime != DateTime.MinValue)
                     ? stalk.LastTriggerTime.Value.ToString(this.appConfig.DateFormat)
                     : "never";
-                
+
                 var lastUpdate = stalk.LastUpdateTime.HasValue
                     ? stalk.LastUpdateTime.Value.ToString(this.appConfig.DateFormat)
                     : "never";
-                
+
                 var creation = stalk.CreationDate == DateTime.MinValue
                     ? stalk.CreationDate.ToString(this.appConfig.DateFormat)
                     : "before records began";

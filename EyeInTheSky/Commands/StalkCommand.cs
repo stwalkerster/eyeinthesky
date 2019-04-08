@@ -81,7 +81,7 @@ namespace EyeInTheSky.Commands
         protected override IEnumerable<CommandResponse> OnPreRun(out bool abort)
         {
             abort = false;
-            
+
             if (!this.CommandSource.StartsWith("#"))
             {
                 throw new CommandErrorException("This command must be executed in-channel!");
@@ -121,7 +121,7 @@ namespace EyeInTheSky.Commands
             SubscriptionSource subscriptionSource;
             var result = this.stalkSubscriptionHelper.UnsubscribeStalk(botUser.Mask, ircChannel, stalk, out subscriptionSource);
             this.channelConfiguration.Save();
-            
+
             if (result)
             {
                 yield return new CommandResponse
@@ -180,7 +180,7 @@ namespace EyeInTheSky.Commands
             SubscriptionSource subscriptionSource;
             var result = this.stalkSubscriptionHelper.SubscribeStalk(botUser.Mask, ircChannel, stalk, out subscriptionSource);
             this.channelConfiguration.Save();
-            
+
             if (result)
             {
                 yield return new CommandResponse
@@ -196,7 +196,7 @@ namespace EyeInTheSky.Commands
                     message = string.Format(
                         "You are already subscribed to notifications for {1}, including stalk {0}", stalkName,
                         ircChannel.Identifier);
-                    
+
                 }
 
                 yield return new CommandResponse
@@ -252,7 +252,8 @@ namespace EyeInTheSky.Commands
                 body,
                 string.Format(this.templates.EmailStalkReportSubject, this.CommandSource),
                 null,
-                botUser);
+                botUser,
+                null);
 
             yield return new CommandResponse
             {
@@ -407,7 +408,7 @@ namespace EyeInTheSky.Commands
         {
             var tokenList = (List<string>) this.Arguments;
             var stalkName = tokenList.PopFromFront();
-            
+
             this.Arguments.Clear();
             this.Arguments.Add(stalkName);
             this.Arguments.Add("true");
@@ -423,7 +424,7 @@ namespace EyeInTheSky.Commands
         {
             var tokenList = (List<string>) this.Arguments;
             var stalkName = tokenList.PopFromFront();
-            
+
             this.Arguments.Clear();
             this.Arguments.Add(stalkName);
             this.Arguments.Add("false");
@@ -458,7 +459,7 @@ namespace EyeInTheSky.Commands
                     Message = string.Format("Removed expiry from stalk {0}", stalkName)
                 };
 
-            } 
+            }
             else if (DateTime.TryParse(date, out expiryTime))
             {
                 this.channelConfiguration[this.CommandSource].Stalks[stalkName].ExpiryTime = expiryTime;
@@ -469,7 +470,7 @@ namespace EyeInTheSky.Commands
                         stalkName,
                         expiryTime.ToString(this.config.DateFormat))
                 };
-            }            
+            }
             else if (TimeSpan.TryParse(date, out expiryDuration))
             {
                 expiryTime = DateTime.Now + expiryDuration;
@@ -678,7 +679,7 @@ namespace EyeInTheSky.Commands
             {
                 throw new CommandErrorException(string.Format("Can't find the stalk '{0}'!", stalkName));
             }
-            
+
             this.channelConfiguration[this.CommandSource].Stalks.Remove(stalkName);
 
             yield return new CommandResponse
@@ -702,7 +703,7 @@ namespace EyeInTheSky.Commands
             {
                 throw new CommandErrorException(string.Format("Can't find the stalk '{0}'!", stalkName));
             }
-            
+
             var searchTree = this.channelConfiguration[this.CommandSource].Stalks[stalkName].SearchTree;
 
             yield return new CommandResponse
@@ -714,7 +715,7 @@ namespace EyeInTheSky.Commands
                 )
             };
         }
-        
+
         [SubcommandInvocation("refresh")]
         [CommandFlag(AccessFlags.Configuration)]
         [RequiredArguments(1)]
@@ -728,12 +729,12 @@ namespace EyeInTheSky.Commands
             {
                 throw new CommandErrorException(string.Format("Can't find the stalk '{0}'!", stalkName));
             }
-            
+
             // bounce through XML, as this is guaranteed to be a refresh.
             var originalTree = this.channelConfiguration[this.CommandSource].Stalks[stalkName].SearchTree;
             var xmlTree = this.stalkNodeFactory.ToXml(new XmlDocument(), originalTree);
             var newTree = this.stalkNodeFactory.NewFromXmlFragment(xmlTree);
-            
+
             yield return new CommandResponse
             {
                 Message = string.Format(
@@ -791,7 +792,7 @@ namespace EyeInTheSky.Commands
             var sourceStalk = sourceChannelConfig.Stalks.ContainsKey(sourceIdentifier)
                 ? sourceChannelConfig.Stalks[sourceIdentifier]
                 : null;
-            
+
             if (sourceStalk == null)
             {
                 throw new CommandErrorException(string.Format("The channel {0} does not exist in configuration", sourceChannel));
@@ -802,9 +803,9 @@ namespace EyeInTheSky.Commands
                 throw new CommandErrorException(string.Format("The identifier {0} already exists in this channel!",
                     targetIdentifier));
             }
-            
+
             var tree = sourceStalk.SearchTree;
-            
+
             // bounce it via XML to ensure its a) different objects and b) saves properly
             tree = this.stalkNodeFactory.NewFromXmlFragment(this.stalkNodeFactory.ToXml(new XmlDocument(), tree));
 
@@ -855,7 +856,7 @@ namespace EyeInTheSky.Commands
             var stalk = this.channelConfiguration[this.CommandSource].Stalks[stalkName];
 
             var oldWatchChannel = stalk.WatchChannel;
-            
+
             stalk.WatchChannel = tokenList.PopFromFront();
 
             if (!this.wikimediaClient.Channels.ContainsKey(stalk.WatchChannel))
@@ -876,9 +877,9 @@ namespace EyeInTheSky.Commands
             {
                 this.wikimediaClient.PartChannel(oldWatchChannel, "Nothing left to watch here");
             }
-            
+
             Debugger.Break();
-            
+
             yield return new CommandResponse
             {
                 Message = string.Format("Set watch channel for stalk {0} to {1}", stalkName, stalk.WatchChannel)
@@ -886,7 +887,7 @@ namespace EyeInTheSky.Commands
 
             this.channelConfiguration.Save();
         }
-        
+
         protected IStalkNode CreateNode(string type, string stalkTarget)
         {
             IStalkNode newNode;

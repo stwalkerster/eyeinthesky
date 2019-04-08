@@ -1,5 +1,6 @@
 ﻿namespace EyeInTheSky.Services
 {
+    using System.Collections.Generic;
     using System.Text;
     using Castle.Core.Logging;
     using EyeInTheSky.Model.Interfaces;
@@ -23,7 +24,12 @@
             this.emailSender = emailSender;
         }
 
-        public string SendEmail(string message, string subject, string inReplyTo, IBotUser recipient)
+        public string SendEmail(
+            string message,
+            string subject,
+            string inReplyTo,
+            IBotUser recipient,
+            Dictionary<string, string> extraHeaders)
         {
             if (this.appConfig.EmailConfiguration == null)
             {
@@ -36,13 +42,13 @@
                 this.logger.Error("No subject specified in outbound email!");
                 return null;
             }
-            
+
             if (string.IsNullOrWhiteSpace(message))
             {
                 this.logger.Error("No message specified in outbound email!");
                 return null;
             }
-            
+
             if (string.IsNullOrWhiteSpace(recipient.EmailAddress))
             {
                 this.logger.Info("No recipient address provided!");
@@ -75,7 +81,9 @@
                 this.appConfig.EmailConfiguration.Username,
                 this.appConfig.EmailConfiguration.Password,
                 this.appConfig.EmailConfiguration.Thumbprint,
-                inReplyTo);
+                inReplyTo,
+                extraHeaders
+            );
         }
     }
 }

@@ -119,7 +119,7 @@
                     throw new CommandErrorException("Unknown response from account verification validity check");
             }
         }
-        
+
         [SubcommandInvocation("email")]
         [RequiredArguments(1)]
         [Help(new[] {"<address>", "none"}, "Sets or removes your email address")]
@@ -188,7 +188,7 @@
                 body,
                 this.templates.EmailAccountConfirmationSubject,
                 null,
-                botUser);
+                botUser, null);
 
             return new[]
             {
@@ -280,7 +280,7 @@
                 };
                 yield break;
             }
-            
+
             this.RemoveAccount(accountKey);
 
             yield return new CommandResponse
@@ -288,7 +288,7 @@
                 Message = "Deleted user " + accountKey
             };
         }
-   
+
         [SubcommandInvocation("forcenomail")]
         [RequiredArguments(1)]
         [CommandFlag(AccessFlags.GlobalAdmin)]
@@ -311,13 +311,13 @@
             }
 
             botUser.EmailAddress = null;
-            
+
             this.botUserConfiguration.Save();
-            
+
             yield return new CommandResponse
             {
                 Message = "Deleted email address for " + accountKey
-            };        
+            };
         }
 
         [SubcommandInvocation("delete")]
@@ -352,7 +352,7 @@
                     body,
                     this.templates.EmailAccountDeletionSubject,
                     null,
-                    botUser);
+                    botUser, null);
 
                 return new[]
                 {
@@ -446,7 +446,7 @@
 
             return null;
         }
-        
+
         private void RemoveAccount(string accountKey)
         {
             this.botUserConfiguration.Remove(accountKey);
@@ -456,7 +456,7 @@
             {
                 channel.Users.RemoveAll(x => x.Mask.ToString() == accountKey);
             }
-            
+
             this.channelConfiguration.Save();
         }
     }
