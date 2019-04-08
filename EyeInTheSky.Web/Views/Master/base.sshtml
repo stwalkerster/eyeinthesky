@@ -7,6 +7,7 @@
     <title>Eye In The Sky - Web Management Tool</title>
 
     <!-- Bootstrap core CSS -->
+    <link href="/Content/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
     <link href="/Content/darkly.min.css" rel="stylesheet" integrity="sha256-6W1mxPaAt4a6pkJVW5x5Xmq/LvxuQpR9dlzgy77SeZs=" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
     <link href="/Content/mainstyle.css" rel="stylesheet" crossorigin="anonymous" />

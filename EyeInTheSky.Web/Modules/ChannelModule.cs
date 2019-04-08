@@ -55,7 +55,17 @@ namespace EyeInTheSky.Web.Modules
             var newTree = this.stalkNodeFactory.NewFromXmlFragment((XmlElement) doc.FirstChild.FirstChild);
 
             stalk.SearchTree = newTree;
+
+            var stalkIsEnabled = this.Request.Form.enabledSwitch;
+
+            stalk.IsEnabled = stalkIsEnabled.HasValue;
+            stalk.Description = this.Request.Form.stalkDescription;
+
             this.channelConfiguration.Save();
+            this.FreenodeClient.SendMessage(
+                stalk.Channel,
+                "The stalk " + stalk.Identifier + " was modified by " + this.Context.CurrentUser.UserName
+                + " from the web interface.");
 
             return this.Response.AsRedirect(string.Format("/channels/{0}/stalk/{1}", channel.Guid, stalk.Identifier));
         }

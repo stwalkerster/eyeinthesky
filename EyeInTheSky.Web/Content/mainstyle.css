@@ -10,6 +10,10 @@ footer.footer p, footer.footer ul {
     margin-bottom: 0;
 }
 
+.card .card-header h4 {
+    margin-bottom: 0;
+}
+
 /* XML editor */
 div.xonomy.laic {
     background-color: inherit;

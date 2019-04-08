@@ -11,38 +11,64 @@
         </ol>
     </nav>
 </div>
+
 <div class="row">
-    <h3><code>@!Model.Stalk.Stalk.Identifier</code></h3>
-    <a class="ml-auto btn btn-secondary btn-sm" style="height: fit-content;" href="/channels/@!Model.IrcChannel.Guid/stalk/@!Model.Stalk.Stalk.Identifier/edit"><i class="fas fa-edit mr-2"></i>Edit</a>
-</div>
-<div class="row">
-    <div class="col-12">
-        <div class="alert @!Model.Stalk.StalkDisplayHints.Alert" role="alert">
-            @If.Model.Stalk.StalkDisplayHints.HasEnabledIcon
-            <i class="mr-1 @!Model.Stalk.StalkDisplayHints.EnabledIcon"></i>
-            @EndIf
-            @If.Model.Stalk.StalkDisplayHints.HasExpiryIcon
-            <i class="mr-1 @!Model.Stalk.StalkDisplayHints.ExpiryIcon"></i>
-            @EndIf
-            @!Model.Stalk.StalkDisplayHints.Description
+    <div class="card" style="width:100%">
+        <div class="card-header">
+            <a class="float-right btn btn-light btn-sm" style="height: fit-content;" href="/channels/@!Model.IrcChannel.Guid/stalk/@!Model.Stalk.Stalk.Identifier/edit"><i class="fas fa-edit mr-2"></i>Edit</a>
+            <div class="custom-control custom-switch float-right mr-3 mt-1">
+                <input type="checkbox" class="custom-control-input" id="enabledSwitch" disabled
+                       @If.Model.Stalk.Stalk.IsEnabled
+                       checked
+                       @EndIf
+                >
+                <label class="custom-control-label" for="enabledSwitch">Enable stalk</label>
+            </div>
+            <h4><code>@!Model.Stalk.Stalk.Identifier</code></h4>
         </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-6">
-        <table class="table table-sm table-borderless">
-            <tr><th>Created</th><td>unknown</td></tr>
-            <tr><th>Last updated</th><td>@!Model.Stalk.Stalk.LastUpdateTime</td></tr>
-            <tr><th>Last triggered</th><td>@!Model.Stalk.LastTrigger</td></tr>
-            <tr><th>Trigger count</th><td>@!Model.Stalk.Stalk.TriggerCount</td></tr>
-        </table>
-    </div>
-    <div class="col-md-6">
-        <table class="table table-sm table-borderless">
-            <tr><th>Monitored wiki</th><td>@!Model.Stalk.Stalk.WatchChannel</td></tr>
-            <tr><th>Expiry</th><td>@!Model.Stalk.Expiry</td></tr>
-            <tr><th>Dynamic expiry extension</th><td>@!Model.Stalk.DynamicExpiry</td></tr>
-        </table>
+        <div class="card-body container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="alert @!Model.Stalk.StalkDisplayHints.Alert" role="alert">
+                        @If.Model.Stalk.StalkDisplayHints.HasEnabledIcon
+                        <i class="mr-1 @!Model.Stalk.StalkDisplayHints.EnabledIcon"></i>
+                        @EndIf
+                        @If.Model.Stalk.StalkDisplayHints.HasExpiryIcon
+                        <i class="mr-1 @!Model.Stalk.StalkDisplayHints.ExpiryIcon"></i>
+                        @EndIf
+                        @!Model.Stalk.StalkDisplayHints.Description
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <table class="table table-sm table-borderless mb-0">
+                        <tr><th>Created</th><td>unknown</td></tr>
+                        <tr><th>Last updated</th><td>@!Model.Stalk.LastUpdate</td></tr>
+                        <tr><th>Last triggered</th><td>@!Model.Stalk.LastTrigger</td></tr>
+                        <tr><th>Trigger count</th><td>@!Model.Stalk.Stalk.TriggerCount</td></tr>
+                    </table>
+                </div>
+                <div class="col-md-6">
+                    <table class="table table-sm table-borderless mb-0">
+                        <tr><th>Report channel</th><td>@!Model.Stalk.Stalk.Channel</td></tr>
+                        <tr><th>Monitored wiki</th><td>@!Model.Stalk.Stalk.WatchChannel</td></tr>
+                        <tr><th>Expiry</th><td
+                        @If.Model.Stalk.IsExpiringSoon
+                        class="text-warning"
+                        @EndIf
+                        @If.Model.Stalk.IsExpired
+                        class="text-danger"
+                        @EndIf
+                        >@!Model.Stalk.Expiry</td></tr>
+                        <tr><th>Dynamic expiry extension</th><td>@!Model.Stalk.DynamicExpiry</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="card-body mt-0">
+            <p class="card-text">@!Model.Stalk.Stalk.Description</p>
+        </div>
     </div>
 </div>
 <div class="row">

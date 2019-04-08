@@ -1,7 +1,6 @@
 namespace EyeInTheSky.Web.Misc
 {
     using System;
-    using System.Dynamic;
     using System.Xml;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Services.Interfaces;
@@ -101,6 +100,19 @@ namespace EyeInTheSky.Web.Misc
                 }
 
                 return this.Stalk.LastTriggerTime.Value.ToString(this.appConfiguration.DateFormat);
+            }
+        }
+
+        public string LastUpdate
+        {
+            get
+            {
+                if (!this.Stalk.LastUpdateTime.HasValue || this.Stalk.LastUpdateTime.Value == DateTime.MinValue)
+                {
+                    return "unknown";
+                }
+
+                return this.Stalk.LastUpdateTime.Value.ToString(this.appConfiguration.DateFormat);
             }
         }
 
