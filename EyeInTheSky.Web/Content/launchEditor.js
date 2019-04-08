@@ -167,6 +167,11 @@ $(function(){
                 canDropTo: canDropTo,
                 caption: function() {return "Returns true if the child node returns false."}
             },
+            "external": {
+                menu: addChildMenu.concat(deleteItemMenu).concat(editRawMenu),
+                canDropTo: canDropTo,
+                caption: function() {return "References a section of tree stored elsewhere"}
+            },
             "x-of": {
                 menu: [
                     {
