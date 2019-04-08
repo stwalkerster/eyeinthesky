@@ -2,7 +2,16 @@
 
 @Section['Content']
 <div class="row">
-    <h2>@!Model.IrcChannel.Identifier</h2>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item"><a href="/channels">Channels</a></li>
+            <li class="breadcrumb-item active" aria-current="page">@!Model.IrcChannel.Identifier</li>
+        </ol>
+    </nav>
+</div>
+<div class="row">
+    <h3><code>@!Model.IrcChannel.Identifier</code></h3>
 </div>
 <div class="row">
     <div class="col-12">

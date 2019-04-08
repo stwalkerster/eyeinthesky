@@ -9,3 +9,24 @@ footer.footer p, footer.footer ul {
 .card .card-header h5 {
     margin-bottom: 0;
 }
+
+/* XML editor */
+div.xonomy.laic {
+    background-color: inherit;
+}
+
+div.xonomy.laic .element > .tag {
+    background-color: inherit;
+}
+
+div.xonomy.laic .element > .tag > .name {
+    color: #e83e8c;
+}
+
+div.xonomy.laic .element > .tag.opening > .attributes > .attribute > .valueContainer:hover {
+    background-color: inherit;
+}
+
+div.xonomy.laic .element > .connector > .plusminus {
+    background-color: inherit;
+}

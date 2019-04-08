@@ -37,7 +37,8 @@
         </div>
     </div>
 </footer>
-<script src="/Scripts/jquery-3.0.0.slim.min.js" integrity="sha256-Rf4BadfyCtsvHmO89BUZcbYvNNvZvOT08ALfEzvCsD0=" crossorigin="anonymous"></script>
+<script src="/Scripts/jquery-3.0.0.min.js"  crossorigin="anonymous"></script>
 <script src="/Scripts/bootstrap.bundle.min.js" integrity="sha384-xrRywqdh3PHs8keKZN+8zzc5TX0GRTLCcmivcbNJWm2rs5C8PRhcEn3czEjhAO9o" crossorigin="anonymous"></script>
+@Section['Footer'];
 </body>
 </html>

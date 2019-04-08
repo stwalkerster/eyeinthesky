@@ -45,4 +45,10 @@
 @Section['Content'];
 </div><!-- /.container -->
 @EndSection
+@Section['Footer']
+@Section['Footer'];
+@EndSection
 
+@Section['BaseHead']
+@Section['Header'];
+@EndSection

@@ -7,7 +7,7 @@ namespace EyeInTheSky.Web.Modules
     using EyeInTheSky.Services.Interfaces;
     using EyeInTheSky.Web.Misc;
     using EyeInTheSky.Web.Models;
-
+    using Microsoft.Win32.SafeHandles;
     using Nancy;
     using Stwalkerster.Bot.CommandLib.Model;
     using Stwalkerster.IrcClient.Interfaces;
@@ -17,16 +17,20 @@ namespace EyeInTheSky.Web.Modules
     {
         private readonly IChannelConfiguration channelConfiguration;
         private readonly IBotUserConfiguration botUserConfiguration;
+        private readonly IStalkNodeFactory stalkNodeFactory;
 
         public ChannelModule(
             IAppConfiguration appConfiguration,
             IIrcClient freenodeClient,
-            IChannelConfiguration channelConfiguration, IBotUserConfiguration botUserConfiguration
-            )
+            IChannelConfiguration channelConfiguration,
+            IBotUserConfiguration botUserConfiguration,
+            IStalkNodeFactory stalkNodeFactory
+        )
             : base(appConfiguration, freenodeClient)
         {
             this.channelConfiguration = channelConfiguration;
             this.botUserConfiguration = botUserConfiguration;
+            this.stalkNodeFactory = stalkNodeFactory;
 
             this.Get["/channels"] = this.GetChannelList;
             this.Get["/channels/{channel}"] = this.GetChannelInfo;
@@ -53,7 +57,9 @@ namespace EyeInTheSky.Web.Modules
             var model = this.CreateModel<ChannelInfoModel>(this.Context);
             model.IrcChannel = channel;
 
-            model.Stalks = channel.Stalks.Values.Select(v => new DisplayStalk(v, this.AppConfiguration)).ToList();
+            model.Stalks = channel.Stalks.Values
+                .Select(v => new DisplayStalk(v, this.AppConfiguration, this.stalkNodeFactory))
+                .ToList();
 
             if (model.IrcClient.Channels.ContainsKey(channel.Identifier))
             {
@@ -164,7 +170,21 @@ namespace EyeInTheSky.Web.Modules
 
         public dynamic GetStalkInfo(dynamic parameters)
         {
-            throw new System.NotImplementedException();
+            var channel = this.channelConfiguration.Items.FirstOrDefault(x => x.Guid == parameters.channel);
+
+            if (channel == null || !channel.Stalks.ContainsKey(parameters.stalk))
+            {
+                return new NotFoundResponse();
+            }
+
+            var model = this.CreateModel<StalkInfoModel>(this.Context);
+            model.IrcChannel = channel;
+            model.Stalk = new DisplayStalk(
+                channel.Stalks[parameters.stalk],
+                this.AppConfiguration,
+                this.stalkNodeFactory);
+
+            return model;
         }
     }
 }

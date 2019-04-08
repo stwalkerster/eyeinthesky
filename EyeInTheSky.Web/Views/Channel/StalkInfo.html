@@ -1,0 +1,60 @@
+@Master['Master/master.sshtml']
+
+@Section['Content']
+<div class="row">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item"><a href="/channels">Channels</a></li>
+            <li class="breadcrumb-item"><a href="/channels/@!Model.IrcChannel.Guid">@!Model.IrcChannel.Identifier</a></li>
+            <li class="breadcrumb-item active" aria-current="page">@!Model.Stalk.Stalk.Identifier</li>
+        </ol>
+    </nav>
+</div>
+<div class="row">
+    <h3><code>@!Model.Stalk.Stalk.Identifier</code></h3>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="alert @!Model.Stalk.StalkDisplayHints.Alert" role="alert">
+            @If.Model.Stalk.StalkDisplayHints.HasEnabledIcon
+            <i class="mr-1 @!Model.Stalk.StalkDisplayHints.EnabledIcon"></i>
+            @EndIf
+            @If.Model.Stalk.StalkDisplayHints.HasExpiryIcon
+            <i class="mr-1 @!Model.Stalk.StalkDisplayHints.ExpiryIcon"></i>
+            @EndIf
+            @!Model.Stalk.StalkDisplayHints.Description
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <table class="table table-sm table-borderless">
+            <tr><th>Created</th><td>unknown</td></tr>
+            <tr><th>Last updated</th><td>@!Model.Stalk.Stalk.LastUpdateTime</td></tr>
+            <tr><th>Last triggered</th><td>@!Model.Stalk.LastTrigger</td></tr>
+            <tr><th>Trigger count</th><td>@!Model.Stalk.Stalk.TriggerCount</td></tr>
+        </table>
+    </div>
+    <div class="col-md-6">
+        <table class="table table-sm table-borderless">
+            <tr><th>Monitored wiki</th><td>@!Model.Stalk.Stalk.WatchChannel</td></tr>
+            <tr><th>Expiry</th><td>@!Model.Stalk.Expiry</td></tr>
+            <tr><th>Dynamic expiry extension</th><td>@!Model.Stalk.DynamicExpiry</td></tr>
+        </table>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12" id="xml_editor">
+        &lt;searchTree&gt;@!Model.Stalk.Xml&lt;/searchTree&gt;
+    </div>
+</div>
+@EndSection
+@Section['Footer']
+<script src="/Content/xonomy/xonomy.js" integrity="sha256-5YvmfpHKY57skkge7G7hp1P3IK0m1WKvH33biOWS2TI=" crossorigin="anonymous"></script>
+
+<script src="/Content/launchEditor.js"></script>
+@EndSection
+@Section['Header']
+<link href="/Content/xonomy/xonomy.css" rel="stylesheet" integrity="sha256-CDh8m31Q7UTpcYk8nxIgd1GgEIx7rutlKGrvE4iTiFg=" crossorigin="anonymous" />
+@EndSection

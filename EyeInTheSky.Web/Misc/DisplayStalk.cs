@@ -2,75 +2,72 @@ namespace EyeInTheSky.Web.Misc
 {
     using System;
     using System.Dynamic;
+    using System.Xml;
     using EyeInTheSky.Model.Interfaces;
+    using EyeInTheSky.Services.Interfaces;
 
     public class DisplayStalk
     {
         private readonly IAppConfiguration appConfiguration;
+        private readonly IStalkNodeFactory stalkNodeFactory;
         public IStalk Stalk { get; private set; }
 
-        public DisplayStalk(IStalk stalk, IAppConfiguration appConfiguration)
+        public DisplayStalk(IStalk stalk, IAppConfiguration appConfiguration, IStalkNodeFactory stalkNodeFactory)
         {
             this.appConfiguration = appConfiguration;
+            this.stalkNodeFactory = stalkNodeFactory;
             this.Stalk = stalk;
         }
 
-        public dynamic StalkDisplayHints
+        public DisplayHints StalkDisplayHints
         {
             get
             {
-                dynamic result = new ExpandoObject();
-                result.Border = "";
-                result.Text = "";
+                var result = new DisplayHints();
+                result.ColourClass = "";
                 result.EnabledIcon = "";
                 result.ExpiryIcon = "";
-                result.HasEnabledIcon = false;
-                result.HasExpiryIcon = false;
 
                 if (!this.IsEnabled)
                 {
-                    result.Border = "border-info";
-                    result.Text = "text-info";
+                    result.ColourClass = "info";
                     result.EnabledIcon = "fas fa-times-circle";
-                    result.HasEnabledIcon = true;
+                    result.Description = "This stalk is currently disabled.";
 
                     if (this.IsExpired)
                     {
                         result.ExpiryIcon = "fas fa-hourglass-end";
-                        result.HasExpiryIcon = true;
+                        result.Description = "This stalk is currently disabled and additionally has expired.";
                     }
                 }
                 else
                 {
                     if (!this.IsExpiryDefined || (!this.IsExpired && !this.IsExpiringSoon))
                     {
-                        result.Border = "border-success";
-                        result.Text = "text-success";
+                        result.ColourClass = "success";
                         result.EnabledIcon = "fas fa-check-circle";
-                        result.HasEnabledIcon = true;
+                        result.Description = "This stalk is currently enabled.";
 
                         if (this.IsExpiryDefined)
                         {
                             result.ExpiryIcon = "fas fa-hourglass-start";
-                            result.HasExpiryIcon = true;
+                            result.Description = "This stalk is currently enabled. An expiry has been defined for this stalk.";
                         }
                     }
                     else
                     {
                         if (this.IsExpiringSoon)
                         {
-                            result.Border = "border-warning";
-                            result.Text = "text-warning";
+                            result.ColourClass = "warning";
                             result.ExpiryIcon = "far fa-clock";
-                            result.HasExpiryIcon = true;
+                            result.Description = "This stalk is currently enabled, and will be expiring soon.";
                         }
 
                         if (this.IsExpired)
                         {
-                            result.Border = "border-danger";
-                            result.Text = "text-danger";
+                            result.ColourClass = "danger";
                             result.ExpiryIcon = "fas fa-hourglass-end";
-                            result.HasExpiryIcon = true;
+                            result.Description = "This stalk has expired.";
                         }
                     }
                 }
@@ -120,9 +117,63 @@ namespace EyeInTheSky.Web.Misc
             }
         }
 
+        public string DynamicExpiry
+        {
+            get
+            {
+                if (!this.Stalk.DynamicExpiry.HasValue)
+                {
+                    return "not configured";
+                }
+
+                return this.Stalk.DynamicExpiry.Value.ToString(this.appConfiguration.TimeSpanFormat);
+            }
+        }
+
         public bool IsExpired
         {
             get { return this.Stalk.ExpiryTime.HasValue && this.Stalk.ExpiryTime.Value < DateTime.Now; }
+        }
+
+        public class DisplayHints
+        {
+            public string Border
+            {
+                get { return this.ColourClass != null ? "border-" + this.ColourClass : string.Empty; }
+            }
+
+            public string Text
+            {
+                get { return this.ColourClass != null ? "text-" + this.ColourClass : string.Empty; }
+            }
+
+            public string Alert
+            {
+                get { return this.ColourClass != null ? "alert-" + this.ColourClass : string.Empty; }
+            }
+
+            public string EnabledIcon { get; set; }
+            public string ExpiryIcon { get; set; }
+
+            public bool HasEnabledIcon
+            {
+                get { return !string.IsNullOrWhiteSpace(this.EnabledIcon); }
+            }
+            public bool HasExpiryIcon
+            {
+                get { return !string.IsNullOrWhiteSpace(this.ExpiryIcon); }
+            }
+
+            public string ColourClass { get; set; }
+            public string Description { get; set; }
+        }
+
+        public string Xml
+        {
+            get
+            {
+                return this.stalkNodeFactory.ToXml(new XmlDocument(), this.Stalk.SearchTree).OuterXml;
+            }
         }
     }
 }
