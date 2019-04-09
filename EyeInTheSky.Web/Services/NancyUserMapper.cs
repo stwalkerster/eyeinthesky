@@ -28,7 +28,10 @@ namespace EyeInTheSky.Web.Services
 
             var identity = new UserIdentity(user);
 
-            ((List<string>) identity.Claims).AddRange(user.GlobalFlags.ToCharArray().Select(x => x.ToString()));
+            if (!string.IsNullOrWhiteSpace(user.GlobalFlags))
+            {
+                ((List<string>) identity.Claims).AddRange(user.GlobalFlags.ToCharArray().Select(x => x.ToString()));
+            }
 
             return identity;
 
