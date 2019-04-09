@@ -40,6 +40,8 @@ namespace EyeInTheSky.Web.Modules
             this.Post["/channels/{channel}/stalk/{stalk}/edit"] = this.PostStalkInfo;
         }
 
+        #region Route handlers
+
         public dynamic PostStalkInfo(dynamic parameters)
         {
             var channel = this.channelConfiguration.Items.FirstOrDefault(x => x.Guid == parameters.channel);
@@ -87,7 +89,9 @@ namespace EyeInTheSky.Web.Modules
         public dynamic GetChannelList(dynamic parameters)
         {
             var getChannelListModel = this.CreateModel<GetChannelListModel>(this.Context);
-            getChannelListModel.Channels = this.channelConfiguration.Items.ToList();
+            getChannelListModel.Channels = this.channelConfiguration.Items
+                .Where(x => this.UserCanSeeChannel(this.Context, x))
+                .ToList();
 
             return getChannelListModel;
         }
@@ -97,6 +101,11 @@ namespace EyeInTheSky.Web.Modules
             var channel = this.channelConfiguration.Items.FirstOrDefault(x => x.Guid == parameters.channel);
 
             if (channel == null)
+            {
+                return new NotFoundResponse();
+            }
+
+            if (!this.UserCanSeeChannel(this.Context, channel))
             {
                 return new NotFoundResponse();
             }
@@ -122,6 +131,43 @@ namespace EyeInTheSky.Web.Modules
             }
 
             model.DisplayUsers = this.GetChannelDisplayUsers(channel, model);
+
+            return model;
+        }
+
+        public dynamic GetStalkInfo(dynamic parameters)
+        {
+            var model = this.CreateModel<StalkInfoModel>(this.Context);
+            return StalkInfoPageBase(parameters, model);
+        }
+
+        public dynamic GetStalkInfoForEdit(dynamic parameters)
+        {
+            var model = this.CreateModel<EditableStalkInfoModel>(this.Context);
+            return StalkInfoPageBase(parameters, model);
+        }
+
+        #endregion
+
+        private dynamic StalkInfoPageBase(dynamic parameters, StalkInfoModel model)
+        {
+            var channel = this.channelConfiguration.Items.FirstOrDefault(x => x.Guid == parameters.channel);
+
+            if (channel == null || !channel.Stalks.ContainsKey(parameters.stalk))
+            {
+                return new NotFoundResponse();
+            }
+
+            if (!this.UserCanSeeChannel(this.Context, channel))
+            {
+                return new NotFoundResponse();
+            }
+
+            model.IrcChannel = channel;
+            model.Stalk = new DisplayStalk(
+                channel.Stalks[parameters.stalk],
+                this.AppConfiguration,
+                this.stalkNodeFactory);
 
             return model;
         }
@@ -203,6 +249,7 @@ namespace EyeInTheSky.Web.Modules
                 .Where(
                     x => x.GlobalFlags.Contains(Flag.Owner)
                          || x.GlobalFlags.Contains(AccessFlags.GlobalAdmin)
+                         || x.GlobalFlags.Contains(AccessFlags.LocalAdmin)
                          || x.GlobalFlags.Contains(AccessFlags.Configuration)))
             {
                 var u = new ChannelDisplayUser();
@@ -215,34 +262,55 @@ namespace EyeInTheSky.Web.Modules
             return displayUsers;
         }
 
-        public dynamic GetStalkInfo(dynamic parameters)
+        private bool UserCanSeeChannel(NancyContext context, IIrcChannel channel)
         {
-            var model = this.CreateModel<StalkInfoModel>(this.Context);
-            return StalkInfoPageBase(parameters, model);
-        }
+            /*
+             * user is "aware" if:
+             *   a) they are a member of the channel
+             *   b) they are subscribed to the channel or a stalk within the channel
+             *   c) they have config or localadmin flags in the channel
+             *   d) they have globaladmin, localadmin, config, or owner flags globally
+             */
 
-        public dynamic GetStalkInfoForEdit(dynamic parameters)
-        {
-            var model = this.CreateModel<EditableStalkInfoModel>(this.Context);
-            return StalkInfoPageBase(parameters, model);
-        }
-
-        private dynamic StalkInfoPageBase(dynamic parameters, StalkInfoModel model)
-        {
-            var channel = this.channelConfiguration.Items.FirstOrDefault(x => x.Guid == parameters.channel);
-
-            if (channel == null || !channel.Stalks.ContainsKey(parameters.stalk))
+            if (channel.Identifier == "##stwalkerster-privalerts")
             {
-                return new NotFoundResponse();
+                return false;
             }
 
-            model.IrcChannel = channel;
-            model.Stalk = new DisplayStalk(
-                channel.Stalks[parameters.stalk],
-                this.AppConfiguration,
-                this.stalkNodeFactory);
+            return true;
+        }
 
-            return model;
+        private bool UserCanSeeChannelConfig(NancyContext context, IIrcChannel channel)
+        {
+            /*
+             * user can see config if:
+             *   a) they are a member of the channel
+             *   b) they are subscribed to the channel or a stalk within the channel
+             *   c) they have *local* config or localadmin flags in the channel
+             *   d) they have owner flags
+             *
+             * Note: globaladmin does not permit viewing of the channel configuration.
+             * Note: global config does not permit viewing of the channel configuration.
+             *
+             * This allows private channels to be protected, but still managed by global users if necessary.
+             */
+
+            if (channel.Identifier == "##stwalkerster-privalerts")
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool UserCanConfigureStalks(NancyContext context, IIrcChannel channel)
+        {
+            /*
+             * user can configure if:
+             *   a) they have *local* config
+             *   b) they have *global* config
+             */
+            return true;
         }
     }
 }
