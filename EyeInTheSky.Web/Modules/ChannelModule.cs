@@ -272,12 +272,55 @@ namespace EyeInTheSky.Web.Modules
              *   d) they have globaladmin, localadmin, config, or owner flags globally
              */
 
-            if (channel.Identifier == "##stwalkerster-privalerts")
+
+            var currentUser = ((UserIdentity) context.CurrentUser).BotUser;
+            // currentUser is "aware" if:
+
+            // a) they are a member of the channel
+            if (this.FreenodeClient.Channels.ContainsKey(channel.Identifier))
             {
-                return false;
+                var ircClientChannel = this.FreenodeClient.Channels[channel.Identifier];
+
+                if (ircClientChannel.Users.Values.Any(x => currentUser.Mask.Matches(x.User).GetValueOrDefault()))
+                {
+                    return true;
+                }
             }
 
-            return true;
+            // b) they are subscribed to the channel or a stalk within the channel
+            if (channel.Users.Any(x => x.Subscribed && x.Mask.Equals(currentUser.Mask))
+                || channel.Stalks.Values.Any(
+                    s => s.Subscribers.Any(u => u.Subscribed && u.Mask.Equals(currentUser.Mask))))
+            {
+                return true;
+            }
+
+            // c) they have config or localadmin flags in the channel
+            if (channel.Users.Any(
+                x =>
+                    !string.IsNullOrEmpty(x.LocalFlags)
+                    && (x.LocalFlags.Contains(AccessFlags.LocalAdmin)
+                        || x.LocalFlags.Contains(AccessFlags.Configuration))
+                    && x.Mask.Equals(currentUser.Mask)))
+            {
+                return true;
+            }
+
+            // d) they have globaladmin, localadmin, config, or owner flags globally
+            if (this.botUserConfiguration.Items.Any(
+                x =>
+                    x.Mask.Equals(currentUser.Mask)
+                    && !string.IsNullOrEmpty(x.GlobalFlags)
+                    && (x.GlobalFlags.Contains(AccessFlags.LocalAdmin)
+                        || x.GlobalFlags.Contains(AccessFlags.GlobalAdmin)
+                        || x.GlobalFlags.Contains(AccessFlags.Configuration)
+                        || x.GlobalFlags.Contains(Flag.Owner))
+            ))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         private bool UserCanSeeChannelConfig(NancyContext context, IIrcChannel channel)
