@@ -13,7 +13,7 @@ namespace EyeInTheSky.Model
         public BotUser(IrcUserMask mask)
         {
             this.Mask = mask;
-            this.WebGuid = new Guid();
+            this.WebGuid = Guid.NewGuid();
         }
 
         internal BotUser(IrcUserMask mask,
