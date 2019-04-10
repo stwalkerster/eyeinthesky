@@ -1,4 +1,4 @@
-namespace EyeInTheSky.Services.RecentChanges
+﻿namespace EyeInTheSky.Services.RecentChanges
 {
     using System;
     using System.Collections.Generic;
@@ -144,11 +144,18 @@ namespace EyeInTheSky.Services.RecentChanges
 
             try
             {
+
+                var extraHeaders = new Dictionary<string, string>
+                {
+                    {"StalkList", stalkList}
+                };
+
                 this.emailHelper.SendEmail(
                     this.FormatMessageForEmail(stalks, rc, botUser),
                     string.Format(this.templates.EmailRcSubject, stalkList, rc.Page),
                     null,
-                    botUser);
+                    botUser,
+                    extraHeaders);
             }
             catch (Exception ex)
             {
@@ -264,6 +271,10 @@ namespace EyeInTheSky.Services.RecentChanges
                     ? stalk.LastUpdateTime.Value.ToString(this.appConfig.DateFormat)
                     : "never";
 
+                var creation = stalk.CreationDate == DateTime.MinValue
+                    ? stalk.CreationDate.ToString(this.appConfig.DateFormat)
+                    : "before records began";
+
                 var subList = new List<string>();
                 var subItem = stalk.Subscribers.FirstOrDefault(x => x.Mask.ToString() == botUser.Mask.ToString());
                 if (subItem != null)
@@ -297,7 +308,8 @@ namespace EyeInTheSky.Services.RecentChanges
                         subscription,
                         lastUpdate,
                         stalk.WatchChannel,
-                        dynamicExpiry
+                        dynamicExpiry,
+                        creation
                     ));
             }
 

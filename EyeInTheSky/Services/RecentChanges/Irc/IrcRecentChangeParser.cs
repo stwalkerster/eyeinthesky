@@ -74,6 +74,7 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
             }
 
             var rc = new RecentChange(userValue);
+            rc.MediaWikiApi = this.mediaWikiApiHelper.GetApiForChannel(channel);
 
             if (titleValue.StartsWith("Special:Log/"))
             {
@@ -84,7 +85,6 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                 this.ConstructEditObject(rc, titleValue, urlValue, comment, flagValue, rcSizeDiff);
             }
 
-            rc.MediaWikiApi = this.mediaWikiApiHelper.GetApiForChannel(channel);
             return rc;
         }
 
@@ -1283,6 +1283,15 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                 throw new BugException(
                     string.Format("Unhandled log entry of type {0} / {1}", rc.Log, rc.EditFlags),
                     string.Format("```\n{0}\n```\n```\n{1}\n```\nFrom: {2}", comment, data, channel));
+            }
+
+            if (!string.IsNullOrWhiteSpace(rc.Page) && rc.Page.StartsWith("Special:AbuseFilter/") && string.IsNullOrWhiteSpace(rc.Url))
+            {
+                // Abusefilter hit
+                var filterId = rc.Page.Split('/')[1];
+                var timestamp = DateTime.UtcNow.ToString("O");
+
+                rc.Url = "https://en.wikipedia.org/wiki/Special:AbuseLog?wpSearchPeriodEnd=" + timestamp + "&wpSearchFilter=" + filterId;
             }
         }
 

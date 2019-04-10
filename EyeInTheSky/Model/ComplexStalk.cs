@@ -15,6 +15,7 @@
             this.Identifier = flag;
             this.baseNode = new FalseNode();
             this.Subscribers = new List<StalkUser>();
+            this.creationDate = DateTime.Now;
         }
 
         internal ComplexStalk(
@@ -27,7 +28,8 @@
             int triggerCount,
             string lastMessageId,
             string watchChannel,
-            TimeSpan? dynamicExpiry)
+            TimeSpan? dynamicExpiry,
+            DateTime creationDate)
         {
             this.Identifier = flag;
             this.LastUpdateTime = lastUpdateTime;
@@ -40,6 +42,7 @@
             this.expiryTime = expiryTime;
             this.isEnabled = isEnabled;
             this.Subscribers = new List<StalkUser>();
+            this.creationDate = creationDate;
         }
 
         private IStalkNode baseNode;
@@ -47,6 +50,7 @@
         private DateTime? expiryTime;
         private bool isEnabled;
         private TimeSpan? dynamicExpiry;
+        private readonly DateTime creationDate;
 
         public List<StalkUser> Subscribers { get; private set; }
 
@@ -129,6 +133,11 @@
                 this.LastUpdateTime = DateTime.UtcNow;
                 this.baseNode = value;
             }
+        }
+
+        public DateTime CreationDate
+        {
+            get { return this.creationDate; }
         }
 
         public bool IsActive()

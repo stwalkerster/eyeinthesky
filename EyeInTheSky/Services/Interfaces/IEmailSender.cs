@@ -1,5 +1,7 @@
 ﻿namespace EyeInTheSky.Services.Interfaces
 {
+    using System.Collections.Generic;
+
     public interface IEmailSender
     {
         string SendEmail(string sender,
@@ -11,6 +13,7 @@
             string username,
             string password,
             string thumbprint,
-            string inReplyTo);
+            string inReplyTo,
+            Dictionary<string, string> extraHeaders);
     }
 }

@@ -22,6 +22,7 @@
         bool Match(IRecentChange rc);
         List<StalkUser> Subscribers { get; }
         string WatchChannel { get; set; }
+        DateTime CreationDate { get; }
         bool TriggerDynamicExpiry();
     }
 }

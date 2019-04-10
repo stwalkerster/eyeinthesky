@@ -252,7 +252,8 @@ namespace EyeInTheSky.Commands
                 body,
                 string.Format(this.templates.EmailStalkReportSubject, this.CommandSource),
                 null,
-                botUser);
+                botUser,
+                null);
 
             yield return new CommandResponse
             {
