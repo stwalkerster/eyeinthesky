@@ -116,6 +116,19 @@ namespace EyeInTheSky.Web.Misc
             }
         }
 
+        public string Creation
+        {
+            get
+            {
+                if (this.Stalk.CreationDate == DateTime.MinValue)
+                {
+                    return "unknown";
+                }
+
+                return this.Stalk.CreationDate.ToString(this.appConfiguration.DateFormat);
+            }
+        }
+
         public string Expiry
         {
             get
