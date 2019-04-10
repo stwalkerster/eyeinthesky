@@ -15,7 +15,9 @@
 <div class="row">
     <div class="card" style="width:100%">
         <div class="card-header">
+            @If.CanConfigure
             <a class="float-right btn btn-light btn-sm" style="height: fit-content;" href="/channels/@!Model.IrcChannel.Guid/stalk/@!Model.Stalk.Stalk.Identifier/edit"><i class="fas fa-edit mr-2"></i>Edit</a>
+            @EndIf
             <div class="custom-control custom-switch float-right mr-3 mt-1">
                 <input type="checkbox" class="custom-control-input" id="enabledSwitch" disabled
                        @If.Model.Stalk.Stalk.IsEnabled

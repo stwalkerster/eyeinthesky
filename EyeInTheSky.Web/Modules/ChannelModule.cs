@@ -51,6 +51,11 @@ namespace EyeInTheSky.Web.Modules
                 return new NotFoundResponse();
             }
 
+            if (!this.UserCanConfigureStalks(this.Context, channel))
+            {
+                return new NotFoundResponse();
+            }
+
             var doc = new XmlDocument();
             doc.LoadXml(this.Request.Form.newsearchtree);
 
@@ -113,9 +118,17 @@ namespace EyeInTheSky.Web.Modules
             var model = this.CreateModel<ChannelInfoModel>(this.Context);
             model.IrcChannel = channel;
 
-            model.Stalks = channel.Stalks.Values
-                .Select(v => new DisplayStalk(v, this.AppConfiguration, this.stalkNodeFactory))
-                .ToList();
+            if (this.UserCanSeeChannelConfig(this.Context, channel))
+            {
+                model.Stalks = channel.Stalks.Values
+                    .Select(v => new DisplayStalk(v, this.AppConfiguration, this.stalkNodeFactory))
+                    .ToList();
+            }
+            else
+            {
+                model.Stalks = new List<DisplayStalk>();
+                model.Errors.Add("You do not have the necessary privileges to see this channel's stalk configuration.");
+            }
 
             if (model.IrcClient.Channels.ContainsKey(channel.Identifier))
             {
@@ -144,7 +157,15 @@ namespace EyeInTheSky.Web.Modules
         public dynamic GetStalkInfoForEdit(dynamic parameters)
         {
             var model = this.CreateModel<EditableStalkInfoModel>(this.Context);
-            return StalkInfoPageBase(parameters, model);
+
+            var stalkInfoPageBase = StalkInfoPageBase(parameters, model);
+
+            if (!this.UserCanConfigureStalks(this.Context, model.IrcChannel))
+            {
+                return new NotFoundResponse();
+            }
+
+            return stalkInfoPageBase;
         }
 
         #endregion
@@ -158,7 +179,7 @@ namespace EyeInTheSky.Web.Modules
                 return new NotFoundResponse();
             }
 
-            if (!this.UserCanSeeChannel(this.Context, channel))
+            if (!this.UserCanSeeChannelConfig(this.Context, channel))
             {
                 return new NotFoundResponse();
             }
@@ -168,6 +189,7 @@ namespace EyeInTheSky.Web.Modules
                 channel.Stalks[parameters.stalk],
                 this.AppConfiguration,
                 this.stalkNodeFactory);
+            model.CanConfigure = this.UserCanConfigureStalks(this.Context, channel);
 
             return model;
         }
@@ -266,15 +288,53 @@ namespace EyeInTheSky.Web.Modules
         {
             /*
              * user is "aware" if:
-             *   a) they are a member of the channel
-             *   b) they are subscribed to the channel or a stalk within the channel
-             *   c) they have config or localadmin flags in the channel
-             *   d) they have globaladmin, localadmin, config, or owner flags globally
+             *   a) they can see channel config
+             *   b) they have globaladmin, localadmin, or config flags globally
              */
 
 
             var currentUser = ((UserIdentity) context.CurrentUser).BotUser;
             // currentUser is "aware" if:
+
+            // a) they can see channel config
+            if (this.UserCanSeeChannelConfig(context, channel))
+            {
+                return true;
+            }
+
+            // b) they have globaladmin, localadmin, or config flags globally
+            if (this.botUserConfiguration.Items.Any(
+                x =>
+                    x.Mask.Equals(currentUser.Mask)
+                    && !string.IsNullOrEmpty(x.GlobalFlags)
+                    && (x.GlobalFlags.Contains(AccessFlags.LocalAdmin)
+                        || x.GlobalFlags.Contains(AccessFlags.GlobalAdmin)
+                        || x.GlobalFlags.Contains(AccessFlags.Configuration))
+            ))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool UserCanSeeChannelConfig(NancyContext context, IIrcChannel channel)
+        {
+            /*
+             * user can see config if:
+             *   a) they are a member of the channel
+             *   b) they are subscribed to the channel or a stalk within the channel
+             *   c) they have *local* config or localadmin flags in the channel
+             *   d) they have owner flags
+             *
+             * Note: globaladmin does not permit viewing of the channel configuration.
+             * Note: global config does not permit viewing of the channel configuration.
+             *
+             * This allows private channels to be protected, but still managed by global users if necessary.
+             */
+
+            var currentUser = ((UserIdentity) context.CurrentUser).BotUser;
+            // currentUser can see config if:
 
             // a) they are a member of the channel
             if (this.FreenodeClient.Channels.ContainsKey(channel.Identifier))
@@ -306,16 +366,12 @@ namespace EyeInTheSky.Web.Modules
                 return true;
             }
 
-            // d) they have globaladmin, localadmin, config, or owner flags globally
+            // d) they have owner flags globally
             if (this.botUserConfiguration.Items.Any(
                 x =>
                     x.Mask.Equals(currentUser.Mask)
                     && !string.IsNullOrEmpty(x.GlobalFlags)
-                    && (x.GlobalFlags.Contains(AccessFlags.LocalAdmin)
-                        || x.GlobalFlags.Contains(AccessFlags.GlobalAdmin)
-                        || x.GlobalFlags.Contains(AccessFlags.Configuration)
-                        || x.GlobalFlags.Contains(Flag.Owner))
-            ))
+                    && x.GlobalFlags.Contains(Flag.Owner)))
             {
                 return true;
             }
@@ -323,37 +379,47 @@ namespace EyeInTheSky.Web.Modules
             return false;
         }
 
-        private bool UserCanSeeChannelConfig(NancyContext context, IIrcChannel channel)
-        {
-            /*
-             * user can see config if:
-             *   a) they are a member of the channel
-             *   b) they are subscribed to the channel or a stalk within the channel
-             *   c) they have *local* config or localadmin flags in the channel
-             *   d) they have owner flags
-             *
-             * Note: globaladmin does not permit viewing of the channel configuration.
-             * Note: global config does not permit viewing of the channel configuration.
-             *
-             * This allows private channels to be protected, but still managed by global users if necessary.
-             */
-
-            if (channel.Identifier == "##stwalkerster-privalerts")
-            {
-                return false;
-            }
-
-            return true;
-        }
-
         private bool UserCanConfigureStalks(NancyContext context, IIrcChannel channel)
         {
             /*
              * user can configure if:
-             *   a) they have *local* config
-             *   b) they have *global* config
+             *   a) they can see the config, AND
+             *   b) they have at least one of:
+             *      i)   *local* config
+             *      ii)  *global* config
+             *      iii) *global* owner
              */
-            return true;
+
+            if(!this.UserCanSeeChannelConfig(context, channel))
+            {
+                return false;
+            }
+
+            var currentUser = ((UserIdentity) context.CurrentUser).BotUser;
+
+            // bi) they have config flags in the channel
+            if (channel.Users.Any(
+                x =>
+                    !string.IsNullOrEmpty(x.LocalFlags)
+                    && x.LocalFlags.Contains(AccessFlags.Configuration)
+                    && x.Mask.Equals(currentUser.Mask)))
+            {
+                return true;
+            }
+
+            // d) they have config or owner flags globally
+            if (this.botUserConfiguration.Items.Any(
+                x =>
+                    x.Mask.Equals(currentUser.Mask)
+                    && !string.IsNullOrEmpty(x.GlobalFlags)
+                    && (x.GlobalFlags.Contains(Flag.Owner)
+                        || x.GlobalFlags.Contains(AccessFlags.Configuration))
+            ))
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }
