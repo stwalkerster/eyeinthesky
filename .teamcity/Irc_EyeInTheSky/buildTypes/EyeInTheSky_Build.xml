@@ -4,7 +4,7 @@
   <description />
   <settings ref="DotNetProject">
     <options>
-      <option name="artifactRules" value="EyeInTheSky/bin/Release/** =&gt; EyeInTheSky_%build.number%.tar.gz!EyeInTheSky/**" />
+      <option name="artifactRules" value="EyeInTheSky/bin/Release/** =&gt; EyeInTheSky_%build.number%.tar.gz!EyeInTheSky/" />
     </options>
     <disabled-settings>
       <setting-ref ref="BUILD_EXT_4" />
