@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+    <components>
+        <component type="EyeInTheSky.Web.Misc.WebConfiguration">
+            <parameters>
+                <!-- IP address and port number to run the web service on -->
+                <webServiceHostPort>127.0.0.1:8080</webServiceHostPort>
+
+                <DisableErrorTraces>true</DisableErrorTraces>
+                <RewriteLocalhost>false</RewriteLocalhost>
+            </parameters>
+        </component>
+    </components>
+</configuration>

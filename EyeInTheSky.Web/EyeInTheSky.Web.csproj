@@ -96,6 +96,7 @@
     <Compile Include="Misc\ChannelDisplayUser.cs" />
     <Compile Include="Misc\DisplayStalk.cs" />
     <Compile Include="Misc\UserIdentity.cs" />
+    <Compile Include="Misc\WebConfiguration.cs" />
     <Compile Include="Models\ChannelInfoModel.cs" />
     <Compile Include="Models\GetChannelListModel.cs" />
     <Compile Include="Models\GetUserListModel.cs" />
@@ -134,6 +135,9 @@
     <EmbeddedResource Include="Views\Default\MainPage.html" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="web.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <EmbeddedResource Include="Views\Channel\GetChannelList.html" />
     <EmbeddedResource Include="Views\Users\GetUserList.html" />
     <EmbeddedResource Include="Content\logo.ico">

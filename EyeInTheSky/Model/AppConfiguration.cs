@@ -96,7 +96,6 @@ namespace EyeInTheSky.Model
         public int MonitoringPort { get; set; }
         public string PhabUrl { get; set; }
         public string PhabToken { get; set; }
-        public string WebServiceHostPort { get; set; }
 
         public string PrivacyPolicy { get; set; }
         // ReSharper restore UnusedAutoPropertyAccessor.Global

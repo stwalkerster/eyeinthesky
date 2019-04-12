@@ -18,6 +18,5 @@
         string PhabToken { get; set; }
         string PrivacyPolicy { get; set; }
         string TimeSpanFormat { get; }
-        string WebServiceHostPort { get; }
     }
 }

@@ -53,8 +53,6 @@
                 <timeSpanFormat>d\d\ hh\:mm\:ss</timeSpanFormat>
                 <!-- Privacy policy wording -->
                 <privacyPolicy>https://example.com/privacy</privacyPolicy>
-                <!-- IP address and port number to run the web service on -->
-                <webServiceHostPort>127.0.0.1:8080</webServiceHostPort>
             </parameters>
         </component>
 

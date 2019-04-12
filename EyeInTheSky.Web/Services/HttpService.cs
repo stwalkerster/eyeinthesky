@@ -3,7 +3,8 @@ namespace EyeInTheSky.Web.Services
     using System;
     using Castle.Core;
     using Castle.Core.Logging;
-    using EyeInTheSky.Model.Interfaces;
+    using EyeInTheSky.Web.Misc;
+    using Nancy;
     using Nancy.Hosting.Self;
 
     public class HttpService : IStartable, IDisposable
@@ -11,11 +12,15 @@ namespace EyeInTheSky.Web.Services
         private readonly ILogger logger;
         private NancyHost server;
         private readonly string listenHostPort;
+        private bool rewriteLocalhost;
 
-        public HttpService(ILogger logger, IAppConfiguration appConfiguration)
+        public HttpService(ILogger logger, WebConfiguration appConfiguration)
         {
             this.logger = logger;
+
             this.listenHostPort = appConfiguration.WebServiceHostPort;
+            this.rewriteLocalhost = appConfiguration.RewriteLocalhost;
+            StaticConfiguration.DisableErrorTraces = appConfiguration.DisableErrorTraces;
         }
 
         public void Start()
@@ -30,7 +35,7 @@ namespace EyeInTheSky.Web.Services
             {
                 this.logger.Debug("Starting management web service");
                 this.server = new NancyHost(
-                    new HostConfiguration {RewriteLocalhost = false},
+                    new HostConfiguration {RewriteLocalhost = this.rewriteLocalhost},
                     new Uri("http://" + this.listenHostPort));
 
                 this.server.Start();
