@@ -16,7 +16,6 @@ namespace EyeInTheSky.Web.Startup
     using Nancy.Conventions;
     using Nancy.Diagnostics;
     using Nancy.Security;
-    using Nancy.ViewEngines;
 
     public class NancyBootstrapper : WindsorNancyBootstrapper
     {
@@ -57,11 +56,11 @@ namespace EyeInTheSky.Web.Startup
                 });
             StatelessAuthentication.Enable(pipelines, statelessAuthenticationConfiguration);
 #else
-            FormsAuthenticationConfiguration formsAuthConfiguration;           
+            FormsAuthenticationConfiguration formsAuthConfiguration;
             try
             {
                 var userMapper = container.Resolve<IUserMapper>();
-                
+
                 formsAuthConfiguration = new FormsAuthenticationConfiguration
                 {
                     UserMapper = userMapper,
@@ -76,31 +75,14 @@ namespace EyeInTheSky.Web.Startup
 
             FormsAuthentication.Enable(pipelines, formsAuthConfiguration);
 #endif
-            
+
         }
 
         protected override void ApplicationStartup(IWindsorContainer container, IPipelines pipelines)
         {
-            ResourceViewLocationProvider.RootNamespaces.Add(Assembly.GetExecutingAssembly(), "EyeInTheSky.Web");
-
             this.logger = container.Resolve<ILogger>();
-            
-            base.ApplicationStartup(container, pipelines);
-        }
 
-        /// <summary>
-        /// Configures Nancy to use EmbeddedResources for it's views
-        /// </summary>
-        protected override NancyInternalConfiguration InternalConfiguration
-        {
-            get
-            {
-                return NancyInternalConfiguration.WithOverrides(
-                    nic =>
-                    {
-                        nic.ViewLocationProvider = typeof(ResourceViewLocationProvider);
-                    });
-            }
+            base.ApplicationStartup(container, pipelines);
         }
 
         /// <summary>
@@ -118,7 +100,7 @@ namespace EyeInTheSky.Web.Startup
             {
                 throw new Exception("Cannot find container");
             }
-            
+
             var windsorContainer = (IWindsorContainer)fieldInfo.GetValue(null);
             return windsorContainer;
         }
