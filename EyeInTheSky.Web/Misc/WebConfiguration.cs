@@ -10,5 +10,7 @@ namespace EyeInTheSky.Web.Misc
         public bool DisableErrorTraces { get; set; }
         public bool RewriteLocalhost { get; set; }
         public string WebServiceHostPort { get; set; }
+        public string DiagnosticsPassword { get; set; }
+        public string DiagnosticsPath { get; set; }
     }
 }

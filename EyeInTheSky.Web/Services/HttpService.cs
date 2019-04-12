@@ -12,7 +12,9 @@ namespace EyeInTheSky.Web.Services
         private readonly ILogger logger;
         private NancyHost server;
         private readonly string listenHostPort;
-        private bool rewriteLocalhost;
+        private readonly bool rewriteLocalhost;
+        private readonly string diagnosticsPath;
+        private readonly string diagnosticsPassword;
 
         public HttpService(ILogger logger, WebConfiguration appConfiguration)
         {
@@ -21,6 +23,9 @@ namespace EyeInTheSky.Web.Services
             this.listenHostPort = appConfiguration.WebServiceHostPort;
             this.rewriteLocalhost = appConfiguration.RewriteLocalhost;
             StaticConfiguration.DisableErrorTraces = appConfiguration.DisableErrorTraces;
+            
+            this.diagnosticsPath = appConfiguration.DiagnosticsPath;
+            this.diagnosticsPassword = appConfiguration.DiagnosticsPassword;
         }
 
         public void Start()

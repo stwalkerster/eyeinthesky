@@ -8,6 +8,8 @@
 
                 <DisableErrorTraces>true</DisableErrorTraces>
                 <RewriteLocalhost>false</RewriteLocalhost>
+                <DiagnosticsPath>_diag</DiagnosticsPath>
+                <DiagnosticsPassword>changemepls</DiagnosticsPassword>
             </parameters>
         </component>
     </components>

@@ -5,12 +5,16 @@ namespace EyeInTheSky.Web.Startup
     using System.Reflection;
     using Castle.Core.Logging;
     using Castle.Windsor;
+
+    using EyeInTheSky.Web.Misc;
+
     using Nancy;
     using Nancy.Authentication.Forms;
     using Nancy.Authentication.Stateless;
     using Nancy.Bootstrapper;
     using Nancy.Bootstrappers.Windsor;
     using Nancy.Conventions;
+    using Nancy.Diagnostics;
     using Nancy.Security;
     using Nancy.ViewEngines;
 
@@ -92,7 +96,10 @@ namespace EyeInTheSky.Web.Startup
             get
             {
                 return NancyInternalConfiguration.WithOverrides(
-                    nic => nic.ViewLocationProvider = typeof(ResourceViewLocationProvider));
+                    nic =>
+                    {
+                        nic.ViewLocationProvider = typeof(ResourceViewLocationProvider);
+                    });
             }
         }
 
@@ -114,6 +121,21 @@ namespace EyeInTheSky.Web.Startup
             
             var windsorContainer = (IWindsorContainer)fieldInfo.GetValue(null);
             return windsorContainer;
+        }
+
+        protected override DiagnosticsConfiguration DiagnosticsConfiguration
+        {
+            get
+            {
+                var config = base.DiagnosticsConfiguration;
+                var container = this.GetApplicationContainer();
+                var webConfiguration = container.Resolve<WebConfiguration>();
+
+                config.Password = webConfiguration.DiagnosticsPassword;
+                config.Path = webConfiguration.DiagnosticsPath;
+
+                return config;
+            }
         }
     }
 }
