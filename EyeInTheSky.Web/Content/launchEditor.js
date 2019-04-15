@@ -86,6 +86,16 @@ $(function(){
             actionParameter: "<usergroup value=\"\" />",
             hideIf: hideMenu
         },{
+            caption: "Append <true>",
+            action: Xonomy.newElementChild,
+            actionParameter: "<true />",
+            hideIf: hideMenu
+        },{
+            caption: "Append <false>",
+            action: Xonomy.newElementChild,
+            actionParameter: "<false />",
+            hideIf: hideMenu
+        },{
             caption: "Append <external>",
             action: Xonomy.newElementChild,
             actionParameter: "<external provider=\"phabricator\" location=\"\" />",
