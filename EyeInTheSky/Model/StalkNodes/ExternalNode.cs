@@ -10,6 +10,9 @@ namespace EyeInTheSky.Model.StalkNodes
         public string Provider { get; set; }
         public string Location { get; set; }
         
+        // stored with XML, but not set on load.
+        public string Comment { get; set; }
+        
         protected override bool? DoMatch(IRecentChange rc, bool forceMatch)
         {
             return this.ChildNode.Match(rc, forceMatch);

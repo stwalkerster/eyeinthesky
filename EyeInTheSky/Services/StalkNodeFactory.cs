@@ -146,7 +146,7 @@
                     throw new XmlException("Unknown external handler type");
             }
 
-            extNode.ChildNode = this.NewFromXmlFragment(provider.GetFragmentFromSource(extNode.Location));
+            extNode.ChildNode = this.NewFromXmlFragment(provider.PopulateFromExternalSource(extNode));
             return extNode;
         }
 
@@ -412,6 +412,7 @@
             var elem = this.CreateElement(doc, node);
             elem.SetAttribute("provider", node.Provider);
             elem.SetAttribute("location", node.Location);
+            elem.SetAttribute("comment", node.Comment);
 
             return elem;
         }
