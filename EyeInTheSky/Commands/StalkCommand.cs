@@ -746,7 +746,7 @@ namespace EyeInTheSky.Commands
         }
 
         [RequiredArguments(1)]
-        [SubcommandInvocation("add")]
+        [SubcommandInvocation("add"), SubcommandInvocation("create")]
         [CommandFlag(AccessFlags.Configuration)]
         [Help("<identifier>", "Adds a new unconfigured stalk")]
         // ReSharper disable once UnusedMember.Global
