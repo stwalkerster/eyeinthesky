@@ -26,79 +26,99 @@ $(function(){
 
     var addChildMenu = [
         {
-            caption: "Append <and>",
-            action: Xonomy.newElementChild,
-            actionParameter: "<and />",
-            hideIf: hideMenu
-        },{
-            caption: "Append <or>",
-            action: Xonomy.newElementChild,
-            actionParameter: "<or />",
-            hideIf: hideMenu
-        },{
-            caption: "Append <not>",
-            action: Xonomy.newElementChild,
-            actionParameter: "<not />",
-            hideIf: hideMenu
-        },{
-            caption: "Append <xor>",
-            action: Xonomy.newElementChild,
-            actionParameter: "<xor />",
-            hideIf: hideMenu
-        },{
-            caption: "Append <x-of>",
-            action: Xonomy.newElementChild,
-            actionParameter: "<x-of />",
-            hideIf: hideMenu
-        },{
-            caption: "Append <user>",
-            action: Xonomy.newElementChild,
-            actionParameter: "<user value=\"\" />",
-            hideIf: hideMenu
-        },{
-            caption: "Append <page>",
-            action: Xonomy.newElementChild,
-            actionParameter: "<page value=\"\" />",
-            hideIf: hideMenu
-        },{
-            caption: "Append <summary>",
-            action: Xonomy.newElementChild,
-            actionParameter: "<summary value=\"\" />",
-            hideIf: hideMenu
-        },{
-            caption: "Append <log>",
-            action: Xonomy.newElementChild,
-            actionParameter: "<log value=\"\" />",
-            hideIf: hideMenu
-        },{
-            caption: "Append <flag>",
-            action: Xonomy.newElementChild,
-            actionParameter: "<flag value=\"\" />",
-            hideIf: hideMenu
-        },{
-            caption: "Append <incategory>",
-            action: Xonomy.newElementChild,
-            actionParameter: "<incategory value=\"\" />",
-            hideIf: hideMenu
-        },{
-            caption: "Append <usergroup>",
-            action: Xonomy.newElementChild,
-            actionParameter: "<usergroup value=\"\" />",
-            hideIf: hideMenu
-        },{
-            caption: "Append <true>",
-            action: Xonomy.newElementChild,
-            actionParameter: "<true />",
-            hideIf: hideMenu
-        },{
-            caption: "Append <false>",
-            action: Xonomy.newElementChild,
-            actionParameter: "<false />",
-            hideIf: hideMenu
-        },{
-            caption: "Append <external>",
-            action: Xonomy.newElementChild,
-            actionParameter: "<external provider=\"phabricator\" location=\"\" />",
+            caption: "New node...",
+            menu: [
+                {
+                    caption: "New leaf node...",
+                    menu: [
+                        {
+                            caption: "Append <user>",
+                            action: Xonomy.newElementChild,
+                            actionParameter: "<user value=\"\" />",
+                            hideIf: hideMenu
+                        },{
+                            caption: "Append <page>",
+                            action: Xonomy.newElementChild,
+                            actionParameter: "<page value=\"\" />",
+                            hideIf: hideMenu
+                        },{
+                            caption: "Append <summary>",
+                            action: Xonomy.newElementChild,
+                            actionParameter: "<summary value=\"\" />",
+                            hideIf: hideMenu
+                        },{
+                            caption: "Append <log>",
+                            action: Xonomy.newElementChild,
+                            actionParameter: "<log value=\"\" />",
+                            hideIf: hideMenu
+                        },{
+                            caption: "Append <flag>",
+                            action: Xonomy.newElementChild,
+                            actionParameter: "<flag value=\"\" />",
+                            hideIf: hideMenu
+                        },{
+                            caption: "Append <incategory>",
+                            action: Xonomy.newElementChild,
+                            actionParameter: "<incategory value=\"\" />",
+                            hideIf: hideMenu
+                        },{
+                            caption: "Append <usergroup>",
+                            action: Xonomy.newElementChild,
+                            actionParameter: "<usergroup value=\"\" />",
+                            hideIf: hideMenu
+                        }
+                    ],
+                    hideIf: hideMenu
+                },
+                {
+                    caption: "New logical node...",
+                    menu: [
+                        {
+                            caption: "Append <and>",
+                            action: Xonomy.newElementChild,
+                            actionParameter: "<and />",
+                            hideIf: hideMenu
+                        },{
+                            caption: "Append <or>",
+                            action: Xonomy.newElementChild,
+                            actionParameter: "<or />",
+                            hideIf: hideMenu
+                        },{
+                            caption: "Append <not>",
+                            action: Xonomy.newElementChild,
+                            actionParameter: "<not />",
+                            hideIf: hideMenu
+                        },{
+                            caption: "Append <xor>",
+                            action: Xonomy.newElementChild,
+                            actionParameter: "<xor />",
+                            hideIf: hideMenu
+                        },{
+                            caption: "Append <x-of>",
+                            action: Xonomy.newElementChild,
+                            actionParameter: "<x-of />",
+                            hideIf: hideMenu
+                        },{
+                            caption: "Append <true>",
+                            action: Xonomy.newElementChild,
+                            actionParameter: "<true />",
+                            hideIf: hideMenu
+                        },{
+                            caption: "Append <false>",
+                            action: Xonomy.newElementChild,
+                            actionParameter: "<false />",
+                            hideIf: hideMenu
+                        }
+                    ],
+                    hideIf: hideMenu
+                },
+                {
+                    caption: "Append <external>",
+                    action: Xonomy.newElementChild,
+                    actionParameter: "<external provider=\"phabricator\" location=\"\" />",
+                    hideIf: hideMenu
+                }
+            ],
             hideIf: hideMenu
         }
     ];
