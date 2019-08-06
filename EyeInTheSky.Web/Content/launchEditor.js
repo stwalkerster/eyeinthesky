@@ -136,7 +136,7 @@ $(function(){
             action: Xonomy.editRaw,
             actionParameter: {
                 fromXml: function(xml) {return xml;},
-                toXml: function(text, origElement) { return text;}
+                toXml: function(text, origElement) { return text.replace(/>\s*/g, '>').replace(/\s*</g, '<');}
             }
         }
     ];
