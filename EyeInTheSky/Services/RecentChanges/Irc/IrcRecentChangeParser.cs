@@ -812,6 +812,18 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                         }
                     }
                     
+                    if (rc.EditFlags == "movenok")
+                    {
+                        var match = new Regex(" encountered a problem while moving page \\[\\[(?<page>.*?)\\]\\] to \\[\\[(?<targetpage>.*?)\\]\\]$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["page"].Value;
+                            rc.TargetPage = result.Groups["targetpage"].Value;
+            
+                            handled = true;
+                        }
+                    }
                     if (rc.EditFlags == "moveok")
                     {
                         var match = new Regex(" completed renaming of translatable page \\[\\[(?<page>.*?)\\]\\] to \\[\\[(?<targetpage>.*?)\\]\\]$");
@@ -890,7 +902,7 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                     
                     if (rc.EditFlags == "prioritylanguages")
                     {
-                        var match = new Regex(" (?:set the priority languages|limited languages) for translatable page \\[\\[(?<page>.*?)\\]\\] to [a-zA-Z, ]+(?:: (?<comment>.*))?$");
+                        var match = new Regex(" (?:removed priority languages from|set the priority languages for|limited languages for) translatable page \\[\\[(?<page>.*?)\\]\\](?: to [a-zA-Z, ]+)?(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {

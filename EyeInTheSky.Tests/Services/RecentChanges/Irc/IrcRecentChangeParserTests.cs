@@ -816,6 +816,16 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                             TargetPage = "Template:The Wikipedia Library 1lib1ref navigation portal",
                             EditFlags = "moveok"
                         });
+                yield return new TestCaseData(
+                        "14[[07Special:Log/pagetranslation14]]4 movenok10 02 5* 03MCruz (WMF) 5*  10MCruz (WMF) encountered a problem while moving page [[02Community Engagement Insights/2018 Report/Community Resources10]] to [[Community Insights/2018 Report/Community Resources]]")
+                    .Returns(
+                        new RecentChange("MCruz (WMF)")
+                        {
+                            Log = "pagetranslation",
+                            Page = "Community Engagement Insights/2018 Report/Community Resources",
+                            TargetPage = "Community Insights/2018 Report/Community Resources",
+                            EditFlags = "movenok"
+                        });
                 
                 yield return new TestCaseData(
                         "14[[07Special:Log/pagetranslation14]]4 deletelok10 02 5* 03MarcoAurelio 5*  10MarcoAurelio completed deletion of translation page [[02Neutral point of view/gsw10]]: vandalism")
@@ -888,6 +898,17 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                         {
                             Log = "pagetranslation",
                             Page = "Iberocoop:Iberoconf 2019/Carta de Santiago",
+                            EditFlags = "prioritylanguages"
+                        });
+                
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/pagetranslation14]]4 prioritylanguages10 02 5* 03Elitre (WMF) 5*  10Elitre (WMF) removed priority languages from translatable page [[02Affiliate-selected Board seats/2019/Primer for user groups10]]")
+                    .Returns(
+                        new RecentChange("Elitre (WMF)")
+                        {
+                            Log = "pagetranslation",
+                            Page = "Affiliate-selected Board seats/2019/Primer for user groups",
                             EditFlags = "prioritylanguages"
                         });
                 
