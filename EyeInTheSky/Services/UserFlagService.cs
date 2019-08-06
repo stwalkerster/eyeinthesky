@@ -94,7 +94,9 @@
             }
             
             // chanops
-            if (user.Client.Channels[locality].Users[user.Nickname].Operator)
+            if (user.Nickname != null 
+                && user.Client.Channels[locality].Users.ContainsKey(user.Nickname) 
+                && user.Client.Channels[locality].Users[user.Nickname].Operator)
             {
                 if (flag == AccessFlags.LocalAdmin || flag == AccessFlags.Configuration)
                 {

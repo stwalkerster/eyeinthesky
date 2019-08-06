@@ -11,6 +11,7 @@ namespace EyeInTheSky.Web.Modules
     using EyeInTheSky.Web.Models;
     using Nancy;
     using Stwalkerster.Bot.CommandLib.Model;
+    using Stwalkerster.Bot.CommandLib.Services.Interfaces;
     using Stwalkerster.IrcClient.Interfaces;
     using Stwalkerster.IrcClient.Model;
 
@@ -19,19 +20,22 @@ namespace EyeInTheSky.Web.Modules
         private readonly IChannelConfiguration channelConfiguration;
         private readonly IBotUserConfiguration botUserConfiguration;
         private readonly IStalkNodeFactory stalkNodeFactory;
+        private readonly IFlagService flagService;
 
         public ChannelModule(
             IAppConfiguration appConfiguration,
             IIrcClient freenodeClient,
             IChannelConfiguration channelConfiguration,
             IBotUserConfiguration botUserConfiguration,
-            IStalkNodeFactory stalkNodeFactory
+            IStalkNodeFactory stalkNodeFactory,
+            IFlagService flagService
         )
             : base(appConfiguration, freenodeClient)
         {
             this.channelConfiguration = channelConfiguration;
             this.botUserConfiguration = botUserConfiguration;
             this.stalkNodeFactory = stalkNodeFactory;
+            this.flagService = flagService;
 
             this.Get["/channels"] = this.GetChannelList;
             this.Get["/channels/{channel}"] = this.GetChannelInfo;
@@ -334,6 +338,7 @@ namespace EyeInTheSky.Web.Modules
              */
 
             var currentUser = ((UserIdentity) context.CurrentUser).BotUser;
+            var ircUser = this.GetIrcUser(channel, currentUser);
             // currentUser can see config if:
 
             // a) they are a member of the channel
@@ -356,12 +361,9 @@ namespace EyeInTheSky.Web.Modules
             }
 
             // c) they have config or localadmin flags in the channel
-            if (channel.Users.Any(
-                x =>
-                    !string.IsNullOrEmpty(x.LocalFlags)
-                    && (x.LocalFlags.Contains(AccessFlags.LocalAdmin)
-                        || x.LocalFlags.Contains(AccessFlags.Configuration))
-                    && x.Mask.Equals(currentUser.Mask)))
+            if (
+                this.flagService.UserHasFlag(ircUser,AccessFlags.LocalAdmin, channel.Identifier)
+                || this.flagService.UserHasFlag(ircUser,AccessFlags.Configuration, channel.Identifier))
             {
                 return true;
             }
@@ -396,30 +398,40 @@ namespace EyeInTheSky.Web.Modules
             }
 
             var currentUser = ((UserIdentity) context.CurrentUser).BotUser;
+            var ircUser = this.GetIrcUser(channel, currentUser);
 
-            // bi) they have config flags in the channel
-            if (channel.Users.Any(
-                x =>
-                    !string.IsNullOrEmpty(x.LocalFlags)
-                    && x.LocalFlags.Contains(AccessFlags.Configuration)
-                    && x.Mask.Equals(currentUser.Mask)))
+            // bi) they have config flags in the channel, either locally or globally
+            if (this.flagService.UserHasFlag(ircUser,
+                AccessFlags.Configuration, channel.Identifier))
             {
                 return true;
             }
 
-            // d) they have config or owner flags globally
+            // d) they owner flags globally
             if (this.botUserConfiguration.Items.Any(
                 x =>
                     x.Mask.Equals(currentUser.Mask)
                     && !string.IsNullOrEmpty(x.GlobalFlags)
-                    && (x.GlobalFlags.Contains(Flag.Owner)
-                        || x.GlobalFlags.Contains(AccessFlags.Configuration))
+                    && x.GlobalFlags.Contains(Flag.Owner)
             ))
             {
                 return true;
             }
 
             return false;
+        }
+
+        private IrcUser GetIrcUser(IIrcChannel channel, IBotUser currentUser)
+        {
+            var channelUser = this.FreenodeClient.Channels[channel.Identifier].Users.Values
+                .FirstOrDefault(x => currentUser.Mask.Matches(x.User).GetValueOrDefault());
+            var ircUser = channelUser != null
+                ? channelUser.User
+                : new IrcUser(this.FreenodeClient)
+                {
+                    Account = currentUser.Mask.ToString().Substring(2), SkeletonStatus = IrcUserSkeletonStatus.Account
+                };
+            return ircUser;
         }
     }
 }
