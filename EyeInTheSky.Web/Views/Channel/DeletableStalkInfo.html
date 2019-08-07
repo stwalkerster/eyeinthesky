@@ -1,0 +1,79 @@
+@Master['Master/master.sshtml']
+
+@Section['Content']
+<div class="row">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item"><a href="/channels">Channels</a></li>
+            <li class="breadcrumb-item"><a href="/channels/@!Model.IrcChannel.Guid">@!Model.IrcChannel.Identifier</a></li>
+            <li class="breadcrumb-item"><a href="/channels/@!Model.IrcChannel.Guid/stalk/@!Model.Stalk.Stalk.Identifier">@!Model.Stalk.Stalk.Identifier</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Delete</li>
+
+        </ol>
+    </nav>
+</div>
+<form method="post" id="stalkForm">
+    <div class="row">
+        <div class="card" style="width:100%">
+            <div class="card-header">
+                <div class="custom-control custom-switch float-right mr-3 mt-1">
+                    <input type="checkbox" class="custom-control-input" id="enabledSwitch" disabled
+                           @If.Model.Stalk.Stalk.IsEnabled
+                           checked
+                           @EndIf
+                    >
+                    <label class="custom-control-label" for="enabledSwitch">Enable stalk</label>
+                </div>
+                <h4>Deleting: <code>@!Model.Stalk.Stalk.Identifier</code></h4>
+            </div>
+            <div class="card-body container-fluid">
+                <div class="row">
+                    <div class="col-md-6">
+                        <table class="table table-sm table-borderless mb-0">
+                            <tr><th>Created</th><td>@!Model.Stalk.Creation</td></tr>
+                            <tr><th>Last updated</th><td>@!Model.Stalk.LastUpdate</td></tr>
+                            <tr><th>Last triggered</th><td>@!Model.Stalk.LastTrigger</td></tr>
+                            <tr><th>Trigger count</th><td>@!Model.Stalk.Stalk.TriggerCount</td></tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <table class="table table-sm table-borderless mb-0">
+                            <tr><th>Report channel</th><td>@!Model.Stalk.Stalk.Channel</td></tr>
+                            <tr><th>Monitored wiki</th><td>@!Model.Stalk.Stalk.WatchChannel</td></tr>
+                            <tr><th>Expiry</th><td
+                                    @If.Model.Stalk.IsExpiringSoon
+                                    class="text-warning"
+                                    @EndIf
+                                    @If.Model.Stalk.IsExpired
+                                    class="text-danger"
+                                    @EndIf
+                            >@!Model.Stalk.Expiry</td></tr>
+                            <tr><th>Dynamic expiry extension</th><td>@!Model.Stalk.DynamicExpiry</td></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body mt-0">
+                <p class="card-text">@!Model.Stalk.Stalk.Description</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12" id="xml_editor">
+            &lt;searchTree&gt;@!Model.Stalk.Xml&lt;/searchTree&gt;
+        </div>
+        <div class="col-12">
+            <button type="submit" class="btn btn-danger float-right mt-2 hide" id="saveButton"><i class="fas fa-trash mr-2"></i>Delete this stalk permanently</button>
+        </div>
+    </div>
+</form>
+@EndSection
+@Section['Footer']
+<script src="/Content/xonomy/xonomy.js" integrity="sha256-WrUc+985cCPTCe7dL6ptQiIKMhInPlJ+cSo9t5/QXWc=" crossorigin="anonymous"></script>
+<script src="/Content/launchViewer.js"></script>
+@EndSection
+@Section['Header']
+<link href="/Content/xonomy/xonomy.css" rel="stylesheet" integrity="sha256-CDh8m31Q7UTpcYk8nxIgd1GgEIx7rutlKGrvE4iTiFg=" crossorigin="anonymous" />
+@EndSection

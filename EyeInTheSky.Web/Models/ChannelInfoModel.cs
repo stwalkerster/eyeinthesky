@@ -14,5 +14,7 @@ namespace EyeInTheSky.Web.Models
         public List<DisplayStalk> Stalks { get; set; }
 
         public List<ChannelDisplayUser> DisplayUsers { get; set; }
+
+        public bool CanConfigureStalks { get; set; }
     }
 }

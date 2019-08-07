@@ -1,0 +1,79 @@
+@Master['Master/master.sshtml']
+
+@Section['Content']
+<div class="row">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item"><a href="/channels">Channels</a></li>
+            <li class="breadcrumb-item"><a href="/channels/@!Model.IrcChannel.Guid">@!Model.IrcChannel.Identifier</a></li>
+            <li class="breadcrumb-item active" aria-current="page">New stalk</li>
+
+        </ol>
+    </nav>
+</div>
+<form method="post" id="stalkForm">
+<div class="row">
+    <div class="card" style="width:100%">
+        <div class="card-header">
+            <div class="custom-control custom-switch float-right mr-3 mt-1">
+                <input type="checkbox" class="custom-control-input" id="enabledSwitch" disabled>
+                <label class="custom-control-label" for="enabledSwitch">Enable stalk</label>
+            </div>
+            <h4>New stalk</h4>
+        </div>
+        <div class="card-body container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table table-sm table-borderless mb-0">
+                        <tr><th>Identifier</th><td><input type="text" class="form-control" name="stalkIdentifier" placeholder="Identifier"></td></tr>
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <table class="table table-sm table-borderless mb-0">
+                        <tr><th>Created</th><td>never</td></tr>
+                        <tr><th>Last updated</th><td>never</td></tr>
+                        <tr><th>Last triggered</th><td>never</td></tr>
+                        <tr><th>Trigger count</th><td>0</td></tr>
+                    </table>
+                </div>
+                <div class="col-md-6">
+                    <table class="table table-sm table-borderless mb-0">
+                        <tr><th>Report channel</th><td>@!Model.IrcChannel.Identifier</td></tr>
+                        <tr><th>Monitored wiki</th><td>@!Model.WatchChannel</td></tr>
+                        <tr><th>Expiry</th><td>never</td></tr>
+                        <tr><th>Dynamic expiry extension</th><td>not configured</td></tr>
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="alert alert-info" role="alert">
+                        The configuration of this stalk can be edited after initial creation.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12" id="xml_editor">
+        &lt;searchTree&gt;&lt;false /&gt;&lt;/searchTree&gt;
+    </div>
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary float-right mt-2 hide" id="saveButton"><i class="fas fa-save mr-2"></i>Save new stalk</button>
+    </div>
+</div>
+</form>
+@EndSection
+@Section['Footer']
+<script src="/Content/xonomy/xonomy.js" integrity="sha256-WrUc+985cCPTCe7dL6ptQiIKMhInPlJ+cSo9t5/QXWc=" crossorigin="anonymous"></script>
+<script src="/Content/launchViewer.js"></script>
+
+@EndSection
+@Section['Header']
+<link href="/Content/xonomy/xonomy.css" rel="stylesheet" integrity="sha256-CDh8m31Q7UTpcYk8nxIgd1GgEIx7rutlKGrvE4iTiFg=" crossorigin="anonymous" />
+@EndSection

@@ -103,6 +103,7 @@
     <Compile Include="Models\LoginDataModel.cs" />
     <Compile Include="Models\MainPageModel.cs" />
     <Compile Include="Models\ModelBase.cs" />
+    <Compile Include="Models\NewStalkModel.cs" />
     <Compile Include="Models\StalkInfoModel.cs" />
     <Compile Include="Modules\AuthenticatedModuleBase.cs" />
     <Compile Include="Modules\ChannelModule.cs" />
@@ -126,10 +127,19 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\launchViewer.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Views\Channel\ChannelInfo.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Views\Channel\DeletableStalkInfo.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Views\Channel\EditableStalkInfo.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\Channel\NewStalk.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Views\Channel\StalkInfo.html">

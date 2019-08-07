@@ -39,8 +39,12 @@ namespace EyeInTheSky.Web.Modules
 
             this.Get["/channels"] = this.GetChannelList;
             this.Get["/channels/{channel}"] = this.GetChannelInfo;
+            this.Get["/channels/{channel}/new"] = this.NewStalk;
+            this.Post["/channels/{channel}/new"] = this.PostNewStalk;
             this.Get["/channels/{channel}/stalk/{stalk}"] = this.GetStalkInfo;
             this.Get["/channels/{channel}/stalk/{stalk}/edit"] = this.GetStalkInfoForEdit;
+            this.Get["/channels/{channel}/stalk/{stalk}/delete"] = this.GetStalkInfoForDelete;
+            this.Post["/channels/{channel}/stalk/{stalk}/delete"] = this.DeleteStalk;
             this.Post["/channels/{channel}/stalk/{stalk}/edit"] = this.PostStalkInfo;
         }
 
@@ -95,6 +99,70 @@ namespace EyeInTheSky.Web.Modules
             return this.Response.AsRedirect(string.Format("/channels/{0}/stalk/{1}", channel.Guid, stalk.Identifier));
         }
 
+        public dynamic PostNewStalk(dynamic parameters)
+        {
+            var channel = this.channelConfiguration.Items.FirstOrDefault(x => x.Guid == parameters.channel);
+
+            if (channel == null)
+            {
+                return new NotFoundResponse();
+            }
+
+            if (!this.UserCanConfigureStalks(this.Context, channel))
+            {
+                return new NotFoundResponse();
+            }
+
+            if (string.IsNullOrWhiteSpace(this.Request.Form.stalkIdentifier))
+            {
+                // TODO: error out here
+            }
+
+            if (channel.Stalks.ContainsKey(this.Request.Form.stalkIdentifier))
+            {
+                // TODO: error out here
+            }
+
+            IStalk stalk = new ComplexStalk(this.Request.Form.stalkIdentifier)
+                {Channel = channel.Identifier, WatchChannel = this.AppConfiguration.WikimediaChannel};
+            channel.Stalks.Add(stalk.Identifier, stalk);
+
+            this.channelConfiguration.Save();
+            this.FreenodeClient.SendMessage(
+                stalk.Channel,
+                "The stalk " + stalk.Identifier + " was created by " + this.Context.CurrentUser.UserName
+                + " from the web interface.");
+
+            return this.Response.AsRedirect(string.Format("/channels/{0}/stalk/{1}/edit", channel.Guid, stalk.Identifier));
+        }
+
+        public dynamic DeleteStalk(dynamic parameters)
+        {
+            var channel = this.channelConfiguration.Items.FirstOrDefault(x => x.Guid == parameters.channel);
+
+            if (channel == null || !channel.Stalks.ContainsKey(parameters.stalk))
+            {
+                return new NotFoundResponse();
+            }
+
+            if (!this.UserCanConfigureStalks(this.Context, channel))
+            {
+                return new NotFoundResponse();
+            }
+
+            var stalk = channel.Stalks[parameters.stalk];
+            channel.Stalks.Remove(parameters.stalk);
+
+            this.channelConfiguration.Save();
+            this.FreenodeClient.SendMessage(
+                stalk.Channel,
+                "The stalk " + stalk.Identifier + " was deleted by " + this.Context.CurrentUser.UserName
+                + " from the web interface.");
+
+            return this.Response.AsRedirect(string.Format("/channels/{0}", channel.Guid));
+        }
+
+
         public dynamic GetChannelList(dynamic parameters)
         {
             var getChannelListModel = this.CreateModel<GetChannelListModel>(this.Context);
@@ -148,6 +216,7 @@ namespace EyeInTheSky.Web.Modules
             }
 
             model.DisplayUsers = this.GetChannelDisplayUsers(channel, model);
+            model.CanConfigureStalks = this.UserCanConfigureStalks(this.Context, channel);
 
             return model;
         }
@@ -157,6 +226,41 @@ namespace EyeInTheSky.Web.Modules
             var model = this.CreateModel<StalkInfoModel>(this.Context);
             return StalkInfoPageBase(parameters, model);
         }
+
+        public dynamic GetStalkInfoForDelete(dynamic parameters)
+        {
+            var model = this.CreateModel<DeletableStalkInfoModel>(this.Context);
+            return StalkInfoPageBase(parameters, model);
+        }
+
+        public dynamic NewStalk(dynamic parameters)
+        {
+            var model = this.CreateModel<NewStalkModel>(this.Context);
+
+            var channel = this.channelConfiguration.Items.FirstOrDefault(x => x.Guid == parameters.channel);
+
+            if (channel == null)
+            {
+                return new NotFoundResponse();
+            }
+
+            if (!this.UserCanSeeChannelConfig(this.Context, channel))
+            {
+                return new NotFoundResponse();
+            }
+
+            if (!this.UserCanConfigureStalks(this.Context, channel))
+            {
+                return new NotFoundResponse();
+            }
+
+            model.IrcChannel = channel;
+            model.WatchChannel = this.AppConfiguration.WikimediaChannel;
+
+            return model;
+        }
+
+
 
         public dynamic GetStalkInfoForEdit(dynamic parameters)
         {

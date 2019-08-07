@@ -13,4 +13,8 @@ namespace EyeInTheSky.Web.Models
     public class EditableStalkInfoModel : StalkInfoModel
     {
     }
+
+    public class DeletableStalkInfoModel : StalkInfoModel
+    {
+    }
 }

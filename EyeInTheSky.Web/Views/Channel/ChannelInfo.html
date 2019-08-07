@@ -15,6 +15,9 @@
 </div>
 <div class="row">
     <div class="col-12">
+        @If.Model.CanConfigureStalks
+        <a href="/channels/@!Model.IrcChannel.Guid/new" class="float-right btn btn-success btn-sm">Create new stalk</a>
+        @EndIf
 
         <h4>Stalks</h4>
 
