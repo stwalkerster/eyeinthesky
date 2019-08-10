@@ -6,6 +6,7 @@ namespace EyeInTheSky.Commands
     using Castle.Core.Logging;
     using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
+    using EyeInTheSky.Services.Email.Interfaces;
     using EyeInTheSky.Services.Interfaces;
     using MimeKit;
     using Stwalkerster.Bot.CommandLib.Attributes;

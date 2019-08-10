@@ -191,6 +191,10 @@
     <Compile Include="Services\ConfigProviders\IMediaWikiConfigurationProvider.cs" />
     <Compile Include="Services\ConfigProviders\MapMediaWikiConfigProvider.cs" />
     <Compile Include="Services\ConfigProviders\PatternMediaWikiConfigProvider.cs" />
+    <Compile Include="Services\Email\EmailHelper.cs" />
+    <Compile Include="Services\Email\EmailSender.cs" />
+    <Compile Include="Services\Email\Interfaces\IEmailHelper.cs" />
+    <Compile Include="Services\Email\Interfaces\IEmailSender.cs" />
     <Compile Include="Services\ExternalProviders\Interfaces\IExternalProvider.cs" />
     <Compile Include="Services\ExternalProviders\Interfaces\IPhabricatorExternalProvider.cs" />
     <Compile Include="Services\ExternalProviders\PhabricatorExternalProvider.cs" />
@@ -209,8 +213,6 @@
     <Compile Include="Services\ConfigurationProvider.cs" />
     <Compile Include="Services\StalkSubscriptionHelper.cs" />
     <Compile Include="Services\UserFlagService.cs" />
-    <Compile Include="Services\EmailHelper.cs" />
-    <Compile Include="Services\EmailSender.cs" />
     <Compile Include="Services\BugReporter.cs" />
     <Compile Include="Services\FileService.cs" />
     <Compile Include="Services\Interfaces\IBotUserConfiguration.cs" />
@@ -218,8 +220,6 @@
     <Compile Include="Services\Interfaces\IBugReporter.cs" />
     <Compile Include="Services\Interfaces\IConfigFactory.cs" />
     <Compile Include="Services\Interfaces\IConfigurationBase.cs" />
-    <Compile Include="Services\Interfaces\IEmailHelper.cs" />
-    <Compile Include="Services\Interfaces\IEmailSender.cs" />
     <Compile Include="Services\Interfaces\IFileService.cs" />
     <Compile Include="Services\Interfaces\IStalkFactory.cs" />
     <Compile Include="Services\Interfaces\IStalkNodeFactory.cs" />

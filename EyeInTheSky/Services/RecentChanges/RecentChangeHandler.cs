@@ -7,6 +7,7 @@
     using System.Text;
     using Castle.Core.Logging;
     using EyeInTheSky.Model.Interfaces;
+    using EyeInTheSky.Services.Email.Interfaces;
     using EyeInTheSky.Services.Interfaces;
     using EyeInTheSky.Services.RecentChanges.Interfaces;
     using Stwalkerster.IrcClient.Events;

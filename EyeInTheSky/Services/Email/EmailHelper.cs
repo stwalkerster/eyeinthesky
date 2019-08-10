@@ -1,10 +1,10 @@
-﻿namespace EyeInTheSky.Services
+﻿namespace EyeInTheSky.Services.Email
 {
     using System.Collections.Generic;
     using System.Text;
     using Castle.Core.Logging;
     using EyeInTheSky.Model.Interfaces;
-    using EyeInTheSky.Services.Interfaces;
+    using EyeInTheSky.Services.Email.Interfaces;
     using Stwalkerster.IrcClient.Interfaces;
 
     public class EmailHelper : IEmailHelper

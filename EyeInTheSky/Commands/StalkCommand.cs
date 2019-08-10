@@ -13,6 +13,7 @@ namespace EyeInTheSky.Commands
     using EyeInTheSky.Model.StalkNodes;
     using EyeInTheSky.Model.StalkNodes.BaseNodes;
     using EyeInTheSky.Services;
+    using EyeInTheSky.Services.Email.Interfaces;
     using EyeInTheSky.Services.Interfaces;
     using EyeInTheSky.Services.RecentChanges.Interfaces;
     using Stwalkerster.Bot.CommandLib.Attributes;

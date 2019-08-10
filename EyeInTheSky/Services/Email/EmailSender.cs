@@ -1,9 +1,9 @@
-﻿namespace EyeInTheSky.Services
+﻿namespace EyeInTheSky.Services.Email
 {
     using System.Collections.Generic;
     using System.Linq;
     using System.Security.Cryptography.X509Certificates;
-    using EyeInTheSky.Services.Interfaces;
+    using EyeInTheSky.Services.Email.Interfaces;
     using MailKit.Net.Smtp;
     using MailKit.Security;
     using MimeKit;

@@ -37,7 +37,7 @@
             var conversionManager =
                 (IConversionManager) container.Kernel.GetSubSystem(SubSystemConstants.ConversionManagerKey);
             conversionManager.Add(new MediaWikiConfigMapEntryConverter());
-            
+
             container.Install(
                 Configuration.FromXmlFile("alert-templates.xml"),
                 new Stwalkerster.IrcClient.Installer(),
@@ -49,9 +49,10 @@
                 Component.For<IMediaWikiApiTypedFactory>().AsFactory(),
                 Component.For<IMediaWikiApi>().ImplementedBy<MediaWikiApi>().LifestyleTransient(),
                 Component.For<IWebServiceClient>().ImplementedBy<WebServiceClient>(),
-                
+
                 // Services
                 Classes.FromThisAssembly().InNamespace("EyeInTheSky.Services").WithServiceAllInterfaces(),
+                Classes.FromThisAssembly().InNamespace("EyeInTheSky.Services.Email").WithServiceAllInterfaces(),
                 Classes.FromThisAssembly().InNamespace("EyeInTheSky.Services.ExternalProviders").WithServiceAllInterfaces(),
                 Classes.FromThisAssembly().InNamespace("EyeInTheSky.Services.RecentChanges").WithServiceAllInterfaces(),
                 Classes.FromThisAssembly().InNamespace("EyeInTheSky.Services.RecentChanges.Irc").WithServiceAllInterfaces(),

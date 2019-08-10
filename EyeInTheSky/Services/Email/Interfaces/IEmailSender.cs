@@ -1,4 +1,4 @@
-﻿namespace EyeInTheSky.Services.Interfaces
+﻿namespace EyeInTheSky.Services.Email.Interfaces
 {
     using System.Collections.Generic;
 
