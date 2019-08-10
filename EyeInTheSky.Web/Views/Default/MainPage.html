@@ -13,7 +13,7 @@
             </p>
             <ul>
                 @Each.SubscribedChannels
-                <li><code>@!Current.Identifier</code></li>
+                <li><a href="/channels/@!Current.Guid"><code>@!Current.Identifier</code></a></li>
                 @EndEach
             </ul>
         </div>
