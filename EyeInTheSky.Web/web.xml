@@ -5,6 +5,7 @@
             <parameters>
                 <!-- IP address and port number to run the web service on -->
                 <webServiceHostPort>127.0.0.1:8080</webServiceHostPort>
+                <PublicEndpoint>http://127.0.0.1:8080/</PublicEndpoint>
 
                 <DisableErrorTraces>true</DisableErrorTraces>
                 <RewriteLocalhost>false</RewriteLocalhost>

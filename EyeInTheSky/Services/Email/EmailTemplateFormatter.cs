@@ -79,7 +79,7 @@ namespace EyeInTheSky.Services.Email
                 {
                     var stalkInfoFormattingEventArgs = new StalkInfoFormattingEventArgs(stalk);
                     handler(this, stalkInfoFormattingEventArgs);
-                    hookContent += stalkInfoFormattingEventArgs;
+                    hookContent = stalkInfoFormattingEventArgs.ToString();
                 }
 
                 stalkInfo.Append(

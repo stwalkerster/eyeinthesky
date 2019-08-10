@@ -12,5 +12,6 @@ namespace EyeInTheSky.Web.Misc
         public string WebServiceHostPort { get; set; }
         public string DiagnosticsPassword { get; set; }
         public string DiagnosticsPath { get; set; }
+        public string PublicEndpoint { get; set; }
     }
 }

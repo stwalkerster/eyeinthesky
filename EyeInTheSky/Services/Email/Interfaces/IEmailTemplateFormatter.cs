@@ -1,5 +1,6 @@
 namespace EyeInTheSky.Services.Email.Interfaces
 {
+    using System;
     using System.Collections.Generic;
     using EyeInTheSky.Model.Interfaces;
 
@@ -9,5 +10,6 @@ namespace EyeInTheSky.Services.Email.Interfaces
 
         string FormatRecentChangeStalksForEmail(IEnumerable<IStalk> stalks, IRecentChange rc, IBotUser botUser);
 
+        event EventHandler<StalkInfoFormattingEventArgs> OnStalkFormat;
     }
 }
