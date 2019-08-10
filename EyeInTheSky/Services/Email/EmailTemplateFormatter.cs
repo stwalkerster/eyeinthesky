@@ -15,6 +15,8 @@ namespace EyeInTheSky.Services.Email
         private readonly IChannelConfiguration channelConfig;
         private readonly INotificationTemplates templates;
 
+        public event EventHandler<StalkInfoFormattingEventArgs> OnStalkFormat;
+
         public EmailTemplateFormatter(
             IAppConfiguration appConfig,
             IChannelConfiguration channelConfig,
@@ -70,6 +72,16 @@ namespace EyeInTheSky.Services.Email
                     subscription = "none";
                 }
 
+                var hookContent = "\n";
+
+                var handler = this.OnStalkFormat;
+                if (handler != null)
+                {
+                    var stalkInfoFormattingEventArgs = new StalkInfoFormattingEventArgs(stalk);
+                    handler(this, stalkInfoFormattingEventArgs);
+                    hookContent += stalkInfoFormattingEventArgs;
+                }
+
                 stalkInfo.Append(
                     string.Format(
                         this.templates.EmailStalkTemplate,
@@ -84,7 +96,8 @@ namespace EyeInTheSky.Services.Email
                         lastUpdate,
                         stalk.WatchChannel,
                         dynamicExpiry,
-                        creation
+                        creation,
+                        hookContent
                     ));
             }
 

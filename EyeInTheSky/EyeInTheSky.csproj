@@ -197,6 +197,7 @@
     <Compile Include="Services\Email\Interfaces\IEmailHelper.cs" />
     <Compile Include="Services\Email\Interfaces\IEmailSender.cs" />
     <Compile Include="Services\Email\Interfaces\IEmailTemplateFormatter.cs" />
+    <Compile Include="Services\Email\StalkInfoFormattingEventHandler.cs" />
     <Compile Include="Services\ExternalProviders\Interfaces\IExternalProvider.cs" />
     <Compile Include="Services\ExternalProviders\Interfaces\IPhabricatorExternalProvider.cs" />
     <Compile Include="Services\ExternalProviders\PhabricatorExternalProvider.cs" />
