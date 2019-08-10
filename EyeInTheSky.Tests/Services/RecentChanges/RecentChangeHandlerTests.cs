@@ -30,7 +30,7 @@
             this.rcMock = new Mock<IRecentChange>();
             this.botUser = new Mock<IBotUser>();
             this.channelConfig = new Mock<IChannelConfiguration>();
-            
+
             var client = new Mock<IIrcClient>();
             client.Setup(x => x.ExtBanDelimiter).Returns("$");
             client.Setup(x => x.ExtBanTypes).Returns("a");
@@ -71,7 +71,8 @@
                 null,
                 null,
                 null,
-                this.NotificationTemplatesMock.Object);
+                this.NotificationTemplatesMock.Object,
+                null);
 
             // act
             var result = rcHander.FormatMessageForIrc(new[] {this.stalkMock.Object, s2.Object}, this.rcMock.Object);
@@ -98,7 +99,8 @@
                 null,
                 null,
                 null,
-                this.NotificationTemplatesMock.Object);
+                this.NotificationTemplatesMock.Object,
+                null);
 
             // act
             var result = rcHander.FormatMessageForIrc(new[] {this.stalkMock.Object, s2.Object}, this.rcMock.Object);
@@ -122,7 +124,8 @@
                 null,
                 null,
                 null,
-                this.NotificationTemplatesMock.Object);
+                this.NotificationTemplatesMock.Object,
+                null);
 
             // act
             var result = rcHander.FormatMessageForIrc(new[] {this.stalkMock.Object}, this.rcMock.Object);
@@ -146,7 +149,8 @@
                 null,
                 null,
                 null,
-                this.NotificationTemplatesMock.Object);
+                this.NotificationTemplatesMock.Object,
+                null);
 
             // act
             var result = rcHander.FormatMessageForIrc(new[] {this.stalkMock.Object}, this.rcMock.Object);

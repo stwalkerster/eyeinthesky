@@ -15,7 +15,6 @@ namespace EyeInTheSky.Commands
     using EyeInTheSky.Services;
     using EyeInTheSky.Services.Email.Interfaces;
     using EyeInTheSky.Services.Interfaces;
-    using EyeInTheSky.Services.RecentChanges.Interfaces;
     using Stwalkerster.Bot.CommandLib.Attributes;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities;
     using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities.Response;
@@ -33,11 +32,11 @@ namespace EyeInTheSky.Commands
         private readonly IAppConfiguration config;
         private readonly INotificationTemplates templates;
         private readonly IEmailHelper emailHelper;
-        private readonly IRecentChangeHandler recentChangeHandler;
         private readonly IXmlCacheService xmlCacheService;
         private readonly IBotUserConfiguration botUserConfiguration;
         private readonly IStalkSubscriptionHelper stalkSubscriptionHelper;
         private readonly IIrcClient wikimediaClient;
+        private readonly IEmailTemplateFormatter emailTemplateFormatter;
         private readonly IStalkNodeFactory stalkNodeFactory;
 
         public StalkCommand(
@@ -53,11 +52,11 @@ namespace EyeInTheSky.Commands
             IAppConfiguration config,
             INotificationTemplates templates,
             IEmailHelper emailHelper,
-            IRecentChangeHandler recentChangeHandler,
             IXmlCacheService xmlCacheService,
             IBotUserConfiguration botUserConfiguration,
             IStalkSubscriptionHelper stalkSubscriptionHelper,
-            IIrcClient wikimediaClient
+            IIrcClient wikimediaClient,
+            IEmailTemplateFormatter emailTemplateFormatter
         ) : base(
             commandSource,
             user,
@@ -71,11 +70,11 @@ namespace EyeInTheSky.Commands
             this.config = config;
             this.templates = templates;
             this.emailHelper = emailHelper;
-            this.recentChangeHandler = recentChangeHandler;
             this.xmlCacheService = xmlCacheService;
             this.botUserConfiguration = botUserConfiguration;
             this.stalkSubscriptionHelper = stalkSubscriptionHelper;
             this.wikimediaClient = wikimediaClient;
+            this.emailTemplateFormatter = emailTemplateFormatter;
             this.stalkNodeFactory = stalkNodeFactory;
         }
 
@@ -243,9 +242,9 @@ namespace EyeInTheSky.Commands
 
             var body = string.Format(
                 this.templates.EmailStalkReport,
-                this.recentChangeHandler.FormatStalkListForEmail(active, botUser),
-                this.recentChangeHandler.FormatStalkListForEmail(disabled, botUser),
-                this.recentChangeHandler.FormatStalkListForEmail(expired, botUser),
+                this.emailTemplateFormatter.FormatStalkListForEmail(active, botUser),
+                this.emailTemplateFormatter.FormatStalkListForEmail(disabled, botUser),
+                this.emailTemplateFormatter.FormatStalkListForEmail(expired, botUser),
                 this.CommandSource
             );
 

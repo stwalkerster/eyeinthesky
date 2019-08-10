@@ -22,6 +22,7 @@
         private readonly IIrcClient freenodeClient;
         private readonly IEmailHelper emailHelper;
         private readonly INotificationTemplates templates;
+        private readonly IEmailTemplateFormatter emailTemplateFormatter;
 
         public RecentChangeHandler(
             IAppConfiguration appConfig,
@@ -30,7 +31,8 @@
             IBotUserConfiguration botUserConfiguration,
             IIrcClient freenodeClient,
             IEmailHelper emailHelper,
-            INotificationTemplates templates)
+            INotificationTemplates templates,
+            IEmailTemplateFormatter emailTemplateFormatter)
         {
             this.appConfig = appConfig;
             this.logger = logger;
@@ -39,6 +41,7 @@
             this.freenodeClient = freenodeClient;
             this.emailHelper = emailHelper;
             this.templates = templates;
+            this.emailTemplateFormatter = emailTemplateFormatter;
 
             if (this.appConfig.EmailConfiguration == null)
             {
@@ -152,7 +155,7 @@
                 };
 
                 this.emailHelper.SendEmail(
-                    this.FormatMessageForEmail(stalks, rc, botUser),
+                    this.emailTemplateFormatter.FormatRecentChangeStalksForEmail(stalks, rc, botUser),
                     string.Format(this.templates.EmailRcSubject, stalkList, rc.Page),
                     null,
                     botUser,
@@ -225,97 +228,6 @@
                 rc.EditFlags,
                 DateTime.UtcNow.ToString(this.appConfig.DateFormat)
             );
-        }
-
-        private string FormatMessageForEmail(IEnumerable<IStalk> stalks, IRecentChange rc, IBotUser botUser)
-        {
-            var stalksFormatted = this.FormatStalkListForEmail(stalks, botUser);
-
-            var sizeDiff = "N/A";
-            if (rc.SizeDiff.HasValue)
-            {
-                sizeDiff = (rc.SizeDiff.Value > 0 ? "+" : string.Empty) +
-                           rc.SizeDiff.Value.ToString(CultureInfo.InvariantCulture);
-            }
-
-            return string.Format(
-                this.templates.EmailRcTemplate,
-                stalksFormatted,
-                rc.Url,
-                rc.Page,
-                rc.User,
-                rc.EditSummary,
-                sizeDiff,
-                rc.EditFlags,
-                DateTime.UtcNow.ToString(this.appConfig.DateFormat)
-            );
-        }
-
-        public string FormatStalkListForEmail(IEnumerable<IStalk> stalks, IBotUser botUser)
-        {
-            var stalkInfo = new StringBuilder();
-            foreach (var stalk in stalks)
-            {
-                var expiry = stalk.ExpiryTime.HasValue
-                    ? stalk.ExpiryTime.Value.ToString(this.appConfig.DateFormat)
-                    : "never";
-
-                var dynamicExpiry = stalk.DynamicExpiry.HasValue
-                    ? " (on trigger, up to an additional " + stalk.DynamicExpiry.Value.ToString(this.appConfig.TimeSpanFormat) + ")"
-                    : string.Empty;
-
-                var lastTrigger = (stalk.LastTriggerTime.HasValue && stalk.LastTriggerTime != DateTime.MinValue)
-                    ? stalk.LastTriggerTime.Value.ToString(this.appConfig.DateFormat)
-                    : "never";
-
-                var lastUpdate = stalk.LastUpdateTime.HasValue
-                    ? stalk.LastUpdateTime.Value.ToString(this.appConfig.DateFormat)
-                    : "never";
-
-                var creation = stalk.CreationDate == DateTime.MinValue
-                    ? stalk.CreationDate.ToString(this.appConfig.DateFormat)
-                    : "before records began";
-
-                var subList = new List<string>();
-                var subItem = stalk.Subscribers.FirstOrDefault(x => x.Mask.ToString() == botUser.Mask.ToString());
-                if (subItem != null)
-                {
-                    subList.Add(subItem.Subscribed ? "via stalk" : "excluded stalk");
-                }
-
-                if (this.channelConfig[stalk.Channel]
-                    .Users
-                    .Any(x => x.Mask.ToString() == botUser.Mask.ToString() && x.Subscribed))
-                {
-                    subList.Add("via channel");
-                }
-
-                var subscription = string.Join(", ", subList);
-                if (string.IsNullOrWhiteSpace(subscription))
-                {
-                    subscription = "none";
-                }
-
-                stalkInfo.Append(
-                    string.Format(
-                        this.templates.EmailStalkTemplate,
-                        stalk.Identifier,
-                        stalk.Description,
-                        stalk.SearchTree,
-                        stalk.Channel,
-                        expiry,
-                        lastTrigger,
-                        stalk.TriggerCount,
-                        subscription,
-                        lastUpdate,
-                        stalk.WatchChannel,
-                        dynamicExpiry,
-                        creation
-                    ));
-            }
-
-            var stalksFormatted = stalkInfo.ToString().TrimEnd();
-            return stalksFormatted;
         }
     }
 }
