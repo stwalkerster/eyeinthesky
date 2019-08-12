@@ -162,6 +162,36 @@ namespace EyeInTheSky.Model
             this.DeletionConfirmationTimestamp = DateTime.UtcNow.AddHours(1);
         }
 
+        protected bool Equals(BotUser other)
+        {
+            return this.WebGuid.Equals(other.WebGuid);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (obj.GetType() != this.GetType())
+            {
+                return false;
+            }
+
+            return Equals((BotUser) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return this.WebGuid.GetHashCode();
+        }
+
         public override string ToString()
         {
             return string.Format("Mask: {0}, GlobalFlags: {1}", this.Mask, this.GlobalFlags);
