@@ -1,5 +1,6 @@
 namespace EyeInTheSky.Services.Interfaces
 {
+    using System.Collections.Generic;
     using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
 
@@ -9,5 +10,7 @@ namespace EyeInTheSky.Services.Interfaces
     {
         bool SubscribeStalk(IrcUserMask mask, IIrcChannel channel, IStalk stalk, out SubscriptionSource source);
         bool UnsubscribeStalk(IrcUserMask mask, IIrcChannel channel, IStalk stalk, out SubscriptionSource source);
+        bool IsSubscribedToStalk(BotUser botUser, IIrcChannel channel, IStalk stalk);
+        IEnumerable<StalkSubscriptionHelper.SubscriptionResult> GetUserSubscriptionsToStalk(IIrcChannel channel, IStalk stalk);
     }
 }

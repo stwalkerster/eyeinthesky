@@ -1,23 +1,23 @@
 namespace EyeInTheSky.Services
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
-
     using Castle.Core.Logging;
-
     using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Services.Interfaces;
-
     using Stwalkerster.IrcClient.Model;
 
     public class StalkSubscriptionHelper : IStalkSubscriptionHelper
     {
         private readonly ILogger logger;
+        private readonly IBotUserConfiguration botUserConfiguration;
 
-        public StalkSubscriptionHelper(ILogger logger)
+        public StalkSubscriptionHelper(ILogger logger, IBotUserConfiguration botUserConfiguration)
         {
             this.logger = logger;
+            this.botUserConfiguration = botUserConfiguration;
         }
 
         public bool SubscribeStalk(IrcUserMask mask, IIrcChannel channel, IStalk stalk, out SubscriptionSource source)
@@ -30,8 +30,12 @@ namespace EyeInTheSky.Services
             var stalkSubscriber = stalk.Subscribers.FirstOrDefault(x => x.Mask.ToString() == mask.ToString());
             var channelSubscriber = channel.Users.FirstOrDefault(x => x.Mask.ToString() == mask.ToString());
 
-            this.logger.DebugFormat("Subscription request for {0} to {1} in {2}", mask, stalk.Identifier, channel.Identifier);
-            
+            this.logger.DebugFormat(
+                "Subscription request for {0} to {1} in {2}",
+                mask,
+                stalk.Identifier,
+                channel.Identifier);
+
             if (stalkSubscriber != null)
             {
                 if (stalkSubscriber.Subscribed)
@@ -41,10 +45,15 @@ namespace EyeInTheSky.Services
                         if (channelSubscriber.Subscribed)
                         {
                             // subscribed to channel
-                            // subscribed to stalk 
-                            this.logger.WarnFormat("Found subscription request from stalk- ({0}) and channel-subscribed ({1}) user ({2})", stalk.Identifier, channel.Identifier, mask);
-                            
-                            this.logger.DebugFormat("Unsubscribing from stalk - already subscribed to stalk and channel");
+                            // subscribed to stalk
+                            this.logger.WarnFormat(
+                                "Found subscription request from stalk- ({0}) and channel-subscribed ({1}) user ({2})",
+                                stalk.Identifier,
+                                channel.Identifier,
+                                mask);
+
+                            this.logger.DebugFormat(
+                                "Unsubscribing from stalk - already subscribed to stalk and channel");
                             stalk.Subscribers.Remove(stalkSubscriber);
                             source = SubscriptionSource.Channel;
                             return false;
@@ -84,7 +93,11 @@ namespace EyeInTheSky.Services
                         {
                             // forcibly unsubscribed from stalk
                             // not subscribed to channel
-                            this.logger.WarnFormat("Found subscription request from stalk-force-unsubscribed ({0}) and channel-unsubscribed ({1}) user ({2})", stalk.Identifier, channel.Identifier, mask);
+                            this.logger.WarnFormat(
+                                "Found subscription request from stalk-force-unsubscribed ({0}) and channel-unsubscribed ({1}) user ({2})",
+                                stalk.Identifier,
+                                channel.Identifier,
+                                mask);
                             this.logger.DebugFormat("Converting forced unsubscribe to stalk subscription");
                             stalkSubscriber.Subscribed = true;
                             source = SubscriptionSource.Stalk;
@@ -95,7 +108,11 @@ namespace EyeInTheSky.Services
                     {
                         // forcibly unsubscribed from stalk
                         // not subscribed to channel
-                        this.logger.WarnFormat("Found subscription request from stalk-force-unsubscribed ({0}) and channel-unsubscribed ({1}) user ({2})", stalk.Identifier, channel.Identifier, mask);
+                        this.logger.WarnFormat(
+                            "Found subscription request from stalk-force-unsubscribed ({0}) and channel-unsubscribed ({1}) user ({2})",
+                            stalk.Identifier,
+                            channel.Identifier,
+                            mask);
                         this.logger.DebugFormat("Converting forced unsubscribe to stalk subscription");
                         stalkSubscriber.Subscribed = true;
                         source = SubscriptionSource.Stalk;
@@ -148,8 +165,12 @@ namespace EyeInTheSky.Services
             var stalkSubscriber = stalk.Subscribers.FirstOrDefault(x => x.Mask.ToString() == mask.ToString());
             var channelSubscriber = channel.Users.FirstOrDefault(x => x.Mask.ToString() == mask.ToString());
 
-            this.logger.DebugFormat("Unsubscription request for {0} to {1} in {2}", mask, stalk.Identifier, channel.Identifier);
-            
+            this.logger.DebugFormat(
+                "Unsubscription request for {0} to {1} in {2}",
+                mask,
+                stalk.Identifier,
+                channel.Identifier);
+
             if (stalkSubscriber != null)
             {
                 if (stalkSubscriber.Subscribed)
@@ -160,8 +181,13 @@ namespace EyeInTheSky.Services
                         {
                             // subscribed to channel
                             // subscribed to stalk
-                            this.logger.WarnFormat("Found unsubscription request from stalk- ({0}) and channel-subscribed ({1}) user ({2})", stalk.Identifier, channel.Identifier, mask);
-                            this.logger.DebugFormat("Forcing unsubscribe from stalk - already subscribed to stalk and channel");
+                            this.logger.WarnFormat(
+                                "Found unsubscription request from stalk- ({0}) and channel-subscribed ({1}) user ({2})",
+                                stalk.Identifier,
+                                channel.Identifier,
+                                mask);
+                            this.logger.DebugFormat(
+                                "Forcing unsubscribe from stalk - already subscribed to stalk and channel");
                             stalkSubscriber.Subscribed = false;
                             source = SubscriptionSource.Stalk;
                             return true;
@@ -202,7 +228,11 @@ namespace EyeInTheSky.Services
                         {
                             // forcibly unsubscribed from stalk
                             // not subscribed to channel
-                            this.logger.WarnFormat("Found unsubscription request from stalk-forcibly-unsubscribed ({0}) and channel-unsubscribed ({1}) user ({2})", stalk.Identifier, channel.Identifier, mask);
+                            this.logger.WarnFormat(
+                                "Found unsubscription request from stalk-forcibly-unsubscribed ({0}) and channel-unsubscribed ({1}) user ({2})",
+                                stalk.Identifier,
+                                channel.Identifier,
+                                mask);
                             this.logger.DebugFormat("Removing stalk subscription");
                             stalk.Subscribers.Remove(stalkSubscriber);
                             source = SubscriptionSource.Stalk;
@@ -213,7 +243,11 @@ namespace EyeInTheSky.Services
                     {
                         // forcibly unsubscribed from stalk
                         // not subscribed to channel
-                        this.logger.WarnFormat("Found unsubscription request from stalk-forcibly-unsubscribed ({0}) and channel-unsubscribed ({1}) user ({2})", stalk.Identifier, channel.Identifier, mask);
+                        this.logger.WarnFormat(
+                            "Found unsubscription request from stalk-forcibly-unsubscribed ({0}) and channel-unsubscribed ({1}) user ({2})",
+                            stalk.Identifier,
+                            channel.Identifier,
+                            mask);
                         this.logger.DebugFormat("Removing stalk subscription");
                         stalk.Subscribers.Remove(stalkSubscriber);
                         source = SubscriptionSource.Stalk;
@@ -253,7 +287,68 @@ namespace EyeInTheSky.Services
                     return false;
                 }
             }
+        }
 
+        public bool IsSubscribedToStalk(BotUser botUser, IIrcChannel channel, IStalk stalk)
+        {
+            return this.GetUserSubscriptionsToStalk(channel, stalk)
+                .Where(x => x.IsSubscribed)
+                .Any(x => Equals(x.BotUser, botUser));
+        }
+
+        public IEnumerable<SubscriptionResult> GetUserSubscriptionsToStalk(IIrcChannel channel, IStalk stalk)
+        {
+            var userData = this.botUserConfiguration.Items.ToDictionary(
+                x => x,
+                y => new SubscriptionResult {Stalk = stalk, Channel = channel, BotUser = y});
+
+            foreach (var channelUser in channel.Users.Where(x => x.Subscribed))
+            {
+                var botUser = this.botUserConfiguration[channelUser.Mask.ToString()];
+                userData[botUser].IsSubscribed = true;
+                userData[botUser].Source = SubscriptionSource.Channel;
+                userData[botUser].Complete = true;
+            }
+
+            foreach (var stalkUser in stalk.Subscribers)
+            {
+                var botUser = this.botUserConfiguration[stalkUser.Mask.ToString()];
+
+                if (stalkUser.Subscribed)
+                {
+                    userData[botUser].IsSubscribed = true;
+                    userData[botUser].Overridden = false;
+                    userData[botUser].Source = SubscriptionSource.Stalk;
+                    userData[botUser].Complete = true;
+                }
+                else
+                {
+                    // subscription exclusion for channel users
+                    userData[botUser].IsSubscribed = false;
+                    userData[botUser].Overridden = true;
+                    userData[botUser].Source = SubscriptionSource.Stalk;
+                    userData[botUser].Complete = true;
+                }
+            }
+
+            return userData.Where(x => x.Value.Complete).Select(x => x.Value).ToList();
+        }
+
+        public sealed class SubscriptionResult
+        {
+            internal SubscriptionResult()
+            {
+            }
+
+            public IStalk Stalk { get; internal set; }
+            public IIrcChannel Channel { get; internal set; }
+            public IBotUser BotUser { get; internal set; }
+            public bool IsSubscribed { get; internal set; }
+            public SubscriptionSource Source { get; internal set; }
+            public bool Overridden { get; internal set; }
+
+            // has this item been completely constructed?
+            internal bool Complete { get; set; }
         }
     }
 }

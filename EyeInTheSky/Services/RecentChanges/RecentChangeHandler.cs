@@ -23,6 +23,7 @@
         private readonly IEmailHelper emailHelper;
         private readonly INotificationTemplates templates;
         private readonly IEmailTemplateFormatter emailTemplateFormatter;
+        private readonly IStalkSubscriptionHelper subscriptionHelper;
 
         public RecentChangeHandler(
             IAppConfiguration appConfig,
@@ -32,7 +33,8 @@
             IIrcClient freenodeClient,
             IEmailHelper emailHelper,
             INotificationTemplates templates,
-            IEmailTemplateFormatter emailTemplateFormatter)
+            IEmailTemplateFormatter emailTemplateFormatter,
+            IStalkSubscriptionHelper subscriptionHelper)
         {
             this.appConfig = appConfig;
             this.logger = logger;
@@ -42,6 +44,7 @@
             this.emailHelper = emailHelper;
             this.templates = templates;
             this.emailTemplateFormatter = emailTemplateFormatter;
+            this.subscriptionHelper = subscriptionHelper;
 
             if (this.appConfig.EmailConfiguration == null)
             {
@@ -94,27 +97,12 @@
 
             foreach (var stalk in stalks)
             {
-                // channel subscribers
-                foreach (var channelUser in this.channelConfig[stalk.Channel].Users.Where(x => x.Subscribed))
-                {
-                    var botUser = this.botUserConfiguration[channelUser.Mask.ToString()];
-                    stalkSplit[botUser].Add(stalk);
-                }
+                var channel = this.channelConfig[stalk.Channel];
+                var userSubscriptionsToStalk = this.subscriptionHelper.GetUserSubscriptionsToStalk(channel, stalk);
 
-                // stalk subscribers
-                foreach (var stalkUser in stalk.Subscribers)
+                foreach (var subscription in userSubscriptionsToStalk.Where(x => x.IsSubscribed))
                 {
-                    var botUser = this.botUserConfiguration[stalkUser.Mask.ToString()];
-
-                    if (stalkUser.Subscribed)
-                    {
-                        stalkSplit[botUser].Add(stalk);
-                    }
-                    else
-                    {
-                        // subscription exclusion for channel users
-                        stalkSplit[botUser].Remove(stalk);
-                    }
+                    stalkSplit[subscription.BotUser].Add(subscription.Stalk);
                 }
             }
 

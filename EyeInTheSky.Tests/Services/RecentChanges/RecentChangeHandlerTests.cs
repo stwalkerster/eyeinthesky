@@ -72,6 +72,7 @@
                 null,
                 null,
                 this.NotificationTemplatesMock.Object,
+                null,
                 null);
 
             // act
@@ -100,6 +101,7 @@
                 null,
                 null,
                 this.NotificationTemplatesMock.Object,
+                null,
                 null);
 
             // act
@@ -125,6 +127,7 @@
                 null,
                 null,
                 this.NotificationTemplatesMock.Object,
+                null,
                 null);
 
             // act
@@ -150,6 +153,7 @@
                 null,
                 null,
                 this.NotificationTemplatesMock.Object,
+                null,
                 null);
 
             // act
