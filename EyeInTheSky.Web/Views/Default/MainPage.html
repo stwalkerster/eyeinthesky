@@ -26,7 +26,7 @@
             </p>
             <ul>
                 @Each.SubscribedStalks
-                <li><code>@!Current.Identifier</code> in <code>@!Current.Channel</code></li>
+                <li><a href="/channels/@!Current.Channel.Guid/stalk/@!Current.Stalk.Identifier"><code>@!Current.Stalk.Identifier</code></a> in <a href="/channels/@!Current.Channel.Guid"><code>@!Current.Channel.Identifier</code></a></li>
                 @EndEach
             </ul>
         </div>

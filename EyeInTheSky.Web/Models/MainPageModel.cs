@@ -6,7 +6,7 @@ namespace EyeInTheSky.Web.Models
 
     public class MainPageModel : ModelBase
     {
-        public IEnumerable<IStalk> SubscribedStalks { get; set; }
+        public IEnumerable<dynamic> SubscribedStalks { get; set; }
         public IEnumerable<IIrcChannel> SubscribedChannels { get; set; }
     }
 }

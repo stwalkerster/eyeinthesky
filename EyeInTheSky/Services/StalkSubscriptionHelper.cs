@@ -7,6 +7,7 @@ namespace EyeInTheSky.Services
     using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Services.Interfaces;
+    using Microsoft.Win32.SafeHandles;
     using Stwalkerster.IrcClient.Model;
 
     public class StalkSubscriptionHelper : IStalkSubscriptionHelper
@@ -332,6 +333,51 @@ namespace EyeInTheSky.Services
             }
 
             return userData.Where(x => x.Value.Complete).Select(x => x.Value).ToList();
+        }
+
+        public IEnumerable<SubscriptionResult> GetUserSubscriptionsInChannel(IBotUser user, IIrcChannel channel)
+        {
+            var channelSubscribed = channel.Users.Where(x => x.Subscribed).Any(x => x.Mask.Equals(user.Mask));
+
+            var results = new List<SubscriptionResult>();
+
+            foreach (var stalk in channel.Stalks)
+            {
+                var result = new SubscriptionResult
+                {
+                    Channel = channel, BotUser = user, Stalk = stalk.Value, Complete = true
+                };
+
+                if (channelSubscribed)
+                {
+                    result.IsSubscribed = true;
+                    result.Source = SubscriptionSource.Channel;
+                }
+
+                var subscription = stalk.Value.Subscribers.FirstOrDefault(x => x.Mask.Equals(user.Mask));
+                if (subscription == null)
+                {
+                    // use the channel result.
+                    results.Add(result);
+                    continue;
+                }
+
+                if (subscription.Subscribed)
+                {
+                    result.IsSubscribed = true;
+                    result.Source = SubscriptionSource.Stalk;
+                }
+                else
+                {
+                    result.IsSubscribed = false;
+                    result.Overridden = true;
+                    result.Source = SubscriptionSource.Stalk;
+                }
+
+                results.Add(result);
+            }
+
+            return results;
         }
 
         public sealed class SubscriptionResult
