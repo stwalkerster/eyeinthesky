@@ -1,0 +1,26 @@
+@Master['Master/master.sshtml']
+
+@Section['Content']
+<div class="row">
+    <h2>About EyeInTheSky @!Model.Version</h2>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <h4>Core application libraries</h4>
+        <table class="table table-sm table-borderless table-striped mb-0">
+        @Each.Core
+        <tr><th>@!Current.Key</th><td>@!Current.Value</td></tr>
+        @EndEach
+        </table>
+    </div>
+    <div class="col-md-6">
+        <h4>Supporting libraries</h4>
+        <table class="table table-sm table-borderless table-striped mb-0">
+        @Each.Other
+        <tr><th>@!Current.Key</th><td>@!Current.Value</td></tr>
+        @EndEach
+        </table>
+    </div>
+</div>
+@EndSection
