@@ -8,6 +8,7 @@
     using Castle.MicroKernel.SubSystems.Configuration;
     using Castle.Services.Logging.Log4netIntegration;
     using Castle.Windsor;
+    using Castle.Windsor.Installer;
     using EyeInTheSky.Web.Startup;
     using Moq;
     using Stwalkerster.IrcClient.Interfaces;
@@ -62,8 +63,11 @@
                 Component.For<IApplication>().ImplementedBy<Launch>(),
                 Classes.FromAssemblyNamed("EyeInTheSky").InNamespace("EyeInTheSky.Services").WithServiceAllInterfaces(),
                 Classes.FromAssemblyNamed("EyeInTheSky").InNamespace("EyeInTheSky.Services.ExternalProviders").WithServiceAllInterfaces(),
+                Classes.FromAssemblyNamed("EyeInTheSky").InNamespace("EyeInTheSky.Services.Email").WithServiceAllInterfaces(),
                 Component.For<IIrcClient>().Instance(ircClientMock.Object)
             );
+
+            container.Install(Configuration.FromXmlFile("alert-templates.xml"));
         }
     }
 }
