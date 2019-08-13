@@ -11,18 +11,15 @@ namespace EyeInTheSky.Web.Modules
 
     public class DefaultModule : AuthenticatedModuleBase
     {
-        private readonly IBotUserConfiguration botUserConfiguration;
         private readonly IChannelConfiguration channelConfiguration;
-        private readonly IStalkSubscriptionHelper subscriptionHelper;
+        private readonly ISubscriptionHelper subscriptionHelper;
 
         public DefaultModule(
-            IBotUserConfiguration botUserConfiguration,
             IChannelConfiguration channelConfiguration,
-            IStalkSubscriptionHelper subscriptionHelper,
+            ISubscriptionHelper subscriptionHelper,
             IAppConfiguration appConfiguration,
             IIrcClient client) : base(appConfiguration, client)
         {
-            this.botUserConfiguration = botUserConfiguration;
             this.channelConfiguration = channelConfiguration;
             this.subscriptionHelper = subscriptionHelper;
             this.Get["/"] = this.MainPage;
@@ -35,10 +32,7 @@ namespace EyeInTheSky.Web.Modules
             var botUser = ((UserIdentity) this.Context.CurrentUser).BotUser;
             var mask = botUser.Mask;
 
-            var subscribedChannels = this.channelConfiguration.Items
-                .Where(channel => channel.Users.Select(y => y.Mask).Contains(mask))
-                .Where(channel => channel.Users.First(x => x.Mask.Equals(mask)).Subscribed)
-                .ToList();
+            var subscribedChannels = this.subscriptionHelper.GetUserSubscriptionsToChannel(botUser);
 
             var unsubscribedChannels =
                 this.channelConfiguration.Items.Where(x => !subscribedChannels.Any(y => x.Equals(y)));
@@ -48,7 +42,7 @@ namespace EyeInTheSky.Web.Modules
                 unsubscribedChannels
                 .Aggregate(new List<dynamic>(), (list, channel) =>
                 {
-                    var subscriptions = this.subscriptionHelper.GetUserSubscriptionsInChannel(botUser, channel)
+                    var subscriptions = this.subscriptionHelper.GetUserStalkSubscriptionsInChannel(botUser, channel)
                         .Where(x => x.IsSubscribed);
 
                     list.AddRange(subscriptions);

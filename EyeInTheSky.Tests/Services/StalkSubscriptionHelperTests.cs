@@ -20,8 +20,9 @@ namespace EyeInTheSky.Tests.Services
         private Mock<IStalk> stalk;
         private Mock<IIrcChannel> channel;
         private Mock<IBotUserConfiguration> botUserConfigMock;
-        private StalkSubscriptionHelper subscriptionHelper;
+        private SubscriptionHelper subscriptionHelper;
         private IrcUserMask mask;
+        private Mock<IChannelConfiguration> channelConfigMock;
 
         [SetUp]
         public void LocalSetup()
@@ -32,11 +33,12 @@ namespace EyeInTheSky.Tests.Services
             this.channel = new Mock<IIrcChannel>();
             this.stalk = new Mock<IStalk>();
             this.botUserConfigMock = new Mock<IBotUserConfiguration>();
+            this.channelConfigMock = new Mock<IChannelConfiguration>();
 
             this.channel.Setup(x => x.Identifier).Returns("#channel");
             this.stalk.Setup(x => x.Channel).Returns("#channel");
 
-            this.subscriptionHelper = new StalkSubscriptionHelper(this.LoggerMock.Object, this.botUserConfigMock.Object);
+            this.subscriptionHelper = new SubscriptionHelper(this.LoggerMock.Object, this.botUserConfigMock.Object, this.channelConfigMock.Object);
             this.mask = new IrcUserMask("*!*@*", this.ircClient.Object);
         }
 

@@ -204,7 +204,7 @@
     <Compile Include="Services\Interfaces\IChannelConfiguration.cs" />
     <Compile Include="Services\Interfaces\IChannelFactory.cs" />
     <Compile Include="Services\Interfaces\IMediaWikiApiHelper.cs" />
-    <Compile Include="Services\Interfaces\IStalkSubscriptionHelper.cs" />
+    <Compile Include="Services\Interfaces\ISubscriptionHelper.cs" />
     <Compile Include="Services\MediaWikiApiHelper.cs" />
     <Compile Include="Services\RecentChanges\Interfaces\IRecentChangeHandler.cs" />
     <Compile Include="Services\RecentChanges\Irc\Interfaces\IIrcRecentChangeParser.cs" />
@@ -214,7 +214,7 @@
     <Compile Include="Services\StalkConfigFactoryBase.cs" />
     <Compile Include="Services\ConfigFileBase.cs" />
     <Compile Include="Services\ConfigurationProvider.cs" />
-    <Compile Include="Services\StalkSubscriptionHelper.cs" />
+    <Compile Include="Services\SubscriptionHelper.cs" />
     <Compile Include="Services\UserFlagService.cs" />
     <Compile Include="Services\BugReporter.cs" />
     <Compile Include="Services\FileService.cs" />

@@ -34,7 +34,7 @@ namespace EyeInTheSky.Commands
         private readonly IEmailHelper emailHelper;
         private readonly IXmlCacheService xmlCacheService;
         private readonly IBotUserConfiguration botUserConfiguration;
-        private readonly IStalkSubscriptionHelper stalkSubscriptionHelper;
+        private readonly ISubscriptionHelper subscriptionHelper;
         private readonly IIrcClient wikimediaClient;
         private readonly IEmailTemplateFormatter emailTemplateFormatter;
         private readonly IStalkNodeFactory stalkNodeFactory;
@@ -54,7 +54,7 @@ namespace EyeInTheSky.Commands
             IEmailHelper emailHelper,
             IXmlCacheService xmlCacheService,
             IBotUserConfiguration botUserConfiguration,
-            IStalkSubscriptionHelper stalkSubscriptionHelper,
+            ISubscriptionHelper subscriptionHelper,
             IIrcClient wikimediaClient,
             IEmailTemplateFormatter emailTemplateFormatter
         ) : base(
@@ -72,7 +72,7 @@ namespace EyeInTheSky.Commands
             this.emailHelper = emailHelper;
             this.xmlCacheService = xmlCacheService;
             this.botUserConfiguration = botUserConfiguration;
-            this.stalkSubscriptionHelper = stalkSubscriptionHelper;
+            this.subscriptionHelper = subscriptionHelper;
             this.wikimediaClient = wikimediaClient;
             this.emailTemplateFormatter = emailTemplateFormatter;
             this.stalkNodeFactory = stalkNodeFactory;
@@ -119,7 +119,7 @@ namespace EyeInTheSky.Commands
 
             var stalk = ircChannel.Stalks[stalkName];
             SubscriptionSource subscriptionSource;
-            var result = this.stalkSubscriptionHelper.UnsubscribeStalk(botUser.Mask, ircChannel, stalk, out subscriptionSource);
+            var result = this.subscriptionHelper.UnsubscribeStalk(botUser.Mask, ircChannel, stalk, out subscriptionSource);
             this.channelConfiguration.Save();
 
             if (result)
@@ -178,7 +178,7 @@ namespace EyeInTheSky.Commands
             var stalk = ircChannel.Stalks[stalkName];
 
             SubscriptionSource subscriptionSource;
-            var result = this.stalkSubscriptionHelper.SubscribeStalk(botUser.Mask, ircChannel, stalk, out subscriptionSource);
+            var result = this.subscriptionHelper.SubscribeStalk(botUser.Mask, ircChannel, stalk, out subscriptionSource);
             this.channelConfiguration.Save();
 
             if (result)

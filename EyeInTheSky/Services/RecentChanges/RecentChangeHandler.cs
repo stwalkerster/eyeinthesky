@@ -23,7 +23,7 @@
         private readonly IEmailHelper emailHelper;
         private readonly INotificationTemplates templates;
         private readonly IEmailTemplateFormatter emailTemplateFormatter;
-        private readonly IStalkSubscriptionHelper subscriptionHelper;
+        private readonly ISubscriptionHelper subscriptionHelper;
 
         public RecentChangeHandler(
             IAppConfiguration appConfig,
@@ -34,7 +34,7 @@
             IEmailHelper emailHelper,
             INotificationTemplates templates,
             IEmailTemplateFormatter emailTemplateFormatter,
-            IStalkSubscriptionHelper subscriptionHelper)
+            ISubscriptionHelper subscriptionHelper)
         {
             this.appConfig = appConfig;
             this.logger = logger;

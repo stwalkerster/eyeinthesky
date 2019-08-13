@@ -3,22 +3,27 @@ namespace EyeInTheSky.Services
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Runtime.CompilerServices;
     using Castle.Core.Logging;
     using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Services.Interfaces;
-    using Microsoft.Win32.SafeHandles;
     using Stwalkerster.IrcClient.Model;
 
-    public class StalkSubscriptionHelper : IStalkSubscriptionHelper
+    public class SubscriptionHelper : ISubscriptionHelper
     {
         private readonly ILogger logger;
         private readonly IBotUserConfiguration botUserConfiguration;
+        private readonly IChannelConfiguration channelConfiguration;
 
-        public StalkSubscriptionHelper(ILogger logger, IBotUserConfiguration botUserConfiguration)
+        public SubscriptionHelper(
+            ILogger logger,
+            IBotUserConfiguration botUserConfiguration,
+            IChannelConfiguration channelConfiguration)
         {
             this.logger = logger;
             this.botUserConfiguration = botUserConfiguration;
+            this.channelConfiguration = channelConfiguration;
         }
 
         public bool SubscribeStalk(IrcUserMask mask, IIrcChannel channel, IStalk stalk, out SubscriptionSource source)
@@ -290,11 +295,19 @@ namespace EyeInTheSky.Services
             }
         }
 
-        public bool IsSubscribedToStalk(BotUser botUser, IIrcChannel channel, IStalk stalk)
+        public bool IsSubscribedToStalk(IBotUser botUser, IIrcChannel channel, IStalk stalk)
         {
             return this.GetUserSubscriptionsToStalk(channel, stalk)
                 .Where(x => x.IsSubscribed)
                 .Any(x => Equals(x.BotUser, botUser));
+        }
+
+        public IEnumerable<IIrcChannel> GetUserSubscriptionsToChannel(IBotUser botUser)
+        {
+            return this.channelConfiguration.Items
+                .Where(channel => channel.Users.Select(y => y.Mask).Contains(botUser.Mask))
+                .Where(channel => channel.Users.First(x => x.Mask.Equals(botUser.Mask)).Subscribed)
+                .ToList();
         }
 
         public IEnumerable<SubscriptionResult> GetUserSubscriptionsToStalk(IIrcChannel channel, IStalk stalk)
@@ -335,7 +348,7 @@ namespace EyeInTheSky.Services
             return userData.Where(x => x.Value.Complete).Select(x => x.Value).ToList();
         }
 
-        public IEnumerable<SubscriptionResult> GetUserSubscriptionsInChannel(IBotUser user, IIrcChannel channel)
+        public IEnumerable<SubscriptionResult> GetUserStalkSubscriptionsInChannel(IBotUser user, IIrcChannel channel)
         {
             var channelSubscribed = channel.Users.Where(x => x.Subscribed).Any(x => x.Mask.Equals(user.Mask));
 
