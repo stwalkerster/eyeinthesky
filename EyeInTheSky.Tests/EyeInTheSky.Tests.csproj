@@ -122,7 +122,7 @@
     <Compile Include="Services\StalkFactoryTests.cs" />
     <Compile Include="Services\StalkNodeFactoryTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\StalkSubscriptionHelperTests.cs" />
+    <Compile Include="Services\SubscriptionHelperTests.cs" />
     <Compile Include="Services\TemplateConfigurationTests.cs" />
     <Compile Include="Services\TemplateFactoryTests.cs" />
     <Compile Include="TestBase.cs" />

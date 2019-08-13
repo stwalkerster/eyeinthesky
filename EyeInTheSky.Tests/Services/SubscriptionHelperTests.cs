@@ -14,7 +14,7 @@ namespace EyeInTheSky.Tests.Services
     using Stwalkerster.IrcClient.Model;
 
     [TestFixture]
-    public class StalkSubscriptionHelperTests : TestBase
+    public class SubscriptionHelperTests : TestBase
     {
         private Mock<IIrcClient> ircClient;
         private Mock<IStalk> stalk;

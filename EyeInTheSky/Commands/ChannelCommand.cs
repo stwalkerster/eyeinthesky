@@ -22,6 +22,7 @@
         private readonly IChannelConfiguration channelConfiguration;
         private readonly IBotUserConfiguration botUserConfiguration;
         private readonly IAppConfiguration appConfig;
+        private readonly ISubscriptionHelper subscriptionHelper;
 
         public ChannelCommand(
             string commandSource,
@@ -33,12 +34,13 @@
             IIrcClient client,
             IChannelConfiguration channelConfiguration,
             IBotUserConfiguration botUserConfiguration,
-            IAppConfiguration appConfig)
+            IAppConfiguration appConfig, ISubscriptionHelper subscriptionHelper)
             : base(commandSource, user, arguments, logger, flagService, configurationProvider, client)
         {
             this.channelConfiguration = channelConfiguration;
             this.botUserConfiguration = botUserConfiguration;
             this.appConfig = appConfig;
+            this.subscriptionHelper = subscriptionHelper;
         }
 
         [SubcommandInvocation("list")]
@@ -128,10 +130,7 @@
                 yield break;
             }
 
-            var channelUser = this.channelConfiguration[this.CommandSource]
-                .Users.FirstOrDefault(x => x.Mask.ToString() == botUser.Identifier);
-
-            if (channelUser == null)
+            if (!this.subscriptionHelper.UnsubscribeChannel(botUser.Mask, this.channelConfiguration[this.CommandSource]))
             {
                 yield return new CommandResponse
                 {
@@ -141,7 +140,6 @@
                 yield break;
             }
 
-            channelUser.Subscribed = false;
             this.channelConfiguration.Save();
 
             yield return new CommandResponse
@@ -182,16 +180,9 @@
 
                 yield break;
             }
-
-            var channelUser = this.channelConfiguration[this.CommandSource]
-                .Users.FirstOrDefault(x => x.Mask.ToString() == botUser.Identifier);
-            if (channelUser == null)
-            {
-                channelUser = new ChannelUser(botUser.Mask);
-                this.channelConfiguration[this.CommandSource].Users.Add(channelUser);
-            }
-
-            if (channelUser.Subscribed)
+            
+            
+            if (!this.subscriptionHelper.SubscribeChannel(botUser.Mask, this.channelConfiguration[this.CommandSource]))
             {
                 yield return new CommandResponse
                 {
@@ -201,7 +192,6 @@
                 yield break;
             }
 
-            channelUser.Subscribed = true;
             this.channelConfiguration.Save();
 
             yield return new CommandResponse

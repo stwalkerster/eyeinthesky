@@ -14,5 +14,8 @@ namespace EyeInTheSky.Services.Interfaces
         IEnumerable<SubscriptionHelper.SubscriptionResult> GetUserSubscriptionsToStalk(IIrcChannel channel, IStalk stalk);
         IEnumerable<SubscriptionHelper.SubscriptionResult> GetUserStalkSubscriptionsInChannel(IBotUser user, IIrcChannel channel);
         IEnumerable<IIrcChannel> GetUserSubscriptionsToChannel(IBotUser botUser);
+        bool SubscribeChannel(IrcUserMask mask, IIrcChannel channel);
+        bool UnsubscribeChannel(IrcUserMask mask, IIrcChannel channel);
+        bool IsSubscribedToChannel(IBotUser botUser, IIrcChannel channel);
     }
 }

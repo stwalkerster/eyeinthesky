@@ -3,7 +3,6 @@ namespace EyeInTheSky.Services
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Runtime.CompilerServices;
     using Castle.Core.Logging;
     using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
@@ -300,6 +299,46 @@ namespace EyeInTheSky.Services
             return this.GetUserSubscriptionsToStalk(channel, stalk)
                 .Where(x => x.IsSubscribed)
                 .Any(x => Equals(x.BotUser, botUser));
+        }
+
+        public bool SubscribeChannel(IrcUserMask mask, IIrcChannel channel)
+        {
+            var channelUser = channel.Users.FirstOrDefault(x => x.Mask.ToString() == mask.ToString());
+            if (channelUser == null)
+            {
+                channelUser = new ChannelUser(mask);
+                channel.Users.Add(channelUser);
+            }
+
+            if (channelUser.Subscribed)
+            {
+                return false;
+            }
+            else
+            {
+                channelUser.Subscribed = true;
+                return true;
+            }
+        }
+
+        public bool UnsubscribeChannel(IrcUserMask mask, IIrcChannel channel)
+        {
+            var channelUser = channel.Users.FirstOrDefault(x => x.Mask.ToString() == mask.ToString());
+
+            if (channelUser == null)
+            {
+                return false;
+            }
+
+            var result = channelUser.Subscribed;
+            channelUser.Subscribed = false;
+
+            return result;
+        }
+
+        public bool IsSubscribedToChannel(IBotUser botUser, IIrcChannel channel)
+        {
+            return this.GetUserSubscriptionsToChannel(botUser).Any(x => x.Equals(channel));
         }
 
         public IEnumerable<IIrcChannel> GetUserSubscriptionsToChannel(IBotUser botUser)
