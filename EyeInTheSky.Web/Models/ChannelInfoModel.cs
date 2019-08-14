@@ -16,5 +16,6 @@ namespace EyeInTheSky.Web.Models
         public List<ChannelDisplayUser> DisplayUsers { get; set; }
 
         public bool CanConfigureStalks { get; set; }
+        public bool IsChannelSubscribed { get; set; }
     }
 }

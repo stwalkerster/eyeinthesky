@@ -200,5 +200,7 @@ namespace EyeInTheSky.Web.Misc
                 return this.stalkNodeFactory.ToXml(new XmlDocument(), this.Stalk.SearchTree).OuterXml;
             }
         }
+
+        public bool IsSubscribed { get; set; }
     }
 }

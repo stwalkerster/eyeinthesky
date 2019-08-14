@@ -14,6 +14,10 @@ footer.footer p, footer.footer ul {
     margin-bottom: 0;
 }
 
+hr {
+    border-top-color: #444444;
+}
+
 /* XML editor */
 div.xonomy.laic {
     background-color: inherit;

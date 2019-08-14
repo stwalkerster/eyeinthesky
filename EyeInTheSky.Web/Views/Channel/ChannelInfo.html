@@ -11,12 +11,22 @@
     </nav>
 </div>
 <div class="row">
-    <h3><code>@!Model.IrcChannel.Identifier</code></h3>
+    <div class="col-md-12">
+        @If.Model.IsChannelSubscribed
+        <a href="#" class="btn btn-info float-right btn-sm ml-1 mt-2" title="Unsubscribe from all stalks in this channel"><i class="fas fa-bell"></i>&nbsp;Unsubscribe from channel</a>
+        @EndIf
+        @IfNot.Model.IsChannelSubscribed
+        <a href="#" class="btn btn-outline-info float-right btn-sm ml-1 mt-2" title="Subscribe to all stalks in this channel"><i class="far fa-bell"></i>&nbsp;Subscribe to channel</a>
+        @EndIf
+        <h3><code>@!Model.IrcChannel.Identifier</code></h3>
+    </div>
 </div>
+<hr />
 <div class="row">
     <div class="col-12">
+        
         @If.Model.CanConfigureStalks
-        <a href="/channels/@!Model.IrcChannel.Guid/new" class="float-right btn btn-success btn-sm">Create new stalk</a>
+        <a href="/channels/@!Model.IrcChannel.Guid/new" class="float-right btn btn-success btn-sm ml-1" title="Create a new stalk"><i class="fas fa-plus"></i>&nbsp;New stalk</a>
         @EndIf
 
         <h4>Stalks</h4>
@@ -32,6 +42,12 @@
             <div class="card @!Current.StalkDisplayHints.Border">
                 <div class="card-header">
                     <div class="float-right @!Current.StalkDisplayHints.Text mr-n2">
+                        @If.IsSubscribed
+                        <a href="#" class="btn btn-info btn-sm ml-1" title="Unsubscribe from this stalk"><i class="fas fa-bell"></i></a>
+                        @EndIf
+                        @IfNot.IsSubscribed
+                        <a href="#" class="btn btn-outline-info btn-sm ml-1" title="Subscribe to this stalk"><i class="far fa-bell"></i></a>
+                        @EndIf
                         <a href="/channels/@!Model.IrcChannel.Guid/stalk/@!Current.Stalk.Identifier" class="ml-1 align-middle btn btn-light btn-sm"><i class="fas fa-cog"></i></a>
                         @If.StalkDisplayHints.HasEnabledIcon
                         <i class="ml-1 align-middle @!Current.StalkDisplayHints.EnabledIcon"></i>
@@ -57,6 +73,7 @@
         </div>
     </div>
 </div>
+<hr />
 <div class="row">
     <div class="col-12">
         <h4>Local users</h4>

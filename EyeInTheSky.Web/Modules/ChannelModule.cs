@@ -20,6 +20,7 @@ namespace EyeInTheSky.Web.Modules
         private readonly IChannelConfiguration channelConfiguration;
         private readonly IBotUserConfiguration botUserConfiguration;
         private readonly IStalkNodeFactory stalkNodeFactory;
+        private readonly ISubscriptionHelper subscriptionHelper;
         private readonly IFlagService flagService;
 
         public ChannelModule(
@@ -28,6 +29,7 @@ namespace EyeInTheSky.Web.Modules
             IChannelConfiguration channelConfiguration,
             IBotUserConfiguration botUserConfiguration,
             IStalkNodeFactory stalkNodeFactory,
+            ISubscriptionHelper subscriptionHelper,
             IFlagService flagService
         )
             : base(appConfiguration, freenodeClient)
@@ -35,6 +37,7 @@ namespace EyeInTheSky.Web.Modules
             this.channelConfiguration = channelConfiguration;
             this.botUserConfiguration = botUserConfiguration;
             this.stalkNodeFactory = stalkNodeFactory;
+            this.subscriptionHelper = subscriptionHelper;
             this.flagService = flagService;
 
             this.Get["/channels"] = this.GetChannelList;
@@ -193,7 +196,16 @@ namespace EyeInTheSky.Web.Modules
             if (this.UserCanSeeChannelConfig(this.Context, channel))
             {
                 model.Stalks = channel.Stalks.Values
-                    .Select(v => new DisplayStalk(v, this.AppConfiguration, this.stalkNodeFactory))
+                    .Select(v =>
+                    {
+                        var ds = new DisplayStalk(v, this.AppConfiguration, this.stalkNodeFactory);
+                        
+                        ds.IsSubscribed = this.subscriptionHelper.IsSubscribedToStalk(
+                            ((UserIdentity) this.Context.CurrentUser).BotUser,
+                            channel,
+                            v);
+                        return ds;
+                    })
                     .ToList();
             }
             else
@@ -217,6 +229,10 @@ namespace EyeInTheSky.Web.Modules
 
             model.DisplayUsers = this.GetChannelDisplayUsers(channel, model);
             model.CanConfigureStalks = this.UserCanConfigureStalks(this.Context, channel);
+            
+            model.IsChannelSubscribed = this.subscriptionHelper.IsSubscribedToChannel(
+                ((UserIdentity) this.Context.CurrentUser).BotUser,
+                channel);
 
             return model;
         }
@@ -293,10 +309,16 @@ namespace EyeInTheSky.Web.Modules
             }
 
             model.IrcChannel = channel;
+            var channelStalk = channel.Stalks[parameters.stalk];
             model.Stalk = new DisplayStalk(
-                channel.Stalks[parameters.stalk],
+                channelStalk,
                 this.AppConfiguration,
                 this.stalkNodeFactory);
+            
+            model.Stalk.IsSubscribed = this.subscriptionHelper.IsSubscribedToStalk(
+                ((UserIdentity) this.Context.CurrentUser).BotUser,
+                channel, channelStalk);
+            
             model.CanConfigure = this.UserCanConfigureStalks(this.Context, channel);
 
             return model;
