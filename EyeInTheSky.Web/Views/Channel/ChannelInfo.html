@@ -13,10 +13,14 @@
 <div class="row">
     <div class="col-md-12">
         @If.Model.IsChannelSubscribed
-        <a href="#" class="btn btn-info float-right btn-sm ml-1 mt-2" title="Unsubscribe from all stalks in this channel"><i class="fas fa-bell"></i>&nbsp;Unsubscribe from channel</a>
+        <form action="/channels/@!Model.IrcChannel.Guid/unsubscribe" method="post">
+        <button class="btn btn-info float-right btn-sm ml-1 mt-2" title="Unsubscribe from all stalks in this channel"><i class="fas fa-bell"></i>&nbsp;Unsubscribe from channel</button>
+        </form>
         @EndIf
         @IfNot.Model.IsChannelSubscribed
-        <a href="#" class="btn btn-outline-info float-right btn-sm ml-1 mt-2" title="Subscribe to all stalks in this channel"><i class="far fa-bell"></i>&nbsp;Subscribe to channel</a>
+        <form action="/channels/@!Model.IrcChannel.Guid/subscribe" method="post">
+        <button class="btn btn-outline-info float-right btn-sm ml-1 mt-2" title="Subscribe to all stalks in this channel"><i class="far fa-bell"></i>&nbsp;Subscribe to channel</button>
+        </form>
         @EndIf
         <h3><code>@!Model.IrcChannel.Identifier</code></h3>
     </div>
@@ -43,10 +47,14 @@
                 <div class="card-header">
                     <div class="float-right @!Current.StalkDisplayHints.Text mr-n2">
                         @If.IsSubscribed
-                        <a href="#" class="btn btn-info btn-sm ml-1" title="Unsubscribe from this stalk"><i class="fas fa-bell"></i></a>
+                        <form action="/channels/@!Model.IrcChannel.Guid/stalk/@!Current.Stalk.Identifier/unsubscribe" method="post" class="d-inline-block">
+                        <button class="btn btn-info btn-sm ml-1" title="Unsubscribe from this stalk"><i class="fas fa-bell"></i></button>
+                        </form>
                         @EndIf
                         @IfNot.IsSubscribed
-                        <a href="#" class="btn btn-outline-info btn-sm ml-1" title="Subscribe to this stalk"><i class="far fa-bell"></i></a>
+                        <form action="/channels/@!Model.IrcChannel.Guid/stalk/@!Current.Stalk.Identifier/subscribe" method="post" class="d-inline-block">
+                        <button class="btn btn-outline-info btn-sm ml-1" title="Subscribe to this stalk"><i class="far fa-bell"></i></button>
+                        </form>
                         @EndIf
                         <a href="/channels/@!Model.IrcChannel.Guid/stalk/@!Current.Stalk.Identifier" class="ml-1 align-middle btn btn-light btn-sm"><i class="fas fa-cog"></i></a>
                         @If.StalkDisplayHints.HasEnabledIcon

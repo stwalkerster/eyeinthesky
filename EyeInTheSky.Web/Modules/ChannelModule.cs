@@ -44,15 +44,92 @@ namespace EyeInTheSky.Web.Modules
             this.Get["/channels/{channel}"] = this.GetChannelInfo;
             this.Get["/channels/{channel}/new"] = this.NewStalk;
             this.Post["/channels/{channel}/new"] = this.PostNewStalk;
+            this.Post["/channels/{channel}/subscribe"] = this.ChannelSubscribe;
+            this.Post["/channels/{channel}/unsubscribe"] = this.ChannelUnsubscribe;
             this.Get["/channels/{channel}/stalk/{stalk}"] = this.GetStalkInfo;
             this.Get["/channels/{channel}/stalk/{stalk}/edit"] = this.GetStalkInfoForEdit;
             this.Get["/channels/{channel}/stalk/{stalk}/delete"] = this.GetStalkInfoForDelete;
             this.Post["/channels/{channel}/stalk/{stalk}/delete"] = this.DeleteStalk;
             this.Post["/channels/{channel}/stalk/{stalk}/edit"] = this.PostStalkInfo;
+            this.Post["/channels/{channel}/stalk/{stalk}/subscribe"] = this.StalkSubscribe;
+            this.Post["/channels/{channel}/stalk/{stalk}/unsubscribe"] = this.StalkUnsubscribe;
         }
 
         #region Route handlers
 
+        public dynamic ChannelUnsubscribe(dynamic parameters)
+        {
+            var channel = this.channelConfiguration.Items.FirstOrDefault(x => x.Guid == parameters.channel);
+
+            if (channel == null)
+            {
+                return new NotFoundResponse();
+            }
+            
+            this.subscriptionHelper.UnsubscribeChannel(((UserIdentity) this.Context.CurrentUser).BotUser.Mask, channel);
+            this.channelConfiguration.Save();
+            
+            return this.Response.AsRedirect(string.Format("/channels/{0}", channel.Guid));
+        }
+        
+        public dynamic ChannelSubscribe(dynamic parameters)
+        {
+            var channel = this.channelConfiguration.Items.FirstOrDefault(x => x.Guid == parameters.channel);
+
+            if (channel == null)
+            {
+                return new NotFoundResponse();
+            }
+
+            this.subscriptionHelper.SubscribeChannel(((UserIdentity) this.Context.CurrentUser).BotUser.Mask, channel);
+            this.channelConfiguration.Save();
+            
+            return this.Response.AsRedirect(string.Format("/channels/{0}", channel.Guid));
+        }
+        public dynamic StalkUnsubscribe(dynamic parameters)
+        {
+            var channel = this.channelConfiguration.Items.FirstOrDefault(x => x.Guid == parameters.channel);
+
+            string stalkName = parameters.stalk;
+            if (channel == null || !channel.Stalks.ContainsKey(stalkName))
+            {
+                return new NotFoundResponse();
+            }
+
+            SubscriptionSource source;
+            this.subscriptionHelper.UnsubscribeStalk(
+                ((UserIdentity) this.Context.CurrentUser).BotUser.Mask,
+                channel,
+                channel.Stalks[stalkName],
+                out source);
+            
+            this.channelConfiguration.Save();
+            
+            return this.Response.AsRedirect(string.Format("/channels/{0}", channel.Guid));
+        }
+        
+        public dynamic StalkSubscribe(dynamic parameters)
+        {
+            var channel = this.channelConfiguration.Items.FirstOrDefault(x => x.Guid == parameters.channel);
+
+            string stalkName = parameters.stalk;
+            if (channel == null || !channel.Stalks.ContainsKey(stalkName))
+            {
+                return new NotFoundResponse();
+            }
+            
+            SubscriptionSource source;
+            this.subscriptionHelper.SubscribeStalk(
+                ((UserIdentity) this.Context.CurrentUser).BotUser.Mask,
+                channel,
+                channel.Stalks[stalkName],
+                out source);
+            
+            this.channelConfiguration.Save();
+            
+            return this.Response.AsRedirect(string.Format("/channels/{0}", channel.Guid));
+        }
+        
         public dynamic PostStalkInfo(dynamic parameters)
         {
             var channel = this.channelConfiguration.Items.FirstOrDefault(x => x.Guid == parameters.channel);
