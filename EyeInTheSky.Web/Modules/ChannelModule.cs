@@ -549,7 +549,13 @@ namespace EyeInTheSky.Web.Modules
 
         private IrcUser GetIrcUser(IIrcChannel channel, IBotUser currentUser)
         {
-            var channelUser = this.FreenodeClient.Channels[channel.Identifier].Users.Values
+            if (!this.FreenodeClient.Channels.ContainsKey(channel.Identifier))
+            {
+                return null;
+            }
+            
+            var freenodeClientChannel = this.FreenodeClient.Channels[channel.Identifier];
+            var channelUser = freenodeClientChannel.Users.Values
                 .FirstOrDefault(x => currentUser.Mask.Matches(x.User).GetValueOrDefault());
             var ircUser = channelUser != null
                 ? channelUser.User
