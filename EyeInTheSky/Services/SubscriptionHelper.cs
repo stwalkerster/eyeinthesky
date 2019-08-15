@@ -6,6 +6,7 @@ namespace EyeInTheSky.Services
     using Castle.Core.Logging;
     using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
+    using EyeInTheSky.Model.StalkNodes.BaseNodes;
     using EyeInTheSky.Services.Interfaces;
     using Stwalkerster.IrcClient.Model;
 
@@ -317,6 +318,14 @@ namespace EyeInTheSky.Services
             else
             {
                 channelUser.Subscribed = true;
+
+                // remove any overrides
+                var channelSubscriptions = this.GetUserStalkSubscriptionsInChannel(new BotUser(mask), channel);
+                foreach (var subscriptionResult in channelSubscriptions.Where(x => x.Source == SubscriptionSource.Stalk))
+                {
+                    subscriptionResult.Stalk.Subscribers.RemoveAll(x => x.Mask.Equals(mask));
+                }
+
                 return true;
             }
         }
@@ -332,6 +341,13 @@ namespace EyeInTheSky.Services
 
             var result = channelUser.Subscribed;
             channelUser.Subscribed = false;
+            
+            // remove any overrides
+            var channelSubscriptions = this.GetUserStalkSubscriptionsInChannel(new BotUser(mask), channel);
+            foreach (var subscriptionResult in channelSubscriptions.Where(x => x.Source == SubscriptionSource.Stalk))
+            {
+                subscriptionResult.Stalk.Subscribers.RemoveAll(x => x.Mask.Equals(mask));
+            }
 
             return result;
         }
