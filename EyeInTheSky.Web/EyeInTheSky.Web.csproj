@@ -98,6 +98,7 @@
     <Compile Include="Misc\UserIdentity.cs" />
     <Compile Include="Misc\WebConfiguration.cs" />
     <Compile Include="Models\AboutModel.cs" />
+    <Compile Include="Models\ChangePasswordDataModel.cs" />
     <Compile Include="Models\ChannelInfoModel.cs" />
     <Compile Include="Models\GetChannelListModel.cs" />
     <Compile Include="Models\GetUserListModel.cs" />
@@ -107,6 +108,7 @@
     <Compile Include="Models\NewStalkModel.cs" />
     <Compile Include="Models\StalkInfoModel.cs" />
     <Compile Include="Modules\AuthenticatedModuleBase.cs" />
+    <Compile Include="Modules\ChangePasswordModule.cs" />
     <Compile Include="Modules\ChannelModule.cs" />
     <Compile Include="Modules\DefaultModule.cs" />
     <Compile Include="Modules\LoginModule.cs" />
@@ -131,6 +133,9 @@
   <ItemGroup>
     <Content Include="Content\launchViewer.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\ChangePassword\ChangePasswordData.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Views\Channel\ChannelInfo.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

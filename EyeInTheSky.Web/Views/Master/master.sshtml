@@ -23,7 +23,7 @@
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"><i class="fas fa-user"></i>&nbsp;@!Model.BotUser.Identifier</a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item disabled" href="#"><i class="fas fa-key mr-2"></i>&nbsp;Change Password</a>
+                    <a class="dropdown-item" href="/changepassword"><i class="fas fa-key mr-2"></i>&nbsp;Change Password</a>
                     <a class="dropdown-item" href="/logout"><i class="fas fa-sign-out-alt mr-2"></i>&nbsp;Logout</a>
                 </div>
             </li>
