@@ -495,7 +495,7 @@ namespace EyeInTheSky.Web.Modules
         {
             /*
              * user is "aware" if:
-             *   a) they can see channel config
+             *   a) they can see channel config (fairly liberal)
              *   b) they have globaladmin, localadmin, or config flags globally
              */
 
@@ -638,7 +638,7 @@ namespace EyeInTheSky.Web.Modules
                 ? channelUser.User
                 : new IrcUser(this.FreenodeClient)
                 {
-                    Account = currentUser.Mask.ToString().Substring(2), SkeletonStatus = IrcUserSkeletonStatus.Account
+                    Account = currentUser.Mask.ToString().Substring(3), SkeletonStatus = IrcUserSkeletonStatus.Account
                 };
             return ircUser;
         }
