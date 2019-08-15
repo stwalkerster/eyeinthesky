@@ -1,22 +1,32 @@
-$(function(){
-    var editor=document.getElementById("xml_editor");
+$(function () {
+    var editor = document.getElementById("xml_editor");
     var xml = editor.textContent;
 
-    var hideMenu = function(jsElement){
-        if(jsElement.name === "searchTree") {
-            if(jsElement.children.length > 0) {
+    var wrapFunction = function (htmlId, actionParameter) {
+        var div = document.getElementById(htmlId);
+        var jsElement = Xonomy.harvestElement(div);
+
+        var newNode = Xonomy.xml2js(actionParameter);
+        newNode.children = [jsElement];
+
+        Xonomy.replace(htmlId, newNode);
+    };
+
+    var hideMenu = function (jsElement) {
+        if (jsElement.name === "searchTree") {
+            if (jsElement.children.length > 0) {
                 return true;
             }
         }
 
-        if(jsElement.name === "not") {
-            if(jsElement.children.length > 0) {
+        if (jsElement.name === "not") {
+            if (jsElement.children.length > 0) {
                 return true;
             }
         }
 
-        if(jsElement.name === "xor") {
-            if(jsElement.children.length > 1) {
+        if (jsElement.name === "xor") {
+            if (jsElement.children.length > 1) {
                 return true;
             }
         }
@@ -36,32 +46,32 @@ $(function(){
                             action: Xonomy.newElementChild,
                             actionParameter: "<user value=\"\" />",
                             hideIf: hideMenu
-                        },{
+                        }, {
                             caption: "Append <page>",
                             action: Xonomy.newElementChild,
                             actionParameter: "<page value=\"\" />",
                             hideIf: hideMenu
-                        },{
+                        }, {
                             caption: "Append <summary>",
                             action: Xonomy.newElementChild,
                             actionParameter: "<summary value=\"\" />",
                             hideIf: hideMenu
-                        },{
+                        }, {
                             caption: "Append <log>",
                             action: Xonomy.newElementChild,
                             actionParameter: "<log value=\"\" />",
                             hideIf: hideMenu
-                        },{
+                        }, {
                             caption: "Append <flag>",
                             action: Xonomy.newElementChild,
                             actionParameter: "<flag value=\"\" />",
                             hideIf: hideMenu
-                        },{
+                        }, {
                             caption: "Append <incategory>",
                             action: Xonomy.newElementChild,
                             actionParameter: "<incategory value=\"\" />",
                             hideIf: hideMenu
-                        },{
+                        }, {
                             caption: "Append <usergroup>",
                             action: Xonomy.newElementChild,
                             actionParameter: "<usergroup value=\"\" />",
@@ -78,32 +88,32 @@ $(function(){
                             action: Xonomy.newElementChild,
                             actionParameter: "<and />",
                             hideIf: hideMenu
-                        },{
+                        }, {
                             caption: "Append <or>",
                             action: Xonomy.newElementChild,
                             actionParameter: "<or />",
                             hideIf: hideMenu
-                        },{
+                        }, {
                             caption: "Append <not>",
                             action: Xonomy.newElementChild,
                             actionParameter: "<not />",
                             hideIf: hideMenu
-                        },{
+                        }, {
                             caption: "Append <xor>",
                             action: Xonomy.newElementChild,
                             actionParameter: "<xor />",
                             hideIf: hideMenu
-                        },{
+                        }, {
                             caption: "Append <x-of>",
                             action: Xonomy.newElementChild,
                             actionParameter: "<x-of />",
                             hideIf: hideMenu
-                        },{
+                        }, {
                             caption: "Append <true>",
                             action: Xonomy.newElementChild,
                             actionParameter: "<true />",
                             hideIf: hideMenu
-                        },{
+                        }, {
                             caption: "Append <false>",
                             action: Xonomy.newElementChild,
                             actionParameter: "<false />",
@@ -123,6 +133,41 @@ $(function(){
         }
     ];
 
+    var wrapMenu = [
+        {
+            caption: "Wrap with logical node...",
+            menu: [
+                {
+                    caption: "Wrap with <and>",
+                    action: wrapFunction,
+                    actionParameter: "<and />",
+                    hideIf: hideMenu
+                }, {
+                    caption: "Wrap with <or>",
+                    action: wrapFunction,
+                    actionParameter: "<or />",
+                    hideIf: hideMenu
+                }, {
+                    caption: "Wrap with <not>",
+                    action: wrapFunction,
+                    actionParameter: "<not />",
+                    hideIf: hideMenu
+                }, {
+                    caption: "Wrap with <xor>",
+                    action: wrapFunction,
+                    actionParameter: "<xor />",
+                    hideIf: hideMenu
+                }, {
+                    caption: "Wrap with <x-of>",
+                    action: wrapFunction,
+                    actionParameter: "<x-of />",
+                    hideIf: hideMenu
+                }
+            ],
+            hideIf: hideMenu
+        }
+    ];
+
     var deleteItemMenu = [
         {
             caption: "Delete entry",
@@ -135,8 +180,12 @@ $(function(){
             caption: "Edit raw",
             action: Xonomy.editRaw,
             actionParameter: {
-                fromXml: function(xml) {return xml;},
-                toXml: function(text, origElement) { return text.replace(/>\s*/g, '>').replace(/\s*</g, '<');}
+                fromXml: function (xml) {
+                    return xml;
+                },
+                toXml: function (text, origElement) {
+                    return text.replace(/>\s*/g, '>').replace(/\s*</g, '<');
+                }
             }
         }
     ];
@@ -145,13 +194,13 @@ $(function(){
 
     var regexLeafNode = {
         menu: [{
-                caption: "Mark as case insensitive",
-                action: Xonomy.newAttribute,
-                actionParameter: {name: "caseinsensitive", value: "true"},
-                hideIf: function(jsElement) {
-                    return jsElement.hasAttribute("caseinsensitive");
-                }
-            }].concat(deleteItemMenu).concat(editRawMenu),
+            caption: "Mark as case insensitive",
+            action: Xonomy.newAttribute,
+            actionParameter: {name: "caseinsensitive", value: "true"},
+            hideIf: function (jsElement) {
+                return jsElement.hasAttribute("caseinsensitive");
+            }
+        }].concat(deleteItemMenu).concat(editRawMenu).concat(wrapMenu),
         attributes: {
             "value": {
                 asker: Xonomy.askString
@@ -167,7 +216,7 @@ $(function(){
     };
 
     var leafNode = {
-        menu: deleteItemMenu.concat(editRawMenu),
+        menu: deleteItemMenu.concat(editRawMenu).concat(wrapMenu),
         attributes: {
             "value": {
                 asker: Xonomy.askString
@@ -183,27 +232,35 @@ $(function(){
                 displayName: "Stalk search tree root"
             },
             "and": {
-                menu: addChildMenu.concat(deleteItemMenu).concat(editRawMenu),
+                menu: addChildMenu.concat(deleteItemMenu).concat(editRawMenu).concat(wrapMenu),
                 canDropTo: canDropTo,
-                caption: function() {return "Returns true all child nodes return true."}
+                caption: function () {
+                    return "Returns true all child nodes return true."
+                }
             },
             "xor": {
-                menu: addChildMenu.concat(deleteItemMenu).concat(editRawMenu),
+                menu: addChildMenu.concat(deleteItemMenu).concat(editRawMenu).concat(wrapMenu),
                 canDropTo: canDropTo,
-                caption: function() {return "Returns true if exactly one child node returns true."}
+                caption: function () {
+                    return "Returns true if exactly one child node returns true."
+                }
             },
             "or": {
-                menu: addChildMenu.concat(deleteItemMenu).concat(editRawMenu),
+                menu: addChildMenu.concat(deleteItemMenu).concat(editRawMenu).concat(wrapMenu),
                 canDropTo: canDropTo,
-                caption: function() {return "Returns true any child node return true."}
+                caption: function () {
+                    return "Returns true any child node return true."
+                }
             },
             "not": {
-                menu: addChildMenu.concat(deleteItemMenu).concat(editRawMenu),
+                menu: addChildMenu.concat(deleteItemMenu).concat(editRawMenu).concat(wrapMenu),
                 canDropTo: canDropTo,
-                caption: function() {return "Returns true if the child node returns false."}
+                caption: function () {
+                    return "Returns true if the child node returns false."
+                }
             },
             "external": {
-                menu: [].concat(deleteItemMenu).concat(editRawMenu),
+                menu: [].concat(deleteItemMenu).concat(editRawMenu).concat(wrapMenu),
                 attributes: {
                     "provider": {
                         asker: Xonomy.askString
@@ -213,7 +270,9 @@ $(function(){
                     }
                 },
                 canDropTo: canDropTo,
-                caption: function() {return "References a section of tree stored elsewhere"}
+                caption: function () {
+                    return "References a section of tree stored elsewhere"
+                }
             },
             "x-of": {
                 menu: [
@@ -221,18 +280,18 @@ $(function(){
                         caption: "Add minimum",
                         action: Xonomy.newAttribute,
                         actionParameter: {name: "minimum", value: ""},
-                        hideIf: function(jsElement) {
+                        hideIf: function (jsElement) {
                             return jsElement.hasAttribute("minimum");
                         }
-                    },{
+                    }, {
                         caption: "Add maximum",
                         action: Xonomy.newAttribute,
                         actionParameter: {name: "maximum", value: ""},
-                        hideIf: function(jsElement) {
+                        hideIf: function (jsElement) {
                             return jsElement.hasAttribute("maximum");
                         }
                     }
-                ].concat(addChildMenu).concat(deleteItemMenu).concat(editRawMenu),
+                ].concat(addChildMenu).concat(deleteItemMenu).concat(editRawMenu).concat(wrapMenu),
                 attributes: {
                     "minimum": {
                         asker: Xonomy.askString,
@@ -250,7 +309,9 @@ $(function(){
                     }
                 },
                 canDropTo: canDropTo,
-                caption: function() {return "Returns true of at least the minimum and at most the maximum child nodes return true."}
+                caption: function () {
+                    return "Returns true of at least the minimum and at most the maximum child nodes return true."
+                }
             },
 
             "user": regexLeafNode,
@@ -265,7 +326,7 @@ $(function(){
             "true": leafNode,
             "false": leafNode
         },
-        onchange: function() {
+        onchange: function () {
             $('#saveButton').removeClass('hide');
         }
     };
@@ -274,7 +335,7 @@ $(function(){
     Xonomy.render(xml, editor, docSpec);
 });
 
-$('#stalkForm').submit(function(event) {
-   var xml = Xonomy.harvest();
-   $('#newsearchtree').val(xml);
+$('#stalkForm').submit(function (event) {
+    var xml = Xonomy.harvest();
+    $('#newsearchtree').val(xml);
 });
