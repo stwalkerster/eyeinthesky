@@ -195,12 +195,16 @@ namespace EyeInTheSky.Web.Modules
 
             if (string.IsNullOrWhiteSpace(this.Request.Form.stalkIdentifier))
             {
-                // TODO: error out here
+                var newStalkModel = this.NewStalk(parameters);
+                newStalkModel.Errors.Add("You must set a stalk identifier.");
+                return newStalkModel;
             }
 
             if (channel.Stalks.ContainsKey(this.Request.Form.stalkIdentifier))
             {
-                // TODO: error out here
+                var newStalkModel = this.NewStalk(parameters);
+                newStalkModel.Errors.Add("This stalk identifier is already in use in this channel.");
+                return newStalkModel;
             }
 
             IStalk stalk = new ComplexStalk(this.Request.Form.stalkIdentifier)
