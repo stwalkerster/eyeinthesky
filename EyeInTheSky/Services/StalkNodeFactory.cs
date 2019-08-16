@@ -32,7 +32,8 @@
                     return this.NewDoubleChildNode(fragment);
 
                 case "not":
-                case "external":
+                case "external": 
+                case "expiry":
                     return this.NewSingleChildNode(fragment);
 
                 case "user":
@@ -105,7 +106,17 @@
                     return NewExternalNode(fragment);
                 case "not":
                     node = new NotNode();
-                    break;    
+                    break;
+                case "expiry":
+                    node = new ExpiryNode();
+
+                    var timestampAttribute = fragment.Attributes["expiry"];
+                    if (timestampAttribute != null)
+                    {
+                        ((ExpiryNode)node).Expiry = XmlConvert.ToDateTime(timestampAttribute.Value, XmlDateTimeSerializationMode.Utc);
+                    }
+
+                    break;
                 default:
                     throw new XmlException("Unknown element " + fragment.Name);
             }
@@ -403,6 +414,12 @@
             var elem = this.CreateElement(doc, node);
 
             elem.AppendChild(this.ToXml(doc, node.ChildNode));
+
+            var expiryNode = node as ExpiryNode;
+            if (expiryNode != null)
+            {
+                elem.SetAttribute("expiry", XmlConvert.ToString(expiryNode.Expiry, XmlDateTimeSerializationMode.Utc));
+            }
 
             return elem;
         }

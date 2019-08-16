@@ -40,7 +40,15 @@ $(function(){
                 },
                 caption: function() {return "Returns true of at least the minimum and at most the maximum child nodes return true."}
             },
-
+            "expiry": {
+                attributes: {
+                    "expiry": {}
+                },
+                caption: function () {
+                    return "Returns false if the expiry has passed, otherwise evaluate subtree"
+                }
+            },
+            
             "user": regexLeafNode,
             "page": regexLeafNode,
             "summary": regexLeafNode,

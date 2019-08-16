@@ -161,6 +161,7 @@
     <Compile Include="Model\StalkNodes\BaseNodes\RegexLeafNode.cs" />
     <Compile Include="Model\StalkNodes\BaseNodes\SingleChildLogicalNode.cs" />
     <Compile Include="Model\StalkNodes\BaseNodes\StalkNode.cs" />
+    <Compile Include="Model\StalkNodes\ExpiryNode.cs" />
     <Compile Include="Model\StalkNodes\ExternalNode.cs" />
     <Compile Include="Model\StalkNodes\FalseNode.cs" />
     <Compile Include="Model\StalkNodes\FlagStalkNode.cs" />

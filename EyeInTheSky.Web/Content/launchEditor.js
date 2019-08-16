@@ -19,7 +19,7 @@ $(function () {
             }
         }
 
-        if (jsElement.name === "not") {
+        if (jsElement.name === "not" || jsElement.name === "expiry") {
             if (jsElement.children.length > 0) {
                 return true;
             }
@@ -118,6 +118,11 @@ $(function () {
                             action: Xonomy.newElementChild,
                             actionParameter: "<false />",
                             hideIf: hideMenu
+                        }, {
+                            caption: "Append <expiry>",
+                            action: Xonomy.newElementChild,
+                            actionParameter: "<expiry expiry='9999-12-31T23:59:59Z' />",
+                            hideIf: hideMenu
                         }
                     ],
                     hideIf: hideMenu
@@ -162,6 +167,11 @@ $(function () {
                     action: wrapFunction,
                     actionParameter: "<x-of />",
                     hideIf: hideMenu
+                }, {
+                    caption: "Wrap with <expiry />",
+                    action: wrapFunction,
+                    actionParameter: "<expiry expiry='9999-12-31T23:59:59Z' />",
+                    hideIf: hideMenu
                 }
             ],
             hideIf: hideMenu
@@ -190,7 +200,7 @@ $(function () {
         }
     ];
 
-    var canDropTo = ["searchTree", "and", "or", "x-of", "not", "xor"];
+    var canDropTo = ["searchTree", "and", "or", "x-of", "not", "xor", "expiry"];
 
     var regexLeafNode = {
         menu: [{
@@ -311,6 +321,18 @@ $(function () {
                 canDropTo: canDropTo,
                 caption: function () {
                     return "Returns true of at least the minimum and at most the maximum child nodes return true."
+                }
+            },
+            "expiry": {
+                menu: [].concat(addChildMenu).concat(deleteItemMenu).concat(editRawMenu).concat(wrapMenu),
+                attributes: {
+                    "expiry": {
+                        asker: Xonomy.askString
+                    }
+                },
+                canDropTo: canDropTo,
+                caption: function () {
+                    return "Returns false if the expiry has passed, otherwise evaluate subtree"
                 }
             },
 
