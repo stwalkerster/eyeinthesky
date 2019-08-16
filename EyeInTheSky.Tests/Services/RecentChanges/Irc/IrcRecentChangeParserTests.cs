@@ -913,6 +913,17 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                         });
                 
                 yield return new TestCaseData(
+                        "14[[07Special:Log/pagetranslation14]]4 prioritylanguages10 02 5* 03DannyS712 5*  10DannyS712 set the priority languages for translatable page [[02Cooperation of Wikimedia's Italian regional projects10]] to Italian, Piedmontese, Lombard, Ligurian, Venetian, Friulian, Emiliano-Romagnolo, Neapolitan, Tarantino, Sicilian, Sardinian, Corsican, Romagnol, Emilian, Sassarese Sardinian, French and German: Update version for translation")
+                    .Returns(
+                        new RecentChange("DannyS712")
+                        {
+                            Log = "pagetranslation",
+                            Page = "Cooperation of Wikimedia's Italian regional projects",
+                            EditFlags = "prioritylanguages",
+                            EditSummary = "Update version for translation" 
+                        });
+                
+                yield return new TestCaseData(
                         "14[[07Special:Log/pagetranslation14]]4 unmark10 02 5* 03MarcoAurelio 5*  10MarcoAurelio removed [[02Meta:Sandbox10]] from the translation system")
                     .Returns(
                         new RecentChange("MarcoAurelio")

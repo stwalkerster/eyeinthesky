@@ -902,7 +902,7 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                     
                     if (rc.EditFlags == "prioritylanguages")
                     {
-                        var match = new Regex(" (?:removed priority languages from|set the priority languages for|limited languages for) translatable page \\[\\[(?<page>.*?)\\]\\](?: to [a-zA-Z, ]+)?(?:: (?<comment>.*))?$");
+                        var match = new Regex(" (?:removed priority languages from|set the priority languages for|limited languages for) translatable page \\[\\[(?<page>.*?)\\]\\](?: to [a-zA-Z, -]+)?(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
