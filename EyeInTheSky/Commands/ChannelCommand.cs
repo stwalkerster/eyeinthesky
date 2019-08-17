@@ -203,14 +203,16 @@
         [SubcommandInvocation("part")]
         [CommandFlag(AccessFlags.GlobalAdmin, true)]
         [CommandFlag(AccessFlags.LocalAdmin)]
+        [CommandFlag(AccessFlags.User)]
         [RequiredArguments(1)]
         [Help("<channel>", "Requests the bot leaves a channel, removing all configuration for that channel.")]
         // ReSharper disable once UnusedMember.Global
+        // // Note, there's custom ACL logic for this subcommand in the prerun method. Localadmin in the channel being left is required.
         protected IEnumerable<CommandResponse> PartMode()
         {
             var tokenList = this.Arguments;
             var channel = tokenList.First();
-            
+
             if (this.appConfig.FreenodeChannel == channel)
             {
                 return new[]
@@ -222,6 +224,8 @@
                 };
             }
 
+
+            
             if (this.channelConfiguration.ContainsKey(channel))
             {
                 this.channelConfiguration.Remove(channel);
@@ -238,7 +242,7 @@
 
         [SubcommandInvocation("join")]
         [CommandFlag(AccessFlags.GlobalAdmin, true)]
-        [CommandFlag(AccessFlags.LocalAdmin)]
+        [CommandFlag(AccessFlags.ChannelJoin, true)]
         [RequiredArguments(1)]
         [Help("<channel>", "Requests the bot joins a channel")]
         // ReSharper disable once UnusedMember.Global
@@ -246,15 +250,45 @@
         {
             var tokenList = this.Arguments;
             var channel = tokenList.First();
+
+            var accountKey = string.Format("$a:{0}", this.User.Account);
+            var botUser = this.botUserConfiguration[accountKey];
             
-            this.channelConfiguration.Add(new IrcChannel(channel));
+            var ircChannel = new IrcChannel(channel);
+            var channelUser = new ChannelUser(botUser.Mask)
+                {LocalFlags = AccessFlags.Configuration + AccessFlags.LocalAdmin};
+            ircChannel.Users.Add(channelUser);
+            
+            this.channelConfiguration.Add(ircChannel);
             this.channelConfiguration.Save();
+            
             this.Client.JoinChannel(channel);
             this.Client.SendMessage(
                 channel,
                 string.Format("My presence in {0} was requested by {1}.", channel, this.User));
 
             yield break;
+        }
+
+        protected override IEnumerable<CommandResponse> OnPreRun(out bool abort)
+        {
+            abort = false;
+            var tokenList = this.Arguments;
+            
+            if (this.SubCommand == "part")
+            {
+                var channel = tokenList.First();
+                
+                var allowed = this.FlagService.UserHasFlag(this.User, AccessFlags.LocalAdmin, channel) ||
+                              this.FlagService.UserHasFlag(this.User, AccessFlags.GlobalAdmin, null);
+
+                if (!allowed)
+                {
+                    throw new CommandAccessDeniedException();
+                }
+            }
+            
+            return new List<CommandResponse>();
         }
     }
 }

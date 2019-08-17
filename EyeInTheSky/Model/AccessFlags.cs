@@ -26,18 +26,13 @@
         /// <summary>
         /// Local administrative access to the bot. This should be automatically granted to chanops, otherwise granted
         /// locally only. This manages administrativia which affects one channel only, like parting a channel and
-        /// managing local flags
+        /// managing local flags. Should be granted locally only.
         /// </summary>
         public const string LocalAdmin = "a";
-
-        public static readonly string[] ValidFlags =
-        {
-            Standard,
-            User,
-            Owner,
-            Configuration,
-            GlobalAdmin,
-            LocalAdmin
-        };
+        
+        /// <summary>
+        /// Grants the ability to join new channels.
+        /// </summary>
+        public const string ChannelJoin = "J";
     }
 }

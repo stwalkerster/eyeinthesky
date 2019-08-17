@@ -12,15 +12,15 @@
 </div>
 <div class="row">
     <div class="col-md-12">
-        @If.Model.IsChannelSubscribed
-        <form action="/channels/@!Model.IrcChannel.Guid/unsubscribe" method="post">
-        <button class="btn btn-info float-right btn-sm ml-1 mt-2" title="Unsubscribe from all stalks in this channel"><i class="fas fa-bell"></i>&nbsp;Unsubscribe from channel</button>
-        </form>
+        @If.Model.ShowChannelUnsubscribeButton
+            <form action="/channels/@!Model.IrcChannel.Guid/unsubscribe" method="post">
+            <button class="btn btn-info float-right btn-sm ml-1 mt-2" title="Unsubscribe from all stalks in this channel"><i class="fas fa-bell"></i>&nbsp;Unsubscribe from channel</button>
+            </form>
         @EndIf
-        @IfNot.Model.IsChannelSubscribed
-        <form action="/channels/@!Model.IrcChannel.Guid/subscribe" method="post">
-        <button class="btn btn-outline-info float-right btn-sm ml-1 mt-2" title="Subscribe to all stalks in this channel"><i class="far fa-bell"></i>&nbsp;Subscribe to channel</button>
-        </form>
+        @If.Model.ShowChannelSubscribeButton
+            <form action="/channels/@!Model.IrcChannel.Guid/subscribe" method="post">
+            <button class="btn btn-outline-info float-right btn-sm ml-1 mt-2" title="Subscribe to all stalks in this channel"><i class="far fa-bell"></i>&nbsp;Subscribe to channel</button>
+            </form>
         @EndIf
         <h3><code>@!Model.IrcChannel.Identifier</code></h3>
     </div>
@@ -35,10 +35,16 @@
 
         <h4>Stalks</h4>
 
-        @IfNot.Model.HasStalks
+        @If.Model.ShowNoStalksDefined
             <div class="alert alert-info" role="alert">
                 No stalks are defined in this channel.
             </div>
+        @EndIf
+
+        @IfNot.Model.CanSeeChannelConfig
+        <div class="alert alert-danger" role="alert">
+            You are not able to see the configuration of this channel.
+        </div>
         @EndIf
 
         <div class="card-columns">

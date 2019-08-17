@@ -65,6 +65,11 @@ namespace EyeInTheSky.Web.Modules
             {
                 return new NotFoundResponse();
             }
+
+            if (!this.UserCanSeeChannelConfig(this.Context, channel))
+            {
+                return new NotFoundResponse();
+            }
             
             this.subscriptionHelper.UnsubscribeChannel(((UserIdentity) this.Context.CurrentUser).BotUser.Mask, channel);
             this.channelConfiguration.Save();
@@ -77,6 +82,11 @@ namespace EyeInTheSky.Web.Modules
             var channel = this.channelConfiguration.Items.FirstOrDefault(x => x.Guid == parameters.channel);
 
             if (channel == null)
+            {
+                return new NotFoundResponse();
+            }
+
+            if (!this.UserCanSeeChannelConfig(this.Context, channel))
             {
                 return new NotFoundResponse();
             }
@@ -96,6 +106,11 @@ namespace EyeInTheSky.Web.Modules
                 return new NotFoundResponse();
             }
 
+            if (!this.UserCanSeeChannelConfig(this.Context, channel))
+            {
+                return new NotFoundResponse();
+            }
+            
             SubscriptionSource source;
             this.subscriptionHelper.UnsubscribeStalk(
                 ((UserIdentity) this.Context.CurrentUser).BotUser.Mask,
@@ -114,6 +129,11 @@ namespace EyeInTheSky.Web.Modules
 
             string stalkName = parameters.stalk;
             if (channel == null || !channel.Stalks.ContainsKey(stalkName))
+            {
+                return new NotFoundResponse();
+            }
+            
+            if (!this.UserCanSeeChannelConfig(this.Context, channel))
             {
                 return new NotFoundResponse();
             }
@@ -292,7 +312,6 @@ namespace EyeInTheSky.Web.Modules
             else
             {
                 model.Stalks = new List<DisplayStalk>();
-                model.Errors.Add("You do not have the necessary privileges to see this channel's stalk configuration.");
             }
 
             if (model.IrcClient.Channels.ContainsKey(channel.Identifier))
@@ -310,6 +329,7 @@ namespace EyeInTheSky.Web.Modules
 
             model.DisplayUsers = this.GetChannelDisplayUsers(channel, model);
             model.CanConfigureStalks = this.UserCanConfigureStalks(this.Context, channel);
+            model.CanSeeChannelConfig = this.UserCanSeeChannelConfig(this.Context, channel);
             
             model.IsChannelSubscribed = this.subscriptionHelper.IsSubscribedToChannel(
                 ((UserIdentity) this.Context.CurrentUser).BotUser,
@@ -500,7 +520,7 @@ namespace EyeInTheSky.Web.Modules
             /*
              * user is "aware" if:
              *   a) they can see channel config (fairly liberal)
-             *   b) they have globaladmin, localadmin, or config flags globally
+             *   b) they have globaladmin
              */
 
 
@@ -513,14 +533,12 @@ namespace EyeInTheSky.Web.Modules
                 return true;
             }
 
-            // b) they have globaladmin, localadmin, or config flags globally
+            // b) they have globaladmin
             if (this.botUserConfiguration.Items.Any(
                 x =>
                     x.Mask.Equals(currentUser.Mask)
                     && !string.IsNullOrEmpty(x.GlobalFlags)
-                    && (x.GlobalFlags.Contains(AccessFlags.LocalAdmin)
-                        || x.GlobalFlags.Contains(AccessFlags.GlobalAdmin)
-                        || x.GlobalFlags.Contains(AccessFlags.Configuration))
+                    && x.GlobalFlags.Contains(AccessFlags.GlobalAdmin)
             ))
             {
                 return true;
@@ -567,10 +585,17 @@ namespace EyeInTheSky.Web.Modules
                 return true;
             }
 
+            var hasLocalConfig = false;
+            var channelUser = channel.Users.FirstOrDefault(x => x.Mask.Equals(currentUser.Mask));
+            if (channelUser != null && !string.IsNullOrWhiteSpace(channelUser.LocalFlags))
+            {
+                hasLocalConfig = channelUser.LocalFlags.Contains(AccessFlags.Configuration);
+            }
+
             // c) they have config or localadmin flags in the channel
             if (
                 this.flagService.UserHasFlag(ircUser,AccessFlags.LocalAdmin, channel.Identifier)
-                || this.flagService.UserHasFlag(ircUser,AccessFlags.Configuration, channel.Identifier))
+                || hasLocalConfig)
             {
                 return true;
             }

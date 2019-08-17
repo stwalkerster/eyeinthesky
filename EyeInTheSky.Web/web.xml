@@ -7,7 +7,7 @@
                 <webServiceHostPort>127.0.0.1:8080</webServiceHostPort>
                 <PublicEndpoint>http://127.0.0.1:8080/</PublicEndpoint>
 
-                <DisableErrorTraces>true</DisableErrorTraces>
+                <DisableErrorTraces>false</DisableErrorTraces>
                 <RewriteLocalhost>false</RewriteLocalhost>
                 <DiagnosticsPath>_diag</DiagnosticsPath>
                 <DiagnosticsPassword>changemepls</DiagnosticsPassword>

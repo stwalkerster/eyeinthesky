@@ -91,7 +91,9 @@
             // GlobalAdmin and Owner should never be granted locally - too much power.
             // Standard is granted by default, so no sense to remove it.
             // User is granted based on login to NickServ account, also makes no sense to remove it
-            var preventedChanges = new[] {AccessFlags.GlobalAdmin, CLFlag.Owner, CLFlag.Standard, AccessFlags.User};
+            // Channel join only allows joining to new channels, so no sense to be granted locally
+            var preventedChanges = new[]
+                {AccessFlags.GlobalAdmin, CLFlag.Owner, CLFlag.Standard, AccessFlags.User, AccessFlags.ChannelJoin};
 
             var updatedFlags = this.ApplyFlagChanges(ref flagChanges, currentFlags, preventedChanges);
 
@@ -162,7 +164,8 @@
 
             // Standard is granted by default, so no sense to remove it.
             // User is granted based on login to NickServ account, also makes no sense to remove it
-            var preventedChanges = new List<string> {CLFlag.Standard, AccessFlags.User};
+            // Local admin should only be granted locally, as it only allows channel part and local flag manipulation
+            var preventedChanges = new List<string> {CLFlag.Standard, AccessFlags.User, AccessFlags.LocalAdmin};
 
             if (!this.FlagService.UserHasFlag(this.User, CLFlag.Owner, null))
             {
@@ -244,7 +247,7 @@
 
                 if (addMode)
                 {
-                    if (!AccessFlags.ValidFlags.Contains(c))
+                    if (!CLFlag.GetValidFlags().Contains(c))
                     {
                         continue;
                     }
