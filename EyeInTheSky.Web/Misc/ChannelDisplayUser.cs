@@ -71,7 +71,12 @@ namespace EyeInTheSky.Web.Misc
                     return this.Member.User.Account;
                 }
 
-                return this.GlobalUser.Mask.ToString();
+                if (this.GlobalUser != null)
+                {
+                    return this.GlobalUser.Mask.ToString();
+                }
+
+                return "(unknown user)";
             }
         }
 
