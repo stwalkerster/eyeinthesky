@@ -177,14 +177,12 @@ $(function () {
             hideIf: hideMenu
         }
     ];
-
     var deleteItemMenu = [
         {
             caption: "Delete entry",
             action: Xonomy.deleteElement
         }
     ];
-
     var editRawMenu = [
         {
             caption: "Edit raw",
@@ -199,8 +197,43 @@ $(function () {
             }
         }
     ];
-
+    var addCommentMenu = [
+        {
+            caption: "Add comment",
+            action: Xonomy.newAttribute,
+            actionParameter: {name: "comment", value: ""},
+            hideIf: function (jsElement) {
+                return jsElement.hasAttribute("comment");
+            }
+        }
+    ];
+    
+    var editableNodeMenu = [].concat(wrapMenu).concat(deleteItemMenu).concat(editRawMenu).concat(addCommentMenu);
+    
     var canDropTo = ["searchTree", "and", "or", "x-of", "not", "xor", "expiry"];
+
+    var commentAttribute = {
+        asker: Xonomy.askString,
+        menu: [{
+            caption: "Remove comment",
+            action: Xonomy.deleteAttribute
+        }]
+    };
+
+    var defaultComments = {
+        "and": "Returns true if all child nodes return true.",
+        "xor": "Returns true if exactly one child node returns true.",
+        "or": "Returns true if any child node return true.",
+        "not": "Returns true if the child node returns false.",
+        "external": "References a section of tree stored elsewhere",
+        "x-of": "Returns true if at least the minimum and at most the maximum child nodes return true.",
+        "expiry": "Returns false if the expiry has passed, otherwise evaluate subtree"
+    };
+
+    var commentFunc = function (node) {
+        return "<span class=\"defaultcomment\">" + defaultComments[node.name] + "</span>";
+    };
+       
 
     var regexLeafNode = {
         menu: [{
@@ -210,7 +243,7 @@ $(function () {
             hideIf: function (jsElement) {
                 return jsElement.hasAttribute("caseinsensitive");
             }
-        }].concat(deleteItemMenu).concat(editRawMenu).concat(wrapMenu),
+        }].concat(editableNodeMenu),
         attributes: {
             "value": {
                 asker: Xonomy.askString
@@ -220,19 +253,23 @@ $(function () {
                     caption: "Mark as case sensitive",
                     action: Xonomy.deleteAttribute
                 }]
-            }
+            },
+            "comment": commentAttribute
         },
-        canDropTo: canDropTo
+        canDropTo: canDropTo,
+        caption: commentFunc
     };
 
     var leafNode = {
-        menu: deleteItemMenu.concat(editRawMenu).concat(wrapMenu),
+        menu: editableNodeMenu,
         attributes: {
             "value": {
                 asker: Xonomy.askString
-            }
+            },
+            "comment": commentAttribute
         },
-        canDropTo: canDropTo
+        canDropTo: canDropTo,
+        caption: commentFunc
     };
 
     var docSpec = {
@@ -242,47 +279,42 @@ $(function () {
                 displayName: "Stalk search tree root"
             },
             "and": {
-                menu: addChildMenu.concat(deleteItemMenu).concat(editRawMenu).concat(wrapMenu),
+                menu: addChildMenu.concat(editableNodeMenu),
                 canDropTo: canDropTo,
-                caption: function () {
-                    return "Returns true all child nodes return true."
-                }
+                caption: commentFunc,
+                attributes: {"comment": commentAttribute}
             },
             "xor": {
-                menu: addChildMenu.concat(deleteItemMenu).concat(editRawMenu).concat(wrapMenu),
+                menu: addChildMenu.concat(editableNodeMenu),
                 canDropTo: canDropTo,
-                caption: function () {
-                    return "Returns true if exactly one child node returns true."
-                }
+                caption: commentFunc,
+                attributes: {"comment": commentAttribute}
             },
             "or": {
-                menu: addChildMenu.concat(deleteItemMenu).concat(editRawMenu).concat(wrapMenu),
+                menu: addChildMenu.concat(editableNodeMenu),
                 canDropTo: canDropTo,
-                caption: function () {
-                    return "Returns true any child node return true."
-                }
+                caption: commentFunc,
+                attributes: {"comment": commentAttribute}
             },
             "not": {
-                menu: addChildMenu.concat(deleteItemMenu).concat(editRawMenu).concat(wrapMenu),
+                menu: addChildMenu.concat(editableNodeMenu),
                 canDropTo: canDropTo,
-                caption: function () {
-                    return "Returns true if the child node returns false."
-                }
+                caption: commentFunc,
+                attributes: {"comment": commentAttribute}
             },
             "external": {
-                menu: [].concat(deleteItemMenu).concat(editRawMenu).concat(wrapMenu),
+                menu: [].concat(editableNodeMenu),
                 attributes: {
                     "provider": {
                         asker: Xonomy.askString
                     },
                     "location": {
                         asker: Xonomy.askString
-                    }
+                    },
+                    "comment": commentAttribute
                 },
                 canDropTo: canDropTo,
-                caption: function () {
-                    return "References a section of tree stored elsewhere"
-                }
+                caption: commentFunc
             },
             "x-of": {
                 menu: [
@@ -301,7 +333,7 @@ $(function () {
                             return jsElement.hasAttribute("maximum");
                         }
                     }
-                ].concat(addChildMenu).concat(deleteItemMenu).concat(editRawMenu).concat(wrapMenu),
+                ].concat(addChildMenu).concat(editableNodeMenu),
                 attributes: {
                     "minimum": {
                         asker: Xonomy.askString,
@@ -316,24 +348,22 @@ $(function () {
                             caption: "Remove maximum",
                             action: Xonomy.deleteAttribute
                         }]
-                    }
+                    },
+                    "comment": commentAttribute
                 },
                 canDropTo: canDropTo,
-                caption: function () {
-                    return "Returns true of at least the minimum and at most the maximum child nodes return true."
-                }
+                caption: commentFunc
             },
             "expiry": {
-                menu: [].concat(addChildMenu).concat(deleteItemMenu).concat(editRawMenu).concat(wrapMenu),
+                menu: [].concat(addChildMenu).concat(editableNodeMenu),
                 attributes: {
                     "expiry": {
                         asker: Xonomy.askString
-                    }
+                    },
+                    "comment": commentAttribute
                 },
                 canDropTo: canDropTo,
-                caption: function () {
-                    return "Returns false if the expiry has passed, otherwise evaluate subtree"
-                }
+                caption: commentFunc
             },
 
             "user": regexLeafNode,
@@ -347,9 +377,6 @@ $(function () {
 
             "true": leafNode,
             "false": leafNode
-        },
-        onchange: function () {
-            $('#saveButton').removeClass('hide');
         }
     };
 

@@ -1,17 +1,44 @@
-$(function(){
-    var editor=document.getElementById("xml_editor");
+$(function () {
+    var editor = document.getElementById("xml_editor");
+
+    var defaultComments = {
+        "and": "Returns true if all child nodes return true.",
+        "xor": "Returns true if exactly one child node returns true.",
+        "or": "Returns true if any child node return true.",
+        "not": "Returns true if the child node returns false.",
+        "external": "References a section of tree stored elsewhere",
+        "x-of": "Returns true if at least the minimum and at most the maximum child nodes return true.",
+        "expiry": "Returns false if the expiry has passed, otherwise evaluate subtree"
+    };
+
+    var commentFunc = function (node) {
+        if (node.hasAttribute("comment")) {
+            return "<span class=\"usercomment\">" + node.attributes.filter(function (x) {
+                return x.name === "comment"
+            })[0].value + "</span>";
+        } else {
+            return "<span class=\"defaultcomment\">" + defaultComments[node.name] + "</span>";
+        }
+    };
+
     var regexLeafNode = {
+        caption: commentFunc,
         attributes: {
             "value": {},
-            "caseinsensitive": {}
+            "caseinsensitive": {},
+            "comment": {isInvisible: true}
         }
     };
 
     var leafNode = {
+        caption: commentFunc,
         attributes: {
-            "value": {}
+            "value": {},
+            "comment": {isInvisible: true}
         }
     };
+
+    var commentAttribute = {"comment": {isInvisible: true}};
 
     var docSpec = {
         elements: {
@@ -19,36 +46,41 @@ $(function(){
                 displayName: "Stalk search tree root"
             },
             "and": {
-                caption: function() {return "Returns true all child nodes return true."}
+                caption: commentFunc,
+                attributes: commentAttribute
             },
             "xor": {
-                caption: function() {return "Returns true if exactly one child node returns true."}
+                caption: commentFunc,
+                attributes: commentAttribute
             },
             "or": {
-                caption: function() {return "Returns true any child node return true."}
+                caption: commentFunc,
+                attributes: commentAttribute
             },
             "not": {
-                caption: function() {return "Returns true if the child node returns false."}
+                caption: commentFunc,
+                attributes: commentAttribute
             },
             "external": {
-                caption: function() {return "References a section of tree stored elsewhere"}
+                caption: commentFunc,
+                attributes: commentAttribute
             },
             "x-of": {
                 attributes: {
                     "minimum": {},
-                    "maximum": {}
+                    "maximum": {},
+                    "comment": {isInvisible: true}
                 },
-                caption: function() {return "Returns true of at least the minimum and at most the maximum child nodes return true."}
+                caption: commentFunc
             },
             "expiry": {
                 attributes: {
-                    "expiry": {}
+                    "expiry": {},
+                    "comment": {isInvisible: true}
                 },
-                caption: function () {
-                    return "Returns false if the expiry has passed, otherwise evaluate subtree"
-                }
+                caption: commentFunc
             },
-            
+
             "user": regexLeafNode,
             "page": regexLeafNode,
             "summary": regexLeafNode,

@@ -21,20 +21,25 @@
         
         public IStalkNode NewFromXmlFragment(XmlElement fragment)
         {
+            IStalkNode node;
+            
             switch (fragment.Name)
             {
                 case "and":
                 case "or":
                 case "x-of":
-                    return this.NewMultiChildNode(fragment);
+                    node = this.NewMultiChildNode(fragment);
+                    break;
                 
                 case "xor":
-                    return this.NewDoubleChildNode(fragment);
+                    node = this.NewDoubleChildNode(fragment);
+                    break;
 
                 case "not":
                 case "external": 
                 case "expiry":
-                    return this.NewSingleChildNode(fragment);
+                    node = this.NewSingleChildNode(fragment);
+                    break;
 
                 case "user":
                 case "page":
@@ -43,21 +48,32 @@
                 case "usergroup":
                 case "incategory":
                 case "log":
-                    return this.NewLeafNode(fragment);
+                    node = this.NewLeafNode(fragment);
+                    break;
                 
                 case "infixnumeric":
-                    return this.NewInfixNumeric(fragment);
+                    node = this.NewInfixNumeric(fragment);
+                    break;
 
                 case "true":
-                    return new TrueNode();
+                    node = new TrueNode();
+                    break;
                 case "false":
-                    return new FalseNode();
+                    node = new FalseNode();
+                    break;
 
-                
                 
                 default:
                     throw new XmlException("Unknown element " + fragment.Name);
             }
+
+            var fragmentAttribute = fragment.Attributes["comment"];
+            if (fragmentAttribute != null)
+            {
+                node.Comment = fragmentAttribute.Value;
+            }
+            
+            return node;
         }
         
         public INumberProviderNode NewNumericFromXmlFragment(XmlElement fragment)
@@ -298,19 +314,32 @@
 
         public XmlElement ToXml(XmlDocument doc, IStalkNode node)
         {
+            XmlElement element;
+            
             var logicalNode = node as LogicalNode;
             if (logicalNode != null)
             {
-                return this.LogicalToXml(doc, logicalNode);
+                element = this.LogicalToXml(doc, logicalNode);
             }
-
-            var leafNode = node as LeafNode;
-            if (leafNode != null)
+            else
             {
-                return this.LeafToXml(doc, leafNode);
+                var leafNode = node as LeafNode;
+                if (leafNode != null)
+                {
+                    element = this.LeafToXml(doc, leafNode);
+                }
+                else
+                {
+                    throw new XmlException();
+                }
             }
 
-            throw new XmlException();
+            if (!string.IsNullOrWhiteSpace(node.Comment))
+            {
+                element.SetAttribute("comment", node.Comment);
+            }
+            
+            return element;
         }
 
         private XmlElement CreateElement(XmlDocument doc, ITreeNode node)

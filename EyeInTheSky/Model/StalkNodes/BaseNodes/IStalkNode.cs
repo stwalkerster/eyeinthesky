@@ -6,5 +6,7 @@
     {
         bool Match(IRecentChange rc);
         bool? Match(IRecentChange rc, bool forceMatch);
+
+        string Comment { get; set; }
     }
 }

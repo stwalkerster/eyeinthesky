@@ -49,3 +49,11 @@ div.xonomy.laic .element.current > .tag > .name {
 div.xonomy.laic .children {
     border-left: #666666 1px dotted;
 }
+
+span.defaultcomment {
+    opacity: 0.5;
+}
+
+span.usercomment {
+    font-weight: bold;
+}

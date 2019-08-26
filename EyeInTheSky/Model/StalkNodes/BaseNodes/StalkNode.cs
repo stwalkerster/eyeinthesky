@@ -35,6 +35,8 @@
             return this.DoMatch(rc, forceMatch);
         }
 
+        public string Comment { get; set; }
+
         public object Clone()
         {
             var clone = this.MemberwiseClone();
