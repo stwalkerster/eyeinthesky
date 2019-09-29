@@ -16,7 +16,6 @@
             this.baseNode = new FalseNode();
             this.Subscribers = new List<StalkUser>();
             this.creationDate = DateTime.Now;
-            this.ExecutionHistory = new List<TimeSpan>();
         }
 
         internal ComplexStalk(
@@ -43,7 +42,6 @@
             this.expiryTime = expiryTime;
             this.isEnabled = isEnabled;
             this.Subscribers = new List<StalkUser>();
-            this.ExecutionHistory = new List<TimeSpan>();
             this.creationDate = creationDate;
         }
 
@@ -55,8 +53,6 @@
         private readonly DateTime creationDate;
 
         public List<StalkUser> Subscribers { get; private set; }
-
-        public List<TimeSpan> ExecutionHistory { get; private set; }
 
         public string Identifier { get; private set; }
 

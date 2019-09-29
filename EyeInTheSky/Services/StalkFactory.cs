@@ -208,20 +208,6 @@
                 subsElement.AppendChild(u);
             }
             
-            var histElement = doc.CreateElement("history");
-            e.AppendChild(histElement);
-
-            if (stalk.ExecutionHistory != null)
-            {
-                foreach (var h in stalk.ExecutionHistory)
-                {
-                    var u = doc.CreateElement("h");
-                    u.SetAttribute("duration", XmlConvert.ToString(h));
-
-                    histElement.AppendChild(u);
-                }
-            }
-
             return e;
         }
 
@@ -255,14 +241,6 @@
                         complexStalk.Subscribers.AddRange(
                             this.PopulateSubscribers(xmlElement.ChildNodes));
                         
-                        continue;
-                    }
-
-                    if (xmlElement.Name == "history")
-                    {
-                        complexStalk.ExecutionHistory.AddRange(
-                            this.PopulateExecHistory(xmlElement.ChildNodes));
-
                         continue;
                     }
 
@@ -305,22 +283,6 @@
                 var ircUserMask = new IrcUserMask(mask, this.freenodeClient);
 
                 yield return new StalkUser(ircUserMask, !inverse);
-            }            
-        }
-        
-        private IEnumerable<TimeSpan> PopulateExecHistory(XmlNodeList xmlElementChildNodes)
-        {
-            foreach (var elementChildNode in xmlElementChildNodes)
-            {
-                var e = elementChildNode as XmlElement;
-                if (e == null || e.Name != "h")
-                {
-                    continue;
-                }
-                
-                var duration = e.Attributes["duration"].Value;
-                
-                yield return XmlConvert.ToTimeSpan(duration);
             }            
         }
     }
