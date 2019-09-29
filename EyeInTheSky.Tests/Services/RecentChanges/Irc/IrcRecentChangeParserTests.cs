@@ -935,6 +935,16 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                 #endregion
                 #region pagetriage
                 yield return new TestCaseData(
+                        "14[[07Special:Log/pagetriage-copyvio14]]4 insert10 02 5* 03EranBot 5*  10EranBot marked revision 914142196 on [[02Draft:IQOQI-Vienna10]] as a potential copyright violation")
+                    .Returns(
+                        new RecentChange("EranBot")
+                        {
+                            Log = "pagetriage-copyvio",
+                            Page = "Draft:IQOQI-Vienna",
+                            EditFlags = "insert"
+                        });
+                
+                yield return new TestCaseData(
                         "14[[07Special:Log/pagetriage-curation14]]4 reviewed10 02 5* 03Natureium 5*  10Natureium marked [[02John Thomas (Republican advertising)10]] as reviewed")
                     .Returns(
                         new RecentChange("Natureium")
@@ -994,6 +1004,16 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                             Log = "pagetriage-curation",
                             Page = "Farley, Staffordshire",
                             EditFlags = "tag"
+                        });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/pagetriage-curation14]]4 enqueue10 02 5* 03DannyS712 5*  10DannyS712 added [[02User:DannyS71210]] to the New Pages Feed")
+                    .Returns(
+                        new RecentChange("DannyS712")
+                        {
+                            Log = "pagetriage-curation",
+                            Page = "User:DannyS712",
+                            EditFlags = "enqueue"
                         });
 
                 yield return new TestCaseData(
@@ -1157,6 +1177,17 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                         });
                 #endregion
                 #region rights
+                yield return new TestCaseData(
+                        "14[[07Special:Log/rights14]]4 blockautopromote10 02 5* 03Abuse filter 5*  10Abuse filter blocked the autopromotion of [[02User:Swagmaster4206942010]] for a period of 5 days: Autopromotion automatically delayed by abuse filter. Rule description: Blanking user pages or user talk pages by a new user")
+                    .Returns(
+                        new RecentChange("Abuse filter")
+                        {
+                            Log = "rights",
+                            TargetUser = "Swagmaster42069420",
+                            EditFlags = "blockautopromote",
+                            EditSummary = "Autopromotion automatically delayed by abuse filter. Rule description: Blanking user pages or user talk pages by a new user",
+                        });
+                
                 yield return new TestCaseData(
                         "14[[07Special:Log/rights14]]4 autopromote10 02 5* 03Popcrate 5*  10was automatically updated from (none) to extendedconfirmed")
                     .Returns(

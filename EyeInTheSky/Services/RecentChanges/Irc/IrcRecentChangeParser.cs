@@ -3,6 +3,7 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
     using System;
     using System.Linq;
     using System.Text.RegularExpressions;
+    using Castle.Components.DictionaryAdapter.Xml;
     using Castle.Core.Logging;
     using EyeInTheSky.Exceptions;
     using EyeInTheSky.Model;
@@ -930,6 +931,19 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                     }
 
                     break;
+                case "pagetriage-copyvio":
+                    if (rc.EditFlags == "insert")
+                    {
+                        var match = new Regex("marked revision (?<revision>[0-9]+) on \\[\\[(?<page>.*?)\\]\\] as a potential copyright violation$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["page"].Value;
+
+                            handled = true;
+                        }
+                    }
+                    break;
                 case "pagetriage-curation":
                     if (rc.EditFlags == "reviewed")
                     {
@@ -967,6 +981,17 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                     if (rc.EditFlags == "delete")
                     {
                         var match = new Regex("marked \\[\\[(?<page>.*?)\\]\\] for deletion");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["page"].Value;
+                            handled = true;
+                        }
+                    }
+                    
+                    if (rc.EditFlags == "enqueue")
+                    {
+                        var match = new Regex(" added \\[\\[(?<page>.*?)\\]\\] to the New Pages Feed");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
@@ -1134,6 +1159,21 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                         {
                             rc.AdditionalData = result.Groups["changes"].Value;
                             
+                            handled = true;
+                        }
+                    } 
+                    if (rc.EditFlags == "blockautopromote")
+                    {
+                        var match = new Regex(" blocked the autopromotion of \\[\\[User:(?<user>.*)\\]\\] for a period of .*?: (?<comment>.*)$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.TargetUser = result.Groups["user"].Value;
+
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }                            
                             handled = true;
                         }
                     }
