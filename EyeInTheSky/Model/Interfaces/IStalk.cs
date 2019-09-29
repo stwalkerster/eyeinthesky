@@ -22,6 +22,7 @@
         List<StalkUser> Subscribers { get; }
         string WatchChannel { get; set; }
         DateTime CreationDate { get; }
+        List<TimeSpan> ExecutionHistory { get; }
         bool TriggerDynamicExpiry();
     }
 }
