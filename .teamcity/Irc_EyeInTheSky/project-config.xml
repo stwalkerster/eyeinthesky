@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" parent-id="Irc" uuid="22cf9dca-f5c1-440a-b5a7-7ff7448d14f7" xsi:noNamespaceSchemaLocation="https://www.jetbrains.com/teamcity/schemas/2018.1/project-config.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" parent-id="Irc" uuid="22cf9dca-f5c1-440a-b5a7-7ff7448d14f7" xsi:noNamespaceSchemaLocation="https://www.jetbrains.com/teamcity/schemas/2020.1/project-config.xsd">
   <name>EyeInTheSky</name>
   <parameters />
   <project-extensions>
