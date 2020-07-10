@@ -494,6 +494,26 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                             EditSummary = "-bigdelete: dangerous things; no need this usually"
                         });
 
+                yield return new TestCaseData(
+                        "14[[07Special:Log/gblrights14]]4 groupprms310 02 5* 03Tks4Fish 5*  10changed group restricted wikis set for Special:GlobalUsers/abusefilter-maintainer from (none) to All existing wikis: Creating per community consensus at [[:m:Special:Permalink/19949707]]")
+                    .Returns(
+                        new RecentChange("Tks4Fish")
+                        {
+                            Log = "gblrights",
+                            EditFlags = "groupprms3",
+                            EditSummary = "Creating per community consensus at [[:m:Special:Permalink/19949707]]"
+                        });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/gblrights14]]4 grouprename10 02 5* 03Tks4Fish 5*  10renamed group Special:GlobalGroupPermissions/Abuse filter maintainer to Special:GlobalGroupPermissions/abusefilter-maintainer: Creating per community consensus at [[:m:Special:Permalink/19949707]]")
+                    .Returns(
+                        new RecentChange("Tks4Fish")
+                        {
+                            Log = "gblrights",
+                            EditFlags = "grouprename",
+                            EditSummary = "Creating per community consensus at [[:m:Special:Permalink/19949707]]"
+                        });
+
                 #endregion
                 #region globalauth
                 yield return new TestCaseData(
@@ -576,6 +596,18 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                             EditFlags = "delete",
                             EditSummary = "Per [[Special:Permalink/864524082#Please review 937]], may do more harm than good"
                         });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/managetags14]]4 delete10 02 5* 03Premeditated Chaos 5*  10Premeditated Chaos deleted the tag \"predatory\" (removed from 1 revision or log entry): created in error")
+                    .Returns(
+                        new RecentChange("Premeditated Chaos")
+                        {
+                            Log = "managetags",
+                            Page = "predatory",
+                            EditFlags = "delete",
+                            EditSummary = "created in error"
+                        });
+                
                 #endregion
                 #region massmessage
                 yield return new TestCaseData(
@@ -924,6 +956,27 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                         });
                 
                 yield return new TestCaseData(
+                        "14[[07Special:Log/pagetranslation14]]4 prioritylanguages10 02 5* 03DannyS712 5*  10DannyS712 set the priority languages for translatable page [[02Wikimedia Sverige10]] to Swedish, Norwegian Bokmål, Portuguese and Russian: Update version for translation")
+                    .Returns(
+                        new RecentChange("DannyS712")
+                        {
+                            Log = "pagetranslation",
+                            Page = "Wikimedia Sverige",
+                            EditFlags = "prioritylanguages",
+                            EditSummary = "Update version for translation" 
+                        });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/pagetranslation14]]4 encourage10 02 5* 03DannyS712 5*  10DannyS712 encouraged translation of [[02Bridges across Cultures10]]")
+                    .Returns(
+                        new RecentChange("DannyS712")
+                        {
+                            Log = "pagetranslation",
+                            Page = "Bridges across Cultures",
+                            EditFlags = "encourage",
+                        });
+                
+                yield return new TestCaseData(
                         "14[[07Special:Log/pagetranslation14]]4 unmark10 02 5* 03MarcoAurelio 5*  10MarcoAurelio removed [[02Meta:Sandbox10]] from the translation system")
                     .Returns(
                         new RecentChange("MarcoAurelio")
@@ -1186,6 +1239,17 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                             TargetUser = "Swagmaster42069420",
                             EditFlags = "blockautopromote",
                             EditSummary = "Autopromotion automatically delayed by abuse filter. Rule description: Blanking user pages or user talk pages by a new user",
+                        });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/rights14]]4 restoreautopromote10 02 5* 03Suffusion of Yellow 5*  10Suffusion of Yellow restored the autopromotion capability of [[02User:COIBot10]]: Autopromotion restored via AbuseFilter tools.")
+                    .Returns(
+                        new RecentChange("Suffusion of Yellow")
+                        {
+                            Log = "rights",
+                            TargetUser = "COIBot",
+                            EditFlags = "restoreautopromote",
+                            EditSummary = "Autopromotion restored via AbuseFilter tools.",
                         });
                 
                 yield return new TestCaseData(

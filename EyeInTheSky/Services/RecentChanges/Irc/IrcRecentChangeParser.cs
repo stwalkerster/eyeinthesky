@@ -458,6 +458,21 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                             handled = true;
                         }
                     }
+                    
+                    if (rc.EditFlags == "groupprms3")
+                    {
+                        var match = new Regex(@"^changed group restricted wikis set for Special:GlobalUsers/.*? from .*? to .*?(?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+
+                            handled = true;
+                        }
+                    }
 
                     if (rc.EditFlags == "setchange")
                     {
@@ -467,6 +482,21 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                         {
                             rc.Page = result.Groups["page"].Value;
 
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+
+                            handled = true;
+                        }
+                    }
+
+                    if (rc.EditFlags == "grouprename")
+                    {
+                        var match = new Regex(@"^renamed group Special:GlobalGroupPermissions/(?:.*?) to Special:GlobalGroupPermissions/(?:.*?)(?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
                             if (result.Groups["comment"].Success)
                             {
                                 rc.EditSummary = result.Groups["comment"].Value;
@@ -585,7 +615,7 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                     
                     if (rc.EditFlags == "delete")
                     {
-                        var match = new Regex(@" deleted the tag ""(?<pageName>.*?)"" \(removed from [0-9]+ revisions and/or log entries\)(?:: (?<comment>.*))?$");
+                        var match = new Regex(@" deleted the tag ""(?<pageName>.*?)"" \(removed from [0-9]+ revision(?:s?) (?:and/)?or log entr(?:ies|y)\)(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
@@ -801,6 +831,18 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                         }
                     }
                     
+                    if (rc.EditFlags == "encourage")
+                    {
+                        var match = new Regex(" encouraged translation of \\[\\[(?<page>.*?)\\]\\]$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["page"].Value;
+            
+                            handled = true;
+                        }
+                    }
+                    
                     if (rc.EditFlags == "mark")
                     {
                         var match = new Regex(" marked \\[\\[(?<page>.*?)\\]\\] for translation$");
@@ -903,7 +945,7 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                     
                     if (rc.EditFlags == "prioritylanguages")
                     {
-                        var match = new Regex(" (?:removed priority languages from|set the priority languages for|limited languages for) translatable page \\[\\[(?<page>.*?)\\]\\](?: to [a-zA-Z, -]+)?(?:: (?<comment>.*))?$");
+                        var match = new Regex(" (?:removed priority languages from|set the priority languages for|limited languages for) translatable page \\[\\[(?<page>.*?)\\]\\](?: to .+?)?(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
@@ -1165,6 +1207,21 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                     if (rc.EditFlags == "blockautopromote")
                     {
                         var match = new Regex(" blocked the autopromotion of \\[\\[User:(?<user>.*)\\]\\] for a period of .*?: (?<comment>.*)$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.TargetUser = result.Groups["user"].Value;
+
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }                            
+                            handled = true;
+                        }
+                    }  
+                    if (rc.EditFlags == "restoreautopromote")
+                    {
+                        var match = new Regex(" restored the autopromotion capability of \\[\\[User:(?<user>.*)\\]\\](?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
