@@ -48,6 +48,9 @@
                 case "usergroup":
                 case "incategory":
                 case "log":
+                case "additionaldata":
+                case "targetuser":
+                case "actinguser":
                     node = this.NewLeafNode(fragment);
                     break;
                 
@@ -256,6 +259,9 @@
                 case "summary":
                 case "flag":
                 case "log":
+                case "additionaldata":
+                case "targetuser":
+                case "actinguser":
                     return this.NewRegexLeafNode(fragment);
                 case "usergroup":
                     node = new UserGroupStalkNode();
@@ -297,6 +303,9 @@
                     break;
                 case "log":
                     node = new LogStalkNode();
+                    break;
+                case "additionaldata":
+                    node = new AdditionalDataNode();
                     break;
                 default:
                     throw new XmlException("Unknown element " + fragment.Name);

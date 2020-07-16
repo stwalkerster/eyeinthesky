@@ -371,6 +371,9 @@ $(function () {
             "summary": regexLeafNode,
             "flag": regexLeafNode,
             "log": regexLeafNode,
+            "additionaldata": regexLeafNode,
+            "targetuser": regexLeafNode,
+            "actinguser": regexLeafNode,
 
             "usergroup": leafNode,
             "incategory": leafNode,

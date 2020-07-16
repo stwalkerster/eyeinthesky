@@ -122,6 +122,54 @@
         }
 
         [Test]
+        public void ShouldCreateAdditionalDataNode()
+        {
+            // arrange
+            var snf = new StalkNodeFactory(this.phabExternalMock.Object);
+            var doc = new XmlDocument();
+            doc.LoadXml("<additionaldata value=\"abc\" />");
+
+            // act
+            var result = snf.NewFromXmlFragment(doc.DocumentElement);
+
+            // assert
+            Assert.IsInstanceOf<AdditionalDataNode>(result);
+            Assert.AreEqual("abc", ((AdditionalDataNode) result).GetMatchExpression());
+        }
+
+        [Test]
+        public void ShouldCreateTargetUserNode()
+        {
+            // arrange
+            var snf = new StalkNodeFactory(this.phabExternalMock.Object);
+            var doc = new XmlDocument();
+            doc.LoadXml("<targetuser value=\"abc\" />");
+
+            // act
+            var result = snf.NewFromXmlFragment(doc.DocumentElement);
+
+            // assert
+            Assert.IsInstanceOf<TargetUserStalkNode>(result);
+            Assert.AreEqual("abc", ((TargetUserStalkNode) result).GetMatchExpression());
+        }
+
+        [Test]
+        public void ShouldCreateActingUserNode()
+        {
+            // arrange
+            var snf = new StalkNodeFactory(this.phabExternalMock.Object);
+            var doc = new XmlDocument();
+            doc.LoadXml("<actinguser value=\"abc\" />");
+
+            // act
+            var result = snf.NewFromXmlFragment(doc.DocumentElement);
+
+            // assert
+            Assert.IsInstanceOf<ActingUserStalkNode>(result);
+            Assert.AreEqual("abc", ((ActingUserStalkNode) result).GetMatchExpression());
+        }
+
+        [Test]
         public void ShouldCreateUserGroupNode()
         {
             // arrange

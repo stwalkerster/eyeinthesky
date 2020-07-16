@@ -149,6 +149,7 @@
     <Compile Include="Model\RecentChange.cs" />
     <Compile Include="Model\NotificationTemplates.cs" />
     <Compile Include="Model\StalkNodes\ActingUserStalkNode.cs" />
+    <Compile Include="Model\StalkNodes\AdditionalDataNode.cs" />
     <Compile Include="Model\StalkNodes\AndNode.cs" />
     <Compile Include="Model\StalkNodes\BaseNodes\DoubleChildLogicalNode.cs" />
     <Compile Include="Model\StalkNodes\BaseNodes\INumberProviderNode.cs" />
