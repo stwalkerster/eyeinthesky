@@ -11,9 +11,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>EyeInTheSky.Tests</RootNamespace>
     <AssemblyName>EyeInTheSky.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <LangVersion>5</LangVersion>
+    <LangVersion>6</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -36,31 +36,32 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc">
-      <HintPath>..\packages\Castle.Core.4.4.0\lib\net45\Castle.Core.dll</HintPath>
+      <HintPath>..\packages\Castle.Core.4.4.1\lib\net45\Castle.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Castle.Windsor, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc">
       <HintPath>..\packages\Castle.Windsor.4.1.1\lib\net45\Castle.Windsor.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Moq, Version=4.12.0.0, Culture=neutral, PublicKeyToken=69f491c39445e920">
-      <HintPath>..\packages\Moq.4.12.0\lib\net45\Moq.dll</HintPath>
+    <Reference Include="Moq, Version=4.14.0.0, Culture=neutral, PublicKeyToken=69f491c39445e920">
+      <HintPath>..\packages\Moq.4.14.5\lib\net45\Moq.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="mscorlib" />
     <Reference Include="nunit.framework, Version=3.12.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb">
       <HintPath>..\packages\NUnit.3.12.0\lib\net45\nunit.framework.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Stwalkerster.Bot.CommandLib, Version=13.3.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\Stwalkerster.Bot.CommandLib.13.3.52-beta\lib\net45\Stwalkerster.Bot.CommandLib.dll</HintPath>
+    <Reference Include="Stwalkerster.Bot.CommandLib, Version=13.4.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\Stwalkerster.Bot.CommandLib.13.4.59\lib\net461\Stwalkerster.Bot.CommandLib.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Stwalkerster.Bot.MediaWikiLib, Version=2.8.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\Stwalkerster.Bot.MediaWikiLib.2.8.23\lib\net45\Stwalkerster.Bot.MediaWikiLib.dll</HintPath>
+    <Reference Include="Stwalkerster.Bot.MediaWikiLib, Version=3.2.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\Stwalkerster.Bot.MediaWikiLib.3.2.35\lib\net461\Stwalkerster.Bot.MediaWikiLib.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Stwalkerster.IrcClient, Version=8.1.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\Stwalkerster.IrcClient.8.1.45\lib\net45\Stwalkerster.IrcClient.dll</HintPath>
+    <Reference Include="Stwalkerster.IrcClient, Version=8.2.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\Stwalkerster.IrcClient.8.2.48\lib\net461\Stwalkerster.IrcClient.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -68,12 +69,12 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard1.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51">
-      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.3\lib\portable-net45+win8+wp8+wpa81\System.Threading.Tasks.Extensions.dll</HintPath>
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51">

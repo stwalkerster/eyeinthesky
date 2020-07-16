@@ -9,9 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>EyeInTheSky.Web</RootNamespace>
     <AssemblyName>EyeInTheSky.Web</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <LangVersion>5</LangVersion>
+    <LangVersion>6</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -44,7 +44,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc">
-      <HintPath>..\packages\Castle.Core.4.4.0\lib\net45\Castle.Core.dll</HintPath>
+      <HintPath>..\packages\Castle.Core.4.4.1\lib\net45\Castle.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Castle.Windsor, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc">
@@ -72,12 +72,12 @@
       <HintPath>..\packages\Nancy.Hosting.Self.1.4.1\lib\net40\Nancy.Hosting.Self.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Stwalkerster.Bot.CommandLib, Version=13.3.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\Stwalkerster.Bot.CommandLib.13.3.52-beta\lib\net45\Stwalkerster.Bot.CommandLib.dll</HintPath>
+    <Reference Include="Stwalkerster.Bot.CommandLib, Version=13.4.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\Stwalkerster.Bot.CommandLib.13.4.59\lib\net461\Stwalkerster.Bot.CommandLib.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Stwalkerster.IrcClient, Version=8.1.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\Stwalkerster.IrcClient.8.1.45\lib\net45\Stwalkerster.IrcClient.dll</HintPath>
+    <Reference Include="Stwalkerster.IrcClient, Version=8.2.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\Stwalkerster.IrcClient.8.2.48\lib\net461\Stwalkerster.IrcClient.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
