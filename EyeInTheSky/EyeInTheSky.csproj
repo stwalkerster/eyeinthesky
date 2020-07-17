@@ -156,7 +156,6 @@
     <Compile Include="Model\Interfaces\IStalk.cs" />
     <Compile Include="Model\Interfaces\ITemplate.cs" />
     <Compile Include="Model\IrcChannel.cs" />
-    <Compile Include="Model\MetricsConfiguration.cs" />
     <Compile Include="Model\RecentChange.cs" />
     <Compile Include="Model\NotificationTemplates.cs" />
     <Compile Include="Model\StalkNodes\ActingUserStalkNode.cs" />

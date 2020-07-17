@@ -59,24 +59,24 @@
             container.Install(FromAssembly.This(), Configuration.FromXmlFile("modules.xml"));
 
             MetricServer metricsServer;
-            try
+            var appConfig = container.Resolve<IAppConfiguration>();
+            if (appConfig.MetricsPort != 0)
             {
-                var metrics = container.Resolve<MetricsConfiguration>();
-                metricsServer = new MetricServer(metrics.Port);
+                metricsServer = new MetricServer(appConfig.MetricsPort);
                 metricsServer.Start();
 
                 VersionInfo.WithLabels(
                         FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion,
-                        FileVersionInfo.GetVersionInfo(Assembly.GetAssembly(typeof(IrcClient)).Location).FileVersion,
-                        FileVersionInfo.GetVersionInfo(Assembly.GetAssembly(typeof(CommandBase)).Location).FileVersion,
-                        FileVersionInfo.GetVersionInfo(Assembly.GetAssembly(typeof(MediaWikiApi)).Location).FileVersion,
+                        FileVersionInfo.GetVersionInfo(Assembly.GetAssembly(typeof(IrcClient)).Location)
+                            .FileVersion,
+                        FileVersionInfo.GetVersionInfo(Assembly.GetAssembly(typeof(CommandBase)).Location)
+                            .FileVersion,
+                        FileVersionInfo.GetVersionInfo(Assembly.GetAssembly(typeof(MediaWikiApi)).Location)
+                            .FileVersion,
                         Environment.Version.ToString(),
                         Environment.OSVersion.ToString()
                     )
                     .Set(1);
-            }
-            catch (Exception)
-            {
             }
 
             var app = container.Resolve<IApplication>();

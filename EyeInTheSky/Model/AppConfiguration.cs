@@ -94,6 +94,7 @@ namespace EyeInTheSky.Model
         // ReSharper disable UnusedAutoPropertyAccessor.Global
         public EmailConfiguration EmailConfiguration { get; set; }
         public int MonitoringPort { get; set; }
+        public int MetricsPort { get; set; }
         public string PhabUrl { get; set; }
         public string PhabToken { get; set; }
 

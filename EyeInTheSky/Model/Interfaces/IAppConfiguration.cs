@@ -14,6 +14,7 @@
         EmailConfiguration EmailConfiguration { get; }
         string Owner { get; }
         int MonitoringPort { get; set; }
+        int MetricsPort { get; set; }
         string PhabUrl { get; set; }
         string PhabToken { get; set; }
         string PrivacyPolicy { get; set; }
