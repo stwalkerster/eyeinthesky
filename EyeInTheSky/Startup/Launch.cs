@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Reflection;
@@ -14,11 +15,22 @@
     using EyeInTheSky.Services;
     using EyeInTheSky.Services.Interfaces;
     using Prometheus;
+    using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities;
     using Stwalkerster.Bot.CommandLib.Services.Interfaces;
+    using Stwalkerster.Bot.MediaWikiLib.Services;
+    using Stwalkerster.IrcClient;
     using Stwalkerster.IrcClient.Interfaces;
 
     public class Launch : IApplication
     {
+        private static readonly Gauge VersionInfo = Metrics.CreateGauge(
+            "eyeinthesky_build_info",
+            "Build info",
+            new GaugeConfiguration
+            {
+                LabelNames = new[] {"assembly", "irclib", "commandlib", "mediawikilib", "runtime", "os"}
+            });
+        
         private static WindsorContainer container;
 
         private readonly ILogger logger;
@@ -52,6 +64,16 @@
                 var metrics = container.Resolve<MetricsConfiguration>();
                 metricsServer = new MetricServer(metrics.Port);
                 metricsServer.Start();
+
+                VersionInfo.WithLabels(
+                        FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion,
+                        FileVersionInfo.GetVersionInfo(Assembly.GetAssembly(typeof(IrcClient)).Location).FileVersion,
+                        FileVersionInfo.GetVersionInfo(Assembly.GetAssembly(typeof(CommandBase)).Location).FileVersion,
+                        FileVersionInfo.GetVersionInfo(Assembly.GetAssembly(typeof(MediaWikiApi)).Location).FileVersion,
+                        Environment.Version.ToString(),
+                        Environment.OSVersion.ToString()
+                    )
+                    .Set(1);
             }
             catch (Exception)
             {

@@ -257,7 +257,7 @@ namespace EyeInTheSky.Web.Modules
 
             var stalk = channel.Stalks[parameters.stalk];
             channel.Stalks.Remove(parameters.stalk);
-            ChannelConfiguration.MatchDuration.RemoveLabelled(channel.Identifier, (string) parameters.stalk);
+            ChannelConfiguration.IndividualMatchDuration.RemoveLabelled(channel.Identifier, (string) parameters.stalk);
 
             this.channelConfiguration.Save();
             this.FreenodeClient.SendMessage(

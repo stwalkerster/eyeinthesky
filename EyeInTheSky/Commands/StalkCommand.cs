@@ -681,7 +681,7 @@ namespace EyeInTheSky.Commands
             }
 
             this.channelConfiguration[this.CommandSource].Stalks.Remove(stalkName);
-            ChannelConfiguration.MatchDuration.RemoveLabelled(this.CommandSource, stalkName);
+            ChannelConfiguration.IndividualMatchDuration.RemoveLabelled(this.CommandSource, stalkName);
 
             yield return new CommandResponse
             {
