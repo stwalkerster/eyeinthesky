@@ -3,13 +3,23 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Xml;
     using Castle.Core.Logging;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Services.Interfaces;
+    using Prometheus;
 
     public class ChannelConfiguration : ConfigFileBase<IIrcChannel>, IChannelConfiguration
     {
+        public static readonly Histogram MatchDuration = Metrics
+            .CreateHistogram(
+                "eyeinthesky_stalk_match_duration_seconds",
+                "Histogram of stalk match durations.",
+                new HistogramConfiguration
+                {
+                    Buckets = Histogram.ExponentialBuckets(0.001, 2, 13),
+                    LabelNames = new[] {"channel", "stalk"}
+                });
+
         public ChannelConfiguration(
             IAppConfiguration configuration,
             ILogger logger,
@@ -37,6 +47,7 @@
                 stalkListClone = new SortedList<string, IStalk>(
                     this.ItemList.SelectMany(x => x.Value.Stalks.Values)
                         .Where(x => x.WatchChannel == channel)
+                        .Where(x => x.IsActive())
                         .ToDictionary(x => x.Identifier + "@" + x.Channel));
             }
             
@@ -46,7 +57,10 @@
                 
                 try
                 {
-                    isMatch = s.Value.Match(rc);
+                    using (MatchDuration.WithLabels(s.Value.Channel, s.Value.Identifier).NewTimer())
+                    {
+                        isMatch = s.Value.Match(rc);
+                    }
                 }
                 catch (InvalidOperationException ex)
                 {

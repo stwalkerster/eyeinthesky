@@ -3,16 +3,26 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
     using System;
     using System.Linq;
     using System.Text.RegularExpressions;
-    using Castle.Components.DictionaryAdapter.Xml;
     using Castle.Core.Logging;
     using EyeInTheSky.Exceptions;
     using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Services.Interfaces;
     using EyeInTheSky.Services.RecentChanges.Irc.Interfaces;
+    using Prometheus;
 
     public class IrcRecentChangeParser : IIrcRecentChangeParser
     {
+        private static readonly Histogram ParseDuration = Metrics
+            .CreateHistogram(
+                "eyeinthesky_rc_irc_parse_duration_seconds",
+                "Histogram of IRC RC event parse durations.",
+                new HistogramConfiguration
+                {
+                    Buckets = Histogram.ExponentialBuckets(0.001, 2, 13),
+                });
+
+        
         private readonly ILogger logger;
         private readonly IMediaWikiApiHelper mediaWikiApiHelper;
         private const string FullStringRegex = @"14\[\[07(?<title>.*)14\]\]4 (?<flag>.*)10 02(?<url>[^ ]*) 5\* 03(?<user>.*) 5\* (?:\((?<szdiff>.*)\))? 10(?<comment>.*?)?$";
@@ -46,46 +56,50 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
         /// <exception cref="FormatException"></exception>
         public IRecentChange Parse(string data, string channel)
         {
-            Match m = this.GetRegex().Match(data);
-            if (m.Success == false)
+            RecentChange rc;
+            
+            using (ParseDuration.NewTimer())
             {
-                throw new FormatException("Unable to match recent change against RC regex.");
+                Match m = this.GetRegex().Match(data);
+                if (m.Success == false)
+                {
+                    throw new FormatException("Unable to match recent change against RC regex.");
+                }
+
+                rc = new RecentChange(m.Groups["user"].Value);
+                
+                var urlValue = m.Groups["url"].Value;
+                var flagValue = m.Groups["flag"].Value;
+                var titleValue = m.Groups["title"].Value;
+
+                var comment = m.Groups["comment"].Value;
+                if (this.GetColourRegex().Match(comment).Success)
+                {
+                    comment = this.GetColourRegex().Replace(comment, "");
+                }
+
+                int? rcSizeDiff = null;
+
+                try
+                {
+                    rcSizeDiff = m.Groups["szdiff"].Value == "" ? 0 : int.Parse(m.Groups["szdiff"].Value.Trim(''));
+                }
+                catch (FormatException ex)
+                {
+                    this.logger.ErrorFormat(ex, "Can't parse size difference from RC: {0}", data);
+                }
+
+                if (titleValue.StartsWith("Special:Log/"))
+                {
+                    this.ConstructLogObject(rc, titleValue, comment, flagValue, data, channel);
+                }
+                else
+                {
+                    this.ConstructEditObject(rc, titleValue, urlValue, comment, flagValue, rcSizeDiff);
+                }
             }
 
-            var userValue = m.Groups["user"].Value;
-            var urlValue = m.Groups["url"].Value;
-            var flagValue = m.Groups["flag"].Value;
-            var titleValue = m.Groups["title"].Value;
-
-            var comment = m.Groups["comment"].Value;
-            if (this.GetColourRegex().Match(comment).Success)
-            {
-                comment = this.GetColourRegex().Replace(comment, "");
-            }
-
-            int? rcSizeDiff = null;
-
-            try
-            {
-                rcSizeDiff = m.Groups["szdiff"].Value == "" ? 0 : int.Parse(m.Groups["szdiff"].Value.Trim(''));
-            }
-            catch(FormatException ex)
-            {
-                this.logger.ErrorFormat(ex, "Can't parse size difference from RC: {0}", data);
-            }
-
-            var rc = new RecentChange(userValue);
             rc.MediaWikiApi = this.mediaWikiApiHelper.GetApiForChannel(channel);
-
-            if (titleValue.StartsWith("Special:Log/"))
-            {
-                this.ConstructLogObject(rc, titleValue, comment, flagValue, data, channel);
-            }
-            else
-            {
-                this.ConstructEditObject(rc, titleValue, urlValue, comment, flagValue, rcSizeDiff);
-            }
-
             return rc;
         }
 

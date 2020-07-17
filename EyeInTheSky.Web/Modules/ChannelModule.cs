@@ -6,6 +6,7 @@ namespace EyeInTheSky.Web.Modules
     using System.Xml;
     using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
+    using EyeInTheSky.Services;
     using EyeInTheSky.Services.Interfaces;
     using EyeInTheSky.Web.Misc;
     using EyeInTheSky.Web.Models;
@@ -256,6 +257,7 @@ namespace EyeInTheSky.Web.Modules
 
             var stalk = channel.Stalks[parameters.stalk];
             channel.Stalks.Remove(parameters.stalk);
+            ChannelConfiguration.MatchDuration.RemoveLabelled(channel.Identifier, (string) parameters.stalk);
 
             this.channelConfiguration.Save();
             this.FreenodeClient.SendMessage(
