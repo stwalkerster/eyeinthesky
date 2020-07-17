@@ -13,6 +13,7 @@
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Services;
     using EyeInTheSky.Services.Interfaces;
+    using Prometheus;
     using Stwalkerster.Bot.CommandLib.Services.Interfaces;
     using Stwalkerster.IrcClient.Interfaces;
 
@@ -44,7 +45,18 @@
             
             container = new WindsorContainer(configurationFile);
             container.Install(FromAssembly.This(), Configuration.FromXmlFile("modules.xml"));
-            
+
+            MetricServer metricsServer;
+            try
+            {
+                var metrics = container.Resolve<MetricsConfiguration>();
+                metricsServer = new MetricServer(metrics.Port);
+                metricsServer.Start();
+            }
+            catch (Exception)
+            {
+            }
+
             var app = container.Resolve<IApplication>();
 
             app.Run();
