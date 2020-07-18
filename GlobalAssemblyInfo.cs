@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyCompany("Simon Walker")]
 [assembly: AssemblyProduct("EyeInTheSky IRC RC Monitoring Bot")]
-[assembly: AssemblyCopyright("Copyright © Simon Walker 2011-2018")]
+[assembly: AssemblyCopyright("Copyright © Simon Walker 2011-2020")]
 
 [assembly: AssemblyVersion("0.0.0.0")]
 [assembly: AssemblyFileVersion("0.0.0.0")]
