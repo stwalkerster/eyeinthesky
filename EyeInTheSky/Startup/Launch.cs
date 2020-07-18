@@ -6,6 +6,7 @@
     using System.IO;
     using System.Linq;
     using System.Reflection;
+    using System.Runtime.Versioning;
     using System.Threading;
     using Castle.Core.Logging;
     using Castle.Windsor;
@@ -28,7 +29,7 @@
             "Build info",
             new GaugeConfiguration
             {
-                LabelNames = new[] {"assembly", "irclib", "commandlib", "mediawikilib", "runtime", "os"}
+                LabelNames = new[] {"assembly", "irclib", "commandlib", "mediawikilib", "runtime", "os", "targetFramework"}
             });
         
         private static WindsorContainer container;
@@ -74,9 +75,12 @@
                         FileVersionInfo.GetVersionInfo(Assembly.GetAssembly(typeof(MediaWikiApi)).Location)
                             .FileVersion,
                         Environment.Version.ToString(),
-                        Environment.OSVersion.ToString()
+                        Environment.OSVersion.ToString(),
+                        ((TargetFrameworkAttribute)Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(TargetFrameworkAttribute),false).FirstOrDefault())?.FrameworkDisplayName ?? "Unknown"        
                     )
                     .Set(1);
+
+                
             }
 
             var app = container.Resolve<IApplication>();
