@@ -3,8 +3,9 @@ namespace EyeInTheSky.Services.ExternalProviders
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Net;
     using System.Xml;
-
+    using Castle.Core.Logging;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Model.StalkNodes;
     using EyeInTheSky.Services.ExternalProviders.Interfaces;
@@ -14,11 +15,13 @@ namespace EyeInTheSky.Services.ExternalProviders
 
     public class PhabricatorExternalProvider : IPhabricatorExternalProvider
     {
+        private readonly ILogger logger;
         private readonly bool active;
         private readonly Paste paste;
 
-        public PhabricatorExternalProvider(IAppConfiguration appConfig)
+        public PhabricatorExternalProvider(IAppConfiguration appConfig, ILogger logger)
         {
+            this.logger = logger;
             var url = appConfig.PhabUrl;
             var key = appConfig.PhabToken;
 
@@ -49,16 +52,25 @@ namespace EyeInTheSky.Services.ExternalProviders
                 location = node.Location.Substring(1);
             }
 
-            var pasteId = new ApplicationEditorSearchConstraint("ids", new List<int> {int.Parse(location)});
-            var pasteItems = this.paste.Search(constraints: new[] {pasteId}, attachments: new[] {"content"});
-
             var document = new XmlDocument();
-            var pasteItem = pasteItems.First();
-                       
-            document.LoadXml(pasteItem.Text);
-            node.Comment = pasteItem.Title;
             
-            return document.DocumentElement;
+            try
+            {
+                var pasteId = new ApplicationEditorSearchConstraint("ids", new List<int> {int.Parse(location)});
+                var pasteItems = this.paste.Search(constraints: new[] {pasteId}, attachments: new[] {"content"});
+
+                var pasteItem = pasteItems.First();
+
+                document.LoadXml(pasteItem.Text);
+                node.Comment = pasteItem.Title;
+
+                return document.DocumentElement;
+            }
+            catch (WebException ex)
+            {
+                this.logger.ErrorFormat(ex, "Exception encountered while trying to retrieve remote stalk configuration");
+                throw new XmlException("Could not load external XML", ex);
+            }
         }
         
         public XmlElement GetFragmentFromSource(string location)

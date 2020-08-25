@@ -229,10 +229,25 @@
 
                     if (xmlElement.Name == "searchtree")
                     {
-                        complexStalk.SetStalkTree(
-                            this.StalkNodeFactory.NewFromXmlFragment((XmlElement) xmlElement.FirstChild));
-                        foundSearchTree = true;
-                        
+                        try
+                        {
+                            complexStalk.SetStalkTree(
+                                this.StalkNodeFactory.NewFromXmlFragment((XmlElement) xmlElement.FirstChild));
+                            foundSearchTree = true;
+                        }
+                        catch (XmlException ex)
+                        {
+                            this.Logger.ErrorFormat(
+                                ex,
+                                "Error loading stalk {0} in {1} from XML.",
+                                complexStalk.Identifier,
+                                complexStalk.Channel);
+                            
+                            complexStalk.IsEnabled = false;
+                            complexStalk.Description = complexStalk.Description
+                                                       + "; Disabled automatically on load due to unhandled exception.";
+                        }
+
                         continue;
                     }
                     
