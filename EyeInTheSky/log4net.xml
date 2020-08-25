@@ -32,6 +32,10 @@
     </logger>
 
     <logger name="Stwalkerster.IrcClient.IrcClient.Wikimedia">
+        <level value="DEBUG" />
+    </logger>
+
+    <logger name="Stwalkerster.IrcClient.IrcClient.Wikimedia.NetworkClient">
         <level value="OFF" />
     </logger>
 
@@ -39,6 +43,6 @@
         <level value="OFF" />
     </logger>
     <logger name="Stwalkerster.IrcClient.IrcClient.Freenode">
-        <level value="WARN" />
+        <level value="DEBUG" />
     </logger>
 </log4net>

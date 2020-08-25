@@ -39,8 +39,12 @@
         private readonly IIrcClient wikimediaClient;
         private readonly IAppConfiguration appConfig;
         private readonly IChannelConfiguration channelConfiguration;
+        
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
+        private readonly MetricServer metricsServer;
+        
         private bool alive = true;
-
+        
         public static int Main(string[] args)
         {
             string configurationFile = "configuration.xml";
@@ -56,32 +60,10 @@
                 return 1;
             }
             
+            Console.WriteLine($"Welcome to EyeInTheSky v{FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion}!");
+            
             container = new WindsorContainer(configurationFile);
             container.Install(FromAssembly.This(), Configuration.FromXmlFile("modules.xml"));
-
-            MetricServer metricsServer;
-            var appConfig = container.Resolve<IAppConfiguration>();
-            if (appConfig.MetricsPort != 0)
-            {
-                metricsServer = new MetricServer(appConfig.MetricsPort);
-                metricsServer.Start();
-
-                VersionInfo.WithLabels(
-                        FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion,
-                        FileVersionInfo.GetVersionInfo(Assembly.GetAssembly(typeof(IrcClient)).Location)
-                            .FileVersion,
-                        FileVersionInfo.GetVersionInfo(Assembly.GetAssembly(typeof(CommandBase)).Location)
-                            .FileVersion,
-                        FileVersionInfo.GetVersionInfo(Assembly.GetAssembly(typeof(MediaWikiApi)).Location)
-                            .FileVersion,
-                        Environment.Version.ToString(),
-                        Environment.OSVersion.ToString(),
-                        ((TargetFrameworkAttribute)Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(TargetFrameworkAttribute),false).FirstOrDefault())?.FrameworkDisplayName ?? "Unknown"        
-                    )
-                    .Set(1);
-
-                
-            }
 
             var app = container.Resolve<IApplication>();
 
@@ -89,7 +71,7 @@
             container.Release(app);
             return 0;
         }
-
+        
         public Launch(
             ILogger logger,
             IIrcClient freenodeClient,
@@ -145,15 +127,44 @@
                 channelConfiguration.Items.Count
             );
 
+            if (appConfig.MetricsPort != 0)
+            {
+                this.logger.DebugFormat("Setting up metrics server on port {0}", appConfig.MetricsPort);
+                this.metricsServer = new MetricServer(appConfig.MetricsPort);
+                this.metricsServer.Start();
+
+                VersionInfo.WithLabels(
+                        FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion,
+                        FileVersionInfo.GetVersionInfo(Assembly.GetAssembly(typeof(IrcClient)).Location)
+                            .FileVersion,
+                        FileVersionInfo.GetVersionInfo(Assembly.GetAssembly(typeof(CommandBase)).Location)
+                            .FileVersion,
+                        FileVersionInfo.GetVersionInfo(Assembly.GetAssembly(typeof(MediaWikiApi)).Location)
+                            .FileVersion,
+                        Environment.Version.ToString(),
+                        Environment.OSVersion.ToString(),
+                        ((TargetFrameworkAttribute)Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(TargetFrameworkAttribute),false).FirstOrDefault())?.FrameworkDisplayName ?? "Unknown"        
+                    )
+                    .Set(1);
+                
+                this.logger.DebugFormat("Metrics server configured.");
+            }
+            else
+            {
+                this.logger.Warn("Prometheus metrics server disabled.");
+            }
+            
             this.freenodeClient.DisconnectedEvent += this.OnDisconnect;
             this.wikimediaClient.DisconnectedEvent += this.OnDisconnect;
         }
 
         public void Run()
         {
+            this.logger.Info("Joining reporting channels");
             var watchChannels = new List<string> {this.appConfig.WikimediaChannel};
             foreach (var channel in this.channelConfiguration.Items)
             {
+                this.logger.DebugFormat("Joining channel {0}", channel.Identifier);
                 this.freenodeClient.JoinChannel(channel.Identifier);
 
                 foreach (var stalk in channel.Stalks.Values)
@@ -165,8 +176,10 @@
                 }
             }
 
+            this.logger.Info("Joining watch channels");
             foreach (var channel in watchChannels)
-            {
+            {                
+                this.logger.DebugFormat("Joining channel {0}", channel);
                 this.wikimediaClient.JoinChannel(channel);
             }
 
