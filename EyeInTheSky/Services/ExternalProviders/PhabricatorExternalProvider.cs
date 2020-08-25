@@ -69,7 +69,11 @@ namespace EyeInTheSky.Services.ExternalProviders
             catch (WebException ex)
             {
                 this.logger.ErrorFormat(ex, "Exception encountered while trying to retrieve remote stalk configuration");
-                throw new XmlException("Could not load external XML", ex);
+                
+                document.LoadXml("<false />");
+                node.Comment = "Error loading fragment from remote source."; 
+
+                return document.DocumentElement;
             }
         }
         
