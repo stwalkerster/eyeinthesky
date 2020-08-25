@@ -12,6 +12,7 @@
     using Stwalkerster.IrcClient;
     using Stwalkerster.IrcClient.Interfaces;
     using Stwalkerster.IrcClient.Model.Interfaces;
+    using Stwalkerster.SharphConduit;
     using CLFlag = Stwalkerster.Bot.CommandLib.Model.Flag;
 
     [CommandInvocation("version")]
@@ -42,15 +43,17 @@
             var ircVersion = this.GetFileVersion(Assembly.GetAssembly(typeof(IrcClient)));
             var botLibVersion = this.GetFileVersion(Assembly.GetAssembly(typeof(CommandBase)));
             var mediaWikiLibVersion = this.GetFileVersion(Assembly.GetAssembly(typeof(MediaWikiApi)));
+            var sharphConduitVersion = this.GetFileVersion(Assembly.GetAssembly(typeof(ConduitClient)));
 
             yield return new CommandResponse
             {
                 Message = string.Format(
-                    "EyeInTheSky v{0}; using Stwalkerster.IrcClient v{1}, Stwalkerster.Bot.CommandLib v{2}, Stwalkerster.Bot.MediaWikiLib v{3}",
+                    "EyeInTheSky v{0}; using Stwalkerster.IrcClient v{1}, Stwalkerster.Bot.CommandLib v{2}, Stwalkerster.Bot.MediaWikiLib v{3}, Stwalkerster.SharphConduit v{4}",
                     assemblyVersion,
                     ircVersion,
                     botLibVersion,
-                    mediaWikiLibVersion)
+                    mediaWikiLibVersion,
+                    sharphConduitVersion)
             };
         }
 

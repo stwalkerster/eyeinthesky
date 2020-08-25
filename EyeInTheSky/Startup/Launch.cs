@@ -21,6 +21,7 @@
     using Stwalkerster.Bot.MediaWikiLib.Services;
     using Stwalkerster.IrcClient;
     using Stwalkerster.IrcClient.Interfaces;
+    using Stwalkerster.SharphConduit;
 
     public class Launch : IApplication
     {
@@ -29,7 +30,7 @@
             "Build info",
             new GaugeConfiguration
             {
-                LabelNames = new[] {"assembly", "irclib", "commandlib", "mediawikilib", "runtime", "os", "targetFramework"}
+                LabelNames = new[] {"assembly", "irclib", "commandlib", "mediawikilib", "sharphconduit",  "runtime", "os", "targetFramework"}
             });
         
         private static WindsorContainer container;
@@ -140,6 +141,8 @@
                         FileVersionInfo.GetVersionInfo(Assembly.GetAssembly(typeof(CommandBase)).Location)
                             .FileVersion,
                         FileVersionInfo.GetVersionInfo(Assembly.GetAssembly(typeof(MediaWikiApi)).Location)
+                            .FileVersion,
+                        FileVersionInfo.GetVersionInfo(Assembly.GetAssembly(typeof(ConduitClient)).Location)
                             .FileVersion,
                         Environment.Version.ToString(),
                         Environment.OSVersion.ToString(),
