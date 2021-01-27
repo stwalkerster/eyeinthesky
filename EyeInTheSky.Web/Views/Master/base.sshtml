@@ -20,7 +20,7 @@
         <div class="col-md-6 text-md-left text-muted">
             <p><strong>EyeInTheSky Web Management Console</strong></p>
             <p>Version: @!Model.Version</p>
-            <p>This software is Copyright &copy; 2011-2020 Simon Walker, and is available under the <a href="https://github.com/stwalkerster/eyeinthesky/blob/master/LICENCE">MIT Licence</a>.</p>
+            <p>This software is Copyright &copy; 2011-2021 Simon Walker, and is available under the <a href="https://github.com/stwalkerster/eyeinthesky/blob/master/LICENCE">MIT Licence</a>.</p>
         </div>
         <div class="col-md-6 text-md-right text-muted">
             <ul class="list-inline">
