@@ -10,7 +10,7 @@
       <setting-ref ref="BUILD_EXT_4" />
     </disabled-settings>
     <parameters>
-      <param name="nunitRunner" value="3.11.1" />
+      <param name="nunitRunner" value="3.12.0" />
       <param name="solutionName" value="EyeInTheSky" />
       <param name="version" value="2.5" />
     </parameters>
