@@ -5,9 +5,9 @@
     using EyeInTheSky.Exceptions;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Services.Interfaces;
-    using Stwalkerster.SharphConduit;
-    using Stwalkerster.SharphConduit.Applications;
-    using Stwalkerster.SharphConduit.Applications.Maniphest;
+    using Stwalkerster.Bot.PhabricatorLib;
+    using Stwalkerster.Bot.PhabricatorLib.Applications;
+    using Stwalkerster.Bot.PhabricatorLib.Applications.Maniphest;
 
     public class BugReporter : IBugReporter
     {

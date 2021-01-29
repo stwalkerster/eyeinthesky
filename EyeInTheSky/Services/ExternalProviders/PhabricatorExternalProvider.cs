@@ -10,8 +10,8 @@ namespace EyeInTheSky.Services.ExternalProviders
     using EyeInTheSky.Model.StalkNodes;
     using EyeInTheSky.Services.ExternalProviders.Interfaces;
 
-    using Stwalkerster.SharphConduit;
-    using Stwalkerster.SharphConduit.Applications.Paste;
+    using Stwalkerster.Bot.PhabricatorLib;
+    using Stwalkerster.Bot.PhabricatorLib.Applications.Paste;
 
     public class PhabricatorExternalProvider : IPhabricatorExternalProvider
     {

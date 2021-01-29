@@ -21,7 +21,7 @@
     using Stwalkerster.Bot.MediaWikiLib.Services;
     using Stwalkerster.IrcClient;
     using Stwalkerster.IrcClient.Interfaces;
-    using Stwalkerster.SharphConduit;
+    using Stwalkerster.Bot.PhabricatorLib;
 
     public class Launch : IApplication
     {

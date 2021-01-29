@@ -12,7 +12,7 @@
     using Stwalkerster.IrcClient;
     using Stwalkerster.IrcClient.Interfaces;
     using Stwalkerster.IrcClient.Model.Interfaces;
-    using Stwalkerster.SharphConduit;
+    using Stwalkerster.Bot.PhabricatorLib;
     using CLFlag = Stwalkerster.Bot.CommandLib.Model.Flag;
 
     [CommandInvocation("version")]
