@@ -75,9 +75,8 @@
             }
             catch (Exception ex2)
             {
-                this.logger.Error("Exception encountered while logging", ex);
-                this.logger.Error("Exception in BugReporter", ex2);
-                throw;
+                this.logger.Warn("Exception while logging bug", ex2);
+                this.logger.Error("Exception encountered while logging bug; including here for reference", ex);
             }
         }
     }
