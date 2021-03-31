@@ -1,7 +1,9 @@
 ﻿namespace EyeInTheSky.Services
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Castle.Core.Logging;
     using EyeInTheSky.Exceptions;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Services.Interfaces;
@@ -11,12 +13,14 @@
 
     public class BugReporter : IBugReporter
     {
+        private readonly ILogger logger;
         private readonly Maniphest maniphest;
         private readonly string projectPhid;
         private readonly bool active;
 
-        public BugReporter(IAppConfiguration appConfig)
+        public BugReporter(IAppConfiguration appConfig, ILogger logger)
         {
+            this.logger = logger;
             var url = appConfig.PhabUrl;
             var key = appConfig.PhabToken;
 
@@ -42,30 +46,39 @@
                 return;
             }
 
-            var fulltext = new ApplicationEditorSearchConstraint("query", ex.Title);
-            var statuses = ManiphestSearchConstraintFactory.Statuses(new List<string> {"open", "stalled"});
-
-            var maniphestTasks = this.maniphest.Search(constraints: new[] {fulltext, statuses});
-
-            var fod = maniphestTasks.FirstOrDefault(x => x.Title == ex.Title);
-            if (fod == null)
+            try
             {
-                fod = new ManiphestTask
+                var fulltext = new ApplicationEditorSearchConstraint("query", ex.Title);
+                var statuses = ManiphestSearchConstraintFactory.Statuses(new List<string> {"open", "stalled"});
+
+                var maniphestTasks = this.maniphest.Search(constraints: new[] {fulltext, statuses});
+
+                var fod = maniphestTasks.FirstOrDefault(x => x.Title == ex.Title);
+                if (fod == null)
                 {
-                    Title = ex.Title,
-                    Description = ex.Description,
-                    Priority = "normal",
-                    Points = 1
-                };
-                fod.AddProjects(this.projectPhid);
-            }
-            else
-            {
-                fod.AddComment(ex.Description);
-                fod.Points = fod.Points.GetValueOrDefault(0) + 1;
-            }
+                    fod = new ManiphestTask
+                    {
+                        Title = ex.Title,
+                        Description = ex.Description,
+                        Priority = "normal",
+                        Points = 1
+                    };
+                    fod.AddProjects(this.projectPhid);
+                }
+                else
+                {
+                    fod.AddComment(ex.Description);
+                    fod.Points = fod.Points.GetValueOrDefault(0) + 1;
+                }
 
-            this.maniphest.Edit(fod);
+                this.maniphest.Edit(fod);
+            }
+            catch (Exception ex2)
+            {
+                this.logger.Error("Exception encountered while logging", ex);
+                this.logger.Error("Exception in BugReporter", ex2);
+                throw;
+            }
         }
     }
 }
