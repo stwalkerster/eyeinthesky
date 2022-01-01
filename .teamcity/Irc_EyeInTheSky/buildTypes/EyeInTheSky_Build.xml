@@ -20,7 +20,21 @@
     </vcs-settings>
     <requirements />
     <build-triggers />
-    <cleanup />
+    <cleanup>
+      <policy type="days" cleanup-level="HISTORY_ENTRY">
+        <parameters>
+          <param name="keepDays.count" value="180" />
+        </parameters>
+      </policy>
+      <policy type="days" cleanup-level="ARTIFACTS">
+        <parameters>
+          <param name="keepDays.count" value="30" />
+        </parameters>
+      </policy>
+      <options>
+        <option name="preventDependenciesArtifactsFromCleanup" value="true" />
+      </options>
+    </cleanup>
   </settings>
 </build-type>
 
