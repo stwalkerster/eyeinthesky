@@ -20,6 +20,19 @@
     </vcs-settings>
     <requirements />
     <build-triggers />
+    <build-extensions>
+      <extension id="KEEP_RULE_3" type="keepRules">
+        <parameters>
+          <param name="filters.1.personal" value="not_personal" />
+          <param name="filters.1.type" value="personalBuild" />
+          <param name="keepData.1.type" value="everything" />
+          <param name="limit.buildsCount" value="10" />
+          <param name="limit.type" value="lastNBuilds" />
+          <param name="preserveArtifacts" value="true" />
+          <param name="ruleDisabled" value="false" />
+        </parameters>
+      </extension>
+    </build-extensions>
     <cleanup>
       <policy type="days" cleanup-level="HISTORY_ENTRY">
         <parameters>
