@@ -536,6 +536,16 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                             TargetUser = "Plaster93",
                             EditFlags = "delete",
                         });
+                yield return new TestCaseData(
+                        "14[[07Special:Log/globalauth14]]4 setstatus10 02 5* 03Masti 5*  10Masti changed status for global account \"[[02User:Theda420192666@global10]]\": set locked; unset (none): Spam-only account: spambot")
+                    .Returns(
+                        new RecentChange("Masti")
+                        {
+                            Log = "globalauth",
+                            TargetUser = "Theda420192666",
+                            EditFlags = "setstatus",
+                            EditSummary = "Spam-only account: spambot"
+                        });
                 #endregion
                 #region import
                 // faked

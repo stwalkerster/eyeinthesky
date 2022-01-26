@@ -524,7 +524,7 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                 case "globalauth":
                     if (rc.EditFlags == "setstatus")
                     {
-                        var match = new Regex(@"^changed status for global account ""User:(?<targetUser>.*?)@global"": set .*?; unset .*?(?:: (?<comment>.*))?$");
+                        var match = new Regex(@"changed status for global account ""(?:\[\[)?User:(?<targetUser>.*?)@global(?:\]\])?"": set .*?; unset .*?(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
