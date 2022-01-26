@@ -25,7 +25,7 @@
             {
                 this.Logger.WarnFormat("Unknown date format in item '{0}' {2}: {1}", flagName, input, propName);
 
-                if (!DateTime.TryParse(input, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out result))
+                if (!DateTime.TryParse(input, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out result))
                 {
                     var err = string.Format("Failed date parse for item '{0}' {2}: {1}", flagName, input, propName);
 
