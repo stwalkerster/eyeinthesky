@@ -25,9 +25,9 @@
         <div class="col-md-6 text-md-right text-muted">
             <ul class="list-inline">
                 <li class="list-inline-item"><a href="/about">About</a></li>
-                <li class="list-inline-item"><a href="https://phabricator.stwalkerster.co.uk/w/eyeinthesky/">Documentation</a></li>
+                <li class="list-inline-item"><a href="https://github.com/stwalkerster/eyeinthesky/wiki">Documentation</a></li>
                 <li class="list-inline-item"><a href="https://github.com/stwalkerster/eyeinthesky/">Source</a></li>
-                <li class="list-inline-item"><a href="https://phabricator.stwalkerster.co.uk/project/board/79/">Bugs</a></li>
+                <li class="list-inline-item"><a href="https://github.com/stwalkerster/eyeinthesky/issues">Bugs</a></li>
                 <li class="list-inline-item"><a href="@!Model.AppConfiguration.PrivacyPolicy">Privacy Policy</a></li>
             </ul>
             @If.Model.IrcClient.NetworkConnected
