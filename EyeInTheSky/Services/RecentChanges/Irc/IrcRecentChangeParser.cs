@@ -807,7 +807,7 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                     
                     if (rc.EditFlags == "forcecreatelocal")
                     {
-                        var match = new Regex("^forcibly created a local account for \\[\\[User:(?<targetuser>.*?)\\]\\](?:: (?<comment>.*))?$");
+                        var match = new Regex("forcibly created a local account for \\[\\[User:(?<targetuser>.*?)\\]\\](?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
