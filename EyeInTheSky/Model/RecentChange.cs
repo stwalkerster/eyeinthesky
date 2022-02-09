@@ -40,6 +40,7 @@
         public string AdditionalData { get; set; }
 
         public IMediaWikiApi MediaWikiApi { get; set; }
+        public string AlternateTargetUser { get; set; }
 
         public IEnumerable<string> GetUserGroups()
         {

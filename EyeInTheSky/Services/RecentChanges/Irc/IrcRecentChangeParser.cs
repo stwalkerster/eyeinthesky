@@ -556,6 +556,25 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                         }
                     }
                     break;
+                case "growthexperiments":
+                    if (rc.EditFlags == "claimmentee")
+                    {
+                        var match = new Regex(@"claimed (?<targetUser>.*?) as their mentee \(previous mentor (?<altTarget>.*?)\)(?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.TargetUser = result.Groups["targetUser"].Value;
+                            rc.AlternateTargetUser = result.Groups["altTarget"].Value;
+
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+
+                            handled = true;
+                        }
+                    }
+                    break;
                 case "import":
                     if (rc.EditFlags == "interwiki")
                     {

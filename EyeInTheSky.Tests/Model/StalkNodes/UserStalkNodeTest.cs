@@ -70,6 +70,9 @@
                 n = new UserStalkNode();
                 n.SetMatchExpression("123");
                 yield return new TestCaseData(n).Returns(false);
+                n = new UserStalkNode();
+                n.SetMatchExpression("alttgt");
+                yield return new TestCaseData(n).Returns(true);
             }
         }  
     }

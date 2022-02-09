@@ -185,6 +185,7 @@ namespace EyeInTheSky.Tests.Model.StalkNodes.BaseNodes
             rc.Setup(x => x.SizeDiff).Returns(123);
             rc.Setup(x => x.Url).Returns("ghi");
             rc.Setup(x => x.User).Returns("def");
+            rc.Setup(x => x.AlternateTargetUser).Returns("alttgt");
             rc.Setup(x => x.PageIsInCategory(It.IsAny<string>())).Returns(true);
 
             return rc;

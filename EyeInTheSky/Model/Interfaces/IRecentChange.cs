@@ -16,6 +16,7 @@ namespace EyeInTheSky.Model.Interfaces
         string TargetUser { get; set; }
         int? SizeDiff { get; set; }
         string AdditionalData { get; set; }
+        string AlternateTargetUser { get; set; }
 
         IEnumerable<string> GetUserGroups();
         bool PageIsInCategory(string category);

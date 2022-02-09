@@ -591,6 +591,31 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                             EditSummary = "Spam-only account: spambot"
                         });
                 #endregion
+                #region growthexperiments
+                
+                yield return new TestCaseData("14[[07Special:Log/growthexperiments14]]4 claimmentee10 02 5* 03Justiyaya 5*  10Justiyaya claimed Justiyaya as their mentee (previous mentor Bilorv): Claiming myself")
+                    .Returns(
+                        new RecentChange("Justiyaya")
+                        {
+                            Log = "growthexperiments",
+                            TargetUser = "Justiyaya",
+                            AlternateTargetUser = "Bilorv",
+                            EditSummary = "Claiming myself",
+                            EditFlags = "claimmentee"
+                        });
+                
+                
+                yield return new TestCaseData("14[[07Special:Log/growthexperiments14]]4 claimmentee10 02 5* 03Blaze The Wolf 5*  10Blaze The Wolf claimed KingAviationKid as their mentee (previous mentor Vukky): They have requested that I be my mentor after asking their previous mentor if I can be their mentor instead.")
+                    .Returns(
+                        new RecentChange("Blaze The Wolf")
+                        {
+                            Log = "growthexperiments",
+                            TargetUser = "KingAviationKid",
+                            AlternateTargetUser = "Vukky",
+                            EditSummary = "They have requested that I be my mentor after asking their previous mentor if I can be their mentor instead.",
+                            EditFlags = "claimmentee"
+                        });
+                #endregion
                 #region import
                 // faked
                 yield return new TestCaseData(

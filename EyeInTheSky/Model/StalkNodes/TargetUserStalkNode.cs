@@ -19,6 +19,11 @@ namespace EyeInTheSky.Model.StalkNodes
             {
                 result |= this.RegexExpression.Match(rc.TargetUser).Success;
             }
+            
+            if (rc.AlternateTargetUser != null)
+            {
+                result |= this.RegexExpression.Match(rc.AlternateTargetUser).Success;
+            }
 
             return result;
         }
