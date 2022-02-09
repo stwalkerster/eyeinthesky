@@ -485,6 +485,28 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                         });
                 
                 yield return new TestCaseData(
+                        "14[[07Special:Log/gblrights14]]4 usergroups10 02 5* 03Martin Urbanec 5*  10Martin Urbanec changed global group membership for Gregology from (none) to oathauth-tester: per [[m:Special:Permalink/22798808|request]]")
+                    .Returns(
+                        new RecentChange("Martin Urbanec")
+                        {
+                            Log = "gblrights",
+                            TargetUser = "Gregology",
+                            EditFlags = "usergroups",
+                            EditSummary = "per [[m:Special:Permalink/22798808|request]]"
+                        });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/gblrights14]]4 usergroups10 02 5* 03Tks4Fish 5*  10Tks4Fish changed global group membership for Rhodesian05 from (none) to global-ipblock-exempt (temporary, until 17:35, 9 May 2022): per [[Special:Permalink/22799756#IP locking|request]]")
+                    .Returns(
+                        new RecentChange("Tks4Fish")
+                        {
+                            Log = "gblrights",
+                            TargetUser = "Rhodesian05",
+                            EditFlags = "usergroups",
+                            EditSummary = "per [[Special:Permalink/22799756#IP locking|request]]"
+                        });
+                
+                yield return new TestCaseData(
                         "14[[07Special:Log/gblrights14]]4 setchange10 02 5* 03MF-Warburg 5*  10changed wikis in \"All existing wikis\": added: liwikinews, satwiki, shnwiki, yuewiktionary, zhwikiversity; removed: (–): update")
                     .Returns(
                         new RecentChange("MF-Warburg")
@@ -682,10 +704,10 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                         new RecentChange("Another Believer")
                         {
                             Log = "massmessage",
-                            Page = "Special:PermanentLink/830385617",
+                            TargetPage = "Special:PermanentLink/830385617",
                             EditSummary = "Art+Feminism Wikipedia Edit-a-thon (April 13, University of Oregon)",
                             EditFlags = "send"
-                        }).Ignore("Possibly deprecated?");
+                        });
                 
                 yield return new TestCaseData(
                         "14[[07Special:Log/massmessage14]]4 send10 02 5* 03Quiddity (WMF) 5*  10Quiddity (WMF) sent page [[Tech/News/2021/48]] as message to [[Special:PermanentLink/19181792]]: [[m:Special:MyLanguage/Tech/News/2021/48|Tech News: 2021-48]]")

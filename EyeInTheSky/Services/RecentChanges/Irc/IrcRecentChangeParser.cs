@@ -443,7 +443,7 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                 case "gblrights":
                     if (rc.EditFlags == "usergroups")
                     {
-                        var match = new Regex(@"changed global group membership for (?:\[\[)?User:(?<targetUser>.+?)(?:\]\])? from (?:.+?) to (?:.+?)(?:: (?<comment>.*))?$");
+                        var match = new Regex(@"changed global group membership for (?:\[\[)?(?:User:)?(?<targetUser>.+?)(?:\]\])? from (?:.+?) to (?:.+?)(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
@@ -674,11 +674,15 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                     
                     if (rc.EditFlags == "send")
                     {
-                        var match = new Regex(" sent page \\[\\[(?<page>.*?)\\]\\] as message to \\[\\[(?<target>.*?)\\]\\](?:: (?<comment>.*))?$");
+                        var match = new Regex(" sent (?:page \\[\\[(?<page>.*?)\\]\\] as|a) message to \\[\\[(?<target>.*?)\\]\\](?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
-                            rc.Page = result.Groups["page"].Value;
+                            if (result.Groups["page"].Success)
+                            {
+                                rc.Page = result.Groups["page"].Value;
+                            }
+
                             rc.TargetPage = result.Groups["target"].Value;
 
                             if (result.Groups["comment"].Success)
