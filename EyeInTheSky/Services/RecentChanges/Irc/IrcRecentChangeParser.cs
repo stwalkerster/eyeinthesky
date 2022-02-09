@@ -574,6 +574,23 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                             handled = true;
                         }
                     }
+                    
+                    if (rc.EditFlags == "claimmentee-no-previous-mentor")
+                    {
+                        var match = new Regex(@"claimed (?<targetUser>.*?) as their mentee \(no previous mentor\)(?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.TargetUser = result.Groups["targetUser"].Value;
+                            
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+
+                            handled = true;
+                        }
+                    }
                     break;
                 case "import":
                     if (rc.EditFlags == "interwiki")

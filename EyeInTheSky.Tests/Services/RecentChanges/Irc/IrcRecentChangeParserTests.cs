@@ -604,7 +604,6 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                             EditFlags = "claimmentee"
                         });
                 
-                
                 yield return new TestCaseData("14[[07Special:Log/growthexperiments14]]4 claimmentee10 02 5* 03Blaze The Wolf 5*  10Blaze The Wolf claimed KingAviationKid as their mentee (previous mentor Vukky): They have requested that I be my mentor after asking their previous mentor if I can be their mentor instead.")
                     .Returns(
                         new RecentChange("Blaze The Wolf")
@@ -614,6 +613,16 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                             AlternateTargetUser = "Vukky",
                             EditSummary = "They have requested that I be my mentor after asking their previous mentor if I can be their mentor instead.",
                             EditFlags = "claimmentee"
+                        });
+                
+                yield return new TestCaseData("14[[07Special:Log/growthexperiments14]]4 claimmentee-no-previous-mentor10 02 5* 03Vukky 5*  10Vukky claimed Syskerr91 as their mentee (no previous mentor): peekaboo! i know you, so you're mine now")
+                    .Returns(
+                        new RecentChange("Vukky")
+                        {
+                            Log = "growthexperiments",
+                            TargetUser = "Syskerr91",
+                            EditSummary = "peekaboo! i know you, so you're mine now",
+                            EditFlags = "claimmentee-no-previous-mentor"
                         });
                 #endregion
                 #region import
