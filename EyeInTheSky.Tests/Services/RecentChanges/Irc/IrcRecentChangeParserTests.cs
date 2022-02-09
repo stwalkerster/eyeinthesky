@@ -1359,6 +1359,17 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                         });
                 
                 yield return new TestCaseData(
+                        "14[[07Special:Log/rights14]]4 blockautopromote10 02 5* 03Abuse filter 5*  10Abuse filter blocked the autopromotion of Mr.Smith666 for a period of 5 days: Autopromotion automatically delayed by abuse filter. Rule description: Blanking user pages or user talk pages by a new user")
+                    .Returns(
+                        new RecentChange("Abuse filter")
+                        {
+                            Log = "rights",
+                            TargetUser = "Mr.Smith666",
+                            EditFlags = "blockautopromote",
+                            EditSummary = "Autopromotion automatically delayed by abuse filter. Rule description: Blanking user pages or user talk pages by a new user",
+                        });
+                
+                yield return new TestCaseData(
                         "14[[07Special:Log/rights14]]4 restoreautopromote10 02 5* 03Suffusion of Yellow 5*  10Suffusion of Yellow restored the autopromotion capability of [[02User:COIBot10]]: Autopromotion restored via AbuseFilter tools.")
                     .Returns(
                         new RecentChange("Suffusion of Yellow")

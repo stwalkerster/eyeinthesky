@@ -1261,7 +1261,7 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                     } 
                     if (rc.EditFlags == "blockautopromote")
                     {
-                        var match = new Regex(" blocked the autopromotion of \\[\\[User:(?<user>.*)\\]\\] for a period of .*?: (?<comment>.*)$");
+                        var match = new Regex(" blocked the autopromotion of (?:\\[\\[User:)?(?<user>.*?)(?:\\]\\])? for a period of .*?: (?<comment>.*)$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
