@@ -529,6 +529,17 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                         });
                 
                 yield return new TestCaseData(
+                        "14[[07Special:Log/gblrights14]]4 setchange10 02 5* 03Sotiale 5*  10Sotiale changed wikis in \"All existing wikis\": added: lmowiktionary, amiwiki, pwnwiki; removed: (none): 2021 created wikis update")
+                    .Returns(
+                        new RecentChange("Sotiale")
+                        {
+                            Log = "gblrights",
+                            Page = "All existing wikis",
+                            EditFlags = "setchange",
+                            EditSummary = "2021 created wikis update"
+                        });
+                
+                yield return new TestCaseData(
                         "14[[07Special:Log/gblrights14]]4 groupprms210 02 5* 03Rxy 5*  10changed global group permissions for Special:GlobalUsers/steward: added (none); removed bigdelete: -bigdelete: dangerous things; no need this usually")
                     .Returns(
                         new RecentChange("Rxy")
@@ -1003,6 +1014,18 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                             Page = "Template:1lib1ref navigation portal",
                             EditFlags = "deletefok",
                             EditSummary = "cleanup following move"
+                        });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/pagetranslation14]]4 deletefnok10 02 5* 03MusikAnimal (WMF) 5*  10MusikAnimal (WMF) failed to delete [[02Community Wishlist Survey 2022/Admins and patrollers/Foobar/Proposal/he10]] which belongs to translatable page [[Community Wishlist Survey 2022/Admins and patrollers/Foobar/Proposal]]: test complete")
+                    .Returns(
+                        new RecentChange("MusikAnimal (WMF)")
+                        {
+                            Log = "pagetranslation",
+                            Page = "Community Wishlist Survey 2022/Admins and patrollers/Foobar/Proposal",
+                            TargetPage = "Community Wishlist Survey 2022/Admins and patrollers/Foobar/Proposal/he",
+                            EditFlags = "deletefnok",
+                            EditSummary = "test complete"
                         });
                 
                 yield return new TestCaseData(

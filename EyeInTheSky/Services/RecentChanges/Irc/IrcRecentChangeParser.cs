@@ -490,7 +490,7 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
 
                     if (rc.EditFlags == "setchange")
                     {
-                        var match = new Regex(@"^changed wikis in ""(?<page>.*?)"": added: (?:.*?); removed: (?:.*?)(?:: (?<comment>.*))?$");
+                        var match = new Regex(@"changed wikis in ""(?<page>.*?)"": added: (?:.*?); removed: (?:.*?)(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
@@ -993,6 +993,24 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                         if (result.Success)
                         {
                             rc.Page = result.Groups["page"].Value;
+                            
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+            
+                            handled = true;
+                        }
+                    }
+                    
+                    if (rc.EditFlags == "deletefnok")
+                    {
+                        var match = new Regex(" failed to delete \\[\\[(?<targetPage>.*?)\\]\\] which belongs to translatable page \\[\\[(?<page>.*?)\\]\\](?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["page"].Value;
+                            rc.TargetPage = result.Groups["targetPage"].Value;
                             
                             if (result.Groups["comment"].Success)
                             {
