@@ -635,6 +635,17 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                             EditSummary = "peekaboo! i know you, so you're mine now",
                             EditFlags = "claimmentee-no-previous-mentor"
                         });
+                
+                yield return new TestCaseData("14[[07Special:Log/growthexperiments14]]4 setmentor10 02 5* 03Xaosflux 5*  10Xaosflux set Usedtobecool as the mentor of ShahidK1980 (previous mentor Xaosflux): ReleaseAutoAssignedMenteeToPool")
+                    .Returns(
+                        new RecentChange("Xaosflux")
+                        {
+                            Log = "growthexperiments",
+                            TargetUser = "Usedtobecool",
+                            AlternateTargetUser = "ShahidK1980",
+                            EditSummary = "ReleaseAutoAssignedMenteeToPool",
+                            EditFlags = "setmentor"
+                        });
                 #endregion
                 #region import
                 // faked
@@ -1413,6 +1424,17 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                         });
                 
                 yield return new TestCaseData(
+                        "14[[07Special:Log/rights14]]4 restoreautopromote10 02 5* 03Hasley 5*  10Hasley restored the autopromotion capability of PorkchopGMX: Autopromotion restored via AbuseFilter tools.")
+                    .Returns(
+                        new RecentChange("Hasley")
+                        {
+                            Log = "rights",
+                            TargetUser = "PorkchopGMX",
+                            EditFlags = "restoreautopromote",
+                            EditSummary = "Autopromotion restored via AbuseFilter tools.",
+                        });
+                
+                yield return new TestCaseData(
                         "14[[07Special:Log/rights14]]4 autopromote10 02 5* 03Popcrate 5*  10was automatically updated from (none) to extendedconfirmed")
                     .Returns(
                         new RecentChange("Popcrate")
@@ -1544,6 +1566,16 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                             Log = "tag",
                             EditFlags = "update",
                             Page = "User:Fluxbot"
+                        });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/tag14]]4 update10 02 5* 03Qwerfjkl (bot) 5*  10Qwerfjkl (bot) added the tags huggle, ProveIt edit, WPCleaner, STiki, AWB, bot trial, Image up for deletion on Commons, WikiLoop Battlefield, discretionary, self-published source, self-published-blog to revision 1065689178 of page [[02User:Qwerfjkl/sandbox10]]")
+                    .Returns(
+                        new RecentChange("Qwerfjkl (bot)")
+                        {
+                            Log = "tag",
+                            EditFlags = "update",
+                            Page = "User:Qwerfjkl/sandbox"
                         });
                 #endregion
                 #region thanks

@@ -591,6 +591,24 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                             handled = true;
                         }
                     }
+                    
+                    if (rc.EditFlags == "setmentor")
+                    {
+                        var match = new Regex(@" set (?<targetUser>.*?) as the mentor of (?<altUser>.*?) \(previous mentor (?<prevMentor>.*?)\)(?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.TargetUser = result.Groups["targetUser"].Value;
+                            rc.AlternateTargetUser = result.Groups["altUser"].Value;
+                            
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+
+                            handled = true;
+                        }
+                    }
                     break;
                 case "import":
                     if (rc.EditFlags == "interwiki")
@@ -1311,7 +1329,7 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                     }  
                     if (rc.EditFlags == "restoreautopromote")
                     {
-                        var match = new Regex(" restored the autopromotion capability of \\[\\[User:(?<user>.*)\\]\\](?:: (?<comment>.*))?$");
+                        var match = new Regex(" restored the autopromotion capability of (?:\\[\\[User:)?(?<user>.*?)(?:\\]\\])?(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
@@ -1401,7 +1419,7 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                 case "tag":
                     if (rc.EditFlags == "update")
                     {
-                        var match = new Regex(@" (?:added|removed) the tag .*? (?:to|from) (?:log entry|revision) [0-9]+ of page \[\[(?<page>.*?)\]\](?:: (?<comment>.*))?$");
+                        var match = new Regex(@" (?:added|removed) the tag(s?) .*? (?:to|from) (?:log entry|revision) [0-9]+ of page \[\[(?<page>.*?)\]\](?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
