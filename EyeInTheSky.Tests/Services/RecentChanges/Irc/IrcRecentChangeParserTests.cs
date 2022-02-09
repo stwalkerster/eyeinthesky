@@ -1180,6 +1180,7 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                             EditSummary = "Date is not necessary for disambiguation "
                         });
                 
+                // used by enwiki through message override
                 yield return new TestCaseData(
                         "14[[07Special:Log/protect14]]4 modify10 02 5* 03Ohnoitsjamie 5*  10changed protection level of Tom Kenny filmography ‎[edit=autoconfirmed] (expires 20:59, 2 October 2018 (UTC))‎[move=autoconfirmed] (expires 20:59, 2 October 2018 (UTC)): Persistent [[WP:Vandalism|vandalism]]: IP hopping crap")
                     .Returns(
@@ -1189,6 +1190,18 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                             Page = "Tom Kenny filmography",
                             EditFlags = "modify",
                             EditSummary = "Persistent [[WP:Vandalism|vandalism]]: IP hopping crap"
+                        });
+                    
+                // default MW message
+                yield return new TestCaseData(
+                        "14[[07Special:Log/protect14]]4 modify10 02 5* 03Martin Urbanec 5*  10changed protection settings for \"[[MediaWiki:Centralnotice-stewnoms 2022-text2/sv ‎[edit=banner-protect] (indefinite)‎[move=banner-protect] (indefinite)]]\": Automatically protected by CentralNotice; please edit only via [[Special:CentralNotice]] or [[Special:Translate]]")
+                    .Returns(
+                        new RecentChange("Martin Urbanec")
+                        {
+                            Log = "protect",
+                            Page = "MediaWiki:Centralnotice-stewnoms 2022-text2/sv",
+                            EditFlags = "modify",
+                            EditSummary = "Automatically protected by CentralNotice; please edit only via [[Special:CentralNotice]] or [[Special:Translate]]"
                         });
                 
                 // faked

@@ -1116,7 +1116,7 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                     
                     if (rc.EditFlags == "modify")
                     {
-                        var match = new Regex(@"^changed protection level (?:of|for) (?:""\[\[)?(?<page>.*?) .(?:\[(?:edit|move|create|upload)=[a-z-]+\] \((?:(?:expires .*?\(UTC\))|indefinite)\).?)+(?:\]\]"")?(?:: (?<comment>.*))?$");
+                        var match = new Regex(@"^changed protection (?:settings|level) (?:of|for) (?:""\[\[)?(?<page>.*?) .(?:\[(?:edit|move|create|upload)=[a-z-]+\] \((?:(?:expires .*?\(UTC\))|indefinite)\).?)+(?:\]\]"")?(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
