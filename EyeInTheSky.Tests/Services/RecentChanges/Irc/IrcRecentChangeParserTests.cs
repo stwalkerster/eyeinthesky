@@ -507,6 +507,17 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                         });
                 
                 yield return new TestCaseData(
+                        "14[[07Special:Log/gblrights14]]4 usergroups10 02 5* 03Martin Urbanec 5*  10Martin Urbanec changed global group membership for NguoiDungKhongDinhDanh from oathauth-tester to oathauth-tester, global-rollbacker: per [[m:Special:Permalink/22802474|request]]: clear consensus to promote")
+                    .Returns(
+                        new RecentChange("Martin Urbanec")
+                        {
+                            Log = "gblrights",
+                            TargetUser = "NguoiDungKhongDinhDanh",
+                            EditFlags = "usergroups",
+                            EditSummary = "per [[m:Special:Permalink/22802474|request]]: clear consensus to promote"
+                        });
+                
+                yield return new TestCaseData(
                         "14[[07Special:Log/gblrights14]]4 setchange10 02 5* 03MF-Warburg 5*  10changed wikis in \"All existing wikis\": added: liwikinews, satwiki, shnwiki, yuewiktionary, zhwikiversity; removed: (–): update")
                     .Returns(
                         new RecentChange("MF-Warburg")
