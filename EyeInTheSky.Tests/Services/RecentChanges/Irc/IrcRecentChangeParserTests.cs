@@ -838,6 +838,19 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                             EditSummary = "Requested at ACC",
                             
                         });
+                
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/newusers14]]4 forcecreatelocal10 02 5* 03GeneralNotability 5*  10GeneralNotability forcibly created a local account for [[02User:Yzf9910]]: Forcing attach, Ticket#2021122410002159")
+                    .Returns(
+                        new RecentChange("GeneralNotability")
+                        {
+                            Log = "newusers",
+                            TargetUser = "Yzf99",
+                            EditFlags = "forcecreatelocal",
+                            EditSummary = "Forcing attach, Ticket#2021122410002159",
+                        });
+                
                 #endregion
                 #region notifytranslators
                 yield return new TestCaseData(

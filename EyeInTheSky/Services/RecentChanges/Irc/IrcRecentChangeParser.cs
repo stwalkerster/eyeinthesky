@@ -804,6 +804,23 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                             handled = true;
                         }
                     }
+                    
+                    if (rc.EditFlags == "forcecreatelocal")
+                    {
+                        var match = new Regex("^forcibly created a local account for \\[\\[User:(?<targetuser>.*?)\\]\\](?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+                            
+                            rc.TargetUser = result.Groups["targetuser"].Value;
+
+                            handled = true;
+                        }
+                    }
                     break;
                 case "notifytranslators":
                     if (rc.EditFlags == "sent")
