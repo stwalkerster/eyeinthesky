@@ -674,11 +674,12 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                     
                     if (rc.EditFlags == "send")
                     {
-                        var match = new Regex(" sent a message to \\[\\[(?<page>.*?)\\]\\](?:: (?<comment>.*))?$");
+                        var match = new Regex(" sent page \\[\\[(?<page>.*?)\\]\\] as message to \\[\\[(?<target>.*?)\\]\\](?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
                             rc.Page = result.Groups["page"].Value;
+                            rc.TargetPage = result.Groups["target"].Value;
 
                             if (result.Groups["comment"].Success)
                             {

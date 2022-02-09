@@ -685,6 +685,18 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                             Page = "Special:PermanentLink/830385617",
                             EditSummary = "Art+Feminism Wikipedia Edit-a-thon (April 13, University of Oregon)",
                             EditFlags = "send"
+                        }).Ignore("Possibly deprecated?");
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/massmessage14]]4 send10 02 5* 03Quiddity (WMF) 5*  10Quiddity (WMF) sent page [[Tech/News/2021/48]] as message to [[Special:PermanentLink/19181792]]: [[m:Special:MyLanguage/Tech/News/2021/48|Tech News: 2021-48]]")
+                    .Returns(
+                        new RecentChange("Quiddity (WMF)")
+                        {
+                            Log = "massmessage",
+                            Page = "Tech/News/2021/48",
+                            TargetPage = "Special:PermanentLink/19181792",
+                            EditSummary = "[[m:Special:MyLanguage/Tech/News/2021/48|Tech News: 2021-48]]",
+                            EditFlags = "send"
                         });
 
                 yield return new TestCaseData(
