@@ -443,7 +443,7 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                 case "gblrights":
                     if (rc.EditFlags == "usergroups")
                     {
-                        var match = new Regex(@"^changed global group membership for User:(?<targetUser>.+?) from (?:.+?) to (?:.+?)(?:: (?<comment>.*))?$");
+                        var match = new Regex(@"changed global group membership for (?:\[\[)?User:(?<targetUser>.+?)(?:\]\])? from (?:.+?) to (?:.+?)(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {

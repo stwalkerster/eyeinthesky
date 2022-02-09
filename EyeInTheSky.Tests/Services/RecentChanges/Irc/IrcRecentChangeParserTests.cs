@@ -474,6 +474,17 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                         });
                 
                 yield return new TestCaseData(
+                        "14[[07Special:Log/gblrights14]]4 usergroups10 02 5* 03Trijnstel 5*  10Trijnstel changed global group membership for [[02User:Hamish10]] from global-ipblock-exempt, global-rollbacker, vrt-permissions to global-ipblock-exempt, global-rollbacker: per [[m:Special:Permalink/22429296|request]]")
+                    .Returns(
+                        new RecentChange("Trijnstel")
+                        {
+                            Log = "gblrights",
+                            TargetUser = "Hamish",
+                            EditFlags = "usergroups",
+                            EditSummary = "per [[m:Special:Permalink/22429296|request]]"
+                        });
+                
+                yield return new TestCaseData(
                         "14[[07Special:Log/gblrights14]]4 setchange10 02 5* 03MF-Warburg 5*  10changed wikis in \"All existing wikis\": added: liwikinews, satwiki, shnwiki, yuewiktionary, zhwikiversity; removed: (–): update")
                     .Returns(
                         new RecentChange("MF-Warburg")
