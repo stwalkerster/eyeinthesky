@@ -283,7 +283,7 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                         }
                     }
 
-                    if (rc.EditFlags == "delete_redir")
+                    if (rc.EditFlags == "delete_redir" || rc.EditFlags == "delete_redir2")
                     {
                         var match = new Regex(@"deleted redirect \[\[(?<pageName>.*?)\]\] by overwriting(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);

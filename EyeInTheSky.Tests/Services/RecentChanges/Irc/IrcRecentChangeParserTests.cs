@@ -324,7 +324,18 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                             EditSummary = "[[WP:CSD#G6|G6]]: Deleted to make way for move",
                             EditFlags = "delete_redir"
                         });
-
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/delete14]]4 delete_redir210 02 5* 03Polyamorph 5*  10Polyamorph deleted redirect [[02Tiptree Heath10]] by overwriting: [[WP:CSD#G6|G6]]: Deleted to make way for move")
+                    .Returns(
+                        new RecentChange("Polyamorph")
+                        {
+                            Log = "delete",
+                            Page = "Tiptree Heath",
+                            EditSummary = "[[WP:CSD#G6|G6]]: Deleted to make way for move",
+                            EditFlags = "delete_redir2"
+                        });
+                
                 yield return new TestCaseData(
                         "14[[07Special:Log/delete14]]4 restore10 02 5* 03Graeme Bartlett 5*  10restored \"[[02Draft:June Beverly Bonesteel10]]\": requested by FlyladyAZ")
                     .Returns(
