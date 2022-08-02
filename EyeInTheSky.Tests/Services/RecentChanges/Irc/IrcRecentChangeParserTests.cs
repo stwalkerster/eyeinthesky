@@ -356,7 +356,18 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                             Page = "Talk:Hakea exul",
                             EditFlags = "restore"
                         });
-
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/delete14]]4 restore10 02 5* 03Less Unless 5*  10undeleted \"[[02Draft talk:John Bankett10]]\": Undeleting [[Help:Talk page|talk page]] of \"Draft:John Bankett\" ([[User:SD0001/RFUD-helper|rfud-helper]])")
+                    .Returns(
+                        new RecentChange("Less Unless")
+                        {
+                            Log = "delete",
+                            Page = "Draft talk:John Bankett",
+                            EditFlags = "restore",
+                            EditSummary = "Undeleting [[Help:Talk page|talk page]] of \"Draft:John Bankett\" ([[User:SD0001/RFUD-helper|rfud-helper]])"
+                        });
+                
                 yield return new TestCaseData(
                         "14[[07Special:Log/delete14]]4 event10 02 5* 03Oshwah 5*  10Oshwah changed visibility of a log event on [[02Special:Log/block10]]: content hidden and username hidden: [[WP:RD3|RD3]]: Purely disruptive material")
                     .Returns(
@@ -457,6 +468,17 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                             TargetUser = "Roland Kiadó",
                             EditFlags = "rename",
                             EditSummary = "Per [[w:hu:Special:Permalink/20868144#Roland Kiadó .E2.86.92 Kékelefánt|request on huwiki]]"
+                        });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/gblrename14]]4 promote10 02 5* 03Litlok 5*  10Litlok globally renamed [[User:Саша Попов@metawiki]] to [[02Special:CentralAuth/Саша Попов Александр Алексеевич10]]: per [[m:Special:GlobalRenameQueue/request/92371|request]]")
+                    .Returns(
+                        new RecentChange("Litlok")
+                        {
+                            Log = "gblrename",
+                            TargetUser = "Саша Попов",
+                            EditFlags = "promote",
+                            EditSummary = "per [[m:Special:GlobalRenameQueue/request/92371|request]]"
                         });
                 
                 #endregion

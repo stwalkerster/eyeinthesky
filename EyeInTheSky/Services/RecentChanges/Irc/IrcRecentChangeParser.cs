@@ -268,7 +268,7 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                     }
                     if (rc.EditFlags == "restore")
                     {
-                        var match = new Regex("^restored \"\\[\\[(?<pageName>.*?)\\]\\]\"(?:: (?<comment>.*))?$");
+                        var match = new Regex("^(restored|undeleted) \"\\[\\[(?<pageName>.*?)\\]\\]\"(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
@@ -425,6 +425,22 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                     if (rc.EditFlags == "rename")
                     {
                         var match = new Regex(@" globally renamed \[\[Special:CentralAuth/(?<targetUser>.*?)\]\] to \[\[Special:CentralAuth/(.*?)\]\](?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.TargetUser = result.Groups["targetUser"].Value;
+
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+
+                            handled = true;
+                        }
+                    }
+                    if (rc.EditFlags == "promote")
+                    {
+                        var match = new Regex(@" globally renamed \[\[User:(?<targetUser>.*?)@.+?\]\] to \[\[Special:CentralAuth/(.*?)\]\](?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
