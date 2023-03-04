@@ -29,7 +29,7 @@
           <param name="limit.buildsCount" value="10" />
           <param name="limit.type" value="lastNBuilds" />
           <param name="preserveArtifacts" value="true" />
-          <param name="ruleDisabled" value="true" />
+          <param name="ruleDisabled" value="false" />
         </parameters>
       </extension>
     </build-extensions>
