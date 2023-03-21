@@ -1,7 +1,6 @@
 ﻿namespace EyeInTheSky.Services
 {
     using EyeInTheSky.Model.Interfaces;
-    using Stwalkerster.Bot.CommandLib.Services;
     using Stwalkerster.Bot.CommandLib.Services.Interfaces;
 
     public class ConfigurationProvider : IConfigurationProvider
@@ -22,5 +21,7 @@
         {
             get { return this.appConfiguration.FreenodeChannel; }
         }
+
+        public bool AllowQuotedStrings => false;
     }
 }

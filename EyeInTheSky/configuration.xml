@@ -120,7 +120,10 @@
                 <nickname>#{botNickname}</nickname>
                 <realName>#{botGecos}</realName>
                 <username>#{botUsername}</username>
-                <password/>
+                <serverPassword/>
+                <servicesUsername/>
+                <servicesPassword/>
+                <servicesCertificate/>
                 <clientName>Wikimedia</clientName>
             </parameters>
         </component>
@@ -140,8 +143,11 @@
                 <nickname>#{botNickname}</nickname>
                 <realName>#{botGecos}</realName>
                 <username>#{botUsername}</username>
-                <password>#{botPassword}</password>
-                <clientName>Freenode</clientName>
+                <serverPassword/>
+                <servicesUsername>#{botUsername}</servicesUsername>
+                <servicesPassword>#{botPassword}</servicesPassword>
+                <servicesCertificate/>
+                <clientName>Libera.Chat</clientName>
             </parameters>
         </component>
     </components>

@@ -39,10 +39,10 @@
         <level value="OFF" />
     </logger>
 
-    <logger name="Stwalkerster.IrcClient.IrcClient.Freenode.NetworkClient">
+    <logger name="Stwalkerster.IrcClient.IrcClient.Libera.Chat.NetworkClient">
         <level value="OFF" />
     </logger>
-    <logger name="Stwalkerster.IrcClient.IrcClient.Freenode">
+    <logger name="Stwalkerster.IrcClient.IrcClient.Libera.Chat">
         <level value="DEBUG" />
     </logger>
 </log4net>

@@ -104,6 +104,9 @@
     <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=7.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.Logging.Abstractions.7.0.0\lib\net462\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Extensions.Logging.Log4Net.AspNetCore, Version=6.1.0.0, Culture=neutral, PublicKeyToken=5d1104efbd0e675d, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Logging.Log4Net.AspNetCore.6.1.0\lib\netstandard2.0\Microsoft.Extensions.Logging.Log4Net.AspNetCore.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Extensions.ObjectPool, Version=7.0.4.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.ObjectPool.7.0.4\lib\net462\Microsoft.Extensions.ObjectPool.dll</HintPath>
     </Reference>
@@ -115,6 +118,9 @@
     </Reference>
     <Reference Include="MimeKit, Version=3.6.0.0, Culture=neutral, PublicKeyToken=bede1c8a46c66814, processorArchitecture=MSIL">
       <HintPath>..\packages\MimeKit.3.6.1\lib\net47\MimeKit.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Options, Version=6.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mono.Options.6.12.0.148\lib\net40\Mono.Options.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -129,9 +135,8 @@
     <Reference Include="Prometheus.NetStandard, Version=8.0.0.0, Culture=neutral, PublicKeyToken=a243e9817ba9d559, processorArchitecture=MSIL">
       <HintPath>..\packages\prometheus-net.8.0.0\lib\net462\Prometheus.NetStandard.dll</HintPath>
     </Reference>
-    <Reference Include="Stwalkerster.Bot.CommandLib, Version=14.0.80.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\Stwalkerster.Bot.CommandLib.14.0.80\lib\netstandard2.0\Stwalkerster.Bot.CommandLib.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Stwalkerster.Bot.CommandLib, Version=17.0.130.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Stwalkerster.Bot.CommandLib.17.0.130\lib\netstandard2.0\Stwalkerster.Bot.CommandLib.dll</HintPath>
     </Reference>
     <Reference Include="Stwalkerster.Bot.MediaWikiLib, Version=4.2.49.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\packages\Stwalkerster.Bot.MediaWikiLib.4.2.49\lib\netstandard2.0\Stwalkerster.Bot.MediaWikiLib.dll</HintPath>
@@ -141,9 +146,8 @@
       <HintPath>..\packages\Stwalkerster.Bot.PhabricatorLib.0.2.7-alpha\lib\netstandard2.0\Stwalkerster.Bot.PhabricatorLib.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Stwalkerster.IrcClient, Version=9.1.82.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\Stwalkerster.IrcClient.9.1.82\lib\netstandard2.0\Stwalkerster.IrcClient.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Stwalkerster.IrcClient, Version=12.0.144.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Stwalkerster.IrcClient.12.0.144\lib\netstandard2.0\Stwalkerster.IrcClient.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51">
