@@ -150,6 +150,15 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                             Page = "Special:AbuseFilter/898",
                             EditFlags = "modify",
                             Log = "abusefilter"
+                        }).Ignore("URL is dynamic.");                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/abusefilter14]]4 hit10 02 5* 03Awake4life 5*  10Awake4life {{GENDER:Awake4life|triggered}} [[Special:AbuseFilter/867|filter 867]], {{GENDER:Awake4life|performing}} the action \"edit\" on [[02Awake For Days10]]. Actions taken: none ([[Special:AbuseLog/34345850|details]])")
+                    .Returns(
+                        new RecentChange("Awake4life")
+                        {
+                            Page = "Special:AbuseFilter/898",
+                            EditFlags = "modify",
+                            Log = "abusefilter"
                         }).Ignore("URL is dynamic.");
                 #endregion
                 #region block
@@ -455,7 +464,39 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                             TargetUser = "2001:2C0:DB07:3E00:0:0:0:0/64",
                             EditFlags = "gunblock",
                             EditSummary = "done"
+                        });                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/gblblock14]]4 gunblock10 02 5* 03Teles 5*  10Teles removed global block on [[02User:151.236.23.13610]]: Blocked for too long")
+                    .Returns(
+                        new RecentChange("Teles")
+                        {
+                            Log = "gblblock",
+                            TargetUser = "151.236.23.136",
+                            EditFlags = "gunblock",
+                            EditSummary = "Blocked for too long"
                         });
+
+                yield return new TestCaseData(
+                        "\u000314[[\u000307Special:Log/gblblock\u000314]]\u00034 gblock2\u000310 \u000302\u0003 \u00035*\u0003 \u000303Tegel\u0003 \u00035*\u0003  \u000310Tegel globally blocked [[\u000302User:205.213.208.200\u000310]] (expiration 14:23, 1 May 2023): Cross-wiki vandalism\u0003")
+                    .Returns(
+                        new RecentChange("Tegel")
+                        {
+                            Log = "gblblock",
+                            TargetUser = "205.213.208.200",
+                            EditFlags = "gblock2",
+                            EditSummary = "Cross-wiki vandalism"
+                        });
+                yield return new TestCaseData(
+                        "14[[07Special:Log/gblblock14]]4 modify10 02 5* 03Sotiale 5*  10Sotiale modified the global block on [[02User:37.161.131.21210]] (anonymous only, expiration 15:23, 30 January 2023): Cross-wiki vandalism")
+                    .Returns(
+                        new RecentChange("Sotiale")
+                        {
+                            Log = "gblblock",
+                            TargetUser = "37.161.131.212",
+                            EditFlags = "modify",
+                            EditSummary = "Cross-wiki vandalism"
+                        });
+
                 #endregion
                 #region gblrename
 
@@ -581,6 +622,16 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                             EditFlags = "groupprms2",
                             EditSummary = "-bigdelete: dangerous things; no need this usually"
                         });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/gblrights14]]4 groupprms210 02 5* 03Majavah 5*  10Majavah changed global group permissions for [[02Special:GlobalUsers/sysadmin10]]: added centralauth-suppress; removed (none): +centralauth-suppress, already granted centralauth-oversight being renamed in [[phab:T302675]]")
+                    .Returns(
+                        new RecentChange("Majavah")
+                        {
+                            Log = "gblrights",
+                            EditFlags = "groupprms2",
+                            EditSummary = "+centralauth-suppress, already granted centralauth-oversight being renamed in [[phab:T302675]]"
+                        });
 
                 yield return new TestCaseData(
                         "14[[07Special:Log/gblrights14]]4 groupprms310 02 5* 03Tks4Fish 5*  10changed group restricted wikis set for Special:GlobalUsers/abusefilter-maintainer from (none) to All existing wikis: Creating per community consensus at [[:m:Special:Permalink/19949707]]")
@@ -593,6 +644,16 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                         });
                 
                 yield return new TestCaseData(
+                        "14[[07Special:Log/gblrights14]]4 groupprms310 02 5* 03Ruslik0 5*  10Ruslik0 changed group restricted wikis set for [[02Special:GlobalUsers/global-sysop10]] from Opted-out of global sysop wikis to (none): per a discussion at SRM")
+                    .Returns(
+                        new RecentChange("Ruslik0")
+                        {
+                            Log = "gblrights",
+                            EditFlags = "groupprms3",
+                            EditSummary = "per a discussion at SRM"
+                        });
+                
+                yield return new TestCaseData(
                         "14[[07Special:Log/gblrights14]]4 grouprename10 02 5* 03Tks4Fish 5*  10renamed group Special:GlobalGroupPermissions/Abuse filter maintainer to Special:GlobalGroupPermissions/abusefilter-maintainer: Creating per community consensus at [[:m:Special:Permalink/19949707]]")
                     .Returns(
                         new RecentChange("Tks4Fish")
@@ -600,6 +661,14 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                             Log = "gblrights",
                             EditFlags = "grouprename",
                             EditSummary = "Creating per community consensus at [[:m:Special:Permalink/19949707]]"
+                        });
+                yield return new TestCaseData(
+                        "14[[07Special:Log/gblrights14]]4 grouprename10 02 5* 03Vermont 5*  10Vermont renamed group [[Special:GlobalGroupPermissions/staff]] to [[Special:GlobalGroupPermissions/wmf-supportsafety]]")
+                    .Returns(
+                        new RecentChange("Vermont")
+                        {
+                            Log = "gblrights",
+                            EditFlags = "grouprename",
                         });
 
                 #endregion

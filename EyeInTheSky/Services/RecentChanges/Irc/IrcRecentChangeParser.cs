@@ -371,7 +371,7 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                     
                     if (rc.EditFlags == "gblock2")
                     {
-                        var match = new Regex(@"^globally blocked \[\[User:(?<targetUser>.*?)\]\] \(.*?\)(?:: (?<comment>.*))?$");
+                        var match = new Regex(@"globally blocked \[\[User:(?<targetUser>.*?)\]\] \(.*?\)(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
@@ -388,7 +388,7 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                     
                     if (rc.EditFlags == "modify")
                     {
-                        var match = new Regex(@"^modified the global block on \[\[User:(?<targetUser>.*?)\]\] \(.*?\)(?:: (?<comment>.*))?$");
+                        var match = new Regex(@"modified the global block on \[\[User:(?<targetUser>.*?)\]\] \(.*?\)(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
@@ -405,7 +405,7 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                     
                     if (rc.EditFlags == "gunblock")
                     {
-                        var match = new Regex(@"^removed global block on \[\[User:(?<targetUser>.*?)\]\](?:: (?<comment>.*))?$");
+                        var match = new Regex(@"removed global block on \[\[User:(?<targetUser>.*?)\]\](?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
@@ -476,7 +476,7 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                     
                     if (rc.EditFlags == "groupprms2")
                     {
-                        var match = new Regex(@"^changed global group permissions for .*?: added .*?; removed .*?(?:: (?<comment>.*))?$");
+                        var match = new Regex(@"changed global group permissions for .*?: added .*?; removed .*?(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
@@ -491,7 +491,7 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                     
                     if (rc.EditFlags == "groupprms3")
                     {
-                        var match = new Regex(@"^changed group restricted wikis set for Special:GlobalUsers/.*? from .*? to .*?(?:: (?<comment>.*))?$");
+                        var match = new Regex(@"changed group restricted wikis set for (\[\[)?Special:GlobalUsers/.*?(\]\])? from .*? to .*?(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
@@ -523,7 +523,7 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
 
                     if (rc.EditFlags == "grouprename")
                     {
-                        var match = new Regex(@"^renamed group Special:GlobalGroupPermissions/(?:.*?) to Special:GlobalGroupPermissions/(?:.*?)(?:: (?<comment>.*))?$");
+                        var match = new Regex(@"renamed group (\[\[)?Special:GlobalGroupPermissions/(?:.*?)(\]\])? to (\[\[)?Special:GlobalGroupPermissions/(?:.*?)(\]\])?(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
