@@ -5,6 +5,7 @@
   <settings ref="DotNetProject">
     <options>
       <option name="artifactRules" value="EyeInTheSky/bin/%system.Configuration%/** =&gt; EyeInTheSky_%build.number%.tar.gz!EyeInTheSky/" />
+      <option name="branchFilter" value="+:&lt;default&gt;" />
     </options>
     <disabled-settings>
       <setting-ref ref="BUILD_EXT_4" />
