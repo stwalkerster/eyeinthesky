@@ -120,12 +120,12 @@
                 <nickname>#{botNickname}</nickname>
                 <realName>#{botGecos}</realName>
                 <username>#{botUsername}</username>
-                <password/>
+                <serverPassword/>
                 <clientName>Wikimedia</clientName>
             </parameters>
         </component>
 
-        <!-- FREENODE CONFIGURATION
+        <!-- Libera.Chat CONFIGURATION
 
          There should be little need to change the parameters in this section.
          -->
@@ -135,12 +135,16 @@
             <parameters>
                 <authToServices>true</authToServices>
                 <ssl>true</ssl>
-                <hostname>chat.freenode.net</hostname>
+                <hostname>irc.libera.chat</hostname>
                 <port>7000</port>
                 <nickname>#{botNickname}</nickname>
-                <realName>#{botGecos}</realName>
                 <username>#{botUsername}</username>
-                <password>#{botPassword}</password>
+                <realName>#{botGecos}</realName>
+                <serverPassword/>
+                <servicesUsername>#{botUsername}</servicesUsername>
+                <servicesPassword>#{botPassword}</servicesPassword>
+                <servicesCertificate />
+                <reclaimNickFromServices>true</reclaimNickFromServices>
                 <clientName>Freenode</clientName>
             </parameters>
         </component>

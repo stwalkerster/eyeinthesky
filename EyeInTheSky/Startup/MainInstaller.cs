@@ -15,9 +15,12 @@
     using EyeInTheSky.Startables;
     using EyeInTheSky.Startup.Converters;
     using EyeInTheSky.TypedFactories;
-
+    using Microsoft.Extensions.Logging;
+    using Stwalkerster.Bot.CommandLib.Commands.CommandUtilities;
+    using Stwalkerster.Bot.CommandLib.Commands.Interfaces;
     using Stwalkerster.Bot.CommandLib.Services;
     using Stwalkerster.Bot.CommandLib.Services.Interfaces;
+    using Stwalkerster.Bot.CommandLib.TypedFactories;
     using Stwalkerster.Bot.MediaWikiLib.Services;
     using Stwalkerster.Bot.MediaWikiLib.Services.Interfaces;
     using Stwalkerster.IrcClient;
@@ -33,18 +36,24 @@
             container.AddFacility<StartableFacility>(f => f.DeferredStart());
             container.AddFacility<TypedFactoryFacility>();
 
+            var loggerFactory = new LoggerFactory().AddLog4Net("log4net.xml");
+
             // Configuration converters
             var conversionManager =
                 (IConversionManager) container.Kernel.GetSubSystem(SubSystemConstants.ConversionManagerKey);
             conversionManager.Add(new MediaWikiConfigMapEntryConverter());
 
             container.Install(
-                Configuration.FromXmlFile("alert-templates.xml"),
-                new Stwalkerster.IrcClient.Installer(),
-                new Stwalkerster.Bot.CommandLib.Startup.Installer()
+                Configuration.FromXmlFile("alert-templates.xml")
             );
 
             container.Register(
+                // CommandParser
+                Component.For<ILogger<CommandParser>>().UsingFactoryMethod(loggerFactory.CreateLogger<CommandParser>),
+                Classes.FromAssemblyContaining<CommandBase>().BasedOn<ICommand>().LifestyleTransient(),
+                Component.For<ICommandTypedFactory>().AsFactory(),
+                Classes.FromAssemblyContaining<CommandParser>().InSameNamespaceAs<CommandParser>().WithServiceAllInterfaces(),
+                
                 // MediaWiki stuff
                 Component.For<IMediaWikiApiTypedFactory>().AsFactory(),
                 Component.For<IMediaWikiApi>().ImplementedBy<MediaWikiApi>().LifestyleTransient(),
@@ -63,6 +72,13 @@
                 Component.For<IApplication>()
                     .ImplementedBy<Launch>()
                     .DependsOn(Dependency.OnComponent("wikimediaClient", "wikimediaClient")),
+
+                
+                Component.For<ILoggerFactory>().Instance(loggerFactory),
+                Component.For<ILogger<SupportHelper>>().UsingFactoryMethod(loggerFactory.CreateLogger<SupportHelper>),
+                
+                // Support helper holds client-specific state, mark as transient so we get a different for each client.
+                Component.For<ISupportHelper>().ImplementedBy<SupportHelper>().LifestyleTransient(),
 
                 Component.For<IIrcClient>()
                     .ImplementedBy<IrcClient>()
