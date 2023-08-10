@@ -11,6 +11,7 @@
       <setting-ref ref="BUILD_EXT_4" />
     </disabled-settings>
     <parameters>
+      <param name="nunitRunnerPath" value="%teamcity.agent.jvm.user.home%/.nuget/packages/nunit.consolerunner/%nunitRunner%" />
       <param name="nunitRunner" value="3.16.3" />
       <param name="solutionName" value="EyeInTheSky" />
       <param name="version" value="2.5" />
