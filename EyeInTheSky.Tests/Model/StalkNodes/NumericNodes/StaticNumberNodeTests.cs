@@ -4,21 +4,19 @@ namespace EyeInTheSky.Tests.Model.StalkNodes.NumericNodes
 
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Model.StalkNodes.NumericNodes;
-
-    using Moq;
-
+    using NSubstitute;
     using NUnit.Framework;
 
     [TestFixture]
     public class StaticNumberNodeTests
     {
-        [Test, TestCaseSource(typeof(StaticNumberNodeTests), "TestCases")]
+        [Test, TestCaseSource(typeof(StaticNumberNodeTests), nameof(TestCases))]
         public long? ProviderTest(int val)
         {
             var node = new StaticNumberNode();
             node.Value = val;
             
-            return node.GetValue(new Mock<IRecentChange>().Object, false);
+            return node.GetValue(Substitute.For<IRecentChange>(), false);
         }
         
         private static IEnumerable<TestCaseData> TestCases

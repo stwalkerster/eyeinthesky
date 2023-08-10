@@ -7,13 +7,13 @@ namespace EyeInTheSky.Tests.Model.StalkNodes
     using EyeInTheSky.Model.StalkNodes;
     using EyeInTheSky.Model.StalkNodes.BaseNodes;
     using EyeInTheSky.Tests.Model.StalkNodes.BaseNodes;
-    using Moq;
+    using NSubstitute;
     using NUnit.Framework;
 
     [TestFixture]
     public class ExpiryNodeTest : SingleChildNodeTestBase<ExpiryNode>
     {
-        [Test, TestCaseSource(typeof(ExpiryNodeTest), "ExpiredTestCases")]
+        [Test, TestCaseSource(typeof(ExpiryNodeTest), nameof(ExpiredTestCases))]
         public bool? ExpiredOperatorTest(IStalkNode a)
         {
             var node = new ExpiryNode
@@ -26,7 +26,7 @@ namespace EyeInTheSky.Tests.Model.StalkNodes
             return node.Match(new RecentChange(""), false);
         }
 
-        [Test, TestCaseSource(typeof(ExpiryNodeTest), "NonExpiredTestCases")]
+        [Test, TestCaseSource(typeof(ExpiryNodeTest), nameof(NonExpiredTestCases))]
         public bool? NonExpiredOperatorTest(IStalkNode a)
         {
             var node = new ExpiryNode
@@ -43,12 +43,12 @@ namespace EyeInTheSky.Tests.Model.StalkNodes
         {
             get
             {
-                var nullNodeMock = new Mock<IStalkNode>();
-                nullNodeMock.Setup(x => x.Match(It.IsAny<IRecentChange>())).Returns(null);
+                var nullNodeMock = Substitute.For<IStalkNode>();
+                nullNodeMock.Match(Arg.Any<IRecentChange>(), false).Returns((bool?)null);
 
                 yield return new TestCaseData(new TrueNode()).Returns(true);
                 yield return new TestCaseData(new FalseNode()).Returns(false);
-                yield return new TestCaseData(nullNodeMock.Object).Returns(null);
+                yield return new TestCaseData(nullNodeMock).Returns(null);
             }
         }
         
@@ -56,12 +56,12 @@ namespace EyeInTheSky.Tests.Model.StalkNodes
         {
             get
             {
-                var nullNodeMock = new Mock<IStalkNode>();
-                nullNodeMock.Setup(x => x.Match(It.IsAny<IRecentChange>())).Returns(null);
+                var nullNodeMock = Substitute.For<IStalkNode>();
+                nullNodeMock.Match(Arg.Any<IRecentChange>(), false).Returns((bool?)null);
 
                 yield return new TestCaseData(new TrueNode()).Returns(false);
                 yield return new TestCaseData(new FalseNode()).Returns(false);
-                yield return new TestCaseData(nullNodeMock.Object).Returns(false);
+                yield return new TestCaseData(nullNodeMock).Returns(false);
             }
         }
     }

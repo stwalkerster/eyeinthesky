@@ -6,13 +6,13 @@
     using EyeInTheSky.Model.StalkNodes;
     using EyeInTheSky.Model.StalkNodes.BaseNodes;
     using EyeInTheSky.Tests.Model.StalkNodes.BaseNodes;
-    using Moq;
+    using NSubstitute;
     using NUnit.Framework;
 
     [TestFixture]
     public class UserGroupStalkNodeTest : LeafNodeTestBase<UserGroupStalkNode>
     {
-        private Mock<IRecentChange> rc;
+        private IRecentChange rc;
 
         [SetUp]
         public void LocalSetup()
@@ -20,12 +20,12 @@
             this.rc = this.RecentChangeBuilder();
         }
 
-        [Test, TestCaseSource(typeof(UserGroupStalkNodeTest), "TestCases")]
+        [Test, TestCaseSource(typeof(UserGroupStalkNodeTest), nameof(TestCases))]
         public bool TestMatch(StalkNode node, List<string> groups)
         {
-            this.rc.Setup(x => x.GetUserGroups()).Returns(groups);
+            this.rc.GetUserGroups().Returns(groups);
 
-            return node.Match(this.rc.Object);
+            return node.Match(this.rc);
         }
 
         private static IEnumerable TestCases

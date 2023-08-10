@@ -7,13 +7,13 @@
     using EyeInTheSky.Model.StalkNodes;
     using EyeInTheSky.Model.StalkNodes.BaseNodes;
     using EyeInTheSky.Tests.Model.StalkNodes.BaseNodes;
-    using Moq;
+    using NSubstitute;
     using NUnit.Framework;
 
     [TestFixture]
     public class OrNodeTest : MultiChildNodeTestBase<OrNode>
     {
-        [Test, TestCaseSource(typeof(OrNodeTest), "TestCases")]
+        [Test, TestCaseSource(typeof(OrNodeTest), nameof(TestCases))]
         public bool? MultiOperatorTest(List<IStalkNode> a)
         {
             var node = new OrNode();
@@ -26,26 +26,26 @@
         {
             get
             {
-                var nullNodeMock = new Mock<IStalkNode>();
-                nullNodeMock.Setup(x => x.Match(It.IsAny<IRecentChange>())).Returns(null);
+                var nullNodeMock = Substitute.For<IStalkNode>();
+                nullNodeMock.Match(Arg.Any<IRecentChange>(), false).Returns((bool?)null);
 
                 yield return new TestCaseData(new List<IStalkNode> {new TrueNode(), new TrueNode()}).Returns(true);
                 yield return new TestCaseData(new List<IStalkNode> {new FalseNode(), new TrueNode()}).Returns(true);
                 yield return new TestCaseData(new List<IStalkNode> {new TrueNode(), new FalseNode()}).Returns(true);
                 yield return new TestCaseData(new List<IStalkNode> {new FalseNode(), new FalseNode()}).Returns(false);
 
-                yield return new TestCaseData(new List<IStalkNode> {new TrueNode(), nullNodeMock.Object}).Returns(true);
-                yield return new TestCaseData(new List<IStalkNode> {new FalseNode(), nullNodeMock.Object}).Returns(null);
-                yield return new TestCaseData(new List<IStalkNode> {nullNodeMock.Object, new TrueNode()}).Returns(true);
-                yield return new TestCaseData(new List<IStalkNode> {nullNodeMock.Object, new FalseNode()}).Returns(null);
-                yield return new TestCaseData(new List<IStalkNode> {nullNodeMock.Object, nullNodeMock.Object}).Returns(null);
+                yield return new TestCaseData(new List<IStalkNode> {new TrueNode(), nullNodeMock}).Returns(true);
+                yield return new TestCaseData(new List<IStalkNode> {new FalseNode(), nullNodeMock}).Returns(null);
+                yield return new TestCaseData(new List<IStalkNode> {nullNodeMock, new TrueNode()}).Returns(true);
+                yield return new TestCaseData(new List<IStalkNode> {nullNodeMock, new FalseNode()}).Returns(null);
+                yield return new TestCaseData(new List<IStalkNode> {nullNodeMock, nullNodeMock}).Returns(null);
                 
                 yield return new TestCaseData(new List<IStalkNode> {new TrueNode(), new TrueNode(), new TrueNode()}).Returns(true);
                 yield return new TestCaseData(new List<IStalkNode> {new FalseNode(),new FalseNode(), new FalseNode()}).Returns(false);
                 yield return new TestCaseData(new List<IStalkNode> {new FalseNode(),new FalseNode(), new TrueNode()}).Returns(true);
                 yield return new TestCaseData(new List<IStalkNode> {new TrueNode()}).Returns(true);
                 yield return new TestCaseData(new List<IStalkNode> {new FalseNode()}).Returns(false);
-                yield return new TestCaseData(new List<IStalkNode> {nullNodeMock.Object}).Returns(null);
+                yield return new TestCaseData(new List<IStalkNode> {nullNodeMock}).Returns(null);
             }
         }
 
@@ -54,7 +54,7 @@
         {
             // arrange
             var rc = this.RecentChangeBuilder();
-            rc.Setup(x => x.GetUserGroups()).Returns(new List<string> {"user", "*"});
+            rc.GetUserGroups().Returns(new List<string> {"user", "*"});
 
             var node = new OrNode();
             node.ChildNodes.Add(new TrueNode());
@@ -64,10 +64,10 @@
             node.ChildNodes.Add(lazyNode);
 
             // act
-            node.Match(rc.Object);
+            node.Match(rc);
 
             // assert
-            rc.Verify(x => x.GetUserGroups(), Times.Never);
+            rc.DidNotReceive().GetUserGroups();
         }
 
         [Test]
@@ -75,7 +75,7 @@
         {
             // arrange
             var rc = this.RecentChangeBuilder();
-            rc.Setup(x => x.GetUserGroups()).Returns(new List<string> {"user", "*"});
+            rc.GetUserGroups().Returns(new List<string> {"user", "*"});
 
             var node = new OrNode();
             var lazyNode = new UserGroupStalkNode();
@@ -85,10 +85,10 @@
             node.ChildNodes.Add(new TrueNode());
 
             // act
-            node.Match(rc.Object);
+            node.Match(rc);
 
             // assert
-            rc.Verify(x => x.GetUserGroups(), Times.Never);
+            rc.DidNotReceive().GetUserGroups();
         }
 
         [Test]
@@ -96,7 +96,7 @@
         {
             // arrange
             var rc = this.RecentChangeBuilder();
-            rc.Setup(x => x.GetUserGroups()).Returns(new List<string> {"user", "*"});
+            rc.GetUserGroups().Returns(new List<string> {"user", "*"});
 
             var node = new OrNode();
             node.ChildNodes.Add(new FalseNode());
@@ -106,10 +106,10 @@
             node.ChildNodes.Add(lazyNode);
 
             // act
-            node.Match(rc.Object);
+            node.Match(rc);
 
             // assert
-            rc.Verify(x => x.GetUserGroups(), Times.Once);
+            rc.Received(1).GetUserGroups();
         }
 
         [Test]
@@ -117,7 +117,7 @@
         {
             // arrange
             var rc = this.RecentChangeBuilder();
-            rc.Setup(x => x.GetUserGroups()).Returns(new List<string> {"user", "*"});
+            rc.GetUserGroups().Returns(new List<string> {"user", "*"});
 
             var node = new OrNode();
             var lazyNode = new UserGroupStalkNode();
@@ -127,10 +127,11 @@
             node.ChildNodes.Add(new FalseNode());
 
             // act
-            node.Match(rc.Object);
+            node.Match(rc);
 
             // assert
-            rc.Verify(x => x.GetUserGroups(), Times.Once);
+            rc.Received(1).GetUserGroups();
+            
         }
     }
 }

@@ -6,6 +6,7 @@ using EyeInTheSky.Tests.Model.StalkNodes.BaseNodes;
 
 namespace EyeInTheSky.Tests.Model.StalkNodes
 {
+    using NSubstitute;
     using NUnit.Framework;
 
     [TestFixture]
@@ -16,7 +17,7 @@ namespace EyeInTheSky.Tests.Model.StalkNodes
         [SetUp]
         public void LocalSetup()
         {
-            this.rc = this.RecentChangeBuilder().Object;
+            this.rc = this.RecentChangeBuilder();
         }
 
         [Test]
@@ -26,14 +27,14 @@ namespace EyeInTheSky.Tests.Model.StalkNodes
             node.SetMatchExpression("abc");
 
             var rc = this.RecentChangeBuilder();
-            rc.Setup(x => x.Log).Returns<string>(null);
+            rc.Log.Returns((string)null);
 
-            var result = node.Match(rc.Object);
+            var result = node.Match(rc);
 
             Assert.False(result);
         }
 
-        [Test, TestCaseSource(typeof(LogStalkNodeTest), "TestCases")]
+        [Test, TestCaseSource(typeof(LogStalkNodeTest), nameof(TestCases))]
         public bool TestMatch(StalkNode node)
         {
             return node.Match(this.rc);

@@ -12,7 +12,7 @@
     <AssemblyName>EyeInTheSky.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <LangVersion>6</LangVersion>
+    <LangVersion>8</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -76,7 +76,6 @@
     <Compile Include="Model\StalkNodes\UserStalkNodeTest.cs" />
     <Compile Include="Model\StalkNodes\XOfStalkNodeTests.cs" />
     <Compile Include="Model\StalkNodes\XorNodeTest.cs" />
-    <Compile Include="Model\TemplateTests.cs" />
     <Compile Include="RecentChangeTest.cs" />
     <Compile Include="Services\BooleanParserTests.cs" />
     <Compile Include="Services\RecentChanges\Irc\IrcRecentChangeParserTests.cs" />
@@ -111,7 +110,7 @@
     <PackageReference Include="Microsoft.Extensions.Options" Version="3.1.9" />
     <PackageReference Include="Microsoft.Extensions.Primitives" Version="3.1.9" />
     <PackageReference Include="Mono.Options" Version="6.12.0.148" />
-    <PackageReference Include="Moq" Version="4.16.1" />
+    <PackageReference Include="NSubstitute" Version="5.0.0" />
     <PackageReference Include="NUnit" Version="3.13.3" />
     <PackageReference Include="NUnit.Console" Version="3.16.3" />
     <PackageReference Include="NUnit.ConsoleRunner" Version="3.16.3" />

@@ -94,9 +94,11 @@
 
         protected bool Equals(RecentChange other)
         {
+            var urlMatch = string.Equals(this.Url, other.Url) || this.Page.StartsWith("Special:AbuseFilter/");
+
             return string.Equals(this.Page, other.Page) && string.Equals(this.TargetPage, other.TargetPage) &&
                    string.Equals(this.User, other.User) && string.Equals(this.TargetUser, other.TargetUser) &&
-                   string.Equals(this.Url, other.Url) && string.Equals(this.EditSummary, other.EditSummary) &&
+                   urlMatch && string.Equals(this.EditSummary, other.EditSummary) &&
                    string.Equals(this.EditFlags, other.EditFlags) && this.SizeDiff == other.SizeDiff &&
                    string.Equals(this.Log, other.Log) && string.Equals(this.AdditionalData, other.AdditionalData);
         }
@@ -113,11 +115,19 @@
         {
             unchecked
             {
+                var doUrlMatch = !this.Page.StartsWith("Special:AbuseFilter/");
+
+                
                 var hashCode = (this.Page != null ? this.Page.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (this.TargetPage != null ? this.TargetPage.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (this.User != null ? this.User.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (this.TargetUser != null ? this.TargetUser.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (this.Url != null ? this.Url.GetHashCode() : 0);
+                
+                if (doUrlMatch)
+                {
+                    hashCode = (hashCode * 397) ^ (this.Url != null ? this.Url.GetHashCode() : 0);
+                }
+
                 hashCode = (hashCode * 397) ^ (this.EditSummary != null ? this.EditSummary.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (this.EditFlags != null ? this.EditFlags.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ this.SizeDiff.GetHashCode();

@@ -1,6 +1,4 @@
-﻿using Stwalkerster.IrcClient.Model;
-
-namespace EyeInTheSky.Tests.Model.StalkNodes
+﻿namespace EyeInTheSky.Tests.Model.StalkNodes
 {
     using System.Collections;
     using EyeInTheSky.Model;
@@ -8,36 +6,36 @@ namespace EyeInTheSky.Tests.Model.StalkNodes
     using EyeInTheSky.Model.StalkNodes;
     using EyeInTheSky.Model.StalkNodes.BaseNodes;
     using EyeInTheSky.Tests.Model.StalkNodes.BaseNodes;
-    using Moq;
+    using NSubstitute;
     using NUnit.Framework;
 
     [TestFixture]
     public class XorNodeTest : DoubleChildNodeTestBase<XorNode>
     {
-        [Test, TestCaseSource(typeof(XorNodeTest), "TestCases")]
-        public bool? DualOperatorTest(IStalkNode a, IStalkNode b, Mock<IStalkNode> tm, Mock<IStalkNode> fm)
+        [Test, TestCaseSource(typeof(XorNodeTest), nameof(TestCases))]
+        public bool? DualOperatorTest(IStalkNode a, IStalkNode b, IStalkNode tm, IStalkNode fm)
         {
             var node = new XorNode();
             node.LeftChildNode = a;
             node.RightChildNode = b;
 
-            tm.Setup(x => x.Match(It.IsAny<IRecentChange>(), It.IsAny<bool>())).Returns(true);
-            fm.Setup(x => x.Match(It.IsAny<IRecentChange>(), It.IsAny<bool>())).Returns(false);
+            tm.Match(Arg.Any<IRecentChange>(), Arg.Any<bool>()).Returns(true);
+            fm.Match(Arg.Any<IRecentChange>(), Arg.Any<bool>()).Returns(false);
             
             return node.Match(new RecentChange(""), false);
         }
         
-        [Test, TestCaseSource(typeof(XorNodeTest), "TestCases")]
-        public bool? DualOperatorForceTest(IStalkNode a, IStalkNode b, Mock<IStalkNode> tm, Mock<IStalkNode> fm)
+        [Test, TestCaseSource(typeof(XorNodeTest), nameof(TestCases))]
+        public bool? DualOperatorForceTest(IStalkNode a, IStalkNode b, IStalkNode tm, IStalkNode fm)
         {
             var node = new XorNode();
             node.LeftChildNode = a;
             node.RightChildNode = b;
 
-            tm.Setup(x => x.Match(It.IsAny<IRecentChange>(), true)).Returns(true);
-            fm.Setup(x => x.Match(It.IsAny<IRecentChange>(), true)).Returns(false);
-            tm.Setup(x => x.Match(It.IsAny<IRecentChange>(), false)).Returns<bool?>(null);
-            fm.Setup(x => x.Match(It.IsAny<IRecentChange>(), false)).Returns<bool?>(null);
+            tm.Match(Arg.Any<IRecentChange>(), true).Returns(true);
+            fm.Match(Arg.Any<IRecentChange>(), true).Returns(false);
+            tm.Match(Arg.Any<IRecentChange>(), false).Returns((bool?)null);
+            fm.Match(Arg.Any<IRecentChange>(), false).Returns((bool?)null);
 
             return node.Match(new RecentChange(""), true);
         }
@@ -46,15 +44,16 @@ namespace EyeInTheSky.Tests.Model.StalkNodes
         {
             get
             {
-                var nullNodeMock = new Mock<IStalkNode>();
-                nullNodeMock.Setup(x => x.Match(It.IsAny<IRecentChange>())).Returns(null);
+                var nullNodeMock = Substitute.For<IStalkNode>();
+                nullNodeMock.Match(Arg.Any<IRecentChange>(), false).Returns((bool?)null);
 
-                var tm = new Mock<IStalkNode>();
-                var fm = new Mock<IStalkNode>();
+
+                var tm = Substitute.For<IStalkNode>();
+                var fm = Substitute.For<IStalkNode>();
                 
-                var t = tm.Object;
-                var f = fm.Object;
-                var n = nullNodeMock.Object;
+                var t = tm;
+                var f = fm;
+                var n = nullNodeMock;
                 
                 yield return new TestCaseData(t, t, tm, fm).Returns(false);
                 yield return new TestCaseData(f, t, tm, fm).Returns(true);

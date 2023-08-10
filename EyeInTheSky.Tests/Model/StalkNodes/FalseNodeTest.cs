@@ -14,7 +14,7 @@
             var node = new FalseNode();
 
             Assert.False(node.Match(new RecentChange("")));
-            Assert.False(node.Match(this.RecentChangeBuilder().Object));
+            Assert.False(node.Match(this.RecentChangeBuilder()));
         }
     }
 }

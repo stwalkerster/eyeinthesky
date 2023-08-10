@@ -5,13 +5,13 @@
     using EyeInTheSky.Model.StalkNodes;
     using EyeInTheSky.Model.StalkNodes.BaseNodes;
     using EyeInTheSky.Tests.Model.StalkNodes.BaseNodes;
-    using Moq;
+    using NSubstitute;
     using NUnit.Framework;
 
     [TestFixture]
     public class InCategoryNodeTest : LeafNodeTestBase<InCategoryNode>
     {
-        private Mock<IRecentChange> rc;
+        private IRecentChange rc;
 
         [SetUp]
         public void LocalSetup()
@@ -19,12 +19,12 @@
             this.rc = this.RecentChangeBuilder();
         }
 
-        [Test, TestCaseSource(typeof(InCategoryNodeTest), "TestCases")]
+        [Test, TestCaseSource(typeof(InCategoryNodeTest), nameof(TestCases))]
         public bool TestMatch(StalkNode node, bool value)
         {
-            this.rc.Setup(x => x.PageIsInCategory(It.IsAny<string>())).Returns(value);
+            this.rc.PageIsInCategory(Arg.Any<string>()).Returns(value);
 
-            return node.Match(this.rc.Object);
+            return node.Match(this.rc);
         }
 
         private static IEnumerable TestCases

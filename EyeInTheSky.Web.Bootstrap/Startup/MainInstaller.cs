@@ -10,7 +10,7 @@
     using Castle.Windsor;
     using Castle.Windsor.Installer;
     using EyeInTheSky.Web.Startup;
-    using Moq;
+    using NSubstitute;
     using Stwalkerster.IrcClient.Interfaces;
     using Stwalkerster.IrcClient.Model;
 
@@ -23,35 +23,35 @@
             container.AddFacility<StartableFacility>(f => f.DeferredStart());
 
             container.Install(new WebInstaller());
-
-            var ircClientMock = new Mock<IIrcClient>();
-            ircClientMock.Setup(x => x.ExtBanTypes).Returns("a");
-            ircClientMock.Setup(x => x.ExtBanDelimiter).Returns("$");
-            ircClientMock.Setup(x => x.Nickname).Returns("EyeInTheSkyBot");
-            ircClientMock.Setup(x => x.ClientName).Returns("Freenode");
+            
+            var ircClientMock = Substitute.For<IIrcClient>();
+            ircClientMock.ExtBanTypes.Returns("a");
+            ircClientMock.ExtBanDelimiter.Returns("$");
+            ircClientMock.Nickname.Returns("EyeInTheSkyBot");
+            ircClientMock.ClientName.Returns("Libera.Chat");
 
             var ircChannels = new Dictionary<string, IrcChannel>();
             var chan = new IrcChannel("##stwalkerster-development");
             ircChannels.Add(chan.Name, chan);
-            ircClientMock.Setup(x => x.Channels).Returns(ircChannels);
+            ircClientMock.Channels.Returns(ircChannels);
 
             IrcUser user;
             IrcChannelUser ircChannelUser;
 
-            user = IrcUser.FromPrefix("stwalkerster!test@user/.", ircClientMock.Object);
+            user = IrcUser.FromPrefix("stwalkerster!test@user/.", ircClientMock);
             user.Account = "stwalkerster";
             user.SkeletonStatus = IrcUserSkeletonStatus.Full;
             ircChannelUser = new IrcChannelUser(user, chan.Name);
             chan.Users.Add(user.Nickname, ircChannelUser);
 
 
-            user = IrcUser.FromPrefix("chanmember!test@user/.", ircClientMock.Object);
+            user = IrcUser.FromPrefix("chanmember!test@user/.", ircClientMock);
             user.Account = "chanmember";
             user.SkeletonStatus = IrcUserSkeletonStatus.Full;
             ircChannelUser = new IrcChannelUser(user, chan.Name);
             chan.Users.Add(user.Nickname, ircChannelUser);
 
-            user = IrcUser.FromPrefix("chanop!test@user/.", ircClientMock.Object);
+            user = IrcUser.FromPrefix("chanop!test@user/.", ircClientMock);
             user.Account = "chanop";
             user.SkeletonStatus = IrcUserSkeletonStatus.Full;
             ircChannelUser = new IrcChannelUser(user, chan.Name);
@@ -64,7 +64,7 @@
                 Classes.FromAssemblyNamed("EyeInTheSky").InNamespace("EyeInTheSky.Services").WithServiceAllInterfaces(),
                 Classes.FromAssemblyNamed("EyeInTheSky").InNamespace("EyeInTheSky.Services.ExternalProviders").WithServiceAllInterfaces(),
                 Classes.FromAssemblyNamed("EyeInTheSky").InNamespace("EyeInTheSky.Services.Email").WithServiceAllInterfaces(),
-                Component.For<IIrcClient>().Instance(ircClientMock.Object)
+                Component.For<IIrcClient>().Instance(ircClientMock)
             );
 
             container.Install(Configuration.FromXmlFile("alert-templates.xml"));

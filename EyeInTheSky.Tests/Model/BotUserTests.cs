@@ -1,7 +1,7 @@
 ﻿namespace EyeInTheSky.Tests.Model
 {
     using EyeInTheSky.Model;
-    using Moq;
+    using NSubstitute;
     using NUnit.Framework;
     using Stwalkerster.IrcClient.Interfaces;
     using Stwalkerster.IrcClient.Model;
@@ -13,11 +13,11 @@
         [SetUp]
         public void LocalSetup()
         {
-            var client = new Mock<IIrcClient>();
-            client.Setup(x => x.ExtBanDelimiter).Returns("$");
-            client.Setup(x => x.ExtBanTypes).Returns("ajrxz");
+            var client = Substitute.For<IIrcClient>();
+            client.ExtBanDelimiter.Returns("$");
+            client.ExtBanTypes.Returns("ajrxz");
 
-            this.mask = new IrcUserMask("$a:stwalkerster", client.Object);
+            this.mask = new IrcUserMask("$a:stwalkerster", client);
         }
 
         [Test]

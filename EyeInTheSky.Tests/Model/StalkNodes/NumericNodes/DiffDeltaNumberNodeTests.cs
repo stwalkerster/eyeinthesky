@@ -1,25 +1,22 @@
 namespace EyeInTheSky.Tests.Model.StalkNodes.NumericNodes
 {
     using System.Collections.Generic;
-
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Model.StalkNodes.NumericNodes;
-
-    using Moq;
-
+    using NSubstitute;
     using NUnit.Framework;
 
     [TestFixture]
     public class DiffDeltaNumberNodeTests
     {
-        [Test, TestCaseSource(typeof(DiffDeltaNumberNodeTests), "TestCases")]
+        [Test, TestCaseSource(typeof(DiffDeltaNumberNodeTests), nameof(TestCases))]
         public long? ProviderTest(int? val)
         {
-            var rc = new Mock<IRecentChange>();
-            rc.Setup(x => x.SizeDiff).Returns(val);
+            var rc = Substitute.For<IRecentChange>();
+            rc.SizeDiff.Returns(val);
 
             var node = new DiffDeltaNumberNode();
-            return node.GetValue(rc.Object, false);
+            return node.GetValue(rc, false);
         }
         
         private static IEnumerable<TestCaseData> TestCases

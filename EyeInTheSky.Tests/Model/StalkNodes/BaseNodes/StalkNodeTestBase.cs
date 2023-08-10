@@ -1,13 +1,11 @@
-﻿using Moq.Protected;
-
-namespace EyeInTheSky.Tests.Model.StalkNodes.BaseNodes
+﻿namespace EyeInTheSky.Tests.Model.StalkNodes.BaseNodes
 {
     using System;
     using System.Collections.Generic;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Model.StalkNodes;
     using EyeInTheSky.Model.StalkNodes.BaseNodes;
-    using Moq;
+    using NSubstitute;
     using NUnit.Framework;
 
     public abstract class MultiChildNodeTestBase<T> : LogicalNodeTestBase<T> where T : MultiChildLogicalNode, new()
@@ -18,7 +16,7 @@ namespace EyeInTheSky.Tests.Model.StalkNodes.BaseNodes
             var node = new T {ChildNodes = null};
             var rc = this.RecentChangeBuilder();
 
-            Assert.Catch(typeof(InvalidOperationException), () => node.Match(rc.Object));
+            Assert.Catch(typeof(InvalidOperationException), () => node.Match(rc));
         }
         
         [Test]
@@ -27,7 +25,7 @@ namespace EyeInTheSky.Tests.Model.StalkNodes.BaseNodes
             var node = new T {ChildNodes = new List<IStalkNode>()};
             var rc = this.RecentChangeBuilder();
 
-            Assert.Catch(typeof(InvalidOperationException), () => node.Match(rc.Object));
+            Assert.Catch(typeof(InvalidOperationException), () => node.Match(rc));
         }
 
         [Test]
@@ -59,7 +57,7 @@ namespace EyeInTheSky.Tests.Model.StalkNodes.BaseNodes
             var node = new T {LeftChildNode = new TrueNode()};
             var rc = this.RecentChangeBuilder();
 
-            Assert.Catch(typeof(InvalidOperationException), () => node.Match(rc.Object));
+            Assert.Catch(typeof(InvalidOperationException), () => node.Match(rc));
         }
         
         [Test]
@@ -68,7 +66,7 @@ namespace EyeInTheSky.Tests.Model.StalkNodes.BaseNodes
             var node = new T {RightChildNode = new TrueNode()};
             var rc = this.RecentChangeBuilder();
 
-            Assert.Catch(typeof(InvalidOperationException), () => node.Match(rc.Object));
+            Assert.Catch(typeof(InvalidOperationException), () => node.Match(rc));
         }
         
         [Test]
@@ -98,7 +96,7 @@ namespace EyeInTheSky.Tests.Model.StalkNodes.BaseNodes
             var node = new T();
             var rc = this.RecentChangeBuilder();
 
-            Assert.Catch(typeof(InvalidOperationException), () => node.Match(rc.Object));
+            Assert.Catch(typeof(InvalidOperationException), () => node.Match(rc));
         }
         
         [Test]
@@ -146,7 +144,7 @@ namespace EyeInTheSky.Tests.Model.StalkNodes.BaseNodes
             var node = new T();
             var rc = this.RecentChangeBuilder();
 
-            Assert.Catch(typeof(InvalidOperationException), () => node.Match(rc.Object));
+            Assert.Catch(typeof(InvalidOperationException), () => node.Match(rc));
         }
     }
     
@@ -175,18 +173,18 @@ namespace EyeInTheSky.Tests.Model.StalkNodes.BaseNodes
             Assert.AreEqual(")", result.Substring(result.Length - 1, 1));
         }
 
-        public Mock<IRecentChange> RecentChangeBuilder()
+        public IRecentChange RecentChangeBuilder()
         {
-            var rc = new Mock<IRecentChange>();
-            rc.Setup(x => x.EditFlags).Returns("mno");
-            rc.Setup(x => x.EditSummary).Returns("jkl");
-            rc.Setup(x => x.Log).Returns("pqr");
-            rc.Setup(x => x.Page).Returns("abc");
-            rc.Setup(x => x.SizeDiff).Returns(123);
-            rc.Setup(x => x.Url).Returns("ghi");
-            rc.Setup(x => x.User).Returns("def");
-            rc.Setup(x => x.AlternateTargetUser).Returns("alttgt");
-            rc.Setup(x => x.PageIsInCategory(It.IsAny<string>())).Returns(true);
+            var rc = Substitute.For<IRecentChange>();
+            rc.EditFlags.Returns("mno");
+            rc.EditSummary.Returns("jkl");
+            rc.Log.Returns("pqr");
+            rc.Page.Returns("abc");
+            rc.SizeDiff.Returns(123);
+            rc.Url.Returns("ghi");
+            rc.User.Returns("def");
+            rc.AlternateTargetUser.Returns("alttgt");
+            rc.PageIsInCategory(Arg.Any<string>()).Returns(true);
 
             return rc;
         }

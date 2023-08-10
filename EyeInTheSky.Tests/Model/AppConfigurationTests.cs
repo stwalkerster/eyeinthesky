@@ -2,7 +2,7 @@
 {
     using System;
     using EyeInTheSky.Model;
-    using Moq;
+    using NSubstitute;
     using NUnit.Framework;
 
     [TestFixture]
@@ -13,7 +13,17 @@
         [SetUp]
         public void LocalSetup()
         {
-            this.appConfig = new AppConfiguration("abc", "def", "ghi", "jkl", "efg", "mno", "p!q@r", "stu", "''d","v!w@x");
+            this.appConfig = new AppConfiguration(
+                "abc",
+                "def",
+                "ghi",
+                "jkl",
+                "efg",
+                "mno",
+                "p!q@r",
+                "stu",
+                "''d",
+                "v!w@x");
         }
 
         [Test]
@@ -35,11 +45,11 @@
         [Test]
         public void ShouldSetEmailConfig()
         {
-            var ec = new Mock<EmailConfiguration>("a", "b");
+            var ec = Substitute.For<EmailConfiguration>("a", "b");
 
-            this.appConfig.EmailConfiguration = ec.Object;
+            this.appConfig.EmailConfiguration = ec;
 
-            Assert.AreSame(ec.Object, this.appConfig.EmailConfiguration);
+            Assert.AreSame(ec, this.appConfig.EmailConfiguration);
         }
 
         [Test]

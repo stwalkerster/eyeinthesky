@@ -5,30 +5,28 @@ namespace EyeInTheSky.Tests.Model.StalkNodes.NumericNodes
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Model.StalkNodes.BaseNodes;
     using EyeInTheSky.Model.StalkNodes.NumericNodes;
-
-    using Moq;
-
+    using NSubstitute;
     using NUnit.Framework;
 
     [TestFixture]
     public class InfixNumericLogicalNodeTests
     {
-        [Test, TestCaseSource(typeof(InfixNumericLogicalNodeTests), "TestCases")]
+        [Test, TestCaseSource(typeof(InfixNumericLogicalNodeTests), nameof(TestCases))]
         public bool? ProviderTest(int? left, string op, int? right)
         {
-            var rc = new Mock<IRecentChange>();
+            var rc = Substitute.For<IRecentChange>();
 
             var node = new InfixNumericLogicalNode();
-            var leftMock = new Mock<INumberProviderNode>();
-            leftMock.Setup(x => x.GetValue(It.IsAny<IRecentChange>(), false)).Returns(left);
-            var rightMock = new Mock<INumberProviderNode>();
-            rightMock.Setup(x => x.GetValue(It.IsAny<IRecentChange>(), false)).Returns(right);
+            var leftMock = Substitute.For<INumberProviderNode>();
+            leftMock.GetValue(Arg.Any<IRecentChange>(), false).Returns(left);
+            var rightMock = Substitute.For<INumberProviderNode>();
+            rightMock.GetValue(Arg.Any<IRecentChange>(), false).Returns(right);
             
-            node.LeftChildNode = leftMock.Object;
-            node.RightChildNode = rightMock.Object;
+            node.LeftChildNode = leftMock;
+            node.RightChildNode = rightMock;
             node.Operator = op;
             
-            return node.Match(rc.Object, false);
+            return node.Match(rc, false);
         }
         
         private static IEnumerable<TestCaseData> TestCases

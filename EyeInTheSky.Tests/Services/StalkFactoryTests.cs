@@ -9,33 +9,31 @@ namespace EyeInTheSky.Tests.Services
     using EyeInTheSky.Model.StalkNodes.BaseNodes;
     using EyeInTheSky.Services;
     using EyeInTheSky.Services.Interfaces;
-    using Moq;
+    using NSubstitute;
     using NUnit.Framework;
     using Stwalkerster.IrcClient.Interfaces;
 
     [TestFixture]
     public class StalkFactoryTests : TestBase
     {
-        [Test, TestCaseSource(typeof(StalkFactoryTests), "DateParseTestCases")]
+        [Test, TestCaseSource(typeof(StalkFactoryTests), nameof(DateParseTestCases))]
         public DateTime ShouldParseDateCorrectly(string inputDate, bool throwWarning)
         {
-            var snf = new Mock<IStalkNodeFactory>();
-            var irc = new Mock<IIrcClient>();
-            var sf = new StalkFactory(this.LoggerMock.Object, snf.Object, irc.Object, this.AppConfigMock.Object);
+            var snf = Substitute.For<IStalkNodeFactory>();
+            var irc = Substitute.For<IIrcClient>();
+            var sf = new StalkFactory(this.LoggerMock, snf, irc, this.AppConfigMock);
 
             var actual = sf.ParseDate(string.Empty, inputDate, string.Empty);
 
             if (throwWarning)
             {
-                this.LoggerMock.Verify(
-                    x => x.WarnFormat(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()),
-                    Times.Once);
+                this.LoggerMock.Received(1)
+                    .WarnFormat(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>());
             }
             else
             {
-                this.LoggerMock.Verify(
-                    x => x.WarnFormat(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()),
-                    Times.Never);
+                this.LoggerMock.Received(0)
+                    .WarnFormat(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>());
             }
 
             return actual;
@@ -72,28 +70,31 @@ namespace EyeInTheSky.Tests.Services
             // arrange
             var doc = new XmlDocument();
             var ns = string.Empty;
-            var snf = new Mock<IStalkNodeFactory>();
-            var irc = new Mock<IIrcClient>();
-            snf.Setup(x => x.ToXml(doc, It.IsAny<IStalkNode>())).Returns(doc.CreateElement("false", ns));
+            var snf = Substitute.For<IStalkNodeFactory>();
+            var irc = Substitute.For<IIrcClient>();
+            snf.ToXml(doc, Arg.Any<IStalkNode>()).Returns(doc.CreateElement("false", ns));
             
-            var node = new Mock<IStalkNode>();
+            var node = Substitute.For<IStalkNode>();
             
-            var stalk = new Mock<IStalk>();
-            stalk.Setup(x => x.Subscribers).Returns(new List<StalkUser>());
-            stalk.Setup(x => x.SearchTree).Returns(node.Object);
-            stalk.Setup(x => x.Identifier).Returns("testflag");
-            stalk.Setup(x => x.IsEnabled).Returns(true);
-            stalk.Setup(x => x.TriggerCount).Returns(4);
-            stalk.Setup(x => x.WatchChannel).Returns("#en.wikipedia");
+            var stalk = Substitute.For<IStalk>();
+            stalk.Description.Returns((string)null);
+            stalk.LastMessageId.Returns((string)null);
+            stalk.Subscribers.Returns(new List<StalkUser>());
+            stalk.SearchTree.Returns(node);
+            stalk.Identifier.Returns("testflag");
+            stalk.IsEnabled.Returns(true);
+            stalk.TriggerCount.Returns(4);
+            stalk.WatchChannel.Returns("#en.wikipedia");
             
             
-            var sf = new StalkFactory(this.LoggerMock.Object, snf.Object, irc.Object, this.AppConfigMock.Object);
+            var sf = new StalkFactory(this.LoggerMock, snf, irc, this.AppConfigMock);
 
             // act
-            var xmlElement = sf.ToXmlElement(stalk.Object, doc);
+            var xmlElement = sf.ToXmlElement(stalk, doc);
             
             // assert
-            Assert.AreEqual("<complexstalk flag=\"testflag\" enabled=\"true\" watchchannel=\"#en.wikipedia\" triggercount=\"4\"><searchtree><false /></searchtree><subscribers /></complexstalk>", xmlElement.OuterXml);
+            var expected = "<complexstalk flag=\"testflag\" enabled=\"true\" watchchannel=\"#en.wikipedia\" triggercount=\"4\"><searchtree><false /></searchtree><subscribers /></complexstalk>";
+            Assert.AreEqual(expected, xmlElement.OuterXml);
         }
 
         [Test]
@@ -101,29 +102,32 @@ namespace EyeInTheSky.Tests.Services
         {
             // arrange
             var doc = new XmlDocument();
-            var snf = new Mock<IStalkNodeFactory>();
-            var irc = new Mock<IIrcClient>();
+            var snf = Substitute.For<IStalkNodeFactory>();
+            var irc = Substitute.For<IIrcClient>();
             
             doc.LoadXml("<or><true /><false /></or>");
             
-            var node = new Mock<IStalkNode>();
-            snf.Setup(x => x.ToXml(doc, It.IsAny<IStalkNode>())).Returns(doc.DocumentElement);
+            var node = Substitute.For<IStalkNode>();
+            snf.ToXml(doc, Arg.Any<IStalkNode>()).Returns(doc.DocumentElement);
             
-            var stalk = new Mock<IStalk>();
-            stalk.Setup(x => x.Subscribers).Returns(new List<StalkUser>());
-            stalk.Setup(x => x.SearchTree).Returns(node.Object);
-            stalk.Setup(x => x.Identifier).Returns("testflag");
-            stalk.Setup(x => x.IsEnabled).Returns(true);
-            stalk.Setup(x => x.WatchChannel).Returns("#en.wikipedia");
+            var stalk = Substitute.For<IStalk>();
+            stalk.Description.Returns((string)null);
+            stalk.LastMessageId.Returns((string)null);
+            stalk.Subscribers.Returns(new List<StalkUser>());
+            stalk.SearchTree.Returns(node);
+            stalk.Identifier.Returns("testflag");
+            stalk.IsEnabled.Returns(true);
+            stalk.WatchChannel.Returns("#en.wikipedia");
             
             
-            var sf = new StalkFactory(this.LoggerMock.Object, snf.Object, irc.Object, this.AppConfigMock.Object);
+            var sf = new StalkFactory(this.LoggerMock, snf, irc, this.AppConfigMock);
 
             // act
-            var xmlElement = sf.ToXmlElement(stalk.Object, doc);
+            var xmlElement = sf.ToXmlElement(stalk, doc);
             
             // assert
-            Assert.AreEqual("<complexstalk flag=\"testflag\" enabled=\"true\" watchchannel=\"#en.wikipedia\" triggercount=\"0\"><searchtree><or><true /><false /></or></searchtree><subscribers /></complexstalk>", xmlElement.OuterXml);
+            var expected = "<complexstalk flag=\"testflag\" enabled=\"true\" watchchannel=\"#en.wikipedia\" triggercount=\"0\"><searchtree><or><true /><false /></or></searchtree><subscribers /></complexstalk>";
+            Assert.AreEqual(expected, xmlElement.OuterXml);
         }
 
         [Test]
@@ -131,32 +135,32 @@ namespace EyeInTheSky.Tests.Services
         {
             // arrange
             var doc = new XmlDocument();
-            var snf = new Mock<IStalkNodeFactory>();
-            var irc = new Mock<IIrcClient>();
+            var snf = Substitute.For<IStalkNodeFactory>();
+            var irc = Substitute.For<IIrcClient>();
             
-            var node = new Mock<IStalkNode>();
-            snf.Setup(x => x.ToXml(doc, It.IsAny<IStalkNode>())).Returns(doc.CreateElement("false"));
+            var node = Substitute.For<IStalkNode>();
+            snf.ToXml(doc, Arg.Any<IStalkNode>()).Returns(doc.CreateElement("false"));
            
             
-            var stalk = new Mock<IStalk>();
-            stalk.Setup(x => x.Subscribers).Returns(new List<StalkUser>());
-            stalk.Setup(x => x.SearchTree).Returns(node.Object);
-            stalk.Setup(x => x.Identifier).Returns("testflag");
-            stalk.Setup(x => x.Description).Returns("my description here");
-            stalk.Setup(x => x.IsEnabled).Returns(true);
-            stalk.Setup(x => x.LastUpdateTime).Returns(new DateTime(2018, 3, 14, 1, 2, 3));
-            stalk.Setup(x => x.LastTriggerTime).Returns(DateTime.MinValue);
-            stalk.Setup(x => x.ExpiryTime).Returns(DateTime.MaxValue);
-            stalk.Setup(x => x.TriggerCount).Returns(3334);
-            stalk.Setup(x => x.LastMessageId).Returns("foobar");
-            stalk.Setup(x => x.WatchChannel).Returns("#metawiki");
-            stalk.Setup(x => x.DynamicExpiry).Returns(new TimeSpan(90, 0, 0, 0));
-            stalk.Setup(x => x.CreationDate).Returns(new DateTime(2019, 03, 28, 1, 2, 3));
+            var stalk = Substitute.For<IStalk>();
+            stalk.Subscribers.Returns(new List<StalkUser>());
+            stalk.SearchTree.Returns(node);
+            stalk.Identifier.Returns("testflag");
+            stalk.Description.Returns("my description here");
+            stalk.IsEnabled.Returns(true);
+            stalk.LastUpdateTime.Returns(new DateTime(2018, 3, 14, 1, 2, 3));
+            stalk.LastTriggerTime.Returns(DateTime.MinValue);
+            stalk.ExpiryTime.Returns(DateTime.MaxValue);
+            stalk.TriggerCount.Returns(3334);
+            stalk.LastMessageId.Returns("foobar");
+            stalk.WatchChannel.Returns("#metawiki");
+            stalk.DynamicExpiry.Returns(new TimeSpan(90, 0, 0, 0));
+            stalk.CreationDate.Returns(new DateTime(2019, 03, 28, 1, 2, 3));
             
-            var sf = new StalkFactory(this.LoggerMock.Object, snf.Object, irc.Object, this.AppConfigMock.Object);
+            var sf = new StalkFactory(this.LoggerMock, snf, irc, this.AppConfigMock);
 
             // act
-            var xmlElement = sf.ToXmlElement(stalk.Object, doc);
+            var xmlElement = sf.ToXmlElement(stalk, doc);
             
             // assert
             Assert.AreEqual("<complexstalk flag=\"testflag\" lastupdate=\"2018-03-14T01:02:03Z\" lasttrigger=\"0001-01-01T00:00:00Z\" creation=\"2019-03-28T01:02:03Z\" description=\"my description here\" lastmessageid=\"foobar\" enabled=\"true\" watchchannel=\"#metawiki\" expiry=\"9999-12-31T23:59:59.9999999Z\" dynamicexpiry=\"P90D\" triggercount=\"3334\"><searchtree><false /></searchtree><subscribers /></complexstalk>", xmlElement.OuterXml);
@@ -169,12 +173,12 @@ namespace EyeInTheSky.Tests.Services
                 "<complexstalk flag=\"testytest\" lastupdate=\"2018-03-25T16:42:30.984000Z\" lasttrigger=\"2018-03-25T16:42:21.878000Z\" immediatemail=\"true\" lastmessageid=\"foobar\" enabled=\"false\"><true /></complexstalk>";
             var doc = new XmlDocument();
             doc.LoadXml(xml);
-            var snf = new Mock<IStalkNodeFactory>();
-            var irc = new Mock<IIrcClient>();
-            snf.Setup(x => x.NewFromXmlFragment(It.IsAny<XmlElement>())).Returns(new TrueNode());
+            var snf = Substitute.For<IStalkNodeFactory>();
+            var irc = Substitute.For<IIrcClient>();
+            snf.NewFromXmlFragment(Arg.Any<XmlElement>()).Returns(new TrueNode());
             
             // act
-            var fact = new StalkFactory(this.LoggerMock.Object, snf.Object, irc.Object, this.AppConfigMock.Object);
+            var fact = new StalkFactory(this.LoggerMock, snf, irc, this.AppConfigMock);
             var stalk = fact.NewFromXmlElement(doc.DocumentElement);
 
             // assert
@@ -189,8 +193,8 @@ namespace EyeInTheSky.Tests.Services
 
             Assert.IsNotNull(stalk.SearchTree);
             Assert.IsInstanceOf<IStalkNode>(stalk.SearchTree);
-            
-            snf.Verify(x => x.NewFromXmlFragment(It.IsAny<XmlElement>()), Times.Once);
+
+            snf.Received(1).NewFromXmlFragment(Arg.Any<XmlElement>());
         }
 
         [Test]
@@ -200,12 +204,12 @@ namespace EyeInTheSky.Tests.Services
                 "<complexstalk flag=\"testytest\" lastupdate=\"2018-03-25T16:42:30.984000Z\" lasttrigger=\"2018-03-25T16:42:21.878000Z\" creation=\"2019-01-01T23:23:23.090Z\" immediatemail=\"true\" lastmessageid=\"foobar\" enabled=\"false\"><searchtree><true /></searchtree></complexstalk>";
             var doc = new XmlDocument();
             doc.LoadXml(xml);
-            var snf = new Mock<IStalkNodeFactory>();
-            var irc = new Mock<IIrcClient>();
-            snf.Setup(x => x.NewFromXmlFragment(It.IsAny<XmlElement>())).Returns(new TrueNode());
+            var snf = Substitute.For<IStalkNodeFactory>();
+            var irc = Substitute.For<IIrcClient>();
+            snf.NewFromXmlFragment(Arg.Any<XmlElement>()).Returns(new TrueNode());
             
             // act
-            var fact = new StalkFactory(this.LoggerMock.Object, snf.Object, irc.Object, this.AppConfigMock.Object);
+            var fact = new StalkFactory(this.LoggerMock, snf, irc, this.AppConfigMock);
             var stalk = fact.NewFromXmlElement(doc.DocumentElement);
 
             // assert
@@ -223,7 +227,7 @@ namespace EyeInTheSky.Tests.Services
             Assert.IsNotNull(stalk.SearchTree);
             Assert.IsInstanceOf<IStalkNode>(stalk.SearchTree);
             
-            snf.Verify(x => x.NewFromXmlFragment(It.IsAny<XmlElement>()), Times.Once);
+            snf.Received(1).NewFromXmlFragment(Arg.Any<XmlElement>());
         }
         
         [Test]
@@ -233,12 +237,12 @@ namespace EyeInTheSky.Tests.Services
                 "<complexstalk flag=\"testytest\" lastupdate=\"2018-03-25T16:42:30.984000Z\" lasttrigger=\"2018-03-25T16:42:21.878000Z\" immediatemail=\"true\" lastmessageid=\"foobar\" enabled=\"false\" watchchannel=\"#fr.wikipedia\"><searchtree><true /></searchtree></complexstalk>";
             var doc = new XmlDocument();
             doc.LoadXml(xml);
-            var snf = new Mock<IStalkNodeFactory>();
-            var irc = new Mock<IIrcClient>();
-            snf.Setup(x => x.NewFromXmlFragment(It.IsAny<XmlElement>())).Returns(new TrueNode());
+            var snf = Substitute.For<IStalkNodeFactory>();
+            var irc = Substitute.For<IIrcClient>();
+            snf.NewFromXmlFragment(Arg.Any<XmlElement>()).Returns(new TrueNode());
             
             // act
-            var fact = new StalkFactory(this.LoggerMock.Object, snf.Object, irc.Object, this.AppConfigMock.Object);
+            var fact = new StalkFactory(this.LoggerMock, snf, irc, this.AppConfigMock);
             var stalk = fact.NewFromXmlElement(doc.DocumentElement);
 
             // assert
@@ -255,41 +259,9 @@ namespace EyeInTheSky.Tests.Services
             Assert.IsNotNull(stalk.SearchTree);
             Assert.IsInstanceOf<IStalkNode>(stalk.SearchTree);
             
-            snf.Verify(x => x.NewFromXmlFragment(It.IsAny<XmlElement>()), Times.Once);
+            snf.Received(1).NewFromXmlFragment(Arg.Any<XmlElement>());
         }
 
-        [Test, Ignore("Waiting on T964")]
-        public void ShouldCreateObjectFromXmlWithComments()
-        {
-            string xml =
-                "<complexstalk flag=\"testytest\" enabled=\"false\"><!-- comment 1 --><searchtree><!--comment 2--><and><!-- comment 3 --><true /><!-- comment 4 --><false /><!-- comment 5 --></and><!-- comment 6 --></searchtree><!-- lastcomment --></complexstalk>";
-            var doc = new XmlDocument();
-            doc.LoadXml(xml);
-            var snf = new Mock<IStalkNodeFactory>();
-            var irc = new Mock<IIrcClient>();
-            snf.Setup(x => x.NewFromXmlFragment(It.IsAny<XmlElement>())).Returns(new TrueNode());
-            
-            // act
-            var fact = new StalkFactory(this.LoggerMock.Object, snf.Object, irc.Object, this.AppConfigMock.Object);
-            var stalk = fact.NewFromXmlElement(doc.DocumentElement);
-
-            // assert
-            Assert.AreEqual("testytest", stalk.Identifier);
-            Assert.IsFalse(stalk.IsEnabled);
-            
-            Assert.IsNotNull(stalk.SearchTree);
-            Assert.IsInstanceOf<AndNode>(stalk.SearchTree);
-
-            var andnode = (AndNode)stalk.SearchTree;
-            Assert.AreEqual(2, andnode.ChildNodes.Count);
-            Assert.IsNotNull(andnode.ChildNodes[0]);
-            Assert.IsNotNull(andnode.ChildNodes[1]);
-            Assert.IsInstanceOf<TrueNode>(andnode.ChildNodes[0]);
-            Assert.IsInstanceOf<FalseNode>(andnode.ChildNodes[1]);
-            
-            snf.Verify(x => x.NewFromXmlFragment(It.IsAny<XmlElement>()), Times.AtLeastOnce);
-        }
-        
         [Test]
         public void ShouldCreateObjectFromXmlWithTriggerCount()
         {
@@ -297,12 +269,12 @@ namespace EyeInTheSky.Tests.Services
                 "<complexstalk flag=\"testytest\" lastupdate=\"2018-03-25T16:42:30.984000Z\" lasttrigger=\"2018-03-25T16:42:21.878000Z\" immediatemail=\"true\" enabled=\"false\" triggercount=\"533\"><searchtree><true /></searchtree></complexstalk>";
             var doc = new XmlDocument();
             doc.LoadXml(xml);
-            var snf = new Mock<IStalkNodeFactory>();
-            var irc = new Mock<IIrcClient>();
-            snf.Setup(x => x.NewFromXmlFragment(It.IsAny<XmlElement>())).Returns(new TrueNode());
+            var snf = Substitute.For<IStalkNodeFactory>();
+            var irc = Substitute.For<IIrcClient>();
+            snf.NewFromXmlFragment(Arg.Any<XmlElement>()).Returns(new TrueNode());
             
             // act
-            var fact = new StalkFactory(this.LoggerMock.Object, snf.Object, irc.Object, this.AppConfigMock.Object);
+            var fact = new StalkFactory(this.LoggerMock, snf, irc, this.AppConfigMock);
             var stalk = fact.NewFromXmlElement(doc.DocumentElement);
 
             // assert
@@ -317,7 +289,7 @@ namespace EyeInTheSky.Tests.Services
             Assert.IsNotNull(stalk.SearchTree);
             Assert.IsInstanceOf<IStalkNode>(stalk.SearchTree);
             
-            snf.Verify(x => x.NewFromXmlFragment(It.IsAny<XmlElement>()), Times.Once);
+            snf.Received(1).NewFromXmlFragment(Arg.Any<XmlElement>());
         }
 
         [Test]
@@ -327,12 +299,12 @@ namespace EyeInTheSky.Tests.Services
                 "<complexstalk flag=\"testytest\" expiry=\"2018-03-25T16:42:30.984000Z\" dynamicexpiry=\"P3M\"><searchtree><true /></searchtree></complexstalk>";
             var doc = new XmlDocument();
             doc.LoadXml(xml);
-            var snf = new Mock<IStalkNodeFactory>();
-            var irc = new Mock<IIrcClient>();
-            snf.Setup(x => x.NewFromXmlFragment(It.IsAny<XmlElement>())).Returns(new TrueNode());
+            var snf = Substitute.For<IStalkNodeFactory>();
+            var irc = Substitute.For<IIrcClient>();
+            snf.NewFromXmlFragment(Arg.Any<XmlElement>()).Returns(new TrueNode());
 
             // act
-            var fact = new StalkFactory(this.LoggerMock.Object, snf.Object, irc.Object, this.AppConfigMock.Object);
+            var fact = new StalkFactory(this.LoggerMock, snf, irc, this.AppConfigMock);
             var stalk = fact.NewFromXmlElement(doc.DocumentElement);
 
             // assert
@@ -343,7 +315,7 @@ namespace EyeInTheSky.Tests.Services
             Assert.IsNotNull(stalk.SearchTree);
             Assert.IsInstanceOf<IStalkNode>(stalk.SearchTree);
 
-            snf.Verify(x => x.NewFromXmlFragment(It.IsAny<XmlElement>()), Times.Once);
+            snf.Received(1).NewFromXmlFragment(Arg.Any<XmlElement>());
         }
     }
 }

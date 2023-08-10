@@ -1,7 +1,6 @@
-﻿using System;
-
-namespace EyeInTheSky.Tests.Model.StalkNodes
+﻿namespace EyeInTheSky.Tests.Model.StalkNodes
 {
+    using System;
     using System.Collections;
     using System.Collections.Generic;
     using EyeInTheSky.Model;
@@ -9,13 +8,13 @@ namespace EyeInTheSky.Tests.Model.StalkNodes
     using EyeInTheSky.Model.StalkNodes;
     using EyeInTheSky.Model.StalkNodes.BaseNodes;
     using EyeInTheSky.Tests.Model.StalkNodes.BaseNodes;
-    using Moq;
+    using NSubstitute;
     using NUnit.Framework;
 
     [TestFixture]
     public class XOfStalkNodeTests : MultiChildNodeTestBase<XOfStalkNode>
     {
-        [Test, TestCaseSource(typeof(XOfStalkNodeTests), "MatchCorrectlyTestData")]
+        [Test, TestCaseSource(typeof(XOfStalkNodeTests), nameof(MatchCorrectlyTestData))]
         public bool? ShouldMatchCorrectly(int? min, int? max, List<IStalkNode> nodes)
         {
             // arrange
@@ -37,10 +36,10 @@ namespace EyeInTheSky.Tests.Model.StalkNodes
             {
                 var t = new TrueNode();
                 var f = new FalseNode();
-                var nullMock = new Mock<IStalkNode>();
-                nullMock.Setup(x => x.Match(It.IsAny<IRecentChange>(), It.Is<bool>(s => false))).Returns((bool?) null);
-                nullMock.Setup(x => x.ToString()).Returns("(null)");
-                var n = nullMock.Object;
+                var nullMock = Substitute.For<IStalkNode>();
+                nullMock.Match(Arg.Any<IRecentChange>(), false).Returns((bool?) null);
+
+                var n = nullMock;
                 
                 // min
                 yield return new TestCaseData(0, null, new List<IStalkNode> {f}).Returns(true);
@@ -83,7 +82,7 @@ namespace EyeInTheSky.Tests.Model.StalkNodes
             var node = new XOfStalkNode();
             node.ChildNodes.Add(new FalseNode());
 
-            Assert.Throws<InvalidOperationException>(() => node.Match(this.RecentChangeBuilder().Object));
+            Assert.Throws<InvalidOperationException>(() => node.Match(this.RecentChangeBuilder()));
         }
     }
 }

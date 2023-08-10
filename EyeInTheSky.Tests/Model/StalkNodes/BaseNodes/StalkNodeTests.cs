@@ -14,7 +14,7 @@ namespace EyeInTheSky.Tests.Model.StalkNodes.BaseNodes
         {
             var node = new NullNode();
 
-            Assert.Throws<InvalidOperationException>(() => node.Match(this.RecentChangeBuilder().Object));
+            Assert.Throws<InvalidOperationException>(() => node.Match(this.RecentChangeBuilder()));
         }
 
         public class NullNode : StalkNode

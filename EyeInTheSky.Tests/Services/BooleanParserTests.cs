@@ -7,7 +7,7 @@
     [TestFixture]
     public class BooleanParserTests
     {
-        [Test, TestCaseSource(typeof(BooleanParserTests), "ParseCorrectlyTestData")]
+        [Test, TestCaseSource(typeof(BooleanParserTests), nameof(ParseCorrectlyTestData))]
         public bool ShouldParseCorrectly(string input)
         {
             bool result;
@@ -34,7 +34,7 @@
             }
         }
         
-        [Test, TestCaseSource(typeof(BooleanParserTests), "ParseIncorrectlyTestData")]
+        [Test, TestCaseSource(typeof(BooleanParserTests), nameof(ParseIncorrectlyTestData))]
         public void ShouldParseIncorrectly(string input)
         {
             bool result;

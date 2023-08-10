@@ -1,45 +1,42 @@
 namespace EyeInTheSky.Tests.Services
 {
     using System.Collections.Generic;
-
     using EyeInTheSky.Model;
     using EyeInTheSky.Model.Interfaces;
     using EyeInTheSky.Services;
     using EyeInTheSky.Services.Interfaces;
-    using Moq;
-
+    using NSubstitute;
     using NUnit.Framework;
-
     using Stwalkerster.IrcClient.Interfaces;
     using Stwalkerster.IrcClient.Model;
 
     [TestFixture]
     public class SubscriptionHelperTests : TestBase
     {
-        private Mock<IIrcClient> ircClient;
-        private Mock<IStalk> stalk;
-        private Mock<IIrcChannel> channel;
-        private Mock<IBotUserConfiguration> botUserConfigMock;
+        private IIrcClient ircClient;
+        private IStalk stalk;
+        private IIrcChannel channel;
+        private IBotUserConfiguration botUserConfigMock;
         private SubscriptionHelper subscriptionHelper;
         private IrcUserMask mask;
-        private Mock<IChannelConfiguration> channelConfigMock;
+        private IChannelConfiguration channelConfigMock;
 
         [SetUp]
         public void LocalSetup()
         {
-            this.ircClient = new Mock<IIrcClient>();
-            this.ircClient.Setup(x => x.ExtBanTypes).Returns(string.Empty);
+            this.ircClient = Substitute.For<IIrcClient>();
+            this.ircClient.ExtBanTypes.Returns(string.Empty);
 
-            this.channel = new Mock<IIrcChannel>();
-            this.stalk = new Mock<IStalk>();
-            this.botUserConfigMock = new Mock<IBotUserConfiguration>();
-            this.channelConfigMock = new Mock<IChannelConfiguration>();
+            this.channel = Substitute.For<IIrcChannel>();
+            this.stalk = Substitute.For<IStalk>();
+            this.botUserConfigMock = Substitute.For<IBotUserConfiguration>();
+            this.channelConfigMock = Substitute.For<IChannelConfiguration>();
 
-            this.channel.Setup(x => x.Identifier).Returns("#channel");
-            this.stalk.Setup(x => x.Channel).Returns("#channel");
+            this.channel.Identifier.Returns("#channel");
+            this.stalk.Channel.Returns("#channel");
 
-            this.subscriptionHelper = new SubscriptionHelper(this.LoggerMock.Object, this.botUserConfigMock.Object, this.channelConfigMock.Object);
-            this.mask = new IrcUserMask("*!*@*", this.ircClient.Object);
+            this.subscriptionHelper = new SubscriptionHelper(this.LoggerMock, this.botUserConfigMock, this.channelConfigMock);
+            this.mask = new IrcUserMask("*!*@*", this.ircClient);
         }
 
         [Test]
@@ -47,14 +44,14 @@ namespace EyeInTheSky.Tests.Services
         {
             // arrange
             var channelUserList = new List<ChannelUser>();
-            this.channel.Setup(x => x.Users).Returns(channelUserList);
+            this.channel.Users.Returns(channelUserList);
 
             var stalkUserList = new List<StalkUser>();
-            this.stalk.Setup(x => x.Subscribers).Returns(stalkUserList);
+            this.stalk.Subscribers.Returns(stalkUserList);
 
             // act
             SubscriptionSource source;
-            var result = this.subscriptionHelper.SubscribeStalk(this.mask, this.channel.Object, this.stalk.Object, out source);
+            var result = this.subscriptionHelper.SubscribeStalk(this.mask, this.channel, this.stalk, out source);
 
             // assert
             Assert.IsTrue(result);
@@ -69,17 +66,17 @@ namespace EyeInTheSky.Tests.Services
         {
             // arrange
             var channelUserList = new List<ChannelUser>();
-            this.channel.Setup(x => x.Users).Returns(channelUserList);
+            this.channel.Users.Returns(channelUserList);
 
             var stalkUserList = new List<StalkUser>
             {
                 new StalkUser(this.mask, true)
             };
-            this.stalk.Setup(x => x.Subscribers).Returns(stalkUserList);
+            this.stalk.Subscribers.Returns(stalkUserList);
 
             // act
             SubscriptionSource source;
-            var result = this.subscriptionHelper.SubscribeStalk(this.mask, this.channel.Object, this.stalk.Object, out source);
+            var result = this.subscriptionHelper.SubscribeStalk(this.mask, this.channel, this.stalk, out source);
 
             // assert
             Assert.IsFalse(result);
@@ -94,17 +91,17 @@ namespace EyeInTheSky.Tests.Services
         {
             // arrange
             var channelUserList = new List<ChannelUser>();
-            this.channel.Setup(x => x.Users).Returns(channelUserList);
+            this.channel.Users.Returns(channelUserList);
 
             var stalkUserList = new List<StalkUser>
             {
                 new StalkUser(this.mask, true)
             };
-            this.stalk.Setup(x => x.Subscribers).Returns(stalkUserList);
+            this.stalk.Subscribers.Returns(stalkUserList);
 
             // act
             SubscriptionSource source;
-            var result = this.subscriptionHelper.UnsubscribeStalk(this.mask, this.channel.Object, this.stalk.Object, out source);
+            var result = this.subscriptionHelper.UnsubscribeStalk(this.mask, this.channel, this.stalk, out source);
 
             // assert
             Assert.IsTrue(result);
@@ -117,14 +114,14 @@ namespace EyeInTheSky.Tests.Services
         {
             // arrange
             var channelUserList = new List<ChannelUser>();
-            this.channel.Setup(x => x.Users).Returns(channelUserList);
+            this.channel.Users.Returns(channelUserList);
 
             var stalkUserList = new List<StalkUser>();
-            this.stalk.Setup(x => x.Subscribers).Returns(stalkUserList);
+            this.stalk.Subscribers.Returns(stalkUserList);
 
             // act
             SubscriptionSource source;
-            var result = this.subscriptionHelper.UnsubscribeStalk(this.mask, this.channel.Object, this.stalk.Object, out source);
+            var result = this.subscriptionHelper.UnsubscribeStalk(this.mask, this.channel, this.stalk, out source);
 
             // assert
             Assert.IsFalse(result);
@@ -140,14 +137,14 @@ namespace EyeInTheSky.Tests.Services
             {
                 new ChannelUser(this.mask) { Subscribed = true }
             };
-            this.channel.Setup(x => x.Users).Returns(channelUserList);
+            this.channel.Users.Returns(channelUserList);
 
             var stalkUserList = new List<StalkUser>();
-            this.stalk.Setup(x => x.Subscribers).Returns(stalkUserList);
+            this.stalk.Subscribers.Returns(stalkUserList);
 
             // act
             SubscriptionSource source;
-            var result = this.subscriptionHelper.UnsubscribeStalk(this.mask, this.channel.Object, this.stalk.Object, out source);
+            var result = this.subscriptionHelper.UnsubscribeStalk(this.mask, this.channel, this.stalk, out source);
 
             // assert
             Assert.IsTrue(result);
