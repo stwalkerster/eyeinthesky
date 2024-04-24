@@ -3,11 +3,12 @@
   <name>EITS</name>
   <param name="agentCleanFilesPolicy" value="ALL_UNTRACKED" />
   <param name="agentCleanPolicy" value="ON_BRANCH_CHANGE" />
-  <param name="authMethod" value="PRIVATE_KEY_DEFAULT" />
+  <param name="authMethod" value="TEAMCITY_SSH_KEY" />
   <param name="branch" value="refs/heads/master" />
   <param name="ignoreKnownHosts" value="true" />
   <param name="submoduleCheckout" value="CHECKOUT" />
   <param name="teamcity:branchSpec" value="refs/heads/*" />
+  <param name="teamcitySshKey" value="tc-id-rsa-2024" />
   <param name="url" value="git@github.com:stwalkerster/eyeinthesky.git" />
   <param name="useAlternates" value="USE_MIRRORS" />
   <param name="userForTags" value="TeamCity &lt;teamcity@stwalkerster.co.uk&gt;" />
