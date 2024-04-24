@@ -337,7 +337,7 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                 case "gblblock":
                     if (rc.EditFlags == "whitelist")
                     {
-                        var match = new Regex(@" disabled the global block on \[\[User:(?<targetUser>.*?)\]\] locally(?:: (?<comment>.*))?$");
+                        var match = new Regex(@" disabled the global block on (?:\[\[User:)(?<targetUser>.*?)(?:\]\]) locally(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
@@ -354,7 +354,7 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                     
                     if (rc.EditFlags == "dwhitelist")
                     {
-                        var match = new Regex(@" re-enabled the global block on \[\[User:(?<targetUser>.*?)\]\] locally(?:: (?<comment>.*))?$");
+                        var match = new Regex(@" re-enabled the global block on (?:\[\[User:)(?<targetUser>.*?)(?:\]\]) locally(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
@@ -386,9 +386,9 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                         }
                     }
                     
-                    if (rc.EditFlags == "modify")
+                    if (rc.EditFlags == "gblock")
                     {
-                        var match = new Regex(@"modified the global block on \[\[User:(?<targetUser>.*?)\]\] \(.*?\)(?:: (?<comment>.*))?$");
+                        var match = new Regex(@" globally blocked (?<targetUser>.*?) with an expiration time of .*?(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
@@ -403,13 +403,44 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                         }
                     }
                     
-                    if (rc.EditFlags == "gunblock")
+                    if (rc.EditFlags == "modify")
                     {
-                        var match = new Regex(@"removed global block on \[\[User:(?<targetUser>.*?)\]\](?:: (?<comment>.*))?$");
+                        var match = new Regex(@"(?:modified the global block on \[\[User:(?<targetUser>.*?)\]\] \(.*?\)|changed global block settings for (?<targetUser2>.*?) with an expiration time of .*?)(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
-                            rc.TargetUser = result.Groups["targetUser"].Value;
+                            if (result.Groups["targetUser"].Success)
+                            {
+                                rc.TargetUser = result.Groups["targetUser"].Value;
+                            }
+                            if (result.Groups["targetUser2"].Success)
+                            {
+                                rc.TargetUser = result.Groups["targetUser2"].Value;
+                            }
+
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+
+                            handled = true;
+                        }
+                    }
+                    
+                    if (rc.EditFlags == "gunblock")
+                    {
+                        var match = new Regex(@"removed (?:(?:global block on \[\[User:(?<targetUser>.*?)\]\])|(?:the global block on (?<targetUser2>.*?)))(?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            if (result.Groups["targetUser"].Success)
+                            {
+                                rc.TargetUser = result.Groups["targetUser"].Value;
+                            }
+                            if (result.Groups["targetUser2"].Success)
+                            {
+                                rc.TargetUser = result.Groups["targetUser2"].Value;
+                            }
 
                             if (result.Groups["comment"].Success)
                             {
@@ -616,6 +647,23 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                         {
                             rc.TargetUser = result.Groups["targetUser"].Value;
                             rc.AlternateTargetUser = result.Groups["altUser"].Value;
+                            
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+
+                            handled = true;
+                        }
+                    }
+                    
+                    if (rc.EditFlags == "addimage")
+                    {
+                        var match = new Regex(@" reviewed an image suggestion for \[\[(?<page>.*?)\]\](?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["page"].Value;
                             
                             if (result.Groups["comment"].Success)
                             {
@@ -1114,6 +1162,68 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                     if (rc.EditFlags == "reviewed")
                     {
                         var match = new Regex("marked \\[\\[(?<page>.*?)\\]\\] as reviewed(?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["page"].Value;
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+                            
+                            handled = true;
+                        }
+                    }
+                    if (rc.EditFlags == "reviewed-article")
+                    {
+                        var match = new Regex("marked the article \\[\\[(?<page>.*?)\\]\\] as reviewed(?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["page"].Value;
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+                            
+                            handled = true;
+                        }
+                    }
+                    
+                    if (rc.EditFlags == "reviewed-redirect")
+                    {
+                        var match = new Regex("marked the redirect \\[\\[(?<page>.*?)\\]\\] as reviewed(?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["page"].Value;
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+                            
+                            handled = true;
+                        }
+                    }
+                    if (rc.EditFlags == "unreviewed-article")
+                    {
+                        var match = new Regex("marked the article \\[\\[(?<page>.*?)\\]\\] as unreviewed(?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["page"].Value;
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+                            
+                            handled = true;
+                        }
+                    }
+                    
+                    if (rc.EditFlags == "unreviewed-redirect")
+                    {
+                        var match = new Regex("marked the redirect \\[\\[(?<page>.*?)\\]\\] as unreviewed(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {

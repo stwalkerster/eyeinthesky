@@ -457,6 +457,17 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                         });
                 
                 yield return new TestCaseData(
+                        "\u000314[[\u000307Special:Log/gblblock\u000314]]\u00034 modify\u000310 \u000302\u0003 \u00035*\u0003 \u000303JJMC89\u0003 \u00035*\u0003  \u000310JJMC89 changed global block settings for 184.94.215.0/24 with an expiration time of 01:40, 22 April 2027 : [[m:Special:MyLanguage/NOP|Open proxy/Webhost]]: See the [[m:WM:OP/H|help page]] if you are affected: <!-- NameCheap -->\u0003")
+                    .Returns(
+                        new RecentChange("JJMC89")
+                        {
+                            Log = "gblblock",
+                            TargetUser = "184.94.215.0/24",
+                            EditFlags = "modify",
+                            EditSummary = "[[m:Special:MyLanguage/NOP|Open proxy/Webhost]]: See the [[m:WM:OP/H|help page]] if you are affected: <!-- NameCheap -->"
+                        });
+                
+                yield return new TestCaseData(
                         "14[[07Special:Log/gblblock14]]4 gunblock10 02 5* 03Rxy 5*  10removed global block on [[02User:2001:2C0:DB07:3E00:0:0:0:0/6410]]: done")
                     .Returns(
                         new RecentChange("Rxy")
@@ -475,6 +486,16 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                             TargetUser = "151.236.23.136",
                             EditFlags = "gunblock",
                             EditSummary = "Blocked for too long"
+                        });
+                yield return new TestCaseData(
+                        "\u000314[[\u000307Special:Log/gblblock\u000314]]\u00034 gunblock\u000310 \u000302\u0003 \u00035*\u0003 \u000303Yahya\u0003 \u00035*\u0003  \u000310Yahya removed the global block on 202.235.158.57: range blocked\u0003")
+                    .Returns(
+                        new RecentChange("Yahya")
+                        {
+                            Log = "gblblock",
+                            TargetUser = "202.235.158.57",
+                            EditFlags = "gunblock",
+                            EditSummary = "range blocked"
                         });
 
                 yield return new TestCaseData(
@@ -498,6 +519,16 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                             EditSummary = "Cross-wiki vandalism"
                         });
 
+                yield return new TestCaseData(
+                        "\u000314[[\u000307Special:Log/gblblock\u000314]]\u00034 gblock\u000310 \u000302\u0003 \u00035*\u0003 \u000303Tegel\u0003 \u00035*\u0003  \u000310Tegel globally blocked 212.97.66.17 with an expiration time of 22:11, 20 March 2025 : [[m:Special:MyLanguage/NOP|Open proxy]]: See the [[m:WM:OP/H|help page]] if you are affected\u0003")
+                    .Returns(
+                        new RecentChange("Tegel")
+                        {
+                            Log = "gblblock",
+                            TargetUser = "212.97.66.17",
+                            EditFlags = "gblock",
+                            EditSummary = "[[m:Special:MyLanguage/NOP|Open proxy]]: See the [[m:WM:OP/H|help page]] if you are affected"
+                        });
                 #endregion
                 #region gblrename
 
@@ -748,6 +779,16 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                             AlternateTargetUser = "ShahidK1980",
                             EditSummary = "ReleaseAutoAssignedMenteeToPool",
                             EditFlags = "setmentor"
+                        });
+                
+                yield return new TestCaseData("\u000314[[\u000307Special:Log/growthexperiments\u000314]]\u00034 addimage\u000310 \u000302\u0003 \u00035*\u0003 \u000303Android-Test17-WMF\u0003 \u00035*\u0003  \u000310Android-Test17-WMF reviewed an image suggestion for [[\u000302July 1974\u000310]]: rejected\u0003")
+                    .Returns(
+                        new RecentChange("Android-Test17-WMF")
+                        {
+                            Log = "growthexperiments",
+                            Page = "July 1974",
+                            EditSummary = "rejected",
+                            EditFlags = "addimage"
                         });
                 #endregion
                 #region import
@@ -1327,6 +1368,46 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                             Log = "pagetriage-deletion",
                             Page = "Ak husky",
                             EditFlags = "delete"
+                        });
+
+                yield return new TestCaseData(
+                        "\u000314[[\u000307Special:Log/pagetriage-curation\u000314]]\u00034 reviewed-redirect\u000310 \u000302\u0003 \u00035*\u0003 \u000303DannyS712 bot III\u0003 \u00035*\u0003  \u000310DannyS712 bot III marked the redirect [[\u000302Marcos Loyalist Rallies\u000310]] as reviewed\u0003")
+                    .Returns(
+                        new RecentChange("DannyS712 bot III")
+                        {
+                            Log = "pagetriage-curation",
+                            Page = "Marcos Loyalist Rallies",
+                            EditFlags = "reviewed-redirect"
+                        });
+
+                yield return new TestCaseData(
+                        "\u000314[[\u000307Special:Log/pagetriage-curation\u000314]]\u00034 reviewed-article\u000310 \u000302\u0003 \u00035*\u0003 \u000303Hey man im josh\u0003 \u00035*\u0003  \u000310Hey man im josh marked the article [[\u000302Battle of Kota Batu (1578)\u000310]] as reviewed\u0003")
+                    .Returns(
+                        new RecentChange("Hey man im josh")
+                        {
+                            Log = "pagetriage-curation",
+                            Page = "Battle of Kota Batu (1578)",
+                            EditFlags = "reviewed-article"
+                        });
+
+                yield return new TestCaseData(
+                        "\u000314[[\u000307Special:Log/pagetriage-curation\u000314]]\u00034 unreviewed-article\u000310 \u000302\u0003 \u00035*\u0003 \u000303Timtrent\u0003 \u00035*\u0003  \u000310Timtrent marked the article [[\u000302J. Stanley Brown\u000310]] as unreviewed\u0003")
+                    .Returns(
+                        new RecentChange("Timtrent")
+                        {
+                            Log = "pagetriage-curation",
+                            Page = "J. Stanley Brown",
+                            EditFlags = "unreviewed-article"
+                        });
+
+                yield return new TestCaseData(
+                        "\u000314[[\u000307Special:Log/pagetriage-curation\u000314]]\u00034 unreviewed-redirect\u000310 \u000302\u0003 \u00035*\u0003 \u000303Illusion Flame\u0003 \u00035*\u0003  \u000310Illusion Flame marked the redirect [[\u000302Abdoul Abdouraguimov\u000310]] as unreviewed\u0003")
+                    .Returns(
+                        new RecentChange("Illusion Flame")
+                        {
+                            Log = "pagetriage-curation",
+                            Page = "Abdoul Abdouraguimov",
+                            EditFlags = "unreviewed-redirect"
                         });
                 #endregion
                 #region patrol
