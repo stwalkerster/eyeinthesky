@@ -745,6 +745,23 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                         }
                     }
                     
+                    if (rc.EditFlags == "activate")
+                    {
+                        var match = new Regex(@" activated the tag ""(?<pageName>.*?)"" for use by users and bots(?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["pageName"].Value;
+
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+
+                            handled = true;
+                        }
+                    }
+                    
                     if (rc.EditFlags == "delete")
                     {
                         var match = new Regex(@" deleted the tag ""(?<pageName>.*?)"" \(removed from [0-9]+ revision(?:s?) (?:and/)?or log entr(?:ies|y)\)(?:: (?<comment>.*))?$");
@@ -1023,12 +1040,17 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                     }
                     if (rc.EditFlags == "moveok")
                     {
-                        var match = new Regex(" completed renaming of translatable page \\[\\[(?<page>.*?)\\]\\] to \\[\\[(?<targetpage>.*?)\\]\\]$");
+                        var match = new Regex(" completed renaming of translatable page \\[\\[(?<page>.*?)\\]\\] to \\[\\[(?<targetpage>.*?)\\]\\](?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
                             rc.Page = result.Groups["page"].Value;
                             rc.TargetPage = result.Groups["targetpage"].Value;
+                            
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
             
                             handled = true;
                         }

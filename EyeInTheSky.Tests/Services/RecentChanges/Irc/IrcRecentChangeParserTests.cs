@@ -841,6 +841,17 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                         });
                 
                 yield return new TestCaseData(
+                        "\u000314[[\u000307Special:Log/managetags\u000314]]\u00034 activate\u000310 \u000302\u0003 \u00035*\u0003 \u000303EggRoll97\u0003 \u00035*\u0003  \u000310EggRoll97 activated the tag \"uncategorized-redirect\" for use by users and bots: Reactivate\u0003")
+                    .Returns(
+                        new RecentChange("EggRoll97")
+                        {
+                            Log = "managetags",
+                            Page = "uncategorized-redirect",
+                            EditFlags = "activate",
+                            EditSummary = "Reactivate"
+                        });
+                
+                yield return new TestCaseData(
                         "14[[07Special:Log/managetags14]]4 delete10 02 5* 03MusikAnimal 5*  10MusikAnimal deleted the tag \"long-term-abuse\" (removed from 15 revisions and/or log entries): Per [[Special:Permalink/864524082#Please review 937]], may do more harm than good")
                     .Returns(
                         new RecentChange("MusikAnimal")
@@ -1126,6 +1137,17 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                             Page = "The Wikipedia Library/1Lib1Ref/Portal",
                             TargetPage = "Template:The Wikipedia Library 1lib1ref navigation portal",
                             EditFlags = "moveok"
+                        });
+                yield return new TestCaseData(
+                        "\u000314[[\u000307Special:Log/pagetranslation\u000314]]\u00034 moveok\u000310 \u000302\u0003 \u00035*\u0003 \u000303Minorax\u0003 \u00035*\u0003  \u000310Minorax completed renaming of translatable page [[\u000302Template:Former staff WMIT/text/en\u000310]] to [[Template:Former staff WMIT/text]]: fix\u0003")
+                    .Returns(
+                        new RecentChange("Minorax")
+                        {
+                            Log = "pagetranslation",
+                            Page = "Template:Former staff WMIT/text/en",
+                            TargetPage = "Template:Former staff WMIT/text",
+                            EditFlags = "moveok",
+                            EditSummary = "fix"
                         });
                 yield return new TestCaseData(
                         "14[[07Special:Log/pagetranslation14]]4 movenok10 02 5* 03MCruz (WMF) 5*  10MCruz (WMF) encountered a problem while moving page [[02Community Engagement Insights/2018 Report/Community Resources10]] to [[Community Insights/2018 Report/Community Resources]]")
