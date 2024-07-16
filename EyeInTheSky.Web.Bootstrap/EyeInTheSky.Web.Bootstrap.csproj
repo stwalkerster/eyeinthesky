@@ -72,7 +72,7 @@
     <PackageReference Include="Castle.Core-log4net" Version="4.4.1" />
     <PackageReference Include="Castle.LoggingFacility" Version="4.1.1" />
     <PackageReference Include="Castle.Windsor" Version="4.1.1" />
-    <PackageReference Include="log4net" Version="2.0.15" />
+    <PackageReference Include="log4net" Version="2.0.17" />
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.9" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="3.1.9" />
