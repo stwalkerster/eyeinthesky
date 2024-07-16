@@ -126,12 +126,6 @@ $(function () {
                         }
                     ],
                     hideIf: hideMenu
-                },
-                {
-                    caption: "Append <external>",
-                    action: Xonomy.newElementChild,
-                    actionParameter: "<external provider=\"phabricator\" location=\"\" />",
-                    hideIf: hideMenu
                 }
             ],
             hideIf: hideMenu
@@ -225,7 +219,6 @@ $(function () {
         "xor": "Returns true if exactly one child node returns true.",
         "or": "Returns true if any child node return true.",
         "not": "Returns true if the child node returns false.",
-        "external": "References a section of tree stored elsewhere",
         "x-of": "Returns true if at least the minimum and at most the maximum child nodes return true.",
         "expiry": "Returns false if the expiry has passed, otherwise evaluate subtree"
     };
@@ -301,20 +294,6 @@ $(function () {
                 canDropTo: canDropTo,
                 caption: commentFunc,
                 attributes: {"comment": commentAttribute}
-            },
-            "external": {
-                menu: [].concat(editableNodeMenu),
-                attributes: {
-                    "provider": {
-                        asker: Xonomy.askString
-                    },
-                    "location": {
-                        asker: Xonomy.askString
-                    },
-                    "comment": commentAttribute
-                },
-                canDropTo: canDropTo,
-                caption: commentFunc
             },
             "x-of": {
                 menu: [

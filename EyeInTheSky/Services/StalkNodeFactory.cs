@@ -7,18 +7,11 @@
     using EyeInTheSky.Model.StalkNodes;
     using EyeInTheSky.Model.StalkNodes.BaseNodes;
     using EyeInTheSky.Model.StalkNodes.NumericNodes;
-    using EyeInTheSky.Services.ExternalProviders.Interfaces;
     using EyeInTheSky.Services.Interfaces;
 
     public class StalkNodeFactory : IStalkNodeFactory
     {
-        private readonly IPhabricatorExternalProvider phabricatorExternalProvider;
 
-        public StalkNodeFactory(IPhabricatorExternalProvider phabricatorExternalProvider)
-        {
-            this.phabricatorExternalProvider = phabricatorExternalProvider;
-        }
-        
         public IStalkNode NewFromXmlFragment(XmlElement fragment)
         {
             IStalkNode node;
@@ -36,7 +29,6 @@
                     break;
 
                 case "not":
-                case "external": 
                 case "expiry":
                     node = this.NewSingleChildNode(fragment);
                     break;
@@ -121,8 +113,6 @@
             SingleChildLogicalNode node;
             switch (fragment.Name)
             {
-                case "external":
-                    return NewExternalNode(fragment);
                 case "not":
                     node = new NotNode();
                     break;
@@ -145,39 +135,6 @@
             node.ChildNode = child;
 
             return node;
-        }
-
-        private IStalkNode NewExternalNode(XmlElement fragment)
-        {
-            var extNode = new ExternalNode();
-
-            if (fragment.Attributes["provider"] != null)
-            {
-                extNode.Provider = fragment.Attributes["provider"].Value;
-            }
-
-            if (fragment.Attributes["location"] != null)
-            {
-                extNode.Location = fragment.Attributes["location"].Value;
-            }
-
-            if (extNode.Provider == null || extNode.Location == null)
-            {
-                throw new XmlException("Could not determine location of external XML fragment");
-            }
-
-            IExternalProvider provider;
-            switch (extNode.Provider)
-            {
-                case "phabricator":
-                    provider = this.phabricatorExternalProvider;
-                    break;
-                default:
-                    throw new XmlException("Unknown external handler type");
-            }
-
-            extNode.ChildNode = this.NewFromXmlFragment(provider.PopulateFromExternalSource(extNode));
-            return extNode;
         }
 
         private IStalkNode NewDoubleChildNode(XmlElement fragment)
@@ -443,12 +400,6 @@
 
         private XmlElement SingleChildToXml(XmlDocument doc, SingleChildLogicalNode node)
         {
-            var externalNode = node as ExternalNode;
-            if (externalNode != null)
-            {
-                return this.ExternalNodeToXml(doc, externalNode);
-            } 
-            
             var elem = this.CreateElement(doc, node);
 
             elem.AppendChild(this.ToXml(doc, node.ChildNode));
@@ -458,16 +409,6 @@
             {
                 elem.SetAttribute("expiry", XmlConvert.ToString(expiryNode.Expiry, XmlDateTimeSerializationMode.Utc));
             }
-
-            return elem;
-        }
-
-        private XmlElement ExternalNodeToXml(XmlDocument doc, ExternalNode node)
-        {
-            var elem = this.CreateElement(doc, node);
-            elem.SetAttribute("provider", node.Provider);
-            elem.SetAttribute("location", node.Location);
-            elem.SetAttribute("comment", node.Comment);
 
             return elem;
         }
