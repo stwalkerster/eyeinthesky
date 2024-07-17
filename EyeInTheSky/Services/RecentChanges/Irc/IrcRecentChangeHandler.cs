@@ -82,6 +82,12 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
             }
             catch (LogParseException ex)
             {
+                // `:NICK!USER@HOST COMMAND :MESSAGE` - 1 `@`, 1 `!`, 2 `:`, and 2 spaces = 6 
+                var totalLength = e.User.Nickname.Length + e.User.Username.Length + e.User.Hostname.Length
+                    + (e.IsNotice ? "NOTICE".Length : "PRIVMSG".Length) + e.Message.Length
+                    + 6;
+                ex.MessageLength = totalLength;
+                
                 this.bugReporter.ReportBug(ex);
                 return;
             }

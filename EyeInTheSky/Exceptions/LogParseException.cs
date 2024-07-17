@@ -17,6 +17,11 @@
         [JsonProperty]
         public string Channel { get; }
         
+        /// <summary>
+        /// Length of the inbound IRC message
+        /// </summary>
+        public int MessageLength { get; set; }
+        
         public LogParseException(string log, string editFlags, string comment, string data, string channel)
         {
             this.Log = log;

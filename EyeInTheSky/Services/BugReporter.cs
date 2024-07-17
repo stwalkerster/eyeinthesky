@@ -11,6 +11,7 @@
     using EyeInTheSky.Services.Interfaces;
     using EyeInTheSky.Model;
     using Newtonsoft.Json;
+    using Prometheus;
     using RabbitMQ.Client;
     using Stwalkerster.Bot.PhabricatorLib;
     using Stwalkerster.Bot.PhabricatorLib.Applications;
@@ -18,6 +19,8 @@
 
     public class BugReporter : IBugReporter
     {
+        private static Counter ParseFailures = Metrics.CreateCounter("eyeinthesky_rc_parse_failures_total", "");
+        
         private readonly ILogger logger;
         private readonly IMqService mqService;
         private readonly RabbitMqConfiguration rabbitConfig;
@@ -52,6 +55,8 @@
 
         public void ReportBug(LogParseException ex)
         {
+            ParseFailures.Inc();
+            
             if (this.phabReportingActive)
             {
                 this.ReportToPhabricator(ex);
@@ -81,6 +86,7 @@
                 basicProperties.Headers.Add("log", logParseException.Log);
                 basicProperties.Headers.Add("editFlags", logParseException.EditFlags);
                 basicProperties.Headers.Add("channel", logParseException.Channel);
+                basicProperties.Headers.Add("messageLength", logParseException.MessageLength);
 
                 var sw = new StringWriter();
                 JsonSerializer.Create().Serialize(sw, logParseException);
