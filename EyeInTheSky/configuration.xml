@@ -148,5 +148,19 @@
                 <clientName>Freenode</clientName>
             </parameters>
         </component>
+        
+        <component type="EyeInTheSky.Model.RabbitMqConfiguration">
+            <parameters>
+                <tls>false</tls>
+                <enabled>true</enabled>
+                <objectPrefix>eyeinthesky.</objectPrefix>
+                <hostname>localhost</hostname>
+                <port>5672</port>
+                <virtualHost>/</virtualHost>
+                <username>guest</username>
+                <password>guest</password>
+                <userAgent>#{useragent}</userAgent>
+            </parameters>
+        </component>
     </components>
 </configuration>

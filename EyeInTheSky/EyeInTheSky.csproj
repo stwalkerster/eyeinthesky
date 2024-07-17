@@ -64,7 +64,7 @@
     <Compile Include="Commands\ChannelCommand.cs" />
     <Compile Include="Commands\FlagsCommand.cs" />
     <Compile Include="Commands\XmlCommand.cs" />
-    <Compile Include="Exceptions\BugException.cs" />
+    <Compile Include="Exceptions\LogParseException.cs" />
     <Compile Include="Exceptions\ConfigurationException.cs" />
     <Compile Include="Extensions\ListExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
@@ -84,6 +84,7 @@
     <Compile Include="Model\Interfaces\IStalk.cs" />
     <Compile Include="Model\Interfaces\ITemplate.cs" />
     <Compile Include="Model\IrcChannel.cs" />
+    <Compile Include="Model\RabbitMqConfiguration.cs" />
     <Compile Include="Model\RecentChange.cs" />
     <Compile Include="Model\NotificationTemplates.cs" />
     <Compile Include="Model\StalkNodes\ActingUserStalkNode.cs" />
@@ -140,8 +141,10 @@
     <Compile Include="Services\Interfaces\IChannelConfiguration.cs" />
     <Compile Include="Services\Interfaces\IChannelFactory.cs" />
     <Compile Include="Services\Interfaces\IMediaWikiApiHelper.cs" />
+    <Compile Include="Services\Interfaces\IMqService.cs" />
     <Compile Include="Services\Interfaces\ISubscriptionHelper.cs" />
     <Compile Include="Services\MediaWikiApiHelper.cs" />
+    <Compile Include="Services\MqService.cs" />
     <Compile Include="Services\RecentChanges\Interfaces\IRecentChangeHandler.cs" />
     <Compile Include="Services\RecentChanges\Irc\Interfaces\IIrcRecentChangeParser.cs" />
     <Compile Include="Services\RecentChanges\Irc\IrcRecentChangeHandler.cs" />
@@ -231,6 +234,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="PCLStorage" Version="1.0.2" />
     <PackageReference Include="prometheus-net" Version="8.0.1" />
+    <PackageReference Include="RabbitMQ.Client" Version="6.8.1" />
     <PackageReference Include="Stwalkerster.Bot.CommandLib" Version="17.0.146" />
     <PackageReference Include="Stwalkerster.Bot.MediaWikiLib" Version="5.0.85" />
     <PackageReference Include="Stwalkerster.Bot.PhabricatorLib" Version="0.2.7-alpha" />

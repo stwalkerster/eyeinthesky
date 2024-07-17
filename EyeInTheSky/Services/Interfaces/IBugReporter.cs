@@ -4,6 +4,6 @@ namespace EyeInTheSky.Services.Interfaces
 {
     public interface IBugReporter
     {
-        void ReportBug(BugException ex);
+        void ReportBug(LogParseException ex);
     }
 }

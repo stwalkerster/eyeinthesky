@@ -49,7 +49,7 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
             string data = "14[[07Special:Log/fakelog14]]4 sdfsdf10 02 5* 03Jimbo 5*  10Loggy message";
 
             // act
-            Assert.Throws<BugException>(() => this.rcparser.Parse(data, ""));
+            Assert.Throws<LogParseException>(() => this.rcparser.Parse(data, ""));
         }
 
         public static IEnumerable<TestCaseData> ParseTestData

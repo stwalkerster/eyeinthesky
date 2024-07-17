@@ -1645,9 +1645,7 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
 
             if (!handled)
             {
-                throw new BugException(
-                    string.Format("Unhandled log entry of type {0} / {1}", rc.Log, rc.EditFlags),
-                    string.Format("```\n{0}\n```\n```\n{1}\n```\nFrom: {2}", comment, data, channel));
+                throw new LogParseException(rc.Log, rc.EditFlags, comment, data, channel);
             }
 
             if (!string.IsNullOrWhiteSpace(rc.Page) && rc.Page.StartsWith("Special:AbuseFilter/") && string.IsNullOrWhiteSpace(rc.Url))
