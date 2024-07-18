@@ -411,6 +411,16 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                             EditFlags = "whitelist",
                             EditSummary = "too much collateral; contact me if there's any issues"
                         });
+                yield return new TestCaseData(
+                        "\u000314[[\u000307Special:Log/gblblock\u000314]]\u00034 whitelist\u000310 \u000302\u0003 \u00035*\u0003 \u000303Xaosflux\u0003 \u00035*\u0003  \u000310Xaosflux disabled the global block on Xaosflux ep locally: test\u0003")
+                    .Returns(
+                        new RecentChange("Xaosflux")
+                        {
+                            Log = "gblblock",
+                            TargetUser = "Xaosflux ep",
+                            EditFlags = "whitelist",
+                            EditSummary = "test"
+                        });
                 
                 yield return new TestCaseData(
                         "14[[07Special:Log/gblblock14]]4 dwhitelist10 02 5* 03Galobtter 5*  10Galobtter re-enabled the global block on [[02User:138.197.0.0/1610]] locally: Subranges have all been blocked")
@@ -726,6 +736,16 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                             EditFlags = "delete",
                         });
                 yield return new TestCaseData(
+                        "\u000314[[\u000307Special:Log/globalauth\u000314]]\u00034 delete\u000310 \u000302\u0003 \u00035*\u0003 \u000303Martin Urbanec (WMF)\u0003 \u00035*\u0003  \u000310Martin Urbanec (WMF) deleted global account \"[[\u000302User:U4C@global\u000310]]\": testing again with Superpes\u0003")
+                    .Returns(
+                        new RecentChange("Martin Urbanec (WMF)")
+                        {
+                            Log = "globalauth",
+                            TargetUser = "U4C",
+                            EditFlags = "delete",
+                            EditSummary = "testing again with Superpes"
+                        });
+                yield return new TestCaseData(
                         "14[[07Special:Log/globalauth14]]4 setstatus10 02 5* 03Masti 5*  10Masti changed status for global account \"[[02User:Theda420192666@global10]]\": set locked; unset (none): Spam-only account: spambot")
                     .Returns(
                         new RecentChange("Masti")
@@ -871,6 +891,17 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                             Page = "predatory",
                             EditFlags = "delete",
                             EditSummary = "created in error"
+                        });
+                
+                yield return new TestCaseData(
+                        "\u000314[[\u000307Special:Log/managetags\u000314]]\u00034 delete\u000310 \u000302\u0003 \u00035*\u0003 \u000303XXBlackburnXx\u0003 \u00035*\u0003  \u000310XXBlackburnXx deleted the tag \"New article without categories, templates\" (removed from 1,405 revisions and/or log entries): typo\u0003")
+                    .Returns(
+                        new RecentChange("XXBlackburnXx")
+                        {
+                            Log = "managetags",
+                            Page = "New article without categories, templates",
+                            EditFlags = "delete",
+                            EditSummary = "typo"
                         });
                 
                 #endregion
@@ -1082,6 +1113,18 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                             TargetUser = "Yzf99",
                             EditFlags = "forcecreatelocal",
                             EditSummary = "Forcing attach, Ticket#2021122410002159",
+                        });
+                
+                
+                yield return new TestCaseData(
+                        "\u000314[[\u000307Special:Log/newusers\u000314]]\u00034 forcecreatelocal\u000310 \u000302\u0003 \u00035*\u0003 \u000303Xaosflux\u0003 \u00035*\u0003  \u000310Xaosflux forcibly created a local account for Bottomlessfries: merge to SUL\u0003")
+                    .Returns(
+                        new RecentChange("Xaosflux")
+                        {
+                            Log = "newusers",
+                            TargetUser = "Bottomlessfries",
+                            EditFlags = "forcecreatelocal",
+                            EditSummary = "merge to SUL",
                         });
                 
                 #endregion
@@ -1815,6 +1858,16 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                             Log = "translationreview",
                             Page = "Access to nonpublic information policy",
                             EditFlags = "group"
+                        });
+                
+                yield return new TestCaseData(
+                        "\u000314[[\u000307Special:Log/translationreview\u000314]]\u00034 unfuzzy\u000310 \u000302\u0003 \u00035*\u0003 \u000303Mervat\u0003 \u00035*\u0003  \u000310Mervat marked translation [[\u000302Translations:Movement Charter/Glossary/30/ar\u000310]] as no longer outdated\u0003")
+                    .Returns(
+                        new RecentChange("Mervat")
+                        {
+                            Log = "translationreview",
+                            Page = "Translations:Movement Charter/Glossary/30/ar",
+                            EditFlags = "unfuzzy"
                         });
                 #endregion
                 #region upload

@@ -337,7 +337,7 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                 case "gblblock":
                     if (rc.EditFlags == "whitelist")
                     {
-                        var match = new Regex(@" disabled the global block on (?:\[\[User:)(?<targetUser>.*?)(?:\]\]) locally(?:: (?<comment>.*))?$");
+                        var match = new Regex(@" disabled the global block on (?:\[\[User:)?(?<targetUser>.*?)(?:\]\])? locally(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
@@ -588,7 +588,7 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                     
                     if (rc.EditFlags == "delete")
                     {
-                        var match = new Regex(@"^deleted global account ""User:(?<targetUser>.*?)@global""(?:: (?<comment>.*))?$");
+                        var match = new Regex(@"deleted global account ""(?:\[\[)?User:(?<targetUser>.*?)@global(?:\]\])?""(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
@@ -764,7 +764,7 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                     
                     if (rc.EditFlags == "delete")
                     {
-                        var match = new Regex(@" deleted the tag ""(?<pageName>.*?)"" \(removed from [0-9]+ revision(?:s?) (?:and/)?or log entr(?:ies|y)\)(?:: (?<comment>.*))?$");
+                        var match = new Regex(@" deleted the tag ""(?<pageName>.*?)"" \(removed from [0-9,]+ revision(?:s?) (?:and/)?or log entr(?:ies|y)\)(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
@@ -946,7 +946,7 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                     
                     if (rc.EditFlags == "forcecreatelocal")
                     {
-                        var match = new Regex("forcibly created a local account for \\[\\[User:(?<targetuser>.*?)\\]\\](?:: (?<comment>.*))?$");
+                        var match = new Regex("forcibly created a local account for (?:\\[\\[User:)?(?<targetuser>.*?)(?:\\]\\])?(?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
@@ -1612,6 +1612,18 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                     if (rc.EditFlags == "group")
                     {
                         var match = new Regex(" changed the state of .*? translations of \\[\\[.*?\\|(?<page>.*?)\\]\\] from .*? to .*?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["page"].Value;
+                            
+                            handled = true;
+                        }
+                    }
+                    
+                    if (rc.EditFlags == "unfuzzy")
+                    {
+                        var match = new Regex(" marked translation \\[\\[(?<page>.*?)\\]\\] as no longer outdated$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
