@@ -110,19 +110,19 @@
     <PackageReference Include="Microsoft.Extensions.Options" Version="3.1.9" />
     <PackageReference Include="Microsoft.Extensions.Primitives" Version="3.1.9" />
     <PackageReference Include="Mono.Options" Version="6.12.0.148" />
-    <PackageReference Include="NSubstitute" Version="5.0.0" />
+    <PackageReference Include="NSubstitute" Version="5.1.0" />
     <PackageReference Include="NUnit" Version="3.13.3" />
     <PackageReference Include="NUnit.Console" Version="3.16.3" />
     <PackageReference Include="NUnit.ConsoleRunner" Version="3.16.3" />
     <PackageReference Include="NUnit.Extension.NUnitProjectLoader" Version="3.7.1" />
     <PackageReference Include="NUnit.Extension.NUnitV2Driver" Version="3.9.0" />
     <PackageReference Include="NUnit.Extension.NUnitV2ResultWriter" Version="3.7.0" />
-    <PackageReference Include="NUnit.Extension.TeamCityEventListener" Version="1.0.7" />
+    <PackageReference Include="NUnit.Extension.TeamCityEventListener" Version="1.0.9" />
     <PackageReference Include="NUnit.Extension.VSProjectLoader" Version="3.9.0" />
-    <PackageReference Include="prometheus-net" Version="8.0.1" />
+    <PackageReference Include="prometheus-net" Version="8.2.1" />
     <PackageReference Include="Stwalkerster.Bot.CommandLib" Version="17.0.146" />
-    <PackageReference Include="Stwalkerster.Bot.MediaWikiLib" Version="5.0.85" />
-    <PackageReference Include="Stwalkerster.IrcClient" Version="12.0.164" />
+    <PackageReference Include="Stwalkerster.Bot.MediaWikiLib" Version="5.0.86" />
+    <PackageReference Include="Stwalkerster.IrcClient" Version="12.0.177" />
     <PackageReference Include="System.Buffers" Version="4.5.1" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
     <PackageReference Include="System.Memory" Version="4.5.5" />
