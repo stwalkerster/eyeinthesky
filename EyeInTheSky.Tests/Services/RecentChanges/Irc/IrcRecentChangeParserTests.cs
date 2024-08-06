@@ -1615,6 +1615,18 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                             EditFlags = "renameuser",
                             EditSummary = "Per [[:w:en:Special:Permalink/833977985|en:WP:CHUS]]"
                         });
+                
+                yield return new TestCaseData(
+                        "\u000314[[\u000307Special:Log/renameuser\u000314]]\u00034 renameuser\u000310 \u000302\u0003 \u00035*\u0003 \u000303Nadzik\u0003 \u00035*\u0003  \u000310Nadzik renamed user [[\u000302User:Minimac\u000310]] (27,169 edits) to [[User:Abminor]]: per [[m:Special:GlobalRenameQueue/request/125198|request]]\u0003")
+                    .Returns(
+                        new RecentChange("Nadzik")
+                        {
+                            Log = "renameuser",
+                            TargetUser = "Minimac",
+                            AdditionalData = "Abminor",
+                            EditFlags = "renameuser",
+                            EditSummary = "per [[m:Special:GlobalRenameQueue/request/125198|request]]"
+                        });
                 #endregion
                 #region review
                 yield return new TestCaseData(

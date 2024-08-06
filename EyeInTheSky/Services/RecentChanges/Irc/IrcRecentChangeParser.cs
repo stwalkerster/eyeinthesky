@@ -1410,7 +1410,7 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                 case "renameuser":
                     if (rc.EditFlags == "renameuser")
                     {
-                        var match = new Regex(" renamed user \\[\\[User:(?<oldname>.*?)\\]\\] \\([0-9]+ edit(?:s?)\\) to \\[\\[User:(?<newname>.*?)\\]\\](?:: (?<comment>.*))?$");
+                        var match = new Regex(" renamed user \\[\\[User:(?<oldname>.*?)\\]\\] \\([0-9,]+ edit(?:s?)\\) to \\[\\[User:(?<newname>.*?)\\]\\](?:: (?<comment>.*))?$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {
