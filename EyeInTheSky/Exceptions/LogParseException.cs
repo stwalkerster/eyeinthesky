@@ -21,6 +21,8 @@
         /// Length of the inbound IRC message
         /// </summary>
         public int MessageLength { get; set; }
+        
+        [JsonProperty]
         public byte[] RawData { get; set; }
         
         public LogParseException(string log, string editFlags, string comment, string data, string channel)
