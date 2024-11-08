@@ -1451,7 +1451,7 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                 case "rights":
                     if (rc.EditFlags == "autopromote")
                     {
-                        var match = new Regex("was automatically updated (?<changes>from [a-z-, ()]+ to [a-z-, ()]+)$");
+                        var match = new Regex("was automatically (promoted|updated) (?<changes>from [a-z-, ()]+ to [a-z-, ()]+)$");
                         var result = match.Match(comment);
                         if (result.Success)
                         {

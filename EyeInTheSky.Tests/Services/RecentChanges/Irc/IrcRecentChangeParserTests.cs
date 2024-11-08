@@ -1706,6 +1706,16 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                         });
                 
                 yield return new TestCaseData(
+                        "\u000314[[\u000307Special:Log/rights\u000314]]\u00034 autopromote\u000310 \u000302\u0003 \u00035*\u0003 \u000303Aafi\u0003 \u00035*\u0003  \u000310was automatically promoted from global-renamer, patroller, translationadmin to global-renamer, patroller, translationadmin, checkuser-temporary-account-viewer\u0003")
+                    .Returns(
+                        new RecentChange("Aafi")
+                        {
+                            Log = "rights",
+                            EditFlags = "autopromote",
+                            AdditionalData = "from global-renamer, patroller, translationadmin to global-renamer, patroller, translationadmin, checkuser-temporary-account-viewer"
+                        });
+                
+                yield return new TestCaseData(
                         "14[[07Special:Log/rights14]]4 rights10 02 5* 03CambridgeBayWeather 5*  10changed group membership for User:Outriggr from autoreviewer, extendedconfirmed, reviewer to autoreviewer, extendedconfirmed, reviewer, templateeditor: Needed")
                     .Returns(
                         new RecentChange("CambridgeBayWeather")
