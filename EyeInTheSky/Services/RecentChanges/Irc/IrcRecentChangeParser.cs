@@ -673,6 +673,24 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                             handled = true;
                         }
                     }
+
+                    if (rc.EditFlags == "addlink")
+                    {
+                        var match = new Regex(@" reviewed [0-9]+ link suggestion(?:s?) for \[\[(?<page>.*?)\]\](?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.Page = result.Groups["page"].Value;
+                            
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+
+                            handled = true;
+                        }
+
+                    }
                     break;
                 case "import":
                     if (rc.EditFlags == "interwiki")

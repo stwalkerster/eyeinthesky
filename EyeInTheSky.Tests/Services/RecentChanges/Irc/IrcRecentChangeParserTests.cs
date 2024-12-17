@@ -810,6 +810,26 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                             EditSummary = "rejected",
                             EditFlags = "addimage"
                         });
+                
+                yield return new TestCaseData("\u000314[[\u000307Special:Log/growthexperiments\u000314]]\u00034 addlink\u000310 \u000302\u0003 \u00035*\u0003 \u000303Jacktxu22\u0003 \u00035*\u0003  \u000310Jacktxu22 reviewed 3 link suggestions for [[\u000302The Research Institute at Nationwide Children's Hospital\u000310]]: accepted 3, rejected 0 and skipped 0\u0003")
+                    .Returns(
+                        new RecentChange("Jacktxu22")
+                        {
+                            Log = "growthexperiments",
+                            Page = "The Research Institute at Nationwide Children's Hospital",
+                            EditSummary = "accepted 3, rejected 0 and skipped 0",
+                            EditFlags = "addlink"
+                        });
+                
+                yield return new TestCaseData("\u000314[[\u000307Special:Log/growthexperiments\u000314]]\u00034 addlink\u000310 \u000302\u0003 \u00035*\u0003 \u000303Ritijsaini\u0003 \u00035*\u0003  \u000310Ritijsaini reviewed 1 link suggestion for [[\u000302Delight of the Muses\u000310]]: accepted 1, rejected 0 and skipped 0\u0003")
+                    .Returns(
+                        new RecentChange("Ritijsaini")
+                        {
+                            Log = "growthexperiments",
+                            Page = "Delight of the Muses",
+                            EditSummary = "accepted 1, rejected 0 and skipped 0",
+                            EditFlags = "addlink"
+                        });
                 #endregion
                 #region import
                 // faked
