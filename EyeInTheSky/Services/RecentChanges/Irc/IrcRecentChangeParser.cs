@@ -657,6 +657,24 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                         }
                     }
                     
+                    if (rc.EditFlags == "setmentor-no-previous-mentor")
+                    {
+                        var match = new Regex(@" set (?<targetUser>.*?) as the mentor of (?<altUser>.*?) \(no previous mentor\)(?:: (?<comment>.*))?$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
+                            rc.TargetUser = result.Groups["targetUser"].Value;
+                            rc.AlternateTargetUser = result.Groups["altUser"].Value;
+                            
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+
+                            handled = true;
+                        }
+                    }
+                    
                     if (rc.EditFlags == "addimage")
                     {
                         var match = new Regex(@" reviewed an image suggestion for \[\[(?<page>.*?)\]\](?:: (?<comment>.*))?$");
@@ -891,6 +909,21 @@ namespace EyeInTheSky.Services.RecentChanges.Irc
                             rc.Page = result.Groups["oldPage"].Value;
                             rc.TargetPage = result.Groups["newPage"].Value;
 
+                            if (result.Groups["comment"].Success)
+                            {
+                                rc.EditSummary = result.Groups["comment"].Value;
+                            }
+
+                            handled = true;
+                        }
+                    }
+                    if (rc.EditFlags == "merge-into")
+                    {
+                        // Yes, really. There's nothing non-user-generated in this one.
+                        var match = new Regex(@"^(?<comment>.*)$");
+                        var result = match.Match(comment);
+                        if (result.Success)
+                        {
                             if (result.Groups["comment"].Success)
                             {
                                 rc.EditSummary = result.Groups["comment"].Value;

@@ -801,6 +801,17 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                             EditFlags = "setmentor"
                         });
                 
+                yield return new TestCaseData("14[[07Special:Log/growthexperiments14]]4 setmentor-no-previous-mentor10 02 5* 03Pppery 5*  10Pppery set CaptainEek as the mentor of Semen-Always Creamin-Demon (no previous mentor): Pppery removed Actualcpscm from mentorship")
+                    .Returns(
+                        new RecentChange("Pppery")
+                        {
+                            Log = "growthexperiments",
+                            TargetUser = "CaptainEek",
+                            AlternateTargetUser = "Semen-Always Creamin-Demon",
+                            EditSummary = "Pppery removed Actualcpscm from mentorship",
+                            EditFlags = "setmentor-no-previous-mentor"
+                        });
+                
                 yield return new TestCaseData("\u000314[[\u000307Special:Log/growthexperiments\u000314]]\u00034 addimage\u000310 \u000302\u0003 \u00035*\u0003 \u000303Android-Test17-WMF\u0003 \u00035*\u0003  \u000310Android-Test17-WMF reviewed an image suggestion for [[\u000302July 1974\u000310]]: rejected\u0003")
                     .Returns(
                         new RecentChange("Android-Test17-WMF")
@@ -1029,6 +1040,16 @@ namespace EyeInTheSky.Tests.Services.RecentChanges.Irc
                             TargetPage = "Bandringa",
                             EditFlags = "merge",
                             EditSummary = "[[WP:HISTMERGE]] - Fixing cut and paste page move."
+                        });
+                
+                yield return new TestCaseData(
+                        "14[[07Special:Log/merge14]]4 merge-into10 02 5* 03Graham87 5*  10bot-reported cut-paste at [[WP:WikiProject History Merge]]")
+                    .Returns(
+                        new RecentChange("Graham87")
+                        {
+                            Log = "merge",
+                            EditFlags = "merge-into",
+                            EditSummary = "bot-reported cut-paste at [[WP:WikiProject History Merge]]"
                         });
                 #endregion
                 #region move
